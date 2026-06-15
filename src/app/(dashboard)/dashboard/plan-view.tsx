@@ -10,7 +10,20 @@ const GOAL_LABEL: Record<string, string> = {
   health_energy: 'Salud y energía',
 }
 
-export function PlanView({ plan, name }: { plan: NutritionPlanJson; name: string }) {
+const DOC_LABEL: Record<string, string> = {
+  nutrition_plan: 'Plan nutricional (PDF)',
+  training_plan: 'Plan de entrenamiento (PDF)',
+}
+
+export function PlanView({
+  plan,
+  name,
+  docKinds = [],
+}: {
+  plan: NutritionPlanJson
+  name: string
+  docKinds?: string[]
+}) {
   const [activeDay, setActiveDay] = useState(0)
   const { summary } = plan
   const day = plan.days[activeDay]
@@ -24,6 +37,22 @@ export function PlanView({ plan, name }: { plan: NutritionPlanJson; name: string
           {GOAL_LABEL[summary.goal] ?? summary.goal}
         </p>
       </header>
+
+      {docKinds.length > 0 && (
+        <div className="flex flex-wrap gap-2">
+          {docKinds
+            .filter((k) => DOC_LABEL[k])
+            .map((k) => (
+              <a
+                key={k}
+                href={`/api/documents/${k}`}
+                className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted"
+              >
+                ↓ {DOC_LABEL[k]}
+              </a>
+            ))}
+        </div>
+      )}
 
       {/* Resumo de metas */}
       <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">

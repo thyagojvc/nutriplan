@@ -74,7 +74,20 @@ export default async function DashboardPage() {
     )
   }
 
-  return <PlanView plan={plan.plan_json as NutritionPlanJson} name={publicUser.name ?? ''} />
+  // PDFs disponíveis para download
+  const { data: docs } = await svc
+    .from('generated_documents')
+    .select('kind')
+    .eq('order_id', order.id)
+  const docKinds = (docs ?? []).map((d) => d.kind as string)
+
+  return (
+    <PlanView
+      plan={plan.plan_json as NutritionPlanJson}
+      name={publicUser.name ?? ''}
+      docKinds={docKinds}
+    />
+  )
 }
 
 function Centered({ children }: { children: React.ReactNode }) {

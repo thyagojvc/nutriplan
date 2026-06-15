@@ -8,10 +8,16 @@
 // concorrentes não gerem o mesmo pedido duas vezes.
 // =============================================================================
 
+import { createHash } from 'node:crypto'
 import { createServiceClient } from '@/lib/supabase/service'
 import { parseAnswers } from './answers'
 import { calcTargets } from './math'
 import { generateNutritionPlan, generateTrainingPlan } from './generate'
+import { renderNutritionPdf, renderTrainingPdf } from './pdf'
+import type { NutritionPlanJson } from './types'
+import type { TrainingPlanJson } from './generate'
+
+const DOCS_BUCKET = 'documents'
 
 type ProcessResult =
   | { ok: true; status: 'delivered'; orderId: string }
@@ -85,8 +91,9 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     if (nutErr) throw new Error(`nutrition_plans upsert: ${nutErr.message}`)
 
     // 5. Gerar e salvar plano de treino (condicional)
+    let trainingPlan: TrainingPlanJson | null = null
     if (hasTraining) {
-      const trainingPlan = await generateTrainingPlan(answers)
+      trainingPlan = await generateTrainingPlan(answers)
       const { error: trErr } = await supabase.from('training_plans').upsert(
         {
           order_id: orderId,
@@ -103,7 +110,26 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
       if (trErr) throw new Error(`training_plans upsert: ${trErr.message}`)
     }
 
-    // 6. Concluir: generating → delivered
+    // 6. PDFs complementares (Decisão 16). NÃO bloqueiam a entrega: o dashboard
+    //    HTML é a entrega primária. Falha aqui é logada, não manda a needs_review.
+    try {
+      const { data: u } = await supabase
+        .from('users')
+        .select('name')
+        .eq('id', userId)
+        .maybeSingle()
+      await generateAndStoreDocuments(
+        orderId,
+        userId,
+        u?.name ?? '',
+        nutritionPlan,
+        trainingPlan,
+      )
+    } catch (pdfErr) {
+      console.error('[process-order] falha ao gerar PDFs (não bloqueante):', orderId, pdfErr)
+    }
+
+    // 7. Concluir: generating → delivered
     const { error: delErr } = await supabase
       .from('orders')
       .update({ status: 'delivered', updated_at: new Date().toISOString() })
@@ -117,6 +143,65 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     console.error('[process-order] falha na geração:', orderId, reason)
     await moveToNeedsReview(orderId, reason)
     return { ok: false, status: 'needs_review', orderId, reason }
+  }
+}
+
+/**
+ * Gera os PDFs, faz upload no bucket privado e registra em generated_documents.
+ * Reprocessamento usa DELETE+INSERT (campos imutáveis por linha, migration 0006).
+ */
+async function generateAndStoreDocuments(
+  orderId: string,
+  userId: string,
+  name: string,
+  nutritionPlan: NutritionPlanJson,
+  trainingPlan: TrainingPlanJson | null,
+) {
+  const supabase = createServiceClient()
+
+  const docs: { kind: string; fileName: string; buffer: Buffer }[] = [
+    {
+      kind: 'nutrition_plan',
+      fileName: 'plan-nutricional.pdf',
+      buffer: await renderNutritionPdf(nutritionPlan, name),
+    },
+  ]
+  if (trainingPlan) {
+    docs.push({
+      kind: 'training_plan',
+      fileName: 'plan-entrenamiento.pdf',
+      buffer: await renderTrainingPdf(trainingPlan, name),
+    })
+  }
+
+  for (const doc of docs) {
+    const storagePath = `${userId}/${orderId}/${doc.kind}.pdf`
+    const checksum = createHash('sha256').update(doc.buffer).digest('hex')
+
+    const { error: upErr } = await supabase.storage
+      .from(DOCS_BUCKET)
+      .upload(storagePath, doc.buffer, {
+        contentType: 'application/pdf',
+        upsert: true,
+      })
+    if (upErr) throw new Error(`storage upload ${doc.kind}: ${upErr.message}`)
+
+    // DELETE+INSERT (unique(order_id,kind); campos imutáveis bloqueiam UPDATE)
+    await supabase
+      .from('generated_documents')
+      .delete()
+      .eq('order_id', orderId)
+      .eq('kind', doc.kind)
+
+    const { error: insErr } = await supabase.from('generated_documents').insert({
+      user_id: userId,
+      order_id: orderId,
+      kind: doc.kind,
+      storage_path: storagePath,
+      file_name: doc.fileName,
+      checksum,
+    })
+    if (insErr) throw new Error(`generated_documents insert ${doc.kind}: ${insErr.message}`)
   }
 }
 
