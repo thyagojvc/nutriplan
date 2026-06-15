@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
+import { processPaidOrder } from '@/lib/nutrition/process-order'
 
 export async function POST(request: NextRequest) {
   // Hotmart v2.0.0 envia o hottok como query param: ?hottok=xxx
@@ -47,7 +48,14 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   if (!email) return
 
   if (recurrenceNumber === 0) {
-    await activateNewSubscriber({ email, name, transactionId })
+    const orderId = await activateNewSubscriber({ email, name, transactionId })
+    // Dispara a geração do plano logo após marcar o pedido pago.
+    // O stub é instantâneo; quando a IA entrar (10–30 s), mover para fila/background
+    // para não estourar o timeout do webhook do Hotmart.
+    if (orderId) {
+      const result = await processPaidOrder(orderId)
+      console.info('[webhook/hotmart] generation', result)
+    }
   } else {
     // Renovação — usuário já existe; futuramente disparar geração de novo plano
     console.info('[webhook/hotmart] renewal received', { email, recurrenceNumber })
@@ -62,7 +70,7 @@ async function activateNewSubscriber({
   email: string
   name: string
   transactionId?: string
-}) {
+}): Promise<string | null> {
   const supabase = createServiceClient()
 
   // 1. Encontrar lead mais recente pelo e-mail
@@ -116,7 +124,7 @@ async function activateNewSubscriber({
 
     if (authError || !authData?.user) {
       console.error('[webhook/hotmart] createUser error:', authError)
-      return
+      return null
     }
 
     // Inserir em public.users
@@ -133,7 +141,7 @@ async function activateNewSubscriber({
 
     if (userError || !newUser) {
       console.error('[webhook/hotmart] user insert error:', userError)
-      return
+      return null
     }
 
     userId = newUser.id
@@ -168,6 +176,8 @@ async function activateNewSubscriber({
   }
 
   // TODO Fase D: enviar e-mail de magic link via Resend
+
+  return order?.id ?? null
 }
 
 async function handleDeactivate(

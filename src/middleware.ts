@@ -18,6 +18,7 @@ const PUBLIC_PATHS = [
   '/api/checkout/create-order',
   '/api/dev/simulate-payment',
   '/api/webhooks/hotmart',
+  '/api/admin/generate',
 ]
 
 function isPublic(pathname: string): boolean {

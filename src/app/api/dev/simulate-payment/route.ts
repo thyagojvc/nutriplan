@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
+import { processPaidOrder } from '@/lib/nutrition/process-order'
 
 const bodySchema = z.object({ order_id: z.string().uuid() })
 
@@ -107,5 +108,8 @@ export async function POST(request: NextRequest) {
       .eq('id', order.session_id)
   }
 
-  return NextResponse.json({ ok: true })
+  // Dispara a geração do plano (mesmo caminho da produção)
+  const generation = await processPaidOrder(order_id)
+
+  return NextResponse.json({ ok: true, generation })
 }
