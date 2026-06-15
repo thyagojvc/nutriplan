@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 import { processPaidOrder } from '@/lib/nutrition/process-order'
+import { sendPlanReadyEmail } from '@/lib/email'
 
 const bodySchema = z.object({ order_id: z.string().uuid() })
 
@@ -110,6 +111,25 @@ export async function POST(request: NextRequest) {
 
   // Dispara a geração do plano (mesmo caminho da produção)
   const generation = await processPaidOrder(order_id)
+
+  // E-mail de aviso (igual ao webhook real; só funciona se RESEND_API_KEY estiver no .env.local)
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'http://localhost:3000'
+      const { data: linkData } = await supabase.auth.admin.generateLink({
+        type: 'magiclink',
+        email: lead.email,
+        options: { redirectTo: appUrl + '/dashboard' },
+      })
+      const magicLink = linkData?.properties?.action_link
+      if (magicLink) {
+        await sendPlanReadyEmail({ to: lead.email, name: lead.name ?? '', magicLink })
+        console.info('[simulate-payment] e-mail enviado para', lead.email)
+      }
+    } catch (emailErr) {
+      console.error('[simulate-payment] email falhou (não bloqueante):', emailErr)
+    }
+  }
 
   return NextResponse.json({ ok: true, generation })
 }

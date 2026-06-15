@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { processPaidOrder } from '@/lib/nutrition/process-order'
+import { sendPlanReadyEmail } from '@/lib/email'
 
 export async function POST(request: NextRequest) {
   // Hotmart v2.0.0 envia o hottok como query param: ?hottok=xxx
@@ -55,6 +56,13 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
     if (orderId) {
       const result = await processPaidOrder(orderId)
       console.info('[webhook/hotmart] generation', result)
+
+      // E-mail pós-geração (não bloqueia a resposta ao Hotmart se falhar)
+      try {
+        await sendMagicLinkEmail(email, name)
+      } catch (emailErr) {
+        console.error('[webhook/hotmart] email falhou (não bloqueante):', emailErr)
+      }
     }
   } else {
     // Renovação — usuário já existe; futuramente disparar geração de novo plano
@@ -175,9 +183,29 @@ async function activateNewSubscriber({
       .eq('id', lead.id)
   }
 
-  // TODO Fase D: enviar e-mail de magic link via Resend
-
   return order?.id ?? null
+}
+
+async function sendMagicLinkEmail(email: string, name: string) {
+  if (!process.env.RESEND_API_KEY) return
+
+  const supabase = createServiceClient()
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
+
+  const { data: linkData } = await supabase.auth.admin.generateLink({
+    type: 'magiclink',
+    email,
+    options: { redirectTo: appUrl + '/dashboard' },
+  })
+
+  const magicLink = linkData?.properties?.action_link
+  if (!magicLink) {
+    console.error('[webhook/hotmart] generateLink não retornou action_link')
+    return
+  }
+
+  await sendPlanReadyEmail({ to: email, name, magicLink })
+  console.info('[webhook/hotmart] e-mail enviado para', email)
 }
 
 async function handleDeactivate(
