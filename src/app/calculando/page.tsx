@@ -34,7 +34,7 @@ export default function CalculandoPage() {
       if (elapsed >= ANIMATION_MS && !done.current) {
         done.current = true
         clearInterval(tick)
-        router.push('/checkout')
+        router.push('/preview' as never)
       }
     }, 80)
     return () => clearInterval(tick)
