@@ -54,12 +54,25 @@ export function PlanView({
         </div>
       )}
 
-      {/* Resumo de metas */}
-      <section className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <Metric label="Calorías/día" value={`${summary.targetCalories}`} unit="kcal" highlight />
-        <Metric label="Proteína" value={`${summary.macros.proteinG}`} unit="g" />
-        <Metric label="Carbohidratos" value={`${summary.macros.carbsG}`} unit="g" />
-        <Metric label="Grasas" value={`${summary.macros.fatG}`} unit="g" />
+      {/* Metabolismo personalizado */}
+      <section className="space-y-3">
+        <h2 className="text-base font-semibold">Tu metabolismo</h2>
+        <div className="grid grid-cols-3 gap-3">
+          <Metric label="TMB (reposo)" value={`${summary.bmr}`} unit="kcal" tooltip="Calorías que tu cuerpo necesita en reposo absoluto" />
+          <Metric label="Gasto diario" value={`${summary.tdee}`} unit="kcal" tooltip="Lo que quemas con tu nivel de actividad actual" />
+          <Metric label="Tu meta" value={`${summary.targetCalories}`} unit="kcal" highlight tooltip="Lo que debes consumir para alcanzar tu objetivo" />
+        </div>
+        <MetabolismExplain goal={summary.goal} tdee={summary.tdee} target={summary.targetCalories} />
+      </section>
+
+      {/* Macros */}
+      <section className="space-y-2">
+        <h2 className="text-base font-semibold">Distribución de macros</h2>
+        <div className="grid grid-cols-3 gap-3">
+          <Metric label="Proteína" value={`${summary.macros.proteinG}`} unit="g" />
+          <Metric label="Carbohidratos" value={`${summary.macros.carbsG}`} unit="g" />
+          <Metric label="Grasas" value={`${summary.macros.fatG}`} unit="g" />
+        </div>
       </section>
 
       {summary.notes.length > 0 && (
@@ -174,14 +187,17 @@ function Metric({
   value,
   unit,
   highlight,
+  tooltip,
 }: {
   label: string
   value: string
   unit: string
   highlight?: boolean
+  tooltip?: string
 }) {
   return (
     <div
+      title={tooltip}
       className={[
         'rounded-lg border p-3 text-center',
         highlight ? 'border-primary bg-primary/5' : '',
@@ -193,6 +209,34 @@ function Metric({
         <span className="ml-0.5 text-xs font-normal text-muted-foreground">{unit}</span>
       </p>
     </div>
+  )
+}
+
+function MetabolismExplain({ goal, tdee, target }: { goal: string; tdee: number; target: number }) {
+  const delta = Math.abs(tdee - target)
+
+  if (goal === 'lose_fat') {
+    return (
+      <p className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
+        Para <strong>perder grasa</strong>, tu plan tiene un déficit de{' '}
+        <strong>{delta} kcal/día</strong> respecto a lo que tu cuerpo quema.
+        Esto equivale a ~{Math.round((delta * 7) / 1000 * 10) / 10} kg menos por semana en condiciones ideales.
+      </p>
+    )
+  }
+  if (goal === 'gain_muscle') {
+    return (
+      <p className="rounded-lg bg-green-50 px-4 py-3 text-sm text-green-900">
+        Para <strong>ganar masa muscular</strong>, tu plan tiene un superávit de{' '}
+        <strong>{delta} kcal/día</strong> sobre tu gasto diario.
+        Suficiente para construir músculo sin acumular grasa en exceso.
+      </p>
+    )
+  }
+  return (
+    <p className="rounded-lg bg-muted/50 px-4 py-3 text-sm text-muted-foreground">
+      Tu meta calórica está alineada con tu gasto diario para <strong>mantener tu peso</strong> actual.
+    </p>
   )
 }
 
