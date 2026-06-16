@@ -81,11 +81,34 @@ export default async function DashboardPage() {
     .eq('order_id', order.id)
   const docKinds = (docs ?? []).map((d) => d.kind as string)
 
+  // Perfil físico do usuário (draft_answers da sessão)
+  let profile = { age: null as number | null, weightKg: null as number | null, heightCm: null as number | null, sex: '', activityLevel: '' }
+  const sessionId = (plan as unknown as { session_id?: string }).session_id
+  if (sessionId) {
+    const { data: session } = await svc
+      .from('generation_sessions')
+      .select('draft_answers')
+      .eq('id', sessionId)
+      .maybeSingle()
+    const d = (session?.draft_answers ?? {}) as Record<string, unknown>
+    const s4 = (d.step_4 ?? {}) as Record<string, unknown>
+    const s5 = (d.step_5 ?? {}) as Record<string, unknown>
+    const s6 = (d.step_6 ?? {}) as Record<string, unknown>
+    profile = {
+      age: Number(s5.age) || null,
+      weightKg: Number(s5.weight_kg) || null,
+      heightCm: Number(s5.height_cm) || null,
+      sex: String(s4.sex ?? ''),
+      activityLevel: String(s6.activity_level ?? ''),
+    }
+  }
+
   return (
     <PlanView
       plan={plan.plan_json as NutritionPlanJson}
       name={publicUser.name ?? ''}
       docKinds={docKinds}
+      profile={profile}
     />
   )
 }
