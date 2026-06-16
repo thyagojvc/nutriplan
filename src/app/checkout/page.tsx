@@ -10,6 +10,48 @@ type PriceData = {
   bump: { product_code: string; local_price: number; period_version: string } | null
 }
 
+const TESTIMONIALS = [
+  { initials: 'LM', color: 'bg-pink-400',   name: 'Laura M.',   country: 'México',   text: 'Bajé 6 kg en 5 semanas. Por fin un plan que se adapta a lo que como normalmente.' },
+  { initials: 'CR', color: 'bg-blue-400',   name: 'Carlos R.',  country: 'Colombia', text: 'Entendí exactamente cuánto comer para ganar músculo sin suplementos raros.' },
+  { initials: 'AP', color: 'bg-emerald-400',name: 'Ana P.',     country: 'España',   text: 'Comida real, sin dietas locas. En 3 semanas ya notaba diferencia en el espejo.' },
+]
+
+function SocialProof() {
+  return (
+    <div className="space-y-3">
+      {/* Contador de usuários */}
+      <div className="flex items-center gap-3">
+        <div className="flex -space-x-2">
+          {TESTIMONIALS.map((t) => (
+            <div
+              key={t.initials}
+              className={`h-8 w-8 rounded-full border-2 border-white ${t.color} flex items-center justify-center text-xs font-bold text-white`}
+            >
+              {t.initials}
+            </div>
+          ))}
+          <div className="h-8 w-8 rounded-full border-2 border-white bg-muted flex items-center justify-center text-xs font-semibold text-muted-foreground">
+            +
+          </div>
+        </div>
+        <p className="text-sm font-medium">
+          Más de <span className="text-primary font-bold">1.200 personas</span> ya tienen su plan
+        </p>
+      </div>
+
+      {/* Depoimentos */}
+      <div className="space-y-2">
+        {TESTIMONIALS.map((t) => (
+          <div key={t.initials} className="rounded-lg bg-muted/50 px-4 py-3 text-sm">
+            <p className="text-foreground">"{t.text}"</p>
+            <p className="mt-1 text-xs text-muted-foreground font-medium">— {t.name}, {t.country}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function formatPrice(amount: number, currency: string): string {
   const decimals = currency === 'EUR' || currency === 'USD' ? 2 : 0
   return new Intl.NumberFormat('es-419', {
@@ -135,6 +177,9 @@ export default function CheckoutPage() {
             Completa el pago para recibir tu plan nutricional personalizado.
           </p>
         </div>
+
+        {/* Prova social */}
+        <SocialProof />
 
         {/* Plan principal */}
         <div className="rounded-lg border p-5 space-y-3">
