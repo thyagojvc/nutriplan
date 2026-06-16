@@ -6,6 +6,8 @@ import dynamic from 'next/dynamic'
 interface Props {
   stepNumber: number
   totalSteps: number
+  displayStep: number
+  displayTotal: number
   detectedCountry?: string
 }
 
@@ -26,12 +28,15 @@ const Step12Form       = dynamic(() => import('./step12-form').then(m => ({ defa
 function useEnsureSession() {
   const [error, setError] = useState(false)
   useEffect(() => {
-    fetch('/api/quiz/init-session', { method: 'POST' }).catch(() => setError(true))
+    if (sessionStorage.getItem('nutriplan_session_init')) return
+    fetch('/api/quiz/init-session', { method: 'POST' })
+      .then(() => sessionStorage.setItem('nutriplan_session_init', '1'))
+      .catch(() => setError(true))
   }, [])
   return { error }
 }
 
-export function QuizStep({ stepNumber, totalSteps, detectedCountry }: Props) {
+export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession()
 
   if (sessionError) {
@@ -44,7 +49,7 @@ export function QuizStep({ stepNumber, totalSteps, detectedCountry }: Props) {
     )
   }
 
-  const props = { stepNumber, totalSteps }
+  const props = { stepNumber: displayStep, totalSteps: displayTotal }
 
   if (stepNumber === 1)  return <Step1Favorites {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 2)  return <Step2Goal {...props} />
@@ -52,7 +57,7 @@ export function QuizStep({ stepNumber, totalSteps, detectedCountry }: Props) {
   if (stepNumber === 4)  return <Step4Sex {...props} />
   if (stepNumber === 5)  return <Step5Physical {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} />
-  if (stepNumber === 7)  return <Step7CountrySelect {...props} detectedCountry={detectedCountry} />
+  if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
   if (stepNumber === 9)  return <Step9Health {...props} />
   if (stepNumber === 10) return <Step10Exercise {...props} />

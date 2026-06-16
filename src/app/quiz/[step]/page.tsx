@@ -21,8 +21,18 @@ export default async function QuizStepPage({ params }: Props) {
   const h = await headers()
   const detectedCountry = h.get('x-vercel-ip-country') ?? undefined
 
+  // Step 7 é invisível (auto-avança); descontamos ele da numeração visível.
+  const displayStep = stepNumber > 7 ? stepNumber - 1 : stepNumber
+  const displayTotal = TOTAL_STEPS - 1 // 11 passos visíveis
+
   return (
-    <QuizStep stepNumber={stepNumber} totalSteps={TOTAL_STEPS} detectedCountry={detectedCountry} />
+    <QuizStep
+      stepNumber={stepNumber}
+      totalSteps={TOTAL_STEPS}
+      displayStep={displayStep}
+      displayTotal={displayTotal}
+      detectedCountry={detectedCountry}
+    />
   )
 }
 
