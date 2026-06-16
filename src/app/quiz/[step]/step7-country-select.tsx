@@ -47,6 +47,7 @@ export function Step7CountrySelect({ detectedCountry }: Props) {
         return
       }
 
+      sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
       router.replace('/quiz/8')
     } catch {
       setError(true)
