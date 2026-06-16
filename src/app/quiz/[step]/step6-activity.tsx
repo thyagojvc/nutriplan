@@ -3,6 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
+const PRICED_COUNTRIES = new Set(['MX', 'CO', 'CL', 'ES'])
+
+function toDbCountry(code: string | undefined): string {
+  return code && PRICED_COUNTRIES.has(code) ? code : 'OTHER'
+}
+
 const LEVELS = [
   {
     id: 'sedentario',
@@ -33,9 +39,10 @@ const LEVELS = [
 interface Props {
   stepNumber: number
   totalSteps: number
+  detectedCountry?: string
 }
 
-export function Step6Activity({ stepNumber, totalSteps }: Props) {
+export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props) {
   const router = useRouter()
 
   const [selected, setSelected] = useState<string | null>(() => {
@@ -76,7 +83,22 @@ export function Step6Activity({ stepNumber, totalSteps }: Props) {
         }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/7')
+
+      // Salva país em background (sem await) para não atrasar a navegação.
+      // sessionStorage já garante que step12 vai ler o valor mesmo antes da API responder.
+      const dbCountry = toDbCountry(detectedCountry)
+      sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
+      fetch('/api/quiz/save-step', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          step: 7,
+          answers: { country: dbCountry, country_detail: detectedCountry ?? null },
+          country: dbCountry,
+        }),
+      }).catch(() => { /* silencioso — step 7 é fallback, o cookie de sessão persiste */ })
+
+      router.push('/quiz/8')
     } catch {
       setError(true)
     } finally {

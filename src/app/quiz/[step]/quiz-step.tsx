@@ -56,7 +56,7 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   if (stepNumber === 3)  return <Step3MustHave {...props} />
   if (stepNumber === 4)  return <Step4Sex {...props} />
   if (stepNumber === 5)  return <Step5Physical {...props} />
-  if (stepNumber === 6)  return <Step6Activity {...props} />
+  if (stepNumber === 6)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
   if (stepNumber === 9)  return <Step9Health {...props} />
