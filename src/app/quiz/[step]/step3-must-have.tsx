@@ -30,7 +30,8 @@ export function Step3MustHave({ stepNumber, totalSteps }: Props) {
     sessionStorage.setItem('nutriplan_step_3', JSON.stringify({ must_have: v }))
   }
 
-  async function handleContinue() {
+  async function handleContinue(e: React.FormEvent) {
+    e.preventDefault()
     if (saving) return
     setSaving(true)
     setError(false)
@@ -68,36 +69,39 @@ export function Step3MustHave({ stepNumber, totalSteps }: Props) {
           </div>
         </div>
 
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¿Hay algún alimento que no puedas dejar?</h1>
-            <p className="text-sm text-muted-foreground">
-              Un alimento que pase lo que pase siempre va a estar en tu día.
-              Puedes dejarlo en blanco si no tienes ninguno.
-            </p>
+        <form onSubmit={handleContinue} className="space-y-6">
+          <div className="rounded-lg border p-6 space-y-5">
+            <div className="space-y-1">
+              <h1 className="text-xl font-semibold">¿Hay algún alimento que no puedas dejar?</h1>
+              <p className="text-sm text-muted-foreground">
+                Un alimento que pase lo que pase siempre va a estar en tu día.
+                Puedes dejarlo en blanco si no tienes ninguno.
+              </p>
+            </div>
+
+            <input
+              type="text"
+              placeholder="Ej: café, chocolate, tortillas…"
+              value={value}
+              onChange={(e) => handleChange(e.target.value)}
+              maxLength={100}
+              autoFocus
+              className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+            />
+
+            {error && (
+              <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
+            )}
           </div>
 
-          <input
-            type="text"
-            placeholder="Ej: café, chocolate, tortillas…"
-            value={value}
-            onChange={(e) => handleChange(e.target.value)}
-            maxLength={100}
-            className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-          />
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
-        </div>
-
-        <button
-          onClick={handleContinue}
-          disabled={saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving ? 'Guardando…' : 'Continuar'}
+          </button>
+        </form>
       </div>
     </main>
   )

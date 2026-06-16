@@ -35,8 +35,15 @@ export const FOOD_CATALOG: CatalogFood[] = [
   { id: 'pan', label: 'Pan / tortillas', role: 'carb', kcal: 265, proteinG: 9, carbsG: 49, fatG: 3.2, unit: 'g' },
   { id: 'avena', label: 'Avena', role: 'carb', kcal: 389, proteinG: 17, carbsG: 66, fatG: 7, unit: 'g en hojuelas' },
   { id: 'papa', label: 'Papa cocida', role: 'carb', kcal: 87, proteinG: 1.9, carbsG: 20, fatG: 0.1, unit: 'g' },
+  // Regionais (México)
+  { id: 'tortilla_maiz', label: 'Tortilla de maíz', role: 'carb', kcal: 218, proteinG: 5.7, carbsG: 44, fatG: 2.5, unit: 'g (≈2 tortillas medianas)' },
+  // Regionais (Colombia)
+  { id: 'arepa', label: 'Arepa de maíz', role: 'carb', kcal: 217, proteinG: 4.5, carbsG: 44, fatG: 2.4, unit: 'g (≈1 arepa mediana)' },
+  { id: 'platano', label: 'Plátano maduro cocido', role: 'carb', kcal: 122, proteinG: 1.3, carbsG: 32, fatG: 0.4, unit: 'g' },
+  { id: 'yuca', label: 'Yuca cocida', role: 'carb', kcal: 160, proteinG: 1.4, carbsG: 38, fatG: 0.3, unit: 'g' },
   // Vegetais / frutas / gorduras
   { id: 'verduras', label: 'Verduras mixtas', role: 'veg', kcal: 35, proteinG: 2, carbsG: 7, fatG: 0.3, unit: 'g salteadas' },
+  { id: 'nopales', label: 'Nopales', role: 'veg', kcal: 16, proteinG: 1.4, carbsG: 3.3, fatG: 0.1, unit: 'g salteados' },
   { id: 'frutas', label: 'Fruta de temporada', role: 'fruit', kcal: 60, proteinG: 0.8, carbsG: 15, fatG: 0.2, unit: 'g' },
   { id: 'aguacate', label: 'Aguacate', role: 'fat', kcal: 160, proteinG: 2, carbsG: 9, fatG: 15, unit: 'g (~½ pieza)' },
   { id: 'lacteos', label: 'Yogur natural / leche', role: 'dairy', kcal: 61, proteinG: 3.5, carbsG: 4.7, fatG: 3.3, unit: 'ml' },

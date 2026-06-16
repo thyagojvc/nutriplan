@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation'
+import { headers } from 'next/headers'
 import { QuizStep } from './quiz-step'
 
 const TOTAL_STEPS = 12
@@ -15,7 +16,14 @@ export default async function QuizStepPage({ params }: Props) {
     notFound()
   }
 
-  return <QuizStep stepNumber={stepNumber} totalSteps={TOTAL_STEPS} />
+  // Vercel injeta esse header automaticamente em produção (geolocalização por IP).
+  // Em dev local fica undefined — o usuário só vê o dropdown vazio, sem quebrar nada.
+  const h = await headers()
+  const detectedCountry = h.get('x-vercel-ip-country') ?? undefined
+
+  return (
+    <QuizStep stepNumber={stepNumber} totalSteps={TOTAL_STEPS} detectedCountry={detectedCountry} />
+  )
 }
 
 export function generateStaticParams() {

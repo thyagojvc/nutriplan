@@ -11,11 +11,12 @@ type PriceData = {
 }
 
 function formatPrice(amount: number, currency: string): string {
+  const decimals = currency === 'EUR' || currency === 'USD' ? 2 : 0
   return new Intl.NumberFormat('es-419', {
     style: 'currency',
     currency,
-    minimumFractionDigits: currency === 'EUR' ? 2 : 0,
-    maximumFractionDigits: currency === 'EUR' ? 2 : 0,
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
   }).format(amount)
 }
 

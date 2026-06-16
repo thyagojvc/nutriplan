@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 
-const FOODS = [
+const GENERIC_FOODS = [
   { id: 'pollo', label: 'Pollo' },
   { id: 'carne_res', label: 'Carne de res' },
   { id: 'cerdo', label: 'Cerdo' },
@@ -19,16 +19,40 @@ const FOODS = [
   { id: 'lacteos', label: 'Lácteos' },
   { id: 'avena', label: 'Avena' },
   { id: 'aguacate', label: 'Aguacate' },
-  { id: 'pan', label: 'Pan / Tortillas' },
+  { id: 'pan', label: 'Pan' },
 ]
+
+// Alimentos extra por país (somados à lista genérica, nunca a substituindo —
+// assim quem já tem favoritos vegetarianos/veganos como tofu/legumbres não perde opção).
+// Chile e o restante dos países usam só a lista genérica (já cobre bem o hábito alimentar).
+const FOODS_BY_COUNTRY: Record<string, { id: string; label: string }[]> = {
+  MX: [
+    { id: 'tortilla_maiz', label: 'Tortilla de maíz' },
+    { id: 'nopales', label: 'Nopales' },
+    ...GENERIC_FOODS,
+  ],
+  CO: [
+    { id: 'arepa', label: 'Arepa' },
+    { id: 'platano', label: 'Plátano' },
+    { id: 'yuca', label: 'Yuca' },
+    ...GENERIC_FOODS,
+  ],
+}
+
+function getFoodsForCountry(country?: string) {
+  if (country && FOODS_BY_COUNTRY[country]) return FOODS_BY_COUNTRY[country]
+  return GENERIC_FOODS
+}
 
 interface Props {
   stepNumber: number
   totalSteps: number
+  detectedCountry?: string
 }
 
-export function Step1Favorites({ stepNumber, totalSteps }: Props) {
+export function Step1Favorites({ stepNumber, totalSteps, detectedCountry }: Props) {
   const router = useRouter()
+  const FOODS = getFoodsForCountry(detectedCountry)
 
   const [selected, setSelected] = useState<string[]>(() => {
     if (typeof window === 'undefined') return []
@@ -52,7 +76,8 @@ export function Step1Favorites({ stepNumber, totalSteps }: Props) {
     })
   }
 
-  async function handleContinue() {
+  async function handleContinue(e: React.FormEvent) {
+    e.preventDefault()
     if (selected.length === 0 || saving) return
     setSaving(true)
     setError(false)
@@ -89,44 +114,46 @@ export function Step1Favorites({ stepNumber, totalSteps }: Props) {
           </div>
         </div>
 
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¿Cuáles son tus alimentos favoritos?</h1>
-            <p className="text-sm text-muted-foreground">
-              Selecciona todos los que quieras incluir en tu plan.
-            </p>
+        <form onSubmit={handleContinue} className="space-y-6">
+          <div className="rounded-lg border p-6 space-y-5">
+            <div className="space-y-1">
+              <h1 className="text-xl font-semibold">¿Cuáles son tus alimentos favoritos?</h1>
+              <p className="text-sm text-muted-foreground">
+                Selecciona todos los que quieras incluir en tu plan.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              {FOODS.map(({ id, label }) => (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => toggle(id)}
+                  className={[
+                    'rounded-lg border-2 px-3 py-2 text-left text-sm transition-colors',
+                    selected.includes(id)
+                      ? 'border-primary bg-primary/5 font-medium'
+                      : 'border-border hover:border-primary/50',
+                  ].join(' ')}
+                >
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {error && (
+              <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
+            )}
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {FOODS.map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => toggle(id)}
-                className={[
-                  'rounded-lg border-2 px-3 py-2 text-left text-sm transition-colors',
-                  selected.includes(id)
-                    ? 'border-primary bg-primary/5 font-medium'
-                    : 'border-border hover:border-primary/50',
-                ].join(' ')}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
-        </div>
-
-        <button
-          onClick={handleContinue}
-          disabled={selected.length === 0 || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
+          <button
+            type="submit"
+            disabled={selected.length === 0 || saving}
+            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving ? 'Guardando…' : 'Continuar'}
+          </button>
+        </form>
       </div>
     </main>
   )

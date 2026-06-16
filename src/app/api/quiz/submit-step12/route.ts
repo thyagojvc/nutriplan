@@ -5,7 +5,7 @@ import { createServiceClient } from '@/lib/supabase/service'
 const bodySchema = z.object({
   email: z.string().email(),
   name: z.string().min(1).max(200),
-  country: z.string().min(2).max(2),
+  country: z.string().min(2).max(5), // 'OTHER' p/ países fora dos 4 com preço local dedicado
   ip: z.string().ip().optional(),
   policy_version: z.string().min(1),
   consent_text: z.string().min(1),

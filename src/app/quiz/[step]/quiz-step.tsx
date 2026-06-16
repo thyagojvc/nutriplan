@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic'
 interface Props {
   stepNumber: number
   totalSteps: number
+  detectedCountry?: string
 }
 
 // ssr: false em todos os steps — evita hydration mismatch com sessionStorage
@@ -30,7 +31,7 @@ function useEnsureSession() {
   return { error }
 }
 
-export function QuizStep({ stepNumber, totalSteps }: Props) {
+export function QuizStep({ stepNumber, totalSteps, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession()
 
   if (sessionError) {
@@ -45,13 +46,13 @@ export function QuizStep({ stepNumber, totalSteps }: Props) {
 
   const props = { stepNumber, totalSteps }
 
-  if (stepNumber === 1)  return <Step1Favorites {...props} />
+  if (stepNumber === 1)  return <Step1Favorites {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 2)  return <Step2Goal {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
   if (stepNumber === 4)  return <Step4Sex {...props} />
   if (stepNumber === 5)  return <Step5Physical {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} />
-  if (stepNumber === 7)  return <Step7CountrySelect {...props} />
+  if (stepNumber === 7)  return <Step7CountrySelect {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
   if (stepNumber === 9)  return <Step9Health {...props} />
   if (stepNumber === 10) return <Step10Exercise {...props} />

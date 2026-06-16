@@ -52,7 +52,8 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
     !isNaN(weight) && weight >= 40 && weight <= 250 &&
     !isNaN(height) && height >= 130 && height <= 220
 
-  async function handleContinue() {
+  async function handleContinue(e: React.FormEvent) {
+    e.preventDefault()
     if (!isValid || saving) return
 
     if (age < 18) {
@@ -112,71 +113,74 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
           </div>
         </div>
 
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">Tus datos físicos</h1>
-            <p className="text-sm text-muted-foreground">
-              Los usaremos para calcular tus calorías y macros exactos.
-            </p>
+        <form onSubmit={handleContinue} className="space-y-6">
+          <div className="rounded-lg border p-6 space-y-5">
+            <div className="space-y-1">
+              <h1 className="text-xl font-semibold">Tus datos físicos</h1>
+              <p className="text-sm text-muted-foreground">
+                Los usaremos para calcular tus calorías y macros exactos.
+              </p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <label className="block text-sm font-medium">Edad (años)</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={100}
+                  placeholder="Ej: 28"
+                  value={data.age}
+                  onChange={(e) => handleChange('age', e.target.value)}
+                  autoFocus
+                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+                {data.age !== '' && !isNaN(parseInt(data.age)) && parseInt(data.age) < 18 && (
+                  <p className="text-xs text-destructive">Debes tener al menos 18 años.</p>
+                )}
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-sm font-medium">Peso (kg)</label>
+                <input
+                  type="number"
+                  min={40}
+                  max={250}
+                  step={0.1}
+                  placeholder="Ej: 70"
+                  value={data.weight_kg}
+                  onChange={(e) => handleChange('weight_kg', e.target.value)}
+                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="block text-sm font-medium">Altura (cm)</label>
+                <input
+                  type="number"
+                  min={130}
+                  max={220}
+                  placeholder="Ej: 170"
+                  value={data.height_cm}
+                  onChange={(e) => handleChange('height_cm', e.target.value)}
+                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                />
+              </div>
+            </div>
+
+            {error && (
+              <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
+            )}
           </div>
 
-          <div className="space-y-4">
-            <div className="space-y-1">
-              <label className="block text-sm font-medium">Edad (años)</label>
-              <input
-                type="number"
-                min={1}
-                max={100}
-                placeholder="Ej: 28"
-                value={data.age}
-                onChange={(e) => handleChange('age', e.target.value)}
-                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-              {data.age !== '' && !isNaN(parseInt(data.age)) && parseInt(data.age) < 18 && (
-                <p className="text-xs text-destructive">Debes tener al menos 18 años.</p>
-              )}
-            </div>
-
-            <div className="space-y-1">
-              <label className="block text-sm font-medium">Peso (kg)</label>
-              <input
-                type="number"
-                min={40}
-                max={250}
-                step={0.1}
-                placeholder="Ej: 70"
-                value={data.weight_kg}
-                onChange={(e) => handleChange('weight_kg', e.target.value)}
-                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className="block text-sm font-medium">Altura (cm)</label>
-              <input
-                type="number"
-                min={130}
-                max={220}
-                placeholder="Ej: 170"
-                value={data.height_cm}
-                onChange={(e) => handleChange('height_cm', e.target.value)}
-                className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-              />
-            </div>
-          </div>
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
-        </div>
-
-        <button
-          onClick={handleContinue}
-          disabled={!isValid || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
+          <button
+            type="submit"
+            disabled={!isValid || saving}
+            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          >
+            {saving ? 'Guardando…' : 'Continuar'}
+          </button>
+        </form>
       </div>
     </main>
   )
