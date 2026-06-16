@@ -69,8 +69,8 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
         return
       }
 
-      // submit-step12 exitoso → ir al checkout/paywall
-      router.push('/checkout')
+      // submit-step12 exitoso → tela de loading animada antes do checkout
+      router.push('/calculando' as never)
     } catch {
       setError('Error de conexión. Verifica tu internet e intenta de nuevo.')
     } finally {
