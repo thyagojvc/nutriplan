@@ -20,34 +20,37 @@ interface Props {
 export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
   const router = useRouter()
 
-  const [selected, setSelected] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
+  const [selected, setSelected] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return []
     try {
       const cached = sessionStorage.getItem('nutriplan_step_11')
-      const parsed = cached ? (JSON.parse(cached) as { obstacle?: string }) : {}
-      return parsed.obstacle ?? null
+      const parsed = cached ? (JSON.parse(cached) as { obstacles?: string[] }) : {}
+      return parsed.obstacles ?? []
     } catch {
-      return null
+      return []
     }
   })
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  function handleSelect(id: string) {
-    setSelected(id)
-    sessionStorage.setItem('nutriplan_step_11', JSON.stringify({ obstacle: id }))
+  function toggle(id: string) {
+    setSelected((prev) => {
+      const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
+      sessionStorage.setItem('nutriplan_step_11', JSON.stringify({ obstacles: next }))
+      return next
+    })
   }
 
   async function handleContinue() {
-    if (!selected || saving) return
+    if (selected.length === 0 || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 11, answers: { obstacle: selected } }),
+        body: JSON.stringify({ step: 11, answers: { obstacles: selected } }),
       })
       if (!res.ok) { setError(true); return }
       router.push('/quiz/12')
@@ -77,24 +80,27 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
         </div>
 
         <div className="rounded-lg border p-6 space-y-5">
-          <h1 className="text-xl font-semibold">
-            ¿Cuál es tu mayor obstáculo para mejorar tu alimentación?
-          </h1>
+          <div className="space-y-1">
+            <h1 className="text-xl font-semibold">
+              ¿Cuáles son tus mayores obstáculos para mejorar tu alimentación?
+            </h1>
+            <p className="text-sm text-muted-foreground">Selecciona todos los que apliquen.</p>
+          </div>
 
           <div className="space-y-2">
             {OPTIONS.map(({ id, label, desc }) => (
               <button
                 key={id}
                 type="button"
-                onClick={() => handleSelect(id)}
+                onClick={() => toggle(id)}
                 className={[
                   'w-full rounded-lg border-2 px-4 py-3 text-left transition-colors',
-                  selected === id
+                  selected.includes(id)
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/50',
                 ].join(' ')}
               >
-                <p className={['text-sm font-medium', selected === id ? 'text-primary' : ''].join(' ')}>
+                <p className={['text-sm font-medium', selected.includes(id) ? 'text-primary' : ''].join(' ')}>
                   {label}
                 </p>
                 <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
@@ -109,7 +115,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
 
         <button
           onClick={handleContinue}
-          disabled={!selected || saving}
+          disabled={selected.length === 0 || saving}
           className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {saving ? 'Guardando…' : 'Continuar'}
