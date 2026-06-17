@@ -1,6 +1,20 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+// Cliente instanciado de forma lazy: não criar no carregamento do módulo, pois
+// o construtor do Resend estoura se RESEND_API_KEY estiver ausente — e isso
+// quebraria o build da Vercel (fase "Collecting page data") em ambientes sem a chave.
+let _resend: Resend | null = null
+
+function getResend(): Resend {
+  if (!_resend) {
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey) {
+      throw new Error('RESEND_API_KEY no está configurada en este entorno.')
+    }
+    _resend = new Resend(apiKey)
+  }
+  return _resend
+}
 
 // Sem domínio próprio: usa o sender de teste do Resend (só entrega ao dono da conta)
 // Com domínio verificado: trocar RESEND_FROM para 'NutriPlan <noreply@seudominio.com>'
@@ -17,7 +31,7 @@ export async function sendPlanReadyEmail({
 }) {
   const displayName = name || 'amigo/a'
 
-  await resend.emails.send({
+  await getResend().emails.send({
     from: FROM,
     to,
     subject: 'Tu plan nutricional personalizado está listo ✅',
