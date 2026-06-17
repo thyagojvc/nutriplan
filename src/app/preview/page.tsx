@@ -44,9 +44,60 @@ export default function PreviewPage() {
   const [error, setError] = useState(false)
 
   useEffect(() => {
-    fetch('/api/quiz/preview-data')
+    // Monta o draft a partir do sessionStorage (preenchido durante o quiz).
+    // Caminho primário: não depende de cookie nem de round-trip ao banco.
+    function buildDraftFromSession(): { draft: Record<string, unknown>; country: string } | null {
+      try {
+        const draft: Record<string, unknown> = {}
+        let hasStep5 = false
+        let hasStep6 = false
+        for (let n = 1; n <= 10; n++) {
+          const raw = sessionStorage.getItem(`nutriplan_step_${n}`)
+          if (!raw) continue
+          draft[`step_${n}`] = JSON.parse(raw)
+          if (n === 5) hasStep5 = true
+          if (n === 6) hasStep6 = true
+        }
+        // Sem os dados físicos essenciais não dá para calcular — força fallback.
+        if (!hasStep5 || !hasStep6) return null
+
+        let country = 'OTHER'
+        const step7Raw = sessionStorage.getItem('nutriplan_step_7')
+        if (step7Raw) {
+          const s7 = JSON.parse(step7Raw) as { country?: string }
+          if (s7.country) country = s7.country
+        }
+        return { draft, country }
+      } catch {
+        return null
+      }
+    }
+
+    const local = buildDraftFromSession()
+
+    const request = local
+      ? fetch('/api/quiz/preview-data', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ draft_answers: local.draft, country: local.country }),
+        })
+      : fetch('/api/quiz/preview-data') // fallback: cookie + banco
+
+    request
       .then(r => r.json())
-      .then(d => { if (d.error) setError(true); else setData(d) })
+      .then(d => {
+        if (d.error) {
+          // Se o POST (sessionStorage) falhou, tenta o GET (cookie) como último recurso.
+          if (local) {
+            return fetch('/api/quiz/preview-data')
+              .then(r => r.json())
+              .then(d2 => { if (d2.error) setError(true); else setData(d2) })
+          }
+          setError(true)
+          return
+        }
+        setData(d)
+      })
       .catch(() => setError(true))
   }, [])
 
