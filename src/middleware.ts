@@ -6,6 +6,8 @@ const PUBLIC_PATHS = [
   '/login',
   '/recuperar',
   '/quiz',
+  '/calculando',
+  '/preview',
   '/checkout',
   '/exito',
   '/auth/callback',
