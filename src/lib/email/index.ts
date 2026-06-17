@@ -20,6 +20,39 @@ function getResend(): Resend {
 // Com domínio verificado: trocar RESEND_FROM para 'NutriPlan <noreply@seudominio.com>'
 const FROM = process.env.RESEND_FROM ?? 'onboarding@resend.dev'
 
+// Layout base compartilhado pelos e-mails transacionais.
+function emailLayout({
+  heading,
+  greeting,
+  body,
+  magicLink,
+  cta,
+  footer,
+}: {
+  heading: string
+  greeting: string
+  body: string
+  magicLink: string
+  cta: string
+  footer: string
+}): string {
+  return `<!DOCTYPE html>
+<html lang="es">
+<body style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 16px;color:#111;">
+  <h1 style="font-size:22px;margin-bottom:8px;">${heading}</h1>
+  <p style="color:#555;margin-bottom:4px;">${greeting}</p>
+  <p style="color:#555;margin-bottom:28px;">${body}</p>
+  <a href="${magicLink}"
+     style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;
+            padding:13px 28px;border-radius:6px;font-weight:600;font-size:16px;">
+    ${cta}
+  </a>
+  <p style="margin-top:32px;font-size:12px;color:#999;line-height:1.7;">${footer}</p>
+</body>
+</html>`
+}
+
+// E-mail enviado após o pagamento aprovado (plano recém-gerado).
 export async function sendPlanReadyEmail({
   to,
   name,
@@ -35,24 +68,40 @@ export async function sendPlanReadyEmail({
     from: FROM,
     to,
     subject: 'Tu plan nutricional personalizado está listo ✅',
-    html: `<!DOCTYPE html>
-<html lang="es">
-<body style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 16px;color:#111;">
-  <h1 style="font-size:22px;margin-bottom:8px;">¡Tu plan está listo! 🎉</h1>
-  <p style="color:#555;margin-bottom:4px;">Hola ${displayName},</p>
-  <p style="color:#555;margin-bottom:28px;">
-    Tu plan nutricional personalizado ya fue generado. Haz clic en el botón para acceder a él:
-  </p>
-  <a href="${magicLink}"
-     style="display:inline-block;background:#16a34a;color:#fff;text-decoration:none;
-            padding:13px 28px;border-radius:6px;font-weight:600;font-size:16px;">
-    Ver mi plan →
-  </a>
-  <p style="margin-top:32px;font-size:12px;color:#999;line-height:1.7;">
-    Este enlace es personal e intransferible. Expira en 24 horas.<br>
-    Si no realizaste esta compra, puedes ignorar este correo.
-  </p>
-</body>
-</html>`,
+    html: emailLayout({
+      heading: '¡Tu plan está listo! 🎉',
+      greeting: `Hola ${displayName},`,
+      body: 'Tu plan nutricional personalizado ya fue generado. Haz clic en el botón para acceder a él:',
+      magicLink,
+      cta: 'Ver mi plan →',
+      footer:
+        'Este enlace es personal e intransferible. Expira en 24 horas.<br>' +
+        'Si no realizaste esta compra, puedes ignorar este correo.',
+    }),
+  })
+}
+
+// E-mail de acesso (login sem contraseña) disparado pela tela de login.
+export async function sendLoginLinkEmail({
+  to,
+  magicLink,
+}: {
+  to: string
+  magicLink: string
+}) {
+  await getResend().emails.send({
+    from: FROM,
+    to,
+    subject: 'Tu enlace de acceso a NutriPlan',
+    html: emailLayout({
+      heading: 'Accede a tu plan 🔑',
+      greeting: 'Hola,',
+      body: 'Recibimos una solicitud de acceso a tu cuenta. Haz clic en el botón para entrar — sin contraseña:',
+      magicLink,
+      cta: 'Acceder a mi plan →',
+      footer:
+        'Este enlace es personal e intransferible. Expira en 1 hora.<br>' +
+        'Si no solicitaste este acceso, puedes ignorar este correo.',
+    }),
   })
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
+import { sendLoginLinkEmail } from '@/lib/email'
 
 const bodySchema = z.object({
   email: z.string().email(),
@@ -49,19 +50,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'link_generation_failed' }, { status: 500 })
   }
 
-  // TODO Fase B: enviar e-mail via Resend
-  // await resend.emails.send({
-  //   from: 'NutriPlan <noreply@nutriplan.com>',
-  //   to: email,
-  //   subject: 'Tu enlace de acceso a NutriPlan',
-  //   html: `<a href="${linkData.properties.action_link}">Acceder a mi plan</a>`,
-  // })
-
   const response: Record<string, unknown> = { ok: true }
 
-  // Em dev: retorna o hashed_token para o cliente chamar verifyOtp diretamente
-  if (process.env.NODE_ENV !== 'production') {
+  // Em dev sem chave de e-mail: retorna o hashed_token para o cliente
+  // chamar verifyOtp diretamente (login instantâneo sem caixa de entrada).
+  if (process.env.NODE_ENV !== 'production' && !process.env.RESEND_API_KEY) {
     response.dev_hashed_token = linkData.properties.hashed_token
+    return NextResponse.json(response)
+  }
+
+  // Prod (ou dev com chave): envia o enlace de acesso por e-mail via Resend.
+  const actionLink = linkData.properties.action_link
+  if (actionLink) {
+    try {
+      await sendLoginLinkEmail({ to: email, magicLink: actionLink })
+    } catch (emailErr) {
+      console.error('[send-link] envio de e-mail falhou:', emailErr)
+      return NextResponse.json({ error: 'email_send_failed' }, { status: 500 })
+    }
   }
 
   return NextResponse.json(response)
