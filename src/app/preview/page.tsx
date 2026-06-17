@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+import { parseAnswers } from '@/lib/nutrition/answers'
+import { calcTargets } from '@/lib/nutrition/math'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -46,58 +48,77 @@ export default function PreviewPage() {
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
 
   useEffect(() => {
-    function buildDraftFromSession(): { draft: Record<string, unknown>; country: string } | null {
+    // Lê o draft do sessionStorage (preenchido passo a passo durante o quiz).
+    function readSession(): { draft: Record<string, unknown>; country: string; activityLevel: string } | null {
       try {
         const draft: Record<string, unknown> = {}
-        let hasStep5 = false
-        let hasStep6 = false
         for (let n = 1; n <= 10; n++) {
           const raw = sessionStorage.getItem(`nutriplan_step_${n}`)
-          if (!raw) continue
-          draft[`step_${n}`] = JSON.parse(raw)
-          if (n === 5) hasStep5 = true
-          if (n === 6) hasStep6 = true
+          if (raw) draft[`step_${n}`] = JSON.parse(raw)
         }
-        if (!hasStep5 || !hasStep6) return null
+
+        const s5 = (draft.step_5 ?? {}) as Record<string, unknown>
+        const s6 = (draft.step_6 ?? {}) as Record<string, unknown>
+        // Sem dados físicos não dá para calcular.
+        if (!s5.age || !s5.weight_kg || !s5.height_cm) return null
+
+        // Garante activity_factor mesmo que o step 6 tenha sido salvo numa versão
+        // mais antiga sem esse campo (deriva do activity_level se ausente).
+        if (!s6.activity_factor && s6.activity_level) {
+          const FACTORS: Record<string, number> = {
+            sedentario: 1.2, ligeramente_activo: 1.375,
+            moderadamente_activo: 1.55, muy_activo: 1.725,
+          }
+          const f = FACTORS[String(s6.activity_level)]
+          if (f) draft.step_6 = { ...s6, activity_factor: f }
+        }
 
         let country = 'OTHER'
+        const activityLevel = String(s6.activity_level ?? '')
         const step7Raw = sessionStorage.getItem('nutriplan_step_7')
         if (step7Raw) {
           const s7 = JSON.parse(step7Raw) as { country?: string }
           if (s7.country) country = s7.country
         }
-        return { draft, country }
+        return { draft, country, activityLevel }
       } catch {
         return null
       }
     }
 
-    const local = buildDraftFromSession()
-
-    if (!local) {
-      // sessionStorage vazio → tenta fallback via cookie+banco
-      fetch('/api/quiz/preview-data')
-        .then(r => r.json())
-        .then(d => { if (d.error) setErrorKind('no_session'); else setData(d) })
-        .catch(() => setErrorKind('network'))
-      return
+    // ── Caminho 1: cálculo direto no browser (sem rede, sem cookie) ──────────
+    const session = readSession()
+    if (session) {
+      try {
+        const answers = parseAnswers(session.draft, session.country)
+        const targets = calcTargets(answers)
+        setData({
+          profile: {
+            age: answers.age,
+            weightKg: answers.weightKg,
+            heightCm: answers.heightCm,
+            sex: answers.sex,
+            activityLevel: session.activityLevel,
+          },
+          targets: {
+            bmr: targets.bmr,
+            tdee: targets.tdee,
+            targetCalories: targets.targetCalories,
+            goal: targets.goal,
+            macros: targets.macros,
+          },
+        })
+        return
+      } catch {
+        // Se parseAnswers lançar (dados inválidos), cai no fallback de API.
+      }
     }
 
-    fetch('/api/quiz/preview-data', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ draft_answers: local.draft, country: local.country }),
-    })
+    // ── Caminho 2: fallback via API (aba nova, sessionStorage vazio) ──────────
+    fetch('/api/quiz/preview-data')
       .then(r => r.json())
-      .then(d => {
-        if (!d.error) { setData(d); return }
-        if (d.error === 'calc_failed') { setErrorKind('calc_failed'); return }
-        // outro erro no POST → tenta GET como último recurso
-        return fetch('/api/quiz/preview-data')
-          .then(r => r.json())
-          .then(d2 => { if (d2.error) setErrorKind('no_session'); else setData(d2) })
-      })
-      .catch(() => setErrorKind('network'))
+      .then(d => { if (d.error) setErrorKind('no_session'); else setData(d) })
+      .catch(() => setErrorKind(session ? 'calc_failed' : 'no_session'))
   }, [])
 
   if (errorKind) {
