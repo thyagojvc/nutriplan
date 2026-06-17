@@ -5,7 +5,7 @@ const WHAT_YOU_GET = [
   { emoji: '🔥', title: 'Tu metabolismo', desc: 'TMB y gasto calórico diario exacto' },
   { emoji: '⚖️', title: 'Tu IMC', desc: 'Clasificación y distancia a tu meta' },
   { emoji: '🥗', title: 'Tus macros', desc: 'Proteína, carbos y grasas a tu medida' },
-  { emoji: '📋', title: 'Plan de 7 días', desc: 'Comidas concretas según tus gustos' },
+  { emoji: '📋', title: 'Plan nutricional completo', desc: 'Comidas concretas según tus gustos' },
 ]
 
 export default function HomePage() {
