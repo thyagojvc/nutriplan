@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
   gain_muscle: 'Ganar músculo',
   maintain: 'Mantenimiento',
   health_energy: 'Salud y energía',
-  // quiz values
   perder_peso: 'Perder peso',
   mantener: 'Mantener peso',
   ganar_masa: 'Ganar músculo',
@@ -52,27 +52,26 @@ export default function PreviewPage() {
 
   if (error) {
     return (
-      <main className="flex min-h-screen items-center justify-center p-4">
-        <div className="text-center space-y-4 max-w-sm">
-          <p className="text-2xl">😕</p>
-          <p className="text-sm text-muted-foreground">No encontramos tu sesión. Vuelve al quiz.</p>
-          <a href="/quiz/1" className="inline-block rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
-            Reiniciar quiz
+      <PageShell>
+        <div className="flex flex-col items-center gap-4 py-20 text-center">
+          <p className="text-3xl">😕</p>
+          <p className="text-sm text-muted-foreground max-w-xs">No encontramos tu sesión. Por favor vuelve al quiz.</p>
+          <a href="/quiz/1" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
+            Reiniciar quiz →
           </a>
         </div>
-      </main>
+      </PageShell>
     )
   }
 
   if (!data) {
     return (
-      <main className="flex min-h-screen items-center justify-center p-4"
-        style={{ background: 'linear-gradient(180deg, #E6F4DF 0px, #F5FAF2 100px, #F5FAF2 100%)' }}>
-        <div className="flex flex-col items-center gap-3">
+      <PageShell>
+        <div className="flex flex-col items-center gap-3 py-24">
           <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-r-transparent" />
           <p className="text-sm text-muted-foreground">Cargando tu análisis…</p>
         </div>
-      </main>
+      </PageShell>
     )
   }
 
@@ -82,217 +81,255 @@ export default function PreviewPage() {
     : null
   const delta = Math.abs(targets.tdee - targets.targetCalories)
   const totalKcal = targets.macros.proteinG * 4 + targets.macros.carbsG * 4 + targets.macros.fatG * 9 || 1
+  const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
+  const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
 
   return (
-    <main
-      className="flex min-h-screen flex-col items-center pb-32"
-      style={{ background: 'linear-gradient(180deg, #D4EDCA 0px, #EBF6E4 80px, #F5FAF2 200px, #F5FAF2 100%)' }}
-    >
-      {/* Hero */}
-      <div className="w-full max-w-lg px-4 pt-8 pb-6 text-center space-y-2">
-        <div className="flex items-center justify-center gap-1.5 mb-4">
-          <span className="text-lg">🥗</span>
-          <span className="font-bold text-primary text-sm tracking-wide">NutriPlan</span>
+    <PageShell>
+      {/* ── Hero ──────────────────────────────────────────────── */}
+      <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
+        {/* Badge de conclusão */}
+        <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1 text-xs font-semibold text-primary">
+          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+          Análisis listo · Solo para ti
         </div>
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-          ✅ Tu plan personalizado está listo
-        </div>
-        <h1 className="text-2xl font-bold text-gray-900">Aquí está tu análisis nutricional</h1>
-        <p className="text-sm text-muted-foreground">
-          Calculado exclusivamente para ti, basado en tus {' '}
-          <span className="font-semibold text-primary">respuestas del quiz</span>.
+
+        <h1 className="text-2xl font-black leading-tight text-gray-900">
+          Tu plan nutricional<br />
+          <span className="text-primary">está calculado</span>
+        </h1>
+        <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+          Basado en tus respuestas, creamos un perfil nutricional único.
+          Revísalo antes de desbloquearlo.
         </p>
       </div>
 
-      <div className="w-full max-w-lg px-4 space-y-4">
+      {/* ── Contenido ─────────────────────────────────────────── */}
+      <div className="w-full max-w-lg px-4 pb-32 space-y-3">
 
-        {/* Cards de perfil */}
-        <Card>
-          <SectionLabel>Tu perfil</SectionLabel>
+        {/* Perfil */}
+        <Card label="Tu perfil">
           <div className="grid grid-cols-3 gap-2">
-            <ProfileCard icon="🎂" label="Edad" value={profile.age ? `${profile.age} años` : '—'} />
-            <ProfileCard icon="⚖️" label="Peso"   value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
-            <ProfileCard icon="📏" label="Altura"  value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
-            <ProfileCard icon="🧮" label="IMC"     value={imc ? imc.toFixed(1) : '—'} highlight />
-            <ProfileCard icon="🎯" label="Objetivo" value={GOAL_LABEL[targets.goal] ?? targets.goal} />
-            <ProfileCard icon="⚡" label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
+            <StatCard icon="🎂" label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
+            <StatCard icon="⚖️" label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
+            <StatCard icon="📏" label="Altura"    value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
+            <StatCard icon="🧮" label="IMC"       value={imc ? imc.toFixed(1) : '—'} accent />
+            <StatCard icon="🎯" label="Objetivo"  value={GOAL_LABEL[targets.goal] ?? targets.goal} />
+            <StatCard icon="⚡" label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
           </div>
         </Card>
 
-        {/* Escala IMC */}
+        {/* IMC */}
         {imc && (
-          <Card>
-            <div className="flex items-center justify-between">
-              <SectionLabel>Tu IMC</SectionLabel>
-              <ImcBadge imc={imc} />
-            </div>
+          <Card label="Tu IMC" badge={<ImcBadge imc={imc} />}>
             <ImcScale imc={imc} />
-            <div className="flex justify-between text-xs text-muted-foreground mt-1">
+            <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
               <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
             </div>
           </Card>
         )}
 
         {/* Metabolismo */}
-        <Card>
-          <SectionLabel>Tu metabolismo</SectionLabel>
+        <Card label="Tu metabolismo">
           <div className="grid grid-cols-3 gap-2">
-            <MetricCard label="TMB" sub="en reposo" value={targets.bmr} unit="kcal" />
-            <MetricCard label="TDEE" sub="gasto diario" value={targets.tdee} unit="kcal" />
-            <MetricCard label="Tu meta" sub="calorías/día" value={targets.targetCalories} unit="kcal" highlight />
+            <MetricCard label="TMB"  sub="en reposo"    value={targets.bmr}            />
+            <MetricCard label="TDEE" sub="gasto diario" value={targets.tdee}           />
+            <MetricCard label="Meta" sub="kcal/día"     value={targets.targetCalories} accent />
           </div>
 
-          {targets.goal === 'lose_fat' || targets.goal === 'perder_peso' ? (
-            <div className="rounded-xl bg-blue-50 border border-blue-100 px-4 py-3 text-sm text-blue-900">
-              Para <strong>perder grasa</strong>, tu plan tiene un déficit de{' '}
-              <strong>{delta} kcal/día</strong> — equivale a ~{(Math.round(delta * 7 / 100) / 10).toFixed(1)} kg menos por semana.
-            </div>
-          ) : targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa' ? (
-            <div className="rounded-xl bg-green-50 border border-green-100 px-4 py-3 text-sm text-green-900">
-              Para <strong>ganar músculo</strong>, tu plan tiene un superávit de{' '}
-              <strong>{delta} kcal/día</strong> sobre tu gasto diario.
-            </div>
-          ) : (
-            <div className="rounded-xl bg-[#F0F8EC] border border-[#C8E4BC] px-4 py-3 text-sm text-[#2d6a2d]">
-              Tu meta calórica está alineada con tu gasto para <strong>mantener tu peso</strong> de forma saludable.
-            </div>
-          )}
+          <div className={[
+            'rounded-xl border px-4 py-3 text-sm leading-relaxed',
+            isLoss ? 'border-blue-100 bg-blue-50 text-blue-900'
+            : isGain ? 'border-green-100 bg-green-50 text-green-900'
+            : 'border-[#D4E8D0] bg-[#EBF6E4] text-[#1e4d2e]',
+          ].join(' ')}>
+            {isLoss && (
+              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong> — equivale a ~{(Math.round(delta * 7 / 100) / 10).toFixed(1)} kg menos por semana.</>
+            )}
+            {isGain && (
+              <>Tu plan tiene un <strong>superávit de {delta} kcal/día</strong> sobre tu gasto diario para construir músculo.</>
+            )}
+            {!isLoss && !isGain && (
+              <>Tu meta calórica está alineada con tu gasto para <strong>mantener tu peso</strong> de forma saludable.</>
+            )}
+          </div>
         </Card>
 
-        {/* Donut de macros */}
-        <Card>
-          <SectionLabel>Distribución de macros</SectionLabel>
-          <div className="flex items-center gap-6">
+        {/* Macros */}
+        <Card label="Distribución de macronutrientes">
+          <div className="flex items-center gap-5">
             <MacroDonut macros={targets.macros} />
             <div className="flex-1 space-y-2.5">
-              <MacroRow color="#fb7185" label="Proteína"      value={`${targets.macros.proteinG}g`}
-                pct={Math.round(targets.macros.proteinG * 4 / totalKcal * 100)} />
-              <MacroRow color="#fbbf24" label="Carbohidratos" value={`${targets.macros.carbsG}g`}
-                pct={Math.round(targets.macros.carbsG * 4 / totalKcal * 100)} />
-              <MacroRow color="#60a5fa" label="Grasas"        value={`${targets.macros.fatG}g`}
-                pct={Math.round(targets.macros.fatG * 9 / totalKcal * 100)} />
+              <MacroRow color="#fb7185" label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
+              <MacroRow color="#fbbf24" label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
+              <MacroRow color="#60a5fa" label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
             </div>
           </div>
         </Card>
 
-        {/* Seção bloqueada */}
-        <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/30 bg-white">
+        {/* Plano bloqueado */}
+        <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white">
           {/* Conteúdo fake desfocado */}
-          <div className="select-none blur-sm pointer-events-none p-5 space-y-3" aria-hidden>
-            <p className="font-bold text-gray-800">Tu plan de 7 días</p>
+          <div className="select-none blur-[3px] pointer-events-none p-5 space-y-3 opacity-60" aria-hidden>
+            <p className="font-bold text-gray-800 text-sm">Tu plan de 7 días</p>
             {['Lunes', 'Martes', 'Miércoles'].map(d => (
-              <div key={d} className="rounded-xl border border-[#DDE8D8] p-3">
-                <div className="flex justify-between text-sm mb-2">
+              <div key={d} className="rounded-xl border border-[#D8E8D4] p-3 space-y-2">
+                <div className="flex justify-between text-xs">
                   <span className="font-semibold">{d}</span>
                   <span className="text-muted-foreground">{targets.targetCalories} kcal</span>
                 </div>
                 <div className="space-y-1.5">
-                  {[90, 75, 65].map((w, i) => (
-                    <div key={i} className="h-2.5 rounded-full bg-[#D8EDD0]" style={{ width: `${w}%` }} />
+                  {[88, 72, 60].map((w, i) => (
+                    <div key={i} className="h-2 rounded-full bg-primary/20" style={{ width: `${w}%` }} />
                   ))}
                 </div>
               </div>
             ))}
           </div>
-          {/* Overlay */}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center"
-            style={{ background: 'linear-gradient(to bottom, rgba(245,250,242,0.7) 0%, rgba(245,250,242,0.95) 100%)' }}>
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white shadow-md text-2xl border border-[#DDE8D8]">
-              🔒
-            </span>
-            <div className="space-y-1">
-              <p className="font-bold text-gray-900">Plan completo de 7 días</p>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                Con porciones exactas · Lista de compras · Guía de implementación · Sustituciones
+
+          {/* Overlay com conteúdo */}
+          <div
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center"
+            style={{ background: 'linear-gradient(to bottom, rgba(235,246,228,0.65) 0%, rgba(245,250,242,0.96) 50%)' }}
+          >
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#D8E8D4] bg-white shadow-sm">
+              <NutriLogo size={28} />
+            </div>
+            <div className="space-y-1.5">
+              <p className="font-black text-gray-900">Plan completo de 7 días</p>
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-[220px]">
+                Porciones exactas · Lista de compras · Guía de implementación
               </p>
             </div>
-            <div className="flex gap-2 flex-wrap justify-center">
+            <div className="flex flex-wrap justify-center gap-1.5">
               {['🍳 Desayunos', '🥗 Almuerzos', '🍲 Cenas', '🍌 Snacks'].map(t => (
-                <span key={t} className="rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">{t}</span>
+                <span key={t} className="rounded-full border border-primary/20 bg-primary/8 px-3 py-0.5 text-xs font-semibold text-primary">
+                  {t}
+                </span>
               ))}
             </div>
           </div>
         </div>
 
-        {/* Testimonios rápidos */}
-        <div className="rounded-2xl bg-white border border-[#DDE8D8] p-5 space-y-3">
-          <p className="text-center text-xs font-bold uppercase tracking-wider text-muted-foreground">
-            Lo que dicen quienes ya tienen su plan
+        {/* Social proof */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+          <p className="text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            Lo que dicen nuestros usuarios
           </p>
           {[
-            { name: 'María G.', text: 'Bajé 4 kg en el primer mes siguiendo el plan al pie de la letra.', star: '⭐⭐⭐⭐⭐' },
-            { name: 'Carlos M.', text: 'Por fin entendí cómo comer para ganar músculo sin pasar hambre.', star: '⭐⭐⭐⭐⭐' },
-          ].map(({ name, text, star }) => (
-            <div key={name} className="rounded-xl bg-[#F5FAF2] border border-[#DDE8D8] p-3 space-y-1">
-              <p className="text-xs">{star}</p>
-              <p className="text-sm text-gray-700 leading-relaxed">"{text}"</p>
-              <p className="text-xs font-semibold text-primary">{name}</p>
+            { name: 'María G.', country: '🇲🇽', text: 'Bajé 4 kg en el primer mes siguiendo el plan al pie de la letra.' },
+            { name: 'Carlos M.', country: '🇨🇴', text: 'Por fin entendí cómo comer para ganar músculo sin pasar hambre.' },
+          ].map(({ name, country, text }) => (
+            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
+              <div className="flex items-center gap-1">
+                {'⭐⭐⭐⭐⭐'.split('').map((s, i) => <span key={i} className="text-xs">{s}</span>)}
+              </div>
+              <p className="text-sm leading-relaxed text-gray-700">"{text}"</p>
+              <p className="text-xs font-bold text-primary">{country} {name}</p>
             </div>
           ))}
         </div>
 
       </div>
 
-      {/* CTA fixo */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-[#DDE8D8] bg-white/95 backdrop-blur-sm p-4 shadow-xl">
+      {/* ── CTA fixo ──────────────────────────────────────────── */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-[#D8E8D4] bg-white/95 p-4 shadow-2xl backdrop-blur-md">
         <div className="mx-auto max-w-lg space-y-2">
           <button
             onClick={() => router.push('/checkout')}
-            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-4 text-sm font-bold text-white shadow-md hover:brightness-105 hover:shadow-lg transition-all"
+            className={[
+              'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
+              'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)] transition-all duration-150',
+              'hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)] hover:brightness-[1.04] active:scale-[0.99]',
+            ].join(' ')}
           >
             Desbloquear mi plan completo
-            <span className="opacity-70">→</span>
+            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
+              <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
+                stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </button>
-          <div className="flex items-center justify-center gap-4 text-xs text-muted-foreground">
-            <span>🔒 Pago seguro</span>
-            <span>⚡ Acceso inmediato</span>
-            <span>📧 Soporte incluido</span>
+          <div className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
+            <span className="flex items-center gap-1"><span>🔒</span> Pago seguro</span>
+            <span className="h-3 w-px bg-border" />
+            <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
+            <span className="h-3 w-px bg-border" />
+            <span className="flex items-center gap-1"><span>📧</span> Soporte incluido</span>
           </div>
         </div>
       </div>
-    </main>
+    </PageShell>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Subcomponentes
+// Shell da página com header de marca
 // ---------------------------------------------------------------------------
 
-function Card({ children }: { children: React.ReactNode }) {
+function PageShell({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-[#DDE8D8] bg-white p-5 shadow-sm space-y-4">
-      {children}
+    <div
+      className="min-h-screen"
+      style={{
+        background:
+          'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(148,28%,95%) 90px, hsl(80,18%,97%) 220px)',
+      }}
+    >
+      {/* Header fixo com marca */}
+      <header className="sticky top-0 z-20 flex h-14 items-center justify-center border-b border-[#D4E8D0] bg-white/85 backdrop-blur-md">
+        <NutriWordmark size="md" />
+      </header>
+
+      <div className="flex flex-col items-center">{children}</div>
     </div>
   )
 }
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
+// ---------------------------------------------------------------------------
+// Componentes internos
+// ---------------------------------------------------------------------------
+
+function Card({
+  label,
+  badge,
+  children,
+}: {
+  label: string
+  badge?: React.ReactNode
+  children: React.ReactNode
+}) {
   return (
-    <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{children}</p>
+    <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm">
+      <div className="flex items-center justify-between border-b border-[#EAF2E6] px-5 py-3">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+        {badge}
+      </div>
+      <div className="p-5 space-y-4">{children}</div>
+    </div>
   )
 }
 
-function ProfileCard({ icon, label, value, highlight }: { icon: string; label: string; value: string; highlight?: boolean }) {
+function StatCard({ icon, label, value, accent }: { icon: string; label: string; value: string; accent?: boolean }) {
   return (
     <div className={[
-      'rounded-xl border p-3 text-center space-y-0.5',
-      highlight ? 'border-primary/30 bg-primary/5' : 'border-[#DDE8D8] bg-[#FAFCF8]',
+      'rounded-xl border p-3 text-center',
+      accent ? 'border-primary/25 bg-primary/5' : 'border-[#E0EDD9] bg-[#FAFCF8]',
     ].join(' ')}>
-      <p className="text-lg">{icon}</p>
-      <p className="text-[10px] font-medium text-muted-foreground uppercase tracking-wide">{label}</p>
-      <p className="text-xs font-bold leading-tight text-gray-800">{value}</p>
+      <p className="text-base">{icon}</p>
+      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
+      <p className="mt-0.5 text-xs font-bold leading-tight text-gray-800">{value}</p>
     </div>
   )
 }
 
 function ImcBadge({ imc }: { imc: number }) {
   const { label, cls } =
-    imc < 18.5 ? { label: 'Bajo peso', cls: 'bg-blue-100 text-blue-700' }
-    : imc < 25  ? { label: 'Normal',    cls: 'bg-green-100 text-green-700' }
-    : imc < 30  ? { label: 'Sobrepeso', cls: 'bg-yellow-100 text-yellow-700' }
-    :              { label: 'Obesidad',  cls: 'bg-red-100 text-red-700' }
+    imc < 18.5 ? { label: 'Bajo peso', cls: 'border-blue-100 bg-blue-50 text-blue-700' }
+    : imc < 25  ? { label: 'Normal',    cls: 'border-green-100 bg-green-50 text-green-700' }
+    : imc < 30  ? { label: 'Sobrepeso', cls: 'border-yellow-100 bg-yellow-50 text-yellow-700' }
+    :              { label: 'Obesidad',  cls: 'border-red-100 bg-red-50 text-red-700' }
   return (
-    <span className={`rounded-full px-3 py-0.5 text-xs font-bold ${cls}`}>
+    <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${cls}`}>
       {imc.toFixed(1)} · {label}
     </span>
   )
@@ -303,62 +340,64 @@ function ImcScale({ imc }: { imc: number }) {
   return (
     <div className="relative pt-5">
       <div
-        className="absolute -translate-x-1/2 text-base leading-none text-primary"
+        className="absolute -translate-x-1/2 text-base leading-none text-primary drop-shadow-sm"
         style={{ left: `${pct}%`, top: 0 }}
       >▼</div>
       <div
-        className="h-3 rounded-full overflow-hidden"
-        style={{ background: 'linear-gradient(to right, #93c5fd 0%, #4ade80 30%, #fde047 60%, #f87171 100%)' }}
+        className="h-3 rounded-full"
+        style={{ background: 'linear-gradient(to right, #93c5fd 0%, #4ade80 32%, #fde047 62%, #f87171 100%)' }}
       />
     </div>
   )
 }
 
-function MetricCard({ label, sub, value, unit, highlight }: {
-  label: string; sub: string; value: number; unit: string; highlight?: boolean
-}) {
+function MetricCard({ label, sub, value, accent }: { label: string; sub: string; value: number; accent?: boolean }) {
   return (
     <div className={[
       'rounded-xl border p-3 text-center',
-      highlight ? 'border-primary bg-primary/5' : 'border-[#DDE8D8] bg-[#FAFCF8]',
+      accent ? 'border-primary/25 bg-primary/5' : 'border-[#E0EDD9] bg-[#FAFCF8]',
     ].join(' ')}>
-      <p className={['text-xs font-bold', highlight ? 'text-primary' : 'text-gray-700'].join(' ')}>{label}</p>
-      <p className="text-[10px] text-muted-foreground">{sub}</p>
-      <p className="text-lg font-bold text-gray-900 mt-1">{value}</p>
-      <p className="text-[10px] text-muted-foreground">{unit}</p>
+      <p className={['text-xs font-black', accent ? 'text-primary' : 'text-gray-700'].join(' ')}>{label}</p>
+      <p className="text-[10px] text-muted-foreground mb-1">{sub}</p>
+      <p className="text-xl font-black text-gray-900">{value}</p>
+      <p className="text-[10px] text-muted-foreground">kcal</p>
     </div>
   )
 }
 
 function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fatG: number } }) {
   const r = 44, circ = 2 * Math.PI * r
-  const pKcal = macros.proteinG * 4
-  const cKcal = macros.carbsG * 4
-  const fKcal = macros.fatG * 9
-  const total = pKcal + cKcal + fKcal || 1
-  const pLen = (pKcal / total) * circ
-  const cLen = (cKcal / total) * circ
-  const fLen = (fKcal / total) * circ
+  const pK = macros.proteinG * 4, cK = macros.carbsG * 4, fK = macros.fatG * 9
+  const total = pK + cK + fK || 1
+  const pL = (pK / total) * circ, cL = (cK / total) * circ, fL = (fK / total) * circ
   return (
     <svg className="-rotate-90 shrink-0" width="108" height="108" viewBox="0 0 108 108">
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#E8F0E4" strokeWidth="13" />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#fb7185" strokeWidth="13"
-        strokeDasharray={`${pLen} ${circ}`} strokeDashoffset={circ} />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#fbbf24" strokeWidth="13"
-        strokeDasharray={`${cLen} ${circ}`} strokeDashoffset={circ - pLen} />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#60a5fa" strokeWidth="13"
-        strokeDasharray={`${fLen} ${circ}`} strokeDashoffset={circ - pLen - cLen} />
+      <circle cx="54" cy="54" r={r} fill="none" stroke="#E0EDD9" strokeWidth="14" />
+      <circle cx="54" cy="54" r={r} fill="none" stroke="#fb7185" strokeWidth="14"
+        strokeDasharray={`${pL} ${circ}`} strokeDashoffset={circ} />
+      <circle cx="54" cy="54" r={r} fill="none" stroke="#fbbf24" strokeWidth="14"
+        strokeDasharray={`${cL} ${circ}`} strokeDashoffset={circ - pL} />
+      <circle cx="54" cy="54" r={r} fill="none" stroke="#60a5fa" strokeWidth="14"
+        strokeDasharray={`${fL} ${circ}`} strokeDashoffset={circ - pL - cL} />
     </svg>
   )
 }
 
-function MacroRow({ color, label, value, pct }: { color: string; label: string; value: string; pct: number }) {
+function MacroRow({ color, label, g, kcalPerG, total }: {
+  color: string; label: string; g: number; kcalPerG: number; total: number
+}) {
+  const pct = Math.round((g * kcalPerG) / total * 100)
   return (
-    <div className="flex items-center gap-2 text-sm">
-      <div className="h-3 w-3 shrink-0 rounded-full" style={{ background: color }} />
-      <span className="flex-1 text-xs text-muted-foreground">{label}</span>
-      <span className="text-xs font-bold text-gray-800">{value}</span>
-      <span className="w-8 text-right text-[10px] text-muted-foreground">({pct}%)</span>
+    <div className="space-y-1">
+      <div className="flex items-center gap-2">
+        <div className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
+        <span className="flex-1 text-xs text-muted-foreground">{label}</span>
+        <span className="text-xs font-bold text-gray-800">{g}g</span>
+        <span className="w-8 text-right text-[10px] text-muted-foreground">({pct}%)</span>
+      </div>
+      <div className="h-1 w-full rounded-full bg-border ml-4">
+        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
+      </div>
     </div>
   )
 }

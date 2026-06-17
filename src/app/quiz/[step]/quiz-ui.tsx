@@ -1,62 +1,181 @@
 import React from 'react'
 
 // ---------------------------------------------------------------------------
-// Primitivos de UI compartilhados por todos os steps do quiz
-// Apenas estilo — nenhuma lógica de negócio aqui.
+// NutriPlan — sistema de UI compartilhado do quiz
+// Logo SVG, Header, Progress, Cards, Options, Inputs, CTA
 // ---------------------------------------------------------------------------
 
-export function QuizLayout({ children }: { children: React.ReactNode }) {
-  return (
-    <main
-      className="flex min-h-screen flex-col items-center p-4 pb-10"
-      style={{
-        background:
-          'linear-gradient(180deg, #E6F4DF 0px, #F5FAF2 100px, #F5FAF2 100%)',
-      }}
-    >
-      {/* Marca no topo */}
-      <div className="mb-6 mt-2 flex items-center gap-1.5 self-center">
-        <span className="text-lg">🥗</span>
-        <span className="font-bold text-primary text-sm tracking-wide">NutriPlan</span>
-      </div>
+// ---------------------------------------------------------------------------
+// Logo SVG — folha orgânica com veias, construída com paths
+// ---------------------------------------------------------------------------
 
-      <div className="w-full max-w-lg space-y-4">{children}</div>
-    </main>
+export function NutriLogo({ size = 24 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-label="NutriPlan"
+    >
+      {/* Corpo da folha */}
+      <path
+        d="M12 2.5C7.5 2.5 3.5 6.8 3.5 12C3.5 16.4 6.2 20 10 21.8L12 22.5L14 21.8C17.8 20 20.5 16.4 20.5 12C20.5 6.8 16.5 2.5 12 2.5Z"
+        fill="currentColor"
+        className="text-primary"
+      />
+      {/* Veia central */}
+      <path
+        d="M12 21.5V11.5"
+        stroke="white"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
+      {/* Veia esquerda */}
+      <path
+        d="M12 17.5L9 14.5"
+        stroke="white"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        opacity="0.85"
+      />
+      {/* Veia direita */}
+      <path
+        d="M12 14.5L15 11.5"
+        stroke="white"
+        strokeWidth="1.1"
+        strokeLinecap="round"
+        opacity="0.85"
+      />
+    </svg>
   )
 }
 
 // ---------------------------------------------------------------------------
+// Wordmark — "Nutri" leve + "Plan" pesado = identidade tipográfica
+// ---------------------------------------------------------------------------
 
-export function QuizProgress({ step, total, pct }: { step: number; total: number; pct: number }) {
+export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
+  const textSize = { sm: '13px', md: '16px', lg: '22px' }[size]
+  const logoSize = { sm: 18, md: 22, lg: 30 }[size]
+
   return (
-    <div className="space-y-2 px-0.5">
+    <div className="flex items-center gap-1.5 select-none">
+      <NutriLogo size={logoSize} />
+      <span
+        style={{ fontSize: textSize, lineHeight: 1, letterSpacing: '-0.01em' }}
+        className="text-primary"
+      >
+        <span style={{ fontWeight: 300 }}>Nutri</span>
+        <span style={{ fontWeight: 800 }}>Plan</span>
+      </span>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Tagline — aparece apenas no primeiro passo
+// ---------------------------------------------------------------------------
+
+export function NutriTagline() {
+  return (
+    <p className="text-xs text-muted-foreground text-center tracking-wide">
+      Tu nutrición, a tu medida.
+    </p>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Layout principal do quiz — header + fundo de marca
+// ---------------------------------------------------------------------------
+
+export function QuizLayout({
+  children,
+  showTagline,
+}: {
+  children: React.ReactNode
+  showTagline?: boolean
+}) {
+  return (
+    <div
+      className="min-h-screen"
+      style={{
+        background:
+          'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(148,28%,95%) 90px, hsl(80,18%,97%) 220px)',
+      }}
+    >
+      {/* Header de marca fixo */}
+      <header className="sticky top-0 z-20 flex h-14 items-center justify-center border-b border-[#D4E8D0] bg-white/80 backdrop-blur-md">
+        <NutriWordmark size="md" />
+      </header>
+
+      <main className="flex flex-col items-center p-4 pb-12 pt-6">
+        {showTagline && (
+          <div className="mb-4 quiz-enter">
+            <NutriTagline />
+          </div>
+        )}
+        <div className="w-full max-w-lg space-y-4">{children}</div>
+      </main>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Barra de progresso — segmentada por seções + badge %
+// ---------------------------------------------------------------------------
+
+export function QuizProgress({
+  step,
+  total,
+  pct,
+}: {
+  step: number
+  total: number
+  pct: number
+}) {
+  return (
+    <div className="space-y-2 quiz-enter">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium text-muted-foreground">
+        <span className="text-xs font-semibold text-muted-foreground tracking-wide">
           Paso {step} de {total}
         </span>
-        <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">
+        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
           {pct}%
         </span>
       </div>
-      <div
-        className="h-2 w-full overflow-hidden rounded-full"
-        style={{ background: '#C8E8BC' }}
-      >
-        <div
-          className="h-full rounded-full bg-primary transition-all duration-500 ease-out"
-          style={{ width: `${pct}%` }}
-        />
+      {/* Barra segmentada */}
+      <div className="flex gap-1">
+        {Array.from({ length: total }).map((_, i) => {
+          const filled = i < step
+          const active = i === step - 1
+          return (
+            <div
+              key={i}
+              className="h-1.5 flex-1 rounded-full transition-all duration-500"
+              style={{
+                background: filled
+                  ? 'hsl(148, 52%, 28%)'
+                  : 'hsl(148, 18%, 88%)',
+                opacity: active ? 1 : filled ? 0.75 : 0.4,
+                transform: active ? 'scaleY(1.3)' : 'scaleY(1)',
+              }}
+            />
+          )
+        })}
       </div>
     </div>
   )
 }
 
 // ---------------------------------------------------------------------------
+// Card do quiz
+// ---------------------------------------------------------------------------
 
 export function QuizCard({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-[#DDE8D8] bg-white p-6 shadow-sm space-y-5">
-      {children}
+    <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm quiz-enter quiz-enter-delay-1">
+      <div className="p-6 space-y-5">{children}</div>
     </div>
   )
 }
@@ -70,7 +189,7 @@ export function QuizHeader({
 }) {
   return (
     <div className="space-y-1.5">
-      <h1 className="text-xl font-bold leading-snug text-gray-900">{title}</h1>
+      <h1 className="text-[1.15rem] font-bold leading-snug text-gray-900">{title}</h1>
       {subtitle && (
         <p className="text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
       )}
@@ -79,7 +198,8 @@ export function QuizHeader({
 }
 
 // ---------------------------------------------------------------------------
-// Opção de seleção única — com emoji, check, efeito lift ao selecionar
+// Opção de seleção única — card com emoji + checkmark animado
+// ---------------------------------------------------------------------------
 
 export function QuizOption({
   label,
@@ -99,13 +219,16 @@ export function QuizOption({
       type="button"
       onClick={onSelect}
       className={[
-        'flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all duration-150',
+        'flex w-full items-center gap-3.5 rounded-xl border px-4 py-3.5 text-left',
+        'transition-all duration-150 active:scale-[0.99]',
         selected
-          ? 'border-primary bg-[#EAF6E4] shadow-sm'
-          : 'border-[#DDE8D8] bg-white hover:border-primary/50 hover:bg-[#F3FAF0]',
+          ? 'border-primary bg-primary/5 shadow-sm ring-1 ring-primary/20'
+          : 'border-[#D8E8D4] bg-white hover:border-primary/40 hover:bg-primary/[0.03]',
       ].join(' ')}
     >
-      {emoji && <span className="shrink-0 text-xl">{emoji}</span>}
+      {emoji && (
+        <span className="shrink-0 text-xl leading-none">{emoji}</span>
+      )}
       <div className="min-w-0 flex-1">
         <p
           className={[
@@ -119,13 +242,14 @@ export function QuizOption({
           <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{desc}</p>
         )}
       </div>
-      <CheckMark visible={selected} />
+      <CheckCircle visible={selected} />
     </button>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Chip de multi-seleção — tamanho menor, shape de tag
+// Chip de multi-seleção
+// ---------------------------------------------------------------------------
 
 export function QuizChip({
   label,
@@ -145,22 +269,23 @@ export function QuizChip({
       type="button"
       onClick={onToggle}
       className={[
-        'flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm transition-all duration-150',
+        'flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm',
+        'transition-all duration-150 active:scale-[0.99]',
         fullWidth ? 'w-full' : '',
         selected
-          ? 'border-primary bg-[#EAF6E4] font-semibold text-primary shadow-sm'
-          : 'border-[#DDE8D8] bg-white text-gray-700 hover:border-primary/50 hover:bg-[#F3FAF0]',
+          ? 'border-primary bg-primary/5 font-semibold text-primary ring-1 ring-primary/20'
+          : 'border-[#D8E8D4] bg-white text-gray-700 hover:border-primary/40 hover:bg-primary/[0.03]',
       ].join(' ')}
     >
-      {emoji && <span className="text-base">{emoji}</span>}
+      {emoji && <span className="text-base leading-none">{emoji}</span>}
       <span className="leading-tight">{label}</span>
       {selected && (
         <span className="ml-auto shrink-0 text-primary">
-          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+          <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
             <path
-              d="M1 5L4.5 8.5L11 1"
+              d="M1 4.5L4 7.5L10 1"
               stroke="currentColor"
-              strokeWidth="2"
+              strokeWidth="1.8"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
@@ -172,13 +297,17 @@ export function QuizChip({
 }
 
 // ---------------------------------------------------------------------------
-// Input estilizado
+// Input
+// ---------------------------------------------------------------------------
 
 export function QuizInput({
   label,
   hint,
   ...props
-}: React.InputHTMLAttributes<HTMLInputElement> & { label?: string; hint?: string }) {
+}: React.InputHTMLAttributes<HTMLInputElement> & {
+  label?: string
+  hint?: string
+}) {
   return (
     <div className="space-y-1.5">
       {label && (
@@ -187,20 +316,21 @@ export function QuizInput({
       <input
         {...props}
         className={[
-          'w-full rounded-xl border border-[#DDE8D8] bg-white px-4 py-3 text-sm text-gray-900',
+          'w-full rounded-xl border border-[#D8E8D4] bg-white px-4 py-3 text-sm text-gray-900',
           'placeholder:text-gray-400',
           'focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20',
           'transition-shadow duration-150',
           props.className ?? '',
         ].join(' ')}
       />
-      {hint && <p className="text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-xs text-red-500">{hint}</p>}
     </div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Botão CTA principal
+// Botão CTA
+// ---------------------------------------------------------------------------
 
 export function QuizCta({
   onClick,
@@ -221,10 +351,12 @@ export function QuizCta({
       onClick={onClick}
       disabled={disabled || loading}
       className={[
+        'quiz-enter quiz-enter-delay-2',
         'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white',
-        'bg-primary shadow-md transition-all duration-150',
-        'hover:brightness-105 hover:shadow-lg active:scale-[0.99]',
-        'disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none',
+        'bg-primary shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] transition-all duration-150',
+        'hover:shadow-[0_6px_20px_0_rgba(0,0,0,0.18)] hover:brightness-[1.04]',
+        'active:scale-[0.99] active:shadow-none',
+        'disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none disabled:brightness-100',
       ].join(' ')}
     >
       {loading ? (
@@ -235,7 +367,15 @@ export function QuizCta({
       ) : (
         <>
           {children ?? 'Continuar'}
-          <span className="opacity-70">→</span>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" className="opacity-70">
+            <path
+              d="M3 7H11M11 7L7.5 3.5M11 7L7.5 10.5"
+              stroke="white"
+              strokeWidth="1.8"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </>
       )}
     </button>
@@ -243,44 +383,66 @@ export function QuizCta({
 }
 
 // ---------------------------------------------------------------------------
-// Mensagem de erro
+// Mensagem de erro inline
+// ---------------------------------------------------------------------------
 
 export function QuizError({ message }: { message: string }) {
   return (
-    <p className="rounded-xl border border-red-100 bg-red-50 px-4 py-2.5 text-sm text-red-600">
+    <p className="flex items-start gap-2 rounded-xl border border-red-100 bg-red-50 px-4 py-2.5 text-sm text-red-600">
+      <span className="mt-px shrink-0">⚠️</span>
       {message}
     </p>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Separador de seção dentro de QuizCard
+// Separador de seção (para steps com múltiplos grupos)
+// ---------------------------------------------------------------------------
 
-export function QuizSection({ title, children }: { title: string; children: React.ReactNode }) {
+export function QuizSection({
+  title,
+  children,
+}: {
+  title: string
+  children: React.ReactNode
+}) {
   return (
     <div className="space-y-2.5">
-      <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">{title}</p>
+      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+        <span className="h-px flex-1 bg-border" />
+        {title}
+        <span className="h-px flex-1 bg-border" />
+      </p>
       {children}
     </div>
   )
 }
 
 // ---------------------------------------------------------------------------
-// Checkmark interno
+// Interno — check circle animado
+// ---------------------------------------------------------------------------
 
-function CheckMark({ visible }: { visible: boolean }) {
-  if (!visible) return <span className="h-5 w-5 shrink-0" />
+function CheckCircle({ visible }: { visible: boolean }) {
   return (
-    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary">
-      <svg width="10" height="8" viewBox="0 0 10 8" fill="none">
-        <path
-          d="M1 4L3.5 6.5L9 1"
-          stroke="white"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+    <span
+      className={[
+        'flex h-5 w-5 shrink-0 items-center justify-center rounded-full transition-all duration-200',
+        visible
+          ? 'bg-primary scale-100 opacity-100'
+          : 'border border-[#D8E8D4] scale-90 opacity-0',
+      ].join(' ')}
+    >
+      {visible && (
+        <svg width="9" height="7" viewBox="0 0 9 7" fill="none">
+          <path
+            d="M1 3.5L3 5.5L8 1"
+            stroke="white"
+            strokeWidth="1.6"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
+      )}
     </span>
   )
 }

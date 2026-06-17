@@ -95,7 +95,7 @@ export function Step1Favorites({ stepNumber, totalSteps, detectedCountry }: Prop
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <QuizLayout>
+    <QuizLayout showTagline>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
       <form onSubmit={handleContinue} className="space-y-4">

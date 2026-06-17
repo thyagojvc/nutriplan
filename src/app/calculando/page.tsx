@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 const PHASES = [
   'Analizando tus respuestas…',
@@ -30,7 +31,6 @@ export default function CalculandoPage() {
       const pct = Math.min((elapsed / ANIMATION_MS) * 100, 100)
       setProgress(pct)
       setPhaseIndex(Math.min(Math.floor(elapsed / PHASE_DURATION), PHASES.length - 1))
-
       if (elapsed >= ANIMATION_MS && !done.current) {
         done.current = true
         clearInterval(tick)
@@ -41,60 +41,95 @@ export default function CalculandoPage() {
   }, [router])
 
   const circumference = 2 * Math.PI * 34
+  const isLast = phaseIndex === PHASES.length - 1
 
   return (
-    <main className="flex min-h-screen items-center justify-center p-4 bg-background">
-      <div className="w-full max-w-sm space-y-8 text-center">
+    <div
+      className="flex min-h-screen flex-col"
+      style={{
+        background:
+          'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(148,28%,95%) 90px, hsl(80,18%,97%) 220px)',
+      }}
+    >
+      {/* Header de marca */}
+      <header className="flex h-14 items-center justify-center border-b border-[#D4E8D0] bg-white/80 backdrop-blur-md">
+        <NutriWordmark size="md" />
+      </header>
 
-        {/* Círculo de progresso */}
-        <div className="flex justify-center">
-          <svg className="w-32 h-32 -rotate-90" viewBox="0 0 80 80">
-            <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(var(--muted))" strokeWidth="5" />
-            <circle
-              cx="40" cy="40" r="34" fill="none"
-              stroke="hsl(var(--primary))" strokeWidth="5"
-              strokeLinecap="round"
-              strokeDasharray={circumference}
-              strokeDashoffset={circumference * (1 - progress / 100)}
-              style={{ transition: 'stroke-dashoffset 0.08s linear' }}
-            />
-          </svg>
-        </div>
+      {/* Conteúdo central */}
+      <div className="flex flex-1 flex-col items-center justify-center p-6">
+        <div className="w-full max-w-sm space-y-8 text-center">
 
-        <div className="space-y-3">
-          <h1 className="text-2xl font-bold">Calculando tu plan</h1>
-          <p className="text-sm text-primary font-medium min-h-[1.5rem]">
-            {PHASES[phaseIndex]}
-          </p>
-        </div>
-
-        {/* Dots */}
-        <div className="flex justify-center gap-2">
-          {PHASES.map((_, i) => (
-            <div
-              key={i}
-              className={[
-                'h-2 w-2 rounded-full transition-all duration-300',
-                i <= phaseIndex ? 'bg-primary scale-110' : 'bg-muted',
-              ].join(' ')}
-            />
-          ))}
-        </div>
-
-        {/* Barra */}
-        <div className="space-y-2">
-          <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-            <div
-              className="h-full rounded-full bg-primary"
-              style={{ width: `${progress}%`, transition: 'width 0.08s linear' }}
-            />
+          {/* Logo pulsando dentro do círculo de progresso */}
+          <div className="flex justify-center">
+            <div className="relative flex items-center justify-center">
+              <svg className="w-36 h-36 -rotate-90" viewBox="0 0 80 80">
+                {/* Trilho */}
+                <circle cx="40" cy="40" r="34" fill="none" stroke="hsl(148,18%,88%)" strokeWidth="5" />
+                {/* Progresso */}
+                <circle
+                  cx="40" cy="40" r="34" fill="none"
+                  stroke="hsl(148,52%,28%)" strokeWidth="5"
+                  strokeLinecap="round"
+                  strokeDasharray={circumference}
+                  strokeDashoffset={circumference * (1 - progress / 100)}
+                  style={{ transition: 'stroke-dashoffset 0.08s linear' }}
+                />
+              </svg>
+              {/* Logo no centro */}
+              <div className={[
+                'absolute flex items-center justify-center transition-all duration-500',
+                isLast ? 'scale-110' : 'scale-100',
+              ].join(' ')}>
+                <NutriLogo size={32} />
+              </div>
+            </div>
           </div>
-          <p className="text-xs text-muted-foreground">
-            Personalizando según tus respuestas. Un momento…
-          </p>
-        </div>
 
+          {/* Texto */}
+          <div className="space-y-2">
+            <h1 className="text-xl font-black text-gray-900">
+              {isLast ? '¡Listo!' : 'Creando tu plan'}
+            </h1>
+            <p
+              key={phaseIndex}
+              className="min-h-[1.5rem] text-sm font-semibold text-primary"
+              style={{ animation: 'quiz-enter 0.3s ease-out both' }}
+            >
+              {PHASES[phaseIndex]}
+            </p>
+          </div>
+
+          {/* Dots de fase */}
+          <div className="flex justify-center gap-1.5">
+            {PHASES.map((_, i) => (
+              <div
+                key={i}
+                className="rounded-full transition-all duration-300"
+                style={{
+                  width: i === phaseIndex ? 20 : 6,
+                  height: 6,
+                  background: i <= phaseIndex ? 'hsl(148,52%,28%)' : 'hsl(148,18%,84%)',
+                }}
+              />
+            ))}
+          </div>
+
+          {/* Barra linear */}
+          <div className="space-y-2">
+            <div className="h-1.5 w-full overflow-hidden rounded-full" style={{ background: 'hsl(148,18%,88%)' }}>
+              <div
+                className="h-full rounded-full bg-primary"
+                style={{ width: `${progress}%`, transition: 'width 0.08s linear' }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Personalizando según tus respuestas — solo un momento…
+            </p>
+          </div>
+
+        </div>
       </div>
-    </main>
+    </div>
   )
 }
