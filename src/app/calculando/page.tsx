@@ -15,7 +15,7 @@ const PHASES = [
   '¡Tu plan personalizado está listo!',
 ]
 
-const ANIMATION_MS = 20_000
+const ANIMATION_MS = 15_000
 const PHASE_DURATION = ANIMATION_MS / PHASES.length
 
 export default function CalculandoPage() {
