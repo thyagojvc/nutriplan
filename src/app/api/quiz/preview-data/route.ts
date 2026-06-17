@@ -3,10 +3,33 @@ import { createServiceClient } from '@/lib/supabase/service'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 
+// Fatores de atividade — espelho dos valores definidos no quiz (step6-activity.tsx).
+const ACTIVITY_FACTORS: Record<string, number> = {
+  sedentario: 1.2,
+  ligeramente_activo: 1.375,
+  moderadamente_activo: 1.55,
+  muy_activo: 1.725,
+}
+
+// Garante que draft.step_6 sempre tenha activity_factor para o parseAnswers.
+// Caso o sessionStorage não tenha o campo (dados muito antigos ou serialização
+// parcial), deriva o fator a partir do activity_level.
+function normalizeDraft(draft: Record<string, unknown>): Record<string, unknown> {
+  const s6 = (draft.step_6 ?? {}) as Record<string, unknown>
+  if (s6.activity_factor == null && s6.activity_level) {
+    const factor = ACTIVITY_FACTORS[String(s6.activity_level)]
+    if (factor) {
+      return { ...draft, step_6: { ...s6, activity_factor: factor } }
+    }
+  }
+  return draft
+}
+
 // Monta a resposta de preview a partir de um draft_answers + country.
 // Compartilhado pelo GET (lê do banco via cookie) e pelo POST (recebe do cliente
 // via sessionStorage). Lança em caso de dados físicos incompletos.
 function buildPreview(draft: Record<string, unknown>, country: string) {
+  draft = normalizeDraft(draft)
   const answers = parseAnswers(draft, country)
   const targets = calcTargets(answers)
 
