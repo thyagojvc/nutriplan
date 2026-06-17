@@ -2,39 +2,37 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError } from './quiz-ui'
 
 const GENERIC_FOODS = [
-  { id: 'pollo', label: 'Pollo' },
-  { id: 'carne_res', label: 'Carne de res' },
-  { id: 'cerdo', label: 'Cerdo' },
-  { id: 'pescado', label: 'Pescado' },
-  { id: 'mariscos', label: 'Mariscos' },
-  { id: 'huevo', label: 'Huevo' },
-  { id: 'tofu', label: 'Tofu / Tempeh' },
-  { id: 'arroz', label: 'Arroz' },
-  { id: 'pasta', label: 'Pasta' },
-  { id: 'legumbres', label: 'Legumbres' },
-  { id: 'frutas', label: 'Frutas' },
-  { id: 'verduras', label: 'Verduras' },
-  { id: 'lacteos', label: 'Lácteos' },
-  { id: 'avena', label: 'Avena' },
-  { id: 'aguacate', label: 'Aguacate' },
-  { id: 'pan', label: 'Pan' },
+  { id: 'pollo',       label: 'Pollo',         emoji: '🍗' },
+  { id: 'carne_res',   label: 'Carne de res',  emoji: '🥩' },
+  { id: 'cerdo',       label: 'Cerdo',         emoji: '🐷' },
+  { id: 'pescado',     label: 'Pescado',        emoji: '🐟' },
+  { id: 'mariscos',    label: 'Mariscos',      emoji: '🦐' },
+  { id: 'huevo',       label: 'Huevo',         emoji: '🥚' },
+  { id: 'tofu',        label: 'Tofu / Tempeh', emoji: '🌿' },
+  { id: 'arroz',       label: 'Arroz',         emoji: '🍚' },
+  { id: 'pasta',       label: 'Pasta',         emoji: '🍝' },
+  { id: 'legumbres',   label: 'Legumbres',     emoji: '🫘' },
+  { id: 'frutas',      label: 'Frutas',        emoji: '🍎' },
+  { id: 'verduras',    label: 'Verduras',      emoji: '🥦' },
+  { id: 'lacteos',     label: 'Lácteos',       emoji: '🥛' },
+  { id: 'avena',       label: 'Avena',         emoji: '🌾' },
+  { id: 'aguacate',    label: 'Aguacate',      emoji: '🥑' },
+  { id: 'pan',         label: 'Pan',           emoji: '🍞' },
 ]
 
-// Alimentos extra por país (somados à lista genérica, nunca a substituindo —
-// assim quem já tem favoritos vegetarianos/veganos como tofu/legumbres não perde opção).
-// Chile e o restante dos países usam só a lista genérica (já cobre bem o hábito alimentar).
-const FOODS_BY_COUNTRY: Record<string, { id: string; label: string }[]> = {
+const FOODS_BY_COUNTRY: Record<string, typeof GENERIC_FOODS> = {
   MX: [
-    { id: 'tortilla_maiz', label: 'Tortilla de maíz' },
-    { id: 'nopales', label: 'Nopales' },
+    { id: 'tortilla_maiz', label: 'Tortilla de maíz', emoji: '🫓' },
+    { id: 'nopales',       label: 'Nopales',           emoji: '🌵' },
     ...GENERIC_FOODS,
   ],
   CO: [
-    { id: 'arepa', label: 'Arepa' },
-    { id: 'platano', label: 'Plátano' },
-    { id: 'yuca', label: 'Yuca' },
+    { id: 'arepa',   label: 'Arepa',   emoji: '🫔' },
+    { id: 'platano', label: 'Plátano', emoji: '🍌' },
+    { id: 'yuca',    label: 'Yuca',    emoji: '🥔' },
     ...GENERIC_FOODS,
   ],
 }
@@ -60,9 +58,7 @@ export function Step1Favorites({ stepNumber, totalSteps, detectedCountry }: Prop
       const cached = sessionStorage.getItem('nutriplan_step_1')
       const parsed = cached ? (JSON.parse(cached) as { favorites?: string[] }) : {}
       return parsed.favorites ?? []
-    } catch {
-      return []
-    }
+    } catch { return [] }
   })
 
   const [saving, setSaving] = useState(false)
@@ -99,62 +95,39 @@ export function Step1Favorites({ stepNumber, totalSteps, detectedCountry }: Prop
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-        <form onSubmit={handleContinue} className="space-y-6">
-          <div className="rounded-lg border p-6 space-y-5">
-            <div className="space-y-1">
-              <h1 className="text-xl font-semibold">¿Cuáles son tus alimentos favoritos?</h1>
-              <p className="text-sm text-muted-foreground">
-                Selecciona todos los que quieras incluir en tu plan.
-              </p>
-            </div>
+      <form onSubmit={handleContinue} className="space-y-4">
+        <QuizCard>
+          <QuizHeader
+            title="¿Cuáles son tus alimentos favoritos?"
+            subtitle="Selecciona todos los que quieras incluir en tu plan. Cuantos más elijas, más variado será."
+          />
 
-            <div className="grid grid-cols-2 gap-2">
-              {FOODS.map(({ id, label }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => toggle(id)}
-                  className={[
-                    'rounded-lg border-2 px-3 py-2 text-left text-sm transition-colors',
-                    selected.includes(id)
-                      ? 'border-primary bg-primary/5 font-medium'
-                      : 'border-border hover:border-primary/50',
-                  ].join(' ')}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-
-            {error && (
-              <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-            )}
+          <div className="grid grid-cols-2 gap-2">
+            {FOODS.map(({ id, label, emoji }) => (
+              <QuizChip
+                key={id}
+                label={label}
+                emoji={emoji}
+                selected={selected.includes(id)}
+                onToggle={() => toggle(id)}
+              />
+            ))}
           </div>
 
-          <button
-            type="submit"
-            disabled={selected.length === 0 || saving}
-            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {saving ? 'Guardando…' : 'Continuar'}
-          </button>
-        </form>
-      </div>
-    </main>
+          {selected.length > 0 && (
+            <p className="text-center text-xs text-primary font-medium">
+              {selected.length} seleccionado{selected.length !== 1 ? 's' : ''} ✓
+            </p>
+          )}
+
+          {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+        </QuizCard>
+
+        <QuizCta type="submit" disabled={selected.length === 0} loading={saving} />
+      </form>
+    </QuizLayout>
   )
 }

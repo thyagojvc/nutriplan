@@ -2,14 +2,15 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError } from './quiz-ui'
 
 const OPTIONS = [
-  { id: 'ninguna_condicion', label: 'Ninguna condición médica' },
-  { id: 'embarazada', label: 'Embarazada o lactando' },
-  { id: 'hipertension', label: 'Hipertensión' },
-  { id: 'enfermedad_cardiaca', label: 'Enfermedad cardíaca' },
-  { id: 'diabetes', label: 'Diabetes' },
-  { id: 'otra_condicion', label: 'Otra condición' },
+  { id: 'ninguna_condicion',  label: 'Ninguna condición médica', emoji: '💪' },
+  { id: 'embarazada',         label: 'Embarazada o lactando',    emoji: '🤰' },
+  { id: 'hipertension',       label: 'Hipertensión',             emoji: '🫀' },
+  { id: 'enfermedad_cardiaca',label: 'Enfermedad cardíaca',      emoji: '❤️' },
+  { id: 'diabetes',           label: 'Diabetes',                  emoji: '🩸' },
+  { id: 'otra_condicion',     label: 'Otra condición',            emoji: '📋' },
 ]
 
 interface Props {
@@ -26,9 +27,7 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
       const cached = sessionStorage.getItem('nutriplan_step_9')
       const parsed = cached ? (JSON.parse(cached) as { health?: string[] }) : {}
       return parsed.health ?? []
-    } catch {
-      return []
-    }
+    } catch { return [] }
   })
 
   const [saving, setSaving] = useState(false)
@@ -70,60 +69,40 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
+
+      <QuizCard>
+        <QuizHeader
+          title="¿Tienes alguna condición de salud?"
+          subtitle="Tu plan incluirá ajustes específicos según tu situación. Todo se trata con discreción."
+        />
+
         <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¿Tienes alguna condición de salud?</h1>
-            <p className="text-sm text-muted-foreground">
-              Tu plan incluirá ajustes y recomendaciones específicas según tu condición.
-            </p>
-          </div>
-
-          <div className="space-y-2">
-            {OPTIONS.map(({ id, label }) => (
-              <button
+          <QuizChip
+            label="Ninguna condición médica"
+            emoji="💪"
+            selected={selected.includes('ninguna_condicion')}
+            onToggle={() => toggle('ninguna_condicion')}
+            fullWidth
+          />
+          <div className="grid grid-cols-2 gap-2">
+            {OPTIONS.filter(o => o.id !== 'ninguna_condicion').map(({ id, label, emoji }) => (
+              <QuizChip
                 key={id}
-                type="button"
-                onClick={() => toggle(id)}
-                className={[
-                  'w-full rounded-lg border-2 px-4 py-3 text-left text-sm transition-colors',
-                  selected.includes(id)
-                    ? 'border-primary bg-primary/5 font-medium'
-                    : 'border-border hover:border-primary/50',
-                ].join(' ')}
-              >
-                {label}
-              </button>
+                label={label}
+                emoji={emoji}
+                selected={selected.includes(id)}
+                onToggle={() => toggle(id)}
+              />
             ))}
           </div>
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
         </div>
 
-        <button
-          onClick={handleContinue}
-          disabled={selected.length === 0 || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
-      </div>
-    </main>
+        {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+      </QuizCard>
+
+      <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving} />
+    </QuizLayout>
   )
 }

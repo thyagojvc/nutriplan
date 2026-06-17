@@ -2,10 +2,11 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
 
 const OPTIONS = [
-  { id: 'masculino', label: 'Masculino' },
-  { id: 'femenino', label: 'Femenino' },
+  { id: 'masculino', label: 'Masculino', emoji: '👨' },
+  { id: 'femenino',  label: 'Femenino',  emoji: '👩' },
 ]
 
 interface Props {
@@ -22,9 +23,7 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
       const cached = sessionStorage.getItem('nutriplan_step_4')
       const parsed = cached ? (JSON.parse(cached) as { sex?: string }) : {}
       return parsed.sex ?? null
-    } catch {
-      return null
-    }
+    } catch { return null }
   })
 
   const [saving, setSaving] = useState(false)
@@ -57,60 +56,40 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¿Cuál es tu sexo biológico?</h1>
-            <p className="text-sm text-muted-foreground">
-              Necesitamos este dato para calcular tu metabolismo basal.
-            </p>
-          </div>
+      <QuizCard>
+        <QuizHeader
+          title="¿Cuál es tu sexo biológico?"
+          subtitle="Lo necesitamos para calcular tu metabolismo basal con precisión."
+        />
 
-          <div className="grid grid-cols-2 gap-3">
-            {OPTIONS.map(({ id, label }) => (
-              <button
-                key={id}
-                type="button"
-                onClick={() => handleSelect(id)}
-                className={[
-                  'rounded-lg border-2 px-4 py-4 text-center text-sm font-medium transition-colors',
-                  selected === id
-                    ? 'border-primary bg-primary/5 text-primary'
-                    : 'border-border hover:border-primary/50',
-                ].join(' ')}
-              >
+        <div className="grid grid-cols-2 gap-3">
+          {OPTIONS.map(({ id, label, emoji }) => (
+            <button
+              key={id}
+              type="button"
+              onClick={() => handleSelect(id)}
+              className={[
+                'flex flex-col items-center gap-2 rounded-xl border py-5 text-center transition-all duration-150',
+                selected === id
+                  ? 'border-primary bg-[#EAF6E4] shadow-sm'
+                  : 'border-[#DDE8D8] bg-white hover:border-primary/50 hover:bg-[#F3FAF0]',
+              ].join(' ')}
+            >
+              <span className="text-3xl">{emoji}</span>
+              <span className={['text-sm font-semibold', selected === id ? 'text-primary' : 'text-gray-800'].join(' ')}>
                 {label}
-              </button>
-            ))}
-          </div>
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
+              </span>
+            </button>
+          ))}
         </div>
 
-        <button
-          onClick={handleContinue}
-          disabled={!selected || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
-      </div>
-    </main>
+        {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+      </QuizCard>
+
+      <QuizCta onClick={handleContinue} disabled={!selected} loading={saving} />
+    </QuizLayout>
   )
 }

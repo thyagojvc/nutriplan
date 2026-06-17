@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizInput, QuizCta, QuizError } from './quiz-ui'
 
 interface PhysicalData {
   age: string
@@ -27,9 +28,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         weight_kg: String(parsed.weight_kg ?? ''),
         height_cm: String(parsed.height_cm ?? ''),
       }
-    } catch {
-      return { age: '', weight_kg: '', height_cm: '' }
-    }
+    } catch { return { age: '', weight_kg: '', height_cm: '' } }
   })
 
   const [ageBlocked, setAgeBlocked] = useState(false)
@@ -82,106 +81,75 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
   if (ageBlocked) {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-4">
-        <div className="w-full max-w-lg text-center space-y-6">
-          <div className="rounded-lg border p-8 space-y-4">
+      <QuizLayout>
+        <QuizCard>
+          <div className="py-4 text-center space-y-4">
             <p className="text-5xl">🚫</p>
-            <h1 className="text-xl font-semibold">Lo sentimos</h1>
-            <p className="text-sm text-muted-foreground">
+            <h1 className="text-xl font-bold text-gray-900">Lo sentimos</h1>
+            <p className="text-sm leading-relaxed text-muted-foreground">
               NutriPlan es exclusivo para personas mayores de 18 años.
               No podemos continuar con tu solicitud.
             </p>
           </div>
-        </div>
-      </main>
+        </QuizCard>
+      </QuizLayout>
     )
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
+
+      <form onSubmit={handleContinue} className="space-y-4">
+        <QuizCard>
+          <QuizHeader
+            title="Tus datos físicos"
+            subtitle="Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
+          />
+
+          <div className="space-y-4">
+            <QuizInput
+              label="Edad (años)"
+              type="number"
+              min={1}
+              max={100}
+              placeholder="Ej: 28"
+              value={data.age}
+              onChange={(e) => handleChange('age', e.target.value)}
+              autoFocus
+              hint={data.age !== '' && !isNaN(parseInt(data.age)) && parseInt(data.age) < 18
+                ? 'Debes tener al menos 18 años.'
+                : undefined}
             />
-          </div>
-        </div>
 
-        <form onSubmit={handleContinue} className="space-y-6">
-          <div className="rounded-lg border p-6 space-y-5">
-            <div className="space-y-1">
-              <h1 className="text-xl font-semibold">Tus datos físicos</h1>
-              <p className="text-sm text-muted-foreground">
-                Los usaremos para calcular tus calorías y macros exactos.
-              </p>
+            <div className="grid grid-cols-2 gap-3">
+              <QuizInput
+                label="Peso (kg)"
+                type="number"
+                min={40}
+                max={250}
+                step={0.1}
+                placeholder="Ej: 70"
+                value={data.weight_kg}
+                onChange={(e) => handleChange('weight_kg', e.target.value)}
+              />
+              <QuizInput
+                label="Altura (cm)"
+                type="number"
+                min={130}
+                max={220}
+                placeholder="Ej: 170"
+                value={data.height_cm}
+                onChange={(e) => handleChange('height_cm', e.target.value)}
+              />
             </div>
-
-            <div className="space-y-4">
-              <div className="space-y-1">
-                <label className="block text-sm font-medium">Edad (años)</label>
-                <input
-                  type="number"
-                  min={1}
-                  max={100}
-                  placeholder="Ej: 28"
-                  value={data.age}
-                  onChange={(e) => handleChange('age', e.target.value)}
-                  autoFocus
-                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-                {data.age !== '' && !isNaN(parseInt(data.age)) && parseInt(data.age) < 18 && (
-                  <p className="text-xs text-destructive">Debes tener al menos 18 años.</p>
-                )}
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-sm font-medium">Peso (kg)</label>
-                <input
-                  type="number"
-                  min={40}
-                  max={250}
-                  step={0.1}
-                  placeholder="Ej: 70"
-                  value={data.weight_kg}
-                  onChange={(e) => handleChange('weight_kg', e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="block text-sm font-medium">Altura (cm)</label>
-                <input
-                  type="number"
-                  min={130}
-                  max={220}
-                  placeholder="Ej: 170"
-                  value={data.height_cm}
-                  onChange={(e) => handleChange('height_cm', e.target.value)}
-                  className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
-                />
-              </div>
-            </div>
-
-            {error && (
-              <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-            )}
           </div>
 
-          <button
-            type="submit"
-            disabled={!isValid || saving}
-            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {saving ? 'Guardando…' : 'Continuar'}
-          </button>
-        </form>
-      </div>
-    </main>
+          {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+        </QuizCard>
+
+        <QuizCta type="submit" disabled={!isValid} loading={saving} />
+      </form>
+    </QuizLayout>
   )
 }

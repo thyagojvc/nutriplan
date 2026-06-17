@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizCard, QuizInput, QuizError } from './quiz-ui'
 
-// Versão e texto do consentimento — atualizar ao publicar nova política de privacidade
 const POLICY_VERSION = 'v1.0'
 const CONSENT_TEXT =
   'Acepto los Términos y Condiciones y la Política de Privacidad de NutriPlan. ' +
@@ -27,15 +27,12 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
     e.preventDefault()
     if (!consented || submitting) return
 
-    // Recuperar country do sessionStorage (salvo no step 7)
     let country: string | undefined
     try {
       const step7Raw = sessionStorage.getItem('nutriplan_step_7')
       const step7 = step7Raw ? (JSON.parse(step7Raw) as Record<string, unknown>) : {}
       country = step7.country as string | undefined
-    } catch {
-      // sessionStorage indisponível (SSR ou tab privada extremamente restrita)
-    }
+    } catch {}
 
     if (!country) {
       setError('No pudimos recuperar tu país. Vuelve al paso 7 y continúa.')
@@ -49,27 +46,17 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
       const res = await fetch('/api/quiz/submit-step12', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email,
-          name,
-          country,
-          policy_version: POLICY_VERSION,
-          consent_text: CONSENT_TEXT,
-        }),
+        body: JSON.stringify({ email, name, country, policy_version: POLICY_VERSION, consent_text: CONSENT_TEXT }),
       })
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}))
-
-        if (data?.error === 'country_not_set') {
-          setError('El paso 7 no fue completado. Vuelve y selecciona tu país.')
-        } else {
-          setError('Ocurrió un error. Intenta de nuevo.')
-        }
+        setError(data?.error === 'country_not_set'
+          ? 'El paso 7 no fue completado. Vuelve y selecciona tu país.'
+          : 'Ocurrió un error. Intenta de nuevo.')
         return
       }
 
-      // submit-step12 exitoso → tela de loading animada antes do checkout
       router.push('/calculando' as never)
     } catch {
       setError('Error de conexión. Verifica tu internet e intenta de nuevo.')
@@ -79,68 +66,59 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
-        {/* Barra de progresso */}
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>100%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div className="h-2 w-full rounded-full bg-primary" />
-          </div>
+    <QuizLayout>
+      {/* Barra de progresso — 100% no último paso */}
+      <div className="space-y-2 px-0.5">
+        <div className="flex items-center justify-between">
+          <span className="text-xs font-medium text-muted-foreground">Paso {stepNumber} de {totalSteps}</span>
+          <span className="rounded-full bg-primary/10 px-2.5 py-0.5 text-xs font-bold text-primary">100%</span>
         </div>
+        <div className="h-2 w-full overflow-hidden rounded-full" style={{ background: '#C8E8BC' }}>
+          <div className="h-full w-full rounded-full bg-primary" />
+        </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¡Ya casi listo!</h1>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <QuizCard>
+          {/* Header especial para o último step */}
+          <div className="text-center space-y-1 pb-1">
+            <p className="text-3xl">🎉</p>
+            <h1 className="text-xl font-bold text-gray-900">¡Ya casi listo!</h1>
             <p className="text-sm text-muted-foreground">
-              Ingresa tus datos para recibir tu plan nutricional personalizado.
+              Ingresa tus datos para ver tu plan nutricional personalizado.
             </p>
           </div>
 
-          <div className="space-y-1">
-            <label htmlFor="name" className="block text-sm font-medium">
-              Nombre
-            </label>
-            <input
-              id="name"
+          <div className="space-y-3">
+            <QuizInput
+              label="Tu nombre"
               type="text"
               required
               autoComplete="given-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Tu nombre"
-              className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+              placeholder="¿Cómo te llamas?"
             />
-          </div>
-
-          <div className="space-y-1">
-            <label htmlFor="email" className="block text-sm font-medium">
-              Correo electrónico
-            </label>
-            <input
-              id="email"
+            <QuizInput
+              label="Correo electrónico"
               type="email"
               required
               autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="tu@correo.com"
-              className="w-full rounded-md border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
             />
           </div>
 
-          <label className="flex items-start gap-3 cursor-pointer">
+          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#DDE8D8] bg-[#F5FAF2] p-3">
             <input
               type="checkbox"
               required
               checked={consented}
               onChange={(e) => setConsented(e.target.checked)}
-              className="mt-0.5 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
             />
-            <span className="text-xs text-muted-foreground leading-relaxed">
+            <span className="text-xs leading-relaxed text-muted-foreground">
               {CONSENT_TEXT}{' '}
               <a href="/privacidad" target="_blank" className="underline hover:text-foreground">
                 Leer política completa
@@ -148,19 +126,37 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
             </span>
           </label>
 
-          {error && (
-            <p className="text-sm text-destructive">{error}</p>
-          )}
+          {error && <QuizError message={error} />}
+        </QuizCard>
 
-          <button
-            type="submit"
-            disabled={!consented || submitting}
-            className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-          >
-            {submitting ? 'Enviando…' : 'Ver mi plan'}
-          </button>
-        </form>
-      </div>
-    </main>
+        {/* CTA customizado para o step final */}
+        <button
+          type="submit"
+          disabled={!consented || submitting}
+          className={[
+            'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white',
+            'bg-primary shadow-md transition-all duration-150',
+            'hover:brightness-105 hover:shadow-lg active:scale-[0.99]',
+            'disabled:cursor-not-allowed disabled:opacity-40 disabled:shadow-none',
+          ].join(' ')}
+        >
+          {submitting ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+              Enviando…
+            </>
+          ) : (
+            <>
+              Ver mi plan nutricional
+              <span className="opacity-70">→</span>
+            </>
+          )}
+        </button>
+
+        <p className="text-center text-xs text-muted-foreground">
+          🔒 Tus datos están seguros y nunca serán compartidos.
+        </p>
+      </form>
+    </QuizLayout>
   )
 }

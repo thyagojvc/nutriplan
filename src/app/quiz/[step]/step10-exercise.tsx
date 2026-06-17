@@ -2,34 +2,35 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizChip, QuizSection, QuizCta, QuizError } from './quiz-ui'
 
 const EXPERIENCE_OPTS = [
-  { id: 'no_ejercicio', label: 'No hago ejercicio', desc: 'No tengo ninguna rutina de actividad física' },
-  { id: 'principiante', label: 'Principiante', desc: 'Poca o ninguna experiencia' },
-  { id: 'intermedio', label: 'Intermedio', desc: 'Llevo algunos meses entrenando' },
-  { id: 'avanzado', label: 'Avanzado', desc: 'Entreno consistentemente hace años' },
+  { id: 'no_ejercicio', label: 'No hago ejercicio',  desc: 'No tengo ninguna rutina de actividad física', emoji: '📱' },
+  { id: 'principiante', label: 'Principiante',        desc: 'Poca o ninguna experiencia',                  emoji: '🌱' },
+  { id: 'intermedio',   label: 'Intermedio',          desc: 'Llevo algunos meses entrenando',              emoji: '🏋️' },
+  { id: 'avanzado',     label: 'Avanzado',            desc: 'Entreno consistentemente hace años',          emoji: '🏆' },
 ]
 
 const LOCATION_OPTS = [
-  { id: 'casa', label: 'En casa' },
-  { id: 'gimnasio', label: 'Gimnasio' },
-  { id: 'aire_libre', label: 'Al aire libre' },
+  { id: 'casa',        label: 'En casa',       emoji: '🏠' },
+  { id: 'gimnasio',    label: 'Gimnasio',      emoji: '🏋️' },
+  { id: 'aire_libre',  label: 'Al aire libre', emoji: '🌳' },
 ]
 
 const FREQUENCY_OPTS = [
-  { id: '1_2', label: '1–2 días/sem.' },
-  { id: '3_4', label: '3–4 días/sem.' },
-  { id: '5_mas', label: '5+ días/sem.' },
+  { id: '1_2',  label: '1–2 días/sem.' },
+  { id: '3_4',  label: '3–4 días/sem.' },
+  { id: '5_mas',label: '5+ días/sem.'  },
 ]
 
 const LIMITATION_OPTS = [
-  { id: 'ninguna', label: 'Sin limitaciones' },
-  { id: 'rodillas', label: 'Rodillas' },
-  { id: 'espalda', label: 'Espalda' },
-  { id: 'hombros', label: 'Hombros' },
-  { id: 'cadera', label: 'Cadera' },
-  { id: 'cuello', label: 'Cuello' },
-  { id: 'otra', label: 'Otra' },
+  { id: 'ninguna',   label: 'Sin limitaciones', emoji: '✅' },
+  { id: 'rodillas',  label: 'Rodillas',          emoji: '🦵' },
+  { id: 'espalda',   label: 'Espalda',           emoji: '🦴' },
+  { id: 'hombros',   label: 'Hombros',           emoji: '💪' },
+  { id: 'cadera',    label: 'Cadera',            emoji: '🦴' },
+  { id: 'cuello',    label: 'Cuello',            emoji: '🫀' },
+  { id: 'otra',      label: 'Otra',              emoji: '📋' },
 ]
 
 interface ExerciseData {
@@ -60,9 +61,7 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
         frequency: parsed.frequency ?? null,
         limitations: parsed.limitations ?? [],
       }
-    } catch {
-      return { experience: null, location: null, frequency: null, limitations: [] }
-    }
+    } catch { return { experience: null, location: null, frequency: null, limitations: [] } }
   })
 
   const [saving, setSaving] = useState(false)
@@ -70,7 +69,6 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
 
   function setField<K extends keyof ExerciseData>(field: K, value: ExerciseData[K]) {
     const next = { ...data, [field]: value }
-    // Se selecionou "no hago ejercicio", limpar localização e frequência
     if (field === 'experience' && value === 'no_ejercicio') {
       next.location = null
       next.frequency = null
@@ -121,130 +119,88 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4 py-8">
-      <div className="w-full max-w-lg space-y-6">
-        <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
+
+      <QuizCard>
+        <QuizHeader title="Cuéntanos sobre tu ejercicio" />
+
+        {/* Experiencia */}
+        <QuizSection title="Experiencia en entrenamiento">
+          <div className="space-y-2">
+            {EXPERIENCE_OPTS.map(({ id, label, desc, emoji }) => (
+              <QuizOption
+                key={id}
+                label={label}
+                desc={desc}
+                emoji={emoji}
+                selected={data.experience === id}
+                onSelect={() => setField('experience', id)}
+              />
+            ))}
           </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
+        </QuizSection>
+
+        {/* Lugar e Frequência */}
+        {!noExercise && (
+          <>
+            <QuizSection title="¿Dónde entrenas?">
+              <div className="grid grid-cols-3 gap-2">
+                {LOCATION_OPTS.map(({ id, label, emoji }) => (
+                  <QuizChip
+                    key={id}
+                    label={label}
+                    emoji={emoji}
+                    selected={data.location === id}
+                    onToggle={() => setField('location', id)}
+                  />
+                ))}
+              </div>
+            </QuizSection>
+
+            <QuizSection title="¿Con qué frecuencia?">
+              <div className="grid grid-cols-3 gap-2">
+                {FREQUENCY_OPTS.map(({ id, label }) => (
+                  <QuizChip
+                    key={id}
+                    label={label}
+                    selected={data.frequency === id}
+                    onToggle={() => setField('frequency', id)}
+                  />
+                ))}
+              </div>
+            </QuizSection>
+          </>
+        )}
+
+        {/* Limitaciones */}
+        <QuizSection title="Limitaciones musculoesqueléticas">
+          <div className="space-y-2">
+            <QuizChip
+              label="Sin limitaciones"
+              emoji="✅"
+              selected={data.limitations.includes('ninguna')}
+              onToggle={() => toggleLimitation('ninguna')}
+              fullWidth
             />
-          </div>
-        </div>
-
-        <div className="rounded-lg border p-6 space-y-6">
-          <h1 className="text-xl font-semibold">Cuéntanos sobre tu ejercicio</h1>
-
-          {/* Experiencia */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Experiencia en entrenamiento</p>
-            <div className="space-y-2">
-              {EXPERIENCE_OPTS.map(({ id, label, desc }) => (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => setField('experience', id)}
-                  className={[
-                    'w-full rounded-lg border-2 px-4 py-2.5 text-left text-sm transition-colors',
-                    data.experience === id
-                      ? 'border-primary bg-primary/5 font-medium'
-                      : 'border-border hover:border-primary/50',
-                  ].join(' ')}
-                >
-                  {label}
-                  <span className="block text-xs text-muted-foreground font-normal">{desc}</span>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Lugar e Frequência — só para quem treina */}
-          {!noExercise && (
-            <>
-              <div className="space-y-2">
-                <p className="text-sm font-medium">¿Dónde entrenas?</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {LOCATION_OPTS.map(({ id, label }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => setField('location', id)}
-                      className={[
-                        'rounded-lg border-2 px-2 py-2.5 text-center text-sm transition-colors',
-                        data.location === id
-                          ? 'border-primary bg-primary/5 font-medium'
-                          : 'border-border hover:border-primary/50',
-                      ].join(' ')}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <p className="text-sm font-medium">¿Con qué frecuencia?</p>
-                <div className="grid grid-cols-3 gap-2">
-                  {FREQUENCY_OPTS.map(({ id, label }) => (
-                    <button
-                      key={id}
-                      type="button"
-                      onClick={() => setField('frequency', id)}
-                      className={[
-                        'rounded-lg border-2 px-2 py-2.5 text-center text-xs transition-colors',
-                        data.frequency === id
-                          ? 'border-primary bg-primary/5 font-medium'
-                          : 'border-border hover:border-primary/50',
-                      ].join(' ')}
-                    >
-                      {label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </>
-          )}
-
-          {/* Limitaciones */}
-          <div className="space-y-2">
-            <p className="text-sm font-medium">Limitaciones musculoesqueléticas</p>
             <div className="grid grid-cols-2 gap-2">
-              {LIMITATION_OPTS.map(({ id, label }) => (
-                <button
+              {LIMITATION_OPTS.filter(o => o.id !== 'ninguna').map(({ id, label, emoji }) => (
+                <QuizChip
                   key={id}
-                  type="button"
-                  onClick={() => toggleLimitation(id)}
-                  className={[
-                    'rounded-lg border-2 px-3 py-2 text-left text-sm transition-colors',
-                    id === 'ninguna' ? 'col-span-2' : '',
-                    data.limitations.includes(id)
-                      ? 'border-primary bg-primary/5 font-medium'
-                      : 'border-border hover:border-primary/50',
-                  ].join(' ')}
-                >
-                  {label}
-                </button>
+                  label={label}
+                  emoji={emoji}
+                  selected={data.limitations.includes(id)}
+                  onToggle={() => toggleLimitation(id)}
+                />
               ))}
             </div>
           </div>
+        </QuizSection>
 
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
-        </div>
+        {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+      </QuizCard>
 
-        <button
-          onClick={handleContinue}
-          disabled={!isValid || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
-      </div>
-    </main>
+      <QuizCta onClick={handleContinue} disabled={!isValid} loading={saving} />
+    </QuizLayout>
   )
 }

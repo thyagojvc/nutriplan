@@ -2,16 +2,17 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError } from './quiz-ui'
 
 const OPTIONS = [
-  { id: 'ninguna', label: 'Ninguna restricción', exclusive: true },
-  { id: 'vegetariano', label: 'Vegetariano' },
-  { id: 'vegano', label: 'Vegano' },
-  { id: 'sin_gluten', label: 'Sin gluten' },
-  { id: 'sin_lactosa', label: 'Sin lactosa' },
-  { id: 'sin_mariscos', label: 'Sin mariscos' },
-  { id: 'sin_cerdo', label: 'Sin cerdo' },
-  { id: 'otra', label: 'Otra' },
+  { id: 'ninguna',       label: 'Ninguna restricción', emoji: '✅', exclusive: true },
+  { id: 'vegetariano',   label: 'Vegetariano',          emoji: '🥕' },
+  { id: 'vegano',        label: 'Vegano',               emoji: '🌱' },
+  { id: 'sin_gluten',    label: 'Sin gluten',           emoji: '🌾' },
+  { id: 'sin_lactosa',   label: 'Sin lactosa',          emoji: '🥛' },
+  { id: 'sin_mariscos',  label: 'Sin mariscos',         emoji: '🦐' },
+  { id: 'sin_cerdo',     label: 'Sin cerdo',            emoji: '🐷' },
+  { id: 'otra',          label: 'Otra',                 emoji: '📋' },
 ]
 
 interface Props {
@@ -28,9 +29,7 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
       const cached = sessionStorage.getItem('nutriplan_step_8')
       const parsed = cached ? (JSON.parse(cached) as { restrictions?: string[] }) : {}
       return parsed.restrictions ?? []
-    } catch {
-      return []
-    }
+    } catch { return [] }
   })
 
   const [saving, setSaving] = useState(false)
@@ -72,59 +71,40 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-4">
-      <div className="w-full max-w-lg space-y-6">
+    <QuizLayout>
+      <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
+
+      <QuizCard>
+        <QuizHeader
+          title="¿Tienes restricciones alimentarias?"
+          subtitle="Selecciona todas las que apliquen. Tu plan las respetará al 100%."
+        />
+
         <div className="space-y-2">
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Paso {stepNumber} de {totalSteps}</span>
-            <span>{progress}%</span>
-          </div>
-          <div className="h-2 w-full rounded-full bg-muted">
-            <div
-              className="h-2 rounded-full bg-primary transition-all"
-              style={{ width: `${progress}%` }}
-            />
-          </div>
-        </div>
-
-        <div className="rounded-lg border p-6 space-y-5">
-          <div className="space-y-1">
-            <h1 className="text-xl font-semibold">¿Tienes restricciones alimentarias?</h1>
-            <p className="text-sm text-muted-foreground">Selecciona todas las que apliquen.</p>
-          </div>
-
+          <QuizChip
+            label="Ninguna restricción"
+            emoji="✅"
+            selected={selected.includes('ninguna')}
+            onToggle={() => toggle('ninguna')}
+            fullWidth
+          />
           <div className="grid grid-cols-2 gap-2">
-            {OPTIONS.map(({ id, label }) => (
-              <button
+            {OPTIONS.filter(o => o.id !== 'ninguna').map(({ id, label, emoji }) => (
+              <QuizChip
                 key={id}
-                type="button"
-                onClick={() => toggle(id)}
-                className={[
-                  'rounded-lg border-2 px-3 py-2 text-left text-sm transition-colors',
-                  id === 'ninguna' ? 'col-span-2' : '',
-                  selected.includes(id)
-                    ? 'border-primary bg-primary/5 font-medium'
-                    : 'border-border hover:border-primary/50',
-                ].join(' ')}
-              >
-                {label}
-              </button>
+                label={label}
+                emoji={emoji}
+                selected={selected.includes(id)}
+                onToggle={() => toggle(id)}
+              />
             ))}
           </div>
-
-          {error && (
-            <p className="text-sm text-destructive">Error al guardar. Intenta de nuevo.</p>
-          )}
         </div>
 
-        <button
-          onClick={handleContinue}
-          disabled={selected.length === 0 || saving}
-          className="w-full rounded-md bg-primary px-4 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
-        >
-          {saving ? 'Guardando…' : 'Continuar'}
-        </button>
-      </div>
-    </main>
+        {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
+      </QuizCard>
+
+      <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving} />
+    </QuizLayout>
   )
 }
