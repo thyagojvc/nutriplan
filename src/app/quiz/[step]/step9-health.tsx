@@ -7,9 +7,9 @@ import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, Quiz
 const OPTIONS = [
   { id: 'ninguna_condicion',  label: 'Ninguna condición médica', emoji: '💪' },
   { id: 'embarazada',         label: 'Embarazada o lactando',    emoji: '🤰' },
-  { id: 'hipertension',       label: 'Hipertensión',             emoji: '🫀' },
+  { id: 'hipertension',       label: 'Hipertensión',             emoji: '💓' },
   { id: 'enfermedad_cardiaca',label: 'Enfermedad cardíaca',      emoji: '❤️' },
-  { id: 'diabetes',           label: 'Diabetes',                  emoji: '🩸' },
+  { id: 'diabetes',           label: 'Diabetes',                  emoji: '🍬' },
   { id: 'otra_condicion',     label: 'Otra condición',            emoji: '📋' },
 ]
 

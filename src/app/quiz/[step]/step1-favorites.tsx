@@ -14,7 +14,7 @@ const GENERIC_FOODS = [
   { id: 'tofu',        label: 'Tofu / Tempeh', emoji: '🌿' },
   { id: 'arroz',       label: 'Arroz',         emoji: '🍚' },
   { id: 'pasta',       label: 'Pasta',         emoji: '🍝' },
-  { id: 'legumbres',   label: 'Legumbres',     emoji: '🫘' },
+  { id: 'legumbres',   label: 'Legumbres',     emoji: '🥜' },
   { id: 'frutas',      label: 'Frutas',        emoji: '🍎' },
   { id: 'verduras',    label: 'Verduras',      emoji: '🥦' },
   { id: 'lacteos',     label: 'Lácteos',       emoji: '🥛' },
@@ -25,12 +25,12 @@ const GENERIC_FOODS = [
 
 const FOODS_BY_COUNTRY: Record<string, typeof GENERIC_FOODS> = {
   MX: [
-    { id: 'tortilla_maiz', label: 'Tortilla de maíz', emoji: '🫓' },
+    { id: 'tortilla_maiz', label: 'Tortilla de maíz', emoji: '🌽' },
     { id: 'nopales',       label: 'Nopales',           emoji: '🌵' },
     ...GENERIC_FOODS,
   ],
   CO: [
-    { id: 'arepa',   label: 'Arepa',   emoji: '🫔' },
+    { id: 'arepa',   label: 'Arepa',   emoji: '🌽' },
     { id: 'platano', label: 'Plátano', emoji: '🍌' },
     { id: 'yuca',    label: 'Yuca',    emoji: '🥔' },
     ...GENERIC_FOODS,

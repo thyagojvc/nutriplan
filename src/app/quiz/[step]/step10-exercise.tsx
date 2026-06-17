@@ -29,7 +29,7 @@ const LIMITATION_OPTS = [
   { id: 'espalda',   label: 'Espalda',           emoji: '🦴' },
   { id: 'hombros',   label: 'Hombros',           emoji: '💪' },
   { id: 'cadera',    label: 'Cadera',            emoji: '🦴' },
-  { id: 'cuello',    label: 'Cuello',            emoji: '🫀' },
+  { id: 'cuello',    label: 'Cuello',            emoji: '🧣' },
   { id: 'otra',      label: 'Otra',              emoji: '📋' },
 ]
 
