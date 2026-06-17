@@ -38,14 +38,14 @@ interface PreviewData {
   }
 }
 
+type ErrorKind = 'no_session' | 'calc_failed' | 'network'
+
 export default function PreviewPage() {
   const router = useRouter()
   const [data, setData] = useState<PreviewData | null>(null)
-  const [error, setError] = useState(false)
+  const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
 
   useEffect(() => {
-    // Monta o draft a partir do sessionStorage (preenchido durante o quiz).
-    // Caminho primário: não depende de cookie nem de round-trip ao banco.
     function buildDraftFromSession(): { draft: Record<string, unknown>; country: string } | null {
       try {
         const draft: Record<string, unknown> = {}
@@ -58,7 +58,6 @@ export default function PreviewPage() {
           if (n === 5) hasStep5 = true
           if (n === 6) hasStep6 = true
         }
-        // Sem os dados físicos essenciais não dá para calcular — força fallback.
         if (!hasStep5 || !hasStep6) return null
 
         let country = 'OTHER'
@@ -75,41 +74,70 @@ export default function PreviewPage() {
 
     const local = buildDraftFromSession()
 
-    const request = local
-      ? fetch('/api/quiz/preview-data', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ draft_answers: local.draft, country: local.country }),
-        })
-      : fetch('/api/quiz/preview-data') // fallback: cookie + banco
+    if (!local) {
+      // sessionStorage vazio → tenta fallback via cookie+banco
+      fetch('/api/quiz/preview-data')
+        .then(r => r.json())
+        .then(d => { if (d.error) setErrorKind('no_session'); else setData(d) })
+        .catch(() => setErrorKind('network'))
+      return
+    }
 
-    request
+    fetch('/api/quiz/preview-data', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ draft_answers: local.draft, country: local.country }),
+    })
       .then(r => r.json())
       .then(d => {
-        if (d.error) {
-          // Se o POST (sessionStorage) falhou, tenta o GET (cookie) como último recurso.
-          if (local) {
-            return fetch('/api/quiz/preview-data')
-              .then(r => r.json())
-              .then(d2 => { if (d2.error) setError(true); else setData(d2) })
-          }
-          setError(true)
-          return
-        }
-        setData(d)
+        if (!d.error) { setData(d); return }
+        if (d.error === 'calc_failed') { setErrorKind('calc_failed'); return }
+        // outro erro no POST → tenta GET como último recurso
+        return fetch('/api/quiz/preview-data')
+          .then(r => r.json())
+          .then(d2 => { if (d2.error) setErrorKind('no_session'); else setData(d2) })
       })
-      .catch(() => setError(true))
+      .catch(() => setErrorKind('network'))
   }, [])
 
-  if (error) {
+  if (errorKind) {
+    const msgs: Record<ErrorKind, { emoji: string; title: string; body: string }> = {
+      no_session: {
+        emoji: '😕',
+        title: 'No encontramos tu sesión',
+        body: 'Parece que el quiz fue completado en otro dispositivo o la sesión expiró. Vuelve al quiz para continuar.',
+      },
+      calc_failed: {
+        emoji: '⚠️',
+        title: 'Error al calcular tu perfil',
+        body: 'Tus respuestas están guardadas pero no pudimos generar el análisis. Intenta de nuevo o vuelve al quiz.',
+      },
+      network: {
+        emoji: '📡',
+        title: 'Error de conexión',
+        body: 'No se pudo cargar tu análisis. Verifica tu conexión a internet e intenta de nuevo.',
+      },
+    }
+    const { emoji, title, body } = msgs[errorKind]
     return (
       <PageShell>
-        <div className="flex flex-col items-center gap-4 py-20 text-center">
-          <p className="text-3xl">😕</p>
-          <p className="text-sm text-muted-foreground max-w-xs">No encontramos tu sesión. Por favor vuelve al quiz.</p>
-          <a href="/quiz/1" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
-            Reiniciar quiz →
-          </a>
+        <div className="flex flex-col items-center gap-4 py-20 text-center px-6">
+          <p className="text-3xl">{emoji}</p>
+          <p className="font-bold text-gray-800">{title}</p>
+          <p className="text-sm text-muted-foreground max-w-xs">{body}</p>
+          <div className="flex gap-3 flex-wrap justify-center">
+            {errorKind !== 'no_session' && (
+              <button
+                onClick={() => { setErrorKind(null); window.location.reload() }}
+                className="inline-flex items-center gap-2 rounded-xl border border-primary px-5 py-3 text-sm font-bold text-primary"
+              >
+                Intentar de nuevo
+              </button>
+            )}
+            <a href="/quiz/1" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
+              Volver al quiz →
+            </a>
+          </div>
         </div>
       </PageShell>
     )
