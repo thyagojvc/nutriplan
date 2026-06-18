@@ -106,6 +106,22 @@ function playButton(cx, cy, r) {
   <path d="M${cx - t * 0.5} ${cy - t} L${cx + t} ${cy} L${cx - t * 0.5} ${cy + t} Z" fill="${C.green}"/>`
 }
 
+function checkCircle(cx, cy, r) {
+  return `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${C.green}"/>
+  <path d="M${cx - r * 0.42} ${cy} L${cx - r * 0.08} ${cy + r * 0.36} L${cx + r * 0.46} ${cy - r * 0.36}" stroke="#FFFFFF" stroke-width="${r * 0.22}" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`
+}
+
+function starRow(cx, cy, size) {
+  const gap = size * 1.35
+  const startX = cx - (4 * gap) / 2
+  let out = ''
+  for (let i = 0; i < 5; i++) {
+    const x = startX + i * gap
+    out += `<path transform="translate(${x - size / 2} ${cy - size / 2}) scale(${size / 11})" d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" fill="#f59e0b"/>`
+  }
+  return out
+}
+
 // ── Tipos de slide ─────────────────────────────────────────────────
 
 function coverSlide({ kicker, title, accent, total, active }) {
@@ -182,6 +198,48 @@ function reelCover({ title }) {
   </svg>`
 }
 
+// Slide de lista (checklist) — fundo creme, título verde, itens com check
+function listSlide({ title, items, total, active }) {
+  const t = textBlock(title, { x: 540, top: 300, fontSize: 64, color: C.green, maxWidth: 900, lh: 1.14 })
+  let rows = ''
+  const startY = 300 + t.height + 80
+  const gap = 96
+  items.forEach((item, i) => {
+    const y = startY + i * gap
+    rows += checkCircle(160, y - 12, 28)
+    rows += `<text x="215" y="${y}" font-family="${FONT}" font-size="40" font-weight="normal" fill="${C.ink}" text-anchor="start">${esc(item)}</text>`
+  })
+  return `<svg width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1080" height="1080" fill="${C.cream}"/>
+    ${dots(total, active, C.green)}
+    ${leaf(540, 150, 80, C.green, '#FFFFFF')}
+    ${t.svg}
+    ${rows}
+    ${handle(C.green)}
+  </svg>`
+}
+
+// Slide de depoimento — card branco com avatar, estrelas e citação
+function testimonialSlide({ header, initials, color, quote, name, total, active }) {
+  const q = textBlock('"' + quote + '"', { x: 540, top: 540, fontSize: 44, color: C.ink, weight: 'normal', maxWidth: 740, lh: 1.32 })
+  const nameY = 540 + q.height + 80
+  const headerSvg = header
+    ? `<text x="540" y="210" font-family="${FONT}" font-size="38" font-weight="bold" fill="${C.green}" text-anchor="middle">${esc(header)}</text>`
+    : ''
+  return `<svg width="1080" height="1080" xmlns="http://www.w3.org/2000/svg">
+    <rect width="1080" height="1080" fill="${C.cream}"/>
+    ${dots(total, active, C.green)}
+    ${headerSvg}
+    <rect x="90" y="270" width="900" height="560" rx="44" fill="#FFFFFF" stroke="${C.greenSoft}" stroke-width="2"/>
+    <circle cx="540" cy="375" r="55" fill="${color}"/>
+    <text x="540" y="392" font-family="${FONT}" font-size="42" font-weight="bold" fill="#FFFFFF" text-anchor="middle">${esc(initials)}</text>
+    ${starRow(540, 475, 30)}
+    ${q.svg}
+    <text x="540" y="${nameY}" font-family="${FONT}" font-size="38" font-weight="bold" fill="${C.green}" text-anchor="middle">${esc(name)}</text>
+    ${handle(C.green)}
+  </svg>`
+}
+
 // ── CONTEÚDO DOS POSTS ─────────────────────────────────────────────
 const POSTS = {
   post1: [
@@ -237,6 +295,65 @@ const POSTS = {
       total: 5, active: 3,
     }),
     ctaSlide({ title: 'Adelgazar no es pasar hambre. Es comer lo correcto.', ctaLabel: 'Calcula tu plan', total: 5, active: 4 }),
+  ],
+
+  post5: [
+    coverSlide({ kicker: 'Tu plan incluye', title: 'Esto es todo lo que recibes', total: 3, active: 0 }),
+    listSlide({
+      title: 'En tu plan personalizado',
+      items: [
+        'Perfil nutricional exacto (IMC, TMB, TDEE)',
+        'Plan de 30 días con porciones',
+        'Lista de compras lista para usar',
+        'Guía de implementación paso a paso',
+        'Sustituciones para tu despensa',
+        'PDF descargable para siempre',
+      ],
+      total: 3, active: 1,
+    }),
+    ctaSlide({ title: 'Todo calculado para ti. En solo 3 minutos.', ctaLabel: 'Quiero mi plan', total: 3, active: 2 }),
+  ],
+
+  post6: [
+    testimonialSlide({
+      header: 'Lo que dicen quienes ya lo tienen',
+      initials: 'VR', color: '#f472b6',
+      quote: 'Siempre pensé que tenía que pasar hambre. Bajé 5 kg en 6 semanas comiendo bien.',
+      name: 'Valeria R. · México',
+      total: 3, active: 0,
+    }),
+    testimonialSlide({
+      initials: 'AM', color: '#60a5fa',
+      quote: 'Con dos hijos no tenía tiempo de contar calorías. El plan me dijo exactamente qué comer.',
+      name: 'Andrea M. · Colombia',
+      total: 3, active: 1,
+    }),
+    testimonialSlide({
+      initials: 'AP', color: '#34d399',
+      quote: 'Comida real, sin dietas locas. En 3 semanas ya me sentía con más energía.',
+      name: 'Ana P. · España',
+      total: 3, active: 2,
+    }),
+  ],
+
+  post7: [
+    coverSlide({ title: 'Comes poco y aun así no bajas?', accent: 'Esto puede estar pasando.', total: 5, active: 0 }),
+    contentSlide({
+      title: 'Tu metabolismo se adaptó',
+      body: 'Cuando comes muy poco por mucho tiempo, tu cuerpo gasta menos para protegerse. Bajar de más se vuelve cada vez más difícil.',
+      total: 5, active: 1,
+    }),
+    contentSlide({
+      title: 'No sabes tu número real',
+      body: 'Sin conocer tu gasto exacto, es imposible saber si comes de más o de menos. Adivinar nunca funciona a largo plazo.',
+      total: 5, active: 2,
+    }),
+    contentSlide({
+      title: 'Comes "sano" pero sin medida',
+      body: 'Hasta los alimentos saludables suman. Sin porciones claras, es fácil pasarte sin darte cuenta.',
+      total: 5, active: 3,
+    }),
+    ctaSlide({ title: 'Descubre tu número exacto y deja de adivinar.', ctaLabel: 'Calcula tu plan', total: 5, active: 4 }),
   ],
 }
 
