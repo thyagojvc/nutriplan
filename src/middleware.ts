@@ -21,6 +21,7 @@ const PUBLIC_PATHS = [
   '/api/dev/simulate-payment',
   '/api/webhooks/hotmart',
   '/api/admin/generate',
+  '/dev', // páginas de preview dev-only (retornam 404 em produção)
 ]
 
 function isPublic(pathname: string): boolean {
