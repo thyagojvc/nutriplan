@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { processPaidOrder } from '@/lib/nutrition/process-order'
-import { sendPlanReadyEmail } from '@/lib/email'
+import { sendPlanReadyEmail, sendCheckinReminderEmail } from '@/lib/email'
+import type { PhaseNumber } from '@/lib/nutrition/generate'
 
 export async function POST(request: NextRequest) {
   // Hotmart v2.0.0 envia o hottok como query param: ?hottok=xxx
@@ -65,8 +66,8 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
       }
     }
   } else {
-    // Renovação — usuário já existe; futuramente disparar geração de novo plano
-    console.info('[webhook/hotmart] renewal received', { email, recurrenceNumber })
+    // Renovação: cria novo order, check-in pendente e envia email de check-in
+    await handleRenewal({ email, name, transactionId, recurrenceNumber })
   }
 }
 
@@ -206,6 +207,129 @@ async function sendMagicLinkEmail(email: string, name: string) {
 
   await sendPlanReadyEmail({ to: email, name, magicLink })
   console.info('[webhook/hotmart] e-mail enviado para', email)
+}
+
+async function handleRenewal({
+  email,
+  name,
+  transactionId,
+  recurrenceNumber,
+}: {
+  email: string
+  name: string
+  transactionId?: string
+  recurrenceNumber: number
+}) {
+  const supabase = createServiceClient()
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
+
+  // 1. Encontrar o usuário pelo email
+  const { data: user } = await supabase
+    .from('users')
+    .select('id, name, country')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (!user) {
+    console.error('[webhook/hotmart] renewal: usuário não encontrado para', email)
+    return
+  }
+
+  // 2. Encontrar o order mais recente (para copiar session_id, items e calcular ciclo)
+  const { data: latestOrder } = await supabase
+    .from('orders')
+    .select('id, session_id, subscription_cycle')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (!latestOrder) {
+    console.error('[webhook/hotmart] renewal: nenhum order anterior para', email)
+    return
+  }
+
+  const newCycle = (latestOrder.subscription_cycle ?? 1) + 1
+  // Fase cap: 3 = consolidação/manutenção indefinida
+  const phaseNumber = Math.min(newCycle, 3) as PhaseNumber
+
+  // 3. Criar novo order já como "paid" (não passa por pending no checkout)
+  const { data: items } = await supabase
+    .from('order_items')
+    .select('kind, product_code, unit_price, currency')
+    .eq('order_id', latestOrder.id)
+
+  const { data: newOrder, error: orderErr } = await supabase
+    .from('orders')
+    .insert({
+      user_id: user.id,
+      session_id: latestOrder.session_id,
+      status: 'paid',
+      country: user.country ?? 'OTHER',
+      currency: 'USD',
+      total_amount: 0, // Hotmart gerencia o valor; não precisamos armazená-lo aqui
+      provider: 'hotmart',
+      provider_payment_id: transactionId ?? null,
+      subscription_cycle: newCycle,
+      paid_at: new Date().toISOString(),
+      price_book_period_version: new Date().toISOString().slice(0, 7), // 'YYYY-MM'
+    })
+    .select('id')
+    .single()
+
+  if (orderErr || !newOrder) {
+    console.error('[webhook/hotmart] renewal: falha ao criar order', orderErr)
+    return
+  }
+
+  // 4. Copiar os items do order anterior para o novo
+  if (items && items.length > 0) {
+    await supabase.from('order_items').insert(
+      items.map((it) => ({
+        order_id: newOrder.id,
+        kind: it.kind,
+        product_code: it.product_code,
+        unit_price: it.unit_price,
+        currency: it.currency,
+      })),
+    )
+  }
+
+  // 5. Criar check-in pendente com token único
+  const token = crypto.randomUUID()
+  const { error: checkinErr } = await supabase.from('user_checkins').insert({
+    user_id: user.id,
+    order_id: newOrder.id,
+    cycle_number: phaseNumber,
+    token,
+  })
+
+  if (checkinErr) {
+    // Se o unique index (user_id, cycle_number) já existe, seguir sem check-in
+    console.warn('[webhook/hotmart] renewal: check-in já existe ou falhou', checkinErr.message)
+  }
+
+  // 6. Enviar email de check-in (se Resend configurado)
+  if (process.env.RESEND_API_KEY) {
+    const checkinUrl = `${appUrl}/checkin?token=${token}`
+    try {
+      await sendCheckinReminderEmail({
+        to: email,
+        name: name || user.name || '',
+        checkinUrl,
+        phaseNumber,
+      })
+    } catch (emailErr) {
+      console.error('[webhook/hotmart] renewal: email falhou (não bloqueante):', emailErr)
+    }
+  }
+
+  console.info('[webhook/hotmart] renewal processado', {
+    email,
+    newCycle,
+    phaseNumber,
+    orderId: newOrder.id,
+  })
 }
 
 async function handleDeactivate(

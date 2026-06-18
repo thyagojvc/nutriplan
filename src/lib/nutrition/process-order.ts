@@ -12,7 +12,7 @@ import { createHash } from 'node:crypto'
 import { createServiceClient } from '@/lib/supabase/service'
 import { parseAnswers } from './answers'
 import { calcTargets } from './math'
-import { generateNutritionPlan, generateTrainingPlan } from './generate'
+import { generateNutritionPlan, generateTrainingPlan, type PhaseNumber } from './generate'
 import { renderNutritionPdf, renderTrainingPdf } from './pdf'
 import type { NutritionPlanJson } from './types'
 import type { TrainingPlanJson } from './generate'
@@ -32,7 +32,7 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     .update({ status: 'generating', updated_at: new Date().toISOString() })
     .eq('id', orderId)
     .eq('status', 'paid')
-    .select('id, user_id, session_id')
+    .select('id, user_id, session_id, subscription_cycle')
     .maybeSingle()
 
   if (!claimed) {
@@ -43,9 +43,13 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
   try {
     const userId = claimed.user_id as string | null
     const sessionId = claimed.session_id as string | null
+    const subscriptionCycle = (claimed.subscription_cycle as number) ?? 1
     if (!userId || !sessionId) {
       throw new Error(`order ${orderId} sem user_id ou session_id`)
     }
+
+    // Fase derivada do ciclo: 1→1, 2→2, 3+→3
+    const phaseNumber = (Math.min(subscriptionCycle, 3)) as PhaseNumber
 
     // 2. Carregar respostas do quiz e país
     const { data: session } = await supabase
@@ -64,6 +68,11 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     )
     const targets = calcTargets(answers)
 
+    // 2b. Check-in do ciclo atual (fases 2 e 3)
+    const checkin = phaseNumber > 1
+      ? await loadCheckinForOrder(orderId, userId)
+      : undefined
+
     // 3. Detectar se o pedido inclui treino (order bump)
     const { data: items } = await supabase
       .from('order_items')
@@ -72,7 +81,7 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     const hasTraining = (items ?? []).some((it) => it.kind === 'training')
 
     // 4. Gerar e salvar plano nutricional (sempre)
-    const nutritionPlan = await generateNutritionPlan(answers, targets)
+    const nutritionPlan = await generateNutritionPlan(answers, targets, phaseNumber, checkin)
     const { error: nutErr } = await supabase.from('nutrition_plans').upsert(
       {
         order_id: orderId,
@@ -80,6 +89,7 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
         session_id: sessionId,
         cycle_days: 7,
         cycle_weeks: 4,
+        phase_number: phaseNumber,
         clinical_flags: answers.health,
         general_guidance: answers.generalGuidance,
         plan_json: nutritionPlan,
@@ -202,6 +212,23 @@ async function generateAndStoreDocuments(
       checksum,
     })
     if (insErr) throw new Error(`generated_documents insert ${doc.kind}: ${insErr.message}`)
+  }
+}
+
+/** Carrega dados do check-in associado a este pedido (se o usuário já completou). */
+async function loadCheckinForOrder(orderId: string, userId: string) {
+  const supabase = createServiceClient()
+  const { data } = await supabase
+    .from('user_checkins')
+    .select('current_weight_kg, adherence_rating')
+    .eq('order_id', orderId)
+    .eq('user_id', userId)
+    .not('completed_at', 'is', null)
+    .maybeSingle()
+  if (!data) return undefined
+  return {
+    currentWeightKg: data.current_weight_kg ?? undefined,
+    adherenceRating: data.adherence_rating ?? undefined,
   }
 }
 

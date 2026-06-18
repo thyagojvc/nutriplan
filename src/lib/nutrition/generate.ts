@@ -23,6 +23,14 @@ import { CATALOG_BY_ID, FOOD_CATALOG, foodsByRole, type CatalogFood } from './fo
 
 export const PROMPT_VERSION = 'stub-v1'
 
+export type PhaseNumber = 1 | 2 | 3
+
+/** Peso atualizado vindo do check-in, usado na fase 2 para recalcular targets. */
+export interface CheckinContext {
+  currentWeightKg?: number
+  adherenceRating?: number
+}
+
 /**
  * Entrada única. Hoje delega ao stub.
  * Para ligar a IA: trocar a linha de retorno por `return generatePlanAI(...)`.
@@ -30,8 +38,10 @@ export const PROMPT_VERSION = 'stub-v1'
 export async function generateNutritionPlan(
   answers: ParsedAnswers,
   targets: NutritionTargets,
+  phaseNumber: PhaseNumber = 1,
+  checkin?: CheckinContext,
 ): Promise<NutritionPlanJson> {
-  return generatePlanStub(answers, targets)
+  return generatePlanStub(answers, targets, phaseNumber, checkin)
 }
 
 // ---------------------------------------------------------------------------
@@ -271,19 +281,90 @@ export async function generateTrainingPlan(
   }
 }
 
+// ---------------------------------------------------------------------------
+// Ajustes por fase
+// ---------------------------------------------------------------------------
+
+const PHASE_CALORIE_MULTIPLIER: Record<PhaseNumber, number> = {
+  1: 1.00, // Fase 1: deficit original do calcTargets (já aplicado)
+  2: 0.97, // Fase 2: aperta ligeiramente se aderência foi boa
+  3: 1.08, // Fase 3: sobe em direção à manutenção (reduz deficit)
+}
+
+const PHASE_NOTES: Record<PhaseNumber, string[]> = {
+  1: [
+    'Fase 1 — Adaptación: el objetivo es que tu cuerpo se acostumbre al nuevo ritmo alimentario.',
+    'No busques resultados drásticos todavía — la consistencia en estas 4 semanas es lo que importa.',
+  ],
+  2: [
+    'Fase 2 — Aceleración: ajustamos tus calorías y proteínas con base en tu progreso real.',
+    'Aumentamos ligeramente la proteína para proteger tu masa muscular mientras aceleras los resultados.',
+  ],
+  3: [
+    'Fase 3 — Consolidación: comenzamos a acercarnos a tu metabolismo de mantenimiento.',
+    'El objetivo ahora es que los hábitos sean sostenibles a largo plazo, no solo a corto plazo.',
+  ],
+}
+
+const PHASE_GUIDE: Record<PhaseNumber, string[]> = {
+  1: [
+    'Prepara tus proteínas y carbohidratos en lote 2 veces por semana para ahorrar tiempo.',
+    'Bebe al menos 2 litros de agua al día.',
+    'Respeta los horarios de tus comidas para mantener tu energía estable.',
+    'Usa la lista de sustituciones cuando quieras variar sin salir de tus metas.',
+    'Pésate una vez por semana, en ayunas, para seguir tu progreso.',
+  ],
+  2: [
+    'Mantén la proteína como prioridad: asegura tu porción en cada comida principal.',
+    'Si sientes hambre entre comidas, aumenta las verduras — aportan volumen sin calorías.',
+    'Registra tu peso cada lunes en ayunas y compáralo con el mes anterior.',
+    'No saltes el Snack: ayuda a controlar el apetito en la cena.',
+    'Presta atención a cómo te sientes con energía — eso es señal de que el ajuste funciona.',
+  ],
+  3: [
+    'Estamos en fase de consolidación: el plan es más flexible, pero la estructura sigue siendo clave.',
+    'Puedes introducir una "comida libre" a la semana sin afectar tus resultados.',
+    'Enfócate en el tiempo de las comidas, no solo en las cantidades.',
+    'Sigue pesándote semanalmente — ahora el objetivo es mantener, no solo bajar.',
+    'Piensa en este plan como tu nuevo estilo de vida, no como una dieta temporal.',
+  ],
+}
+
+function applyPhaseToTargets(
+  targets: NutritionTargets,
+  phase: PhaseNumber,
+  checkin?: CheckinContext,
+): number {
+  let base = targets.targetCalories
+
+  // Fase 2: se aderência foi baixa (≤2), não aperta mais; se boa (≥4), aperta um pouco
+  if (phase === 2 && checkin?.adherenceRating) {
+    const multiplier = checkin.adherenceRating >= 4
+      ? PHASE_CALORIE_MULTIPLIER[2]
+      : 1.00 // sem ajuste se aderência fraca
+    base = Math.round(base * multiplier)
+  } else {
+    base = Math.round(base * PHASE_CALORIE_MULTIPLIER[phase])
+  }
+
+  return base
+}
+
 function generatePlanStub(
   answers: ParsedAnswers,
   targets: NutritionTargets,
+  phase: PhaseNumber = 1,
+  checkin?: CheckinContext,
 ): NutritionPlanJson {
+  const targetCalories = applyPhaseToTargets(targets, phase, checkin)
+
   const days: PlanDay[] = Array.from({ length: 7 }, (_, i) =>
-    buildDay(i + 1, answers, targets.targetCalories),
+    buildDay(i + 1, answers, targetCalories),
   )
 
-  const notes: string[] = []
+  const notes: string[] = [...PHASE_NOTES[phase]]
   if (targets.clinicalOverrideApplied) {
-    notes.push(
-      'Tus calorías se ajustaron a mantenimiento por tu condición de salud.',
-    )
+    notes.push('Tus calorías se ajustaron a mantenimiento por tu condición de salud.')
   }
   if (answers.mustHave) {
     notes.push(`Incluimos tu alimento imprescindible: ${answers.mustHave}.`)
@@ -296,7 +377,7 @@ function generatePlanStub(
     summary: {
       bmr: targets.bmr,
       tdee: targets.tdee,
-      targetCalories: targets.targetCalories,
+      targetCalories,
       activityFactor: targets.activityFactor,
       goal: targets.goal,
       macros: targets.macros,
@@ -306,13 +387,7 @@ function generatePlanStub(
     },
     days,
     shoppingList: buildShoppingList(answers),
-    implementationGuide: [
-      'Prepara tus proteínas y carbohidratos en lote 2 veces por semana para ahorrar tiempo.',
-      'Bebe al menos 2 litros de agua al día.',
-      'Respeta los horarios de tus comidas para mantener tu energía estable.',
-      'Usa la lista de sustituciones cuando quieras variar sin salir de tus metas.',
-      'Pésate una vez por semana, en ayunas, para seguir tu progreso.',
-    ],
+    implementationGuide: PHASE_GUIDE[phase],
     substitutions: buildSubstitutions(answers),
     disclaimers: clinicalDisclaimers(answers),
     generatedBy: 'stub',

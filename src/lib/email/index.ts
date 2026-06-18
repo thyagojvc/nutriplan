@@ -81,6 +81,48 @@ export async function sendPlanReadyEmail({
   })
 }
 
+// E-mail disparado quando uma renovação é detectada no webhook.
+// O link aponta para /checkin?token=XXX onde o usuário responde 3 perguntas
+// antes de receber o plano da fase seguinte.
+export async function sendCheckinReminderEmail({
+  to,
+  name,
+  checkinUrl,
+  phaseNumber,
+}: {
+  to: string
+  name: string
+  checkinUrl: string
+  phaseNumber: 1 | 2 | 3
+}) {
+  const phaseLabels: Record<number, string> = {
+    1: 'Adaptación',
+    2: 'Aceleración',
+    3: 'Consolidación',
+  }
+  const phase = phaseLabels[phaseNumber] ?? 'Actualización'
+  const displayName = name || 'amigo/a'
+
+  await getResend().emails.send({
+    from: FROM,
+    to,
+    subject: `Tu plan del mes ${phaseNumber} está a punto de generarse 🔄`,
+    html: emailLayout({
+      heading: `¡Mes ${phaseNumber}: Fase ${phase}! 🌱`,
+      greeting: `Hola ${displayName},`,
+      body:
+        `Tu suscripción se renovó y ya estamos listos para generar tu plan de la Fase ${phase}. ` +
+        `Responde 3 preguntas rápidas para que podamos ajustar tu plan a tu progreso real:`,
+      magicLink: checkinUrl,
+      cta: 'Actualizar mi plan →',
+      footer:
+        'Este enlace expira en 7 días. Si no completas el check-in, tu plan se generará ' +
+        'automáticamente con tus datos originales.<br>' +
+        'Si tienes dudas, responde a este correo.',
+    }),
+  })
+}
+
 // E-mail de acesso (login sem contraseña) disparado pela tela de login.
 export async function sendLoginLinkEmail({
   to,
