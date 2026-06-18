@@ -7,10 +7,15 @@
 
 export type FoodRole = 'protein' | 'carb' | 'veg' | 'fruit' | 'fat' | 'dairy'
 
+// Refeições onde um alimento é culturalmente adequado.
+// Evita absurdos como "arroz cocido no café da manhã".
+export type MealSlot = 'desayuno' | 'almuerzo' | 'cena' | 'snack'
+
 export interface CatalogFood {
   id: string
   label: string // nome em espanhol
   role: FoodRole
+  meals: MealSlot[] // refeições onde faz sentido servir este alimento
   // macros por 100 g
   kcal: number
   proteinG: number
@@ -19,41 +24,54 @@ export interface CatalogFood {
   unit: string // medida caseira de referência (ex.: "1 pechuga (~120 g)")
 }
 
+// Atalhos de combinações comuns de refeições
+const PRINCIPALES: MealSlot[] = ['almuerzo', 'cena'] // proteína/carbo de prato principal
+const MANANA_SNACK: MealSlot[] = ['desayuno', 'snack']
+
 export const FOOD_CATALOG: CatalogFood[] = [
   // Proteínas
-  { id: 'pollo', label: 'Pechuga de pollo', role: 'protein', kcal: 165, proteinG: 31, carbsG: 0, fatG: 3.6, unit: 'g a la plancha' },
-  { id: 'carne_res', label: 'Carne de res magra', role: 'protein', kcal: 217, proteinG: 26, carbsG: 0, fatG: 12, unit: 'g' },
-  { id: 'cerdo', label: 'Lomo de cerdo', role: 'protein', kcal: 242, proteinG: 27, carbsG: 0, fatG: 14, unit: 'g' },
-  { id: 'pescado', label: 'Filete de pescado', role: 'protein', kcal: 128, proteinG: 26, carbsG: 0, fatG: 2.5, unit: 'g al horno' },
-  { id: 'mariscos', label: 'Camarones', role: 'protein', kcal: 99, proteinG: 24, carbsG: 0.2, fatG: 0.3, unit: 'g' },
-  { id: 'huevo', label: 'Huevo', role: 'protein', kcal: 143, proteinG: 13, carbsG: 1.1, fatG: 9.5, unit: 'g (≈1 huevo por c/50 g)' },
-  { id: 'tofu', label: 'Tofu firme', role: 'protein', kcal: 144, proteinG: 17, carbsG: 2.8, fatG: 9, unit: 'g' },
-  { id: 'legumbres', label: 'Lentejas / frijoles', role: 'protein', kcal: 116, proteinG: 9, carbsG: 20, fatG: 0.4, unit: 'g cocidos' },
+  { id: 'pollo', label: 'Pechuga de pollo', role: 'protein', meals: PRINCIPALES, kcal: 165, proteinG: 31, carbsG: 0, fatG: 3.6, unit: 'g a la plancha' },
+  { id: 'carne_res', label: 'Carne de res magra', role: 'protein', meals: PRINCIPALES, kcal: 217, proteinG: 26, carbsG: 0, fatG: 12, unit: 'g' },
+  { id: 'cerdo', label: 'Lomo de cerdo', role: 'protein', meals: PRINCIPALES, kcal: 242, proteinG: 27, carbsG: 0, fatG: 14, unit: 'g' },
+  { id: 'pescado', label: 'Filete de pescado', role: 'protein', meals: PRINCIPALES, kcal: 128, proteinG: 26, carbsG: 0, fatG: 2.5, unit: 'g al horno' },
+  { id: 'mariscos', label: 'Camarones', role: 'protein', meals: PRINCIPALES, kcal: 99, proteinG: 24, carbsG: 0.2, fatG: 0.3, unit: 'g' },
+  { id: 'huevo', label: 'Huevo', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 143, proteinG: 13, carbsG: 1.1, fatG: 9.5, unit: 'g (≈1 huevo por c/50 g)' },
+  { id: 'tofu', label: 'Tofu firme', role: 'protein', meals: PRINCIPALES, kcal: 144, proteinG: 17, carbsG: 2.8, fatG: 9, unit: 'g' },
+  { id: 'legumbres', label: 'Lentejas / frijoles', role: 'protein', meals: PRINCIPALES, kcal: 116, proteinG: 9, carbsG: 20, fatG: 0.4, unit: 'g cocidos' },
   // Carboidratos
-  { id: 'arroz', label: 'Arroz cocido', role: 'carb', kcal: 130, proteinG: 2.7, carbsG: 28, fatG: 0.3, unit: 'g cocido' },
-  { id: 'pasta', label: 'Pasta cocida', role: 'carb', kcal: 158, proteinG: 5.8, carbsG: 31, fatG: 0.9, unit: 'g cocida' },
-  { id: 'pan', label: 'Pan / tortillas', role: 'carb', kcal: 265, proteinG: 9, carbsG: 49, fatG: 3.2, unit: 'g' },
-  { id: 'avena', label: 'Avena', role: 'carb', kcal: 389, proteinG: 17, carbsG: 66, fatG: 7, unit: 'g en hojuelas' },
-  { id: 'papa', label: 'Papa cocida', role: 'carb', kcal: 87, proteinG: 1.9, carbsG: 20, fatG: 0.1, unit: 'g' },
-  // Regionais (México)
-  { id: 'tortilla_maiz', label: 'Tortilla de maíz', role: 'carb', kcal: 218, proteinG: 5.7, carbsG: 44, fatG: 2.5, unit: 'g (≈2 tortillas medianas)' },
-  // Regionais (Colombia)
-  { id: 'arepa', label: 'Arepa de maíz', role: 'carb', kcal: 217, proteinG: 4.5, carbsG: 44, fatG: 2.4, unit: 'g (≈1 arepa mediana)' },
-  { id: 'platano', label: 'Plátano maduro cocido', role: 'carb', kcal: 122, proteinG: 1.3, carbsG: 32, fatG: 0.4, unit: 'g' },
-  { id: 'yuca', label: 'Yuca cocida', role: 'carb', kcal: 160, proteinG: 1.4, carbsG: 38, fatG: 0.3, unit: 'g' },
+  { id: 'arroz', label: 'Arroz cocido', role: 'carb', meals: PRINCIPALES, kcal: 130, proteinG: 2.7, carbsG: 28, fatG: 0.3, unit: 'g cocido' },
+  { id: 'pasta', label: 'Pasta cocida', role: 'carb', meals: PRINCIPALES, kcal: 158, proteinG: 5.8, carbsG: 31, fatG: 0.9, unit: 'g cocida' },
+  { id: 'pan', label: 'Pan integral', role: 'carb', meals: MANANA_SNACK, kcal: 265, proteinG: 9, carbsG: 49, fatG: 3.2, unit: 'g' },
+  { id: 'avena', label: 'Avena', role: 'carb', meals: MANANA_SNACK, kcal: 389, proteinG: 17, carbsG: 66, fatG: 7, unit: 'g en hojuelas' },
+  { id: 'papa', label: 'Papa cocida', role: 'carb', meals: PRINCIPALES, kcal: 87, proteinG: 1.9, carbsG: 20, fatG: 0.1, unit: 'g' },
+  // Regionais (México) — tortilla e nopales se comem también en el desayuno
+  { id: 'tortilla_maiz', label: 'Tortilla de maíz', role: 'carb', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 218, proteinG: 5.7, carbsG: 44, fatG: 2.5, unit: 'g (≈2 tortillas medianas)' },
+  // Regionais (Colombia) — la arepa es desayuno típico
+  { id: 'arepa', label: 'Arepa de maíz', role: 'carb', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 217, proteinG: 4.5, carbsG: 44, fatG: 2.4, unit: 'g (≈1 arepa mediana)' },
+  { id: 'platano', label: 'Plátano maduro cocido', role: 'carb', meals: PRINCIPALES, kcal: 122, proteinG: 1.3, carbsG: 32, fatG: 0.4, unit: 'g' },
+  { id: 'yuca', label: 'Yuca cocida', role: 'carb', meals: PRINCIPALES, kcal: 160, proteinG: 1.4, carbsG: 38, fatG: 0.3, unit: 'g' },
   // Vegetais / frutas / gorduras
-  { id: 'verduras', label: 'Verduras mixtas', role: 'veg', kcal: 35, proteinG: 2, carbsG: 7, fatG: 0.3, unit: 'g salteadas' },
-  { id: 'nopales', label: 'Nopales', role: 'veg', kcal: 16, proteinG: 1.4, carbsG: 3.3, fatG: 0.1, unit: 'g salteados' },
-  { id: 'frutas', label: 'Fruta de temporada', role: 'fruit', kcal: 60, proteinG: 0.8, carbsG: 15, fatG: 0.2, unit: 'g' },
-  { id: 'aguacate', label: 'Aguacate', role: 'fat', kcal: 160, proteinG: 2, carbsG: 9, fatG: 15, unit: 'g (~½ pieza)' },
-  { id: 'lacteos', label: 'Yogur natural / leche', role: 'dairy', kcal: 61, proteinG: 3.5, carbsG: 4.7, fatG: 3.3, unit: 'ml' },
-  { id: 'aceite', label: 'Aceite de oliva', role: 'fat', kcal: 884, proteinG: 0, carbsG: 0, fatG: 100, unit: 'g (cucharadas)' },
+  { id: 'verduras', label: 'Verduras mixtas', role: 'veg', meals: PRINCIPALES, kcal: 35, proteinG: 2, carbsG: 7, fatG: 0.3, unit: 'g salteadas' },
+  { id: 'nopales', label: 'Nopales', role: 'veg', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 16, proteinG: 1.4, carbsG: 3.3, fatG: 0.1, unit: 'g salteados' },
+  { id: 'frutas', label: 'Fruta de temporada', role: 'fruit', meals: MANANA_SNACK, kcal: 60, proteinG: 0.8, carbsG: 15, fatG: 0.2, unit: 'g' },
+  { id: 'aguacate', label: 'Aguacate', role: 'fat', meals: ['desayuno', 'almuerzo', 'cena', 'snack'], kcal: 160, proteinG: 2, carbsG: 9, fatG: 15, unit: 'g (~½ pieza)' },
+  { id: 'lacteos', label: 'Yogur natural / leche', role: 'dairy', meals: MANANA_SNACK, kcal: 61, proteinG: 3.5, carbsG: 4.7, fatG: 3.3, unit: 'ml' },
+  { id: 'aceite', label: 'Aceite de oliva', role: 'fat', meals: PRINCIPALES, kcal: 884, proteinG: 0, carbsG: 0, fatG: 100, unit: 'g (cucharadas)' },
 ]
 
 export const CATALOG_BY_ID: Record<string, CatalogFood> = Object.fromEntries(
   FOOD_CATALOG.map((f) => [f.id, f]),
 )
 
+export const CATALOG_BY_LABEL: Record<string, CatalogFood> = Object.fromEntries(
+  FOOD_CATALOG.map((f) => [f.label, f]),
+)
+
 export function foodsByRole(role: FoodRole): CatalogFood[] {
   return FOOD_CATALOG.filter((f) => f.role === role)
+}
+
+/** Alimentos de um papel adequados para uma refeição específica. */
+export function foodsForMeal(meal: MealSlot, role: FoodRole): CatalogFood[] {
+  return FOOD_CATALOG.filter((f) => f.role === role && f.meals.includes(meal))
 }

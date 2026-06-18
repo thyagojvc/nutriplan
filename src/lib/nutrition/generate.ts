@@ -19,7 +19,15 @@ import type {
   PlanItem,
 } from './types'
 import { MEAL_DISTRIBUTION, clinicalDisclaimers } from './math'
-import { CATALOG_BY_ID, FOOD_CATALOG, foodsByRole, type CatalogFood } from './food-catalog'
+import {
+  CATALOG_BY_LABEL,
+  FOOD_CATALOG,
+  foodsByRole,
+  foodsForMeal,
+  type CatalogFood,
+  type FoodRole,
+  type MealSlot,
+} from './food-catalog'
 
 export const PROMPT_VERSION = 'stub-v1'
 
@@ -52,16 +60,20 @@ function isExcluded(foodId: string, exclusions: string[]): boolean {
   return exclusions.includes(foodId)
 }
 
-/** Seleciona alimentos de um papel, priorizando favoritos e respeitando exclusões. */
-function pickByRole(
-  role: CatalogFood['role'],
+/**
+ * Pool de alimentos de um papel adequados a uma refeição, respeitando exclusões.
+ * Favoritos vêm primeiro (preferência), mas o resto do pool permanece disponível
+ * para garantir variedade ao longo dos 7 dias — em vez de repetir só os favoritos.
+ */
+function poolForMeal(
+  role: FoodRole,
+  meal: MealSlot,
   answers: ParsedAnswers,
-  fallbackToAny = true,
 ): CatalogFood[] {
-  const all = foodsByRole(role).filter((f) => !isExcluded(f.id, answers.exclusions))
+  const all = foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
   const favs = all.filter((f) => answers.favorites.includes(f.id))
-  const pool = favs.length > 0 ? favs : fallbackToAny ? all : []
-  return pool
+  const rest = all.filter((f) => !answers.favorites.includes(f.id))
+  return [...favs, ...rest]
 }
 
 /** Escala as porções de uma refeição para bater ~ a meta de kcal. */
@@ -103,6 +115,13 @@ function mealTotals(items: PlanItem[]) {
   )
 }
 
+const MEAL_SLOT: Record<string, MealSlot> = {
+  Desayuno: 'desayuno',
+  Almuerzo: 'almuerzo',
+  Cena: 'cena',
+  Snack: 'snack',
+}
+
 /** Constrói uma refeição para um índice de dia, rotacionando alimentos por variedade. */
 function buildMeal(
   mealName: string,
@@ -110,43 +129,47 @@ function buildMeal(
   answers: ParsedAnswers,
   dayIndex: number,
 ): PlanMeal {
-  const proteins = pickByRole('protein', answers)
-  const carbs = pickByRole('carb', answers)
-  const vegs = [...pickByRole('veg', answers), ...pickByRole('fruit', answers)]
-  const fats = pickByRole('fat', answers)
+  const slot = MEAL_SLOT[mealName] ?? 'almuerzo'
 
+  // Rotação por dia: cada dia avança no pool → menos repetição ao longo da semana.
   const rotate = <T,>(arr: T[], offset: number): T | null =>
     arr.length === 0 ? null : arr[(dayIndex + offset) % arr.length]
 
   const items: PlanItem[] = []
 
-  if (mealName === 'Desayuno') {
-    // café da manhã: carbo + proteína leve + fruta
-    const carb = rotate(carbs, 0)
-    const prot = rotate(proteins, 1)
-    const fruit = rotate(vegs, 0)
+  if (slot === 'desayuno') {
+    // café da manhã: carbo de manhã (avena/pan/tortilla) + proteína leve (huevo/lácteo) + fruta
+    const carb = rotate(poolForMeal('carb', slot, answers), 0)
+    const protPool = [...poolForMeal('protein', slot, answers), ...poolForMeal('dairy', slot, answers)]
+    const prot = rotate(protPool, 0)
+    const fruit = rotate(poolForMeal('fruit', slot, answers), 0)
     if (carb) items.push(itemFrom(carb, 60))
     if (prot) items.push(itemFrom(prot, 80))
     if (fruit) items.push(itemFrom(fruit, 120))
-  } else if (mealName === 'Snack') {
+  } else if (slot === 'snack') {
     // lanche: fruta ou laticínio + gordura boa
-    const fruit = rotate(vegs, 1)
-    const fat = rotate(fats, 0)
-    if (fruit) items.push(itemFrom(fruit, 120))
-    if (fat) items.push(itemFrom(fat, 30))
+    const snackPool = [...poolForMeal('fruit', slot, answers), ...poolForMeal('dairy', slot, answers)]
+    const snack = rotate(snackPool, 1)
+    const fat = rotate(poolForMeal('fat', slot, answers), 0)
+    if (snack) items.push(itemFrom(snack, 120))
+    if (fat) items.push(itemFrom(fat, 25))
   } else {
-    // almuerzo / cena: proteína + carbo + vegetais
-    const prot = rotate(proteins, mealName === 'Almuerzo' ? 0 : 2)
-    const carb = rotate(carbs, 1)
-    const veg = rotate(vegs, 2)
+    // almuerzo / cena: proteína + carbo + vegetais. Offset distingue almoço de jantar
+    // para não repetir a mesma proteína/carbo no mesmo dia.
+    const offset = slot === 'cena' ? 2 : 0
+    const prot = rotate(poolForMeal('protein', slot, answers), offset)
+    const carb = rotate(poolForMeal('carb', slot, answers), offset + 1)
+    const veg = rotate(poolForMeal('veg', slot, answers), offset + 2)
     if (prot) items.push(itemFrom(prot, 150))
     if (carb) items.push(itemFrom(carb, 120))
     if (veg) items.push(itemFrom(veg, 150))
   }
 
-  // garante ao menos 1 item (fallback total se restrições zeraram tudo)
+  // garante ao menos 1 item (fallback se restrições zeraram o pool da refeição)
   if (items.length === 0) {
-    const anyFood = FOOD_CATALOG.find((f) => !isExcluded(f.id, answers.exclusions))
+    const anyFood =
+      FOOD_CATALOG.find((f) => f.meals.includes(slot) && !isExcluded(f.id, answers.exclusions)) ??
+      FOOD_CATALOG.find((f) => !isExcluded(f.id, answers.exclusions))
     if (anyFood) items.push(itemFrom(anyFood, 100))
   }
 
@@ -175,10 +198,13 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number): P
   return { day: dayNum, label: `Día ${dayNum}`, meals, totals }
 }
 
-function buildShoppingList(answers: ParsedAnswers): NutritionPlanJson['shoppingList'] {
-  const used = new Set<string>()
-  for (const role of ['protein', 'carb', 'veg', 'fruit', 'fat'] as const) {
-    for (const f of pickByRole(role, answers)) used.add(f.id)
+/** Lista de compras derivada dos alimentos que realmente aparecem no plano. */
+function buildShoppingList(days: PlanDay[]): NutritionPlanJson['shoppingList'] {
+  const usedLabels = new Set<string>()
+  for (const d of days) {
+    for (const m of d.meals) {
+      for (const it of m.items) usedLabels.add(it.food)
+    }
   }
   const byCat: Record<string, { name: string; quantity: string }[]> = {
     Proteínas: [],
@@ -186,8 +212,8 @@ function buildShoppingList(answers: ParsedAnswers): NutritionPlanJson['shoppingL
     'Verduras y frutas': [],
     'Grasas y otros': [],
   }
-  for (const id of used) {
-    const f = CATALOG_BY_ID[id]
+  for (const label of usedLabels) {
+    const f = CATALOG_BY_LABEL[label]
     if (!f) continue
     const cat =
       f.role === 'protein' || f.role === 'dairy'
@@ -386,7 +412,7 @@ function generatePlanStub(
       notes,
     },
     days,
-    shoppingList: buildShoppingList(answers),
+    shoppingList: buildShoppingList(days),
     implementationGuide: PHASE_GUIDE[phase],
     substitutions: buildSubstitutions(answers),
     disclaimers: clinicalDisclaimers(answers),
