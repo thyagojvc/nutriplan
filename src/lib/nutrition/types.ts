@@ -26,7 +26,7 @@ export type PhysicalLimitation =
 
 // ----- Respostas do quiz normalizadas (a partir de draft_answers) -----
 export interface ParsedAnswers {
-  favorites: string[] // ids dos alimentos favoritos (step 1)
+  dislikes: string[] // ids dos alimentos que o usuário NÃO gosta/come (step 1) → viram exclusões
   goal: GoalType // step 2
   mustHave: string | null // step 3 (texto livre)
   sex: SexBiological // step 4

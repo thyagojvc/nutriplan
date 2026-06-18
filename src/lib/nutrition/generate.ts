@@ -61,19 +61,16 @@ function isExcluded(foodId: string, exclusions: string[]): boolean {
 }
 
 /**
- * Pool de alimentos de um papel adequados a uma refeição, respeitando exclusões.
- * Favoritos vêm primeiro (preferência), mas o resto do pool permanece disponível
- * para garantir variedade ao longo dos 7 dias — em vez de repetir só os favoritos.
+ * Pool de alimentos de um papel adequados a uma refeição, já sem os que o
+ * usuário rejeitou (step 1) nem os bloqueados por restrição alimentar (step 8) —
+ * ambos chegam em answers.exclusions. A rotação por dia cuida da variedade.
  */
 function poolForMeal(
   role: FoodRole,
   meal: MealSlot,
   answers: ParsedAnswers,
 ): CatalogFood[] {
-  const all = foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
-  const favs = all.filter((f) => answers.favorites.includes(f.id))
-  const rest = all.filter((f) => !answers.favorites.includes(f.id))
-  return [...favs, ...rest]
+  return foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
 }
 
 /** Escala as porções de uma refeição para bater ~ a meta de kcal. */

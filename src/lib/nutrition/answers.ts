@@ -119,11 +119,15 @@ export function parseAnswers(draft: Draft, country: string): ParsedAnswers {
       ? ['none']
       : healthRaw.map((h) => HEALTH_MAP[h] ?? 'other')
 
-  // exclusões derivadas das restrições (dedup)
+  // alimentos que o usuário marcou como "no me gusta" no step 1
+  const dislikes = asStringArray(s1.dislikes)
+
+  // exclusões = restrições alimentares (step 8) + alimentos rejeitados (step 1)
   const exclusionSet = new Set<string>()
   for (const r of restrictions) {
     for (const ex of RESTRICTION_EXCLUSIONS[r] ?? []) exclusionSet.add(ex)
   }
+  for (const d of dislikes) exclusionSet.add(d)
 
   // diabetes ou "outra" condição → orientação geral (migration 0006)
   const generalGuidance = health.includes('diabetes') || health.includes('other')
@@ -135,7 +139,7 @@ export function parseAnswers(draft: Draft, country: string): ParsedAnswers {
       : limitationsRaw.map((l) => LIMITATION_MAP[l] ?? 'other')
 
   return {
-    favorites: asStringArray(s1.favorites),
+    dislikes,
     goal,
     mustHave: typeof s3.must_have === 'string' ? s3.must_have : null,
     sex,
