@@ -1,4 +1,7 @@
+'use client'
+
 import React from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 
 // ---------------------------------------------------------------------------
 // NutriPlan — sistema de UI compartilhado do quiz
@@ -134,15 +137,42 @@ export function QuizProgress({
   total: number
   pct: number
 }) {
+  const router = useRouter()
+  const pathname = usePathname()
+  const actualStep = parseInt(pathname?.split('/').pop() ?? '0', 10)
+  const canGoBack = step > 1 && step < total
+
   return (
     <div className="space-y-2 quiz-enter">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground tracking-wide">
+      <div className="grid grid-cols-3 items-center">
+        <div>
+          {canGoBack && (
+            <button
+              type="button"
+              onClick={() => router.push(`/quiz/${actualStep - 1}`)}
+              className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+                <path
+                  d="M11 7H3M3 7L6.5 3.5M3 7L6.5 10.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+              Anterior
+            </button>
+          )}
+        </div>
+        <span className="text-center text-xs font-semibold text-muted-foreground tracking-wide">
           Paso {step} de {total}
         </span>
-        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
-          {pct}%
-        </span>
+        <div className="flex justify-end">
+          <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
+            {pct}%
+          </span>
+        </div>
       </div>
       {/* Barra segmentada */}
       <div className="flex gap-1">
