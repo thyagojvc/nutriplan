@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
@@ -13,6 +13,14 @@ const PHASE_LABELS: Record<number, { name: string; description: string; emoji: s
 type State = 'loading' | 'ready' | 'submitting' | 'done' | 'already_done' | 'error'
 
 export default function CheckinPage() {
+  return (
+    <Suspense>
+      <CheckinContent />
+    </Suspense>
+  )
+}
+
+function CheckinContent() {
   const searchParams = useSearchParams()
   const router = useRouter()
   const token = searchParams.get('token') ?? ''
