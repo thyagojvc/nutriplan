@@ -191,16 +191,16 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1 text-xs font-semibold text-primary">
           <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-          Análisis listo · Solo para ti
+          Análisis listo · Calculado solo para ti
         </div>
 
         <h1 className="text-2xl font-black leading-tight text-gray-900">
-          Tu plan nutricional<br />
-          <span className="text-primary">está calculado</span>
+          Aquí está tu perfil<br />
+          <span className="text-primary">nutricional exacto</span>
         </h1>
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Basado en tus respuestas, creamos un perfil nutricional único.
-          Revísalo antes de desbloquearlo.
+          Estos números son únicos para tu cuerpo y tu objetivo.
+          Revísalos — luego desbloquea el plan completo.
         </p>
       </div>
 
@@ -271,7 +271,7 @@ export default function PreviewPage() {
         <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white">
           {/* Conteúdo fake desfocado */}
           <div className="select-none blur-[3px] pointer-events-none p-5 space-y-3 opacity-60" aria-hidden>
-            <p className="font-bold text-gray-800 text-sm">Tu plan de 7 días</p>
+            <p className="font-bold text-gray-800 text-sm">Tu plan de 7 días — {targets.targetCalories} kcal/día</p>
             {['Lunes', 'Martes', 'Miércoles'].map(d => (
               <div key={d} className="rounded-xl border border-[#D8E8D4] p-3 space-y-2">
                 <div className="flex justify-between text-xs">
@@ -287,42 +287,55 @@ export default function PreviewPage() {
             ))}
           </div>
 
-          {/* Overlay com conteúdo */}
+          {/* Overlay */}
           <div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-4 p-6 text-center"
-            style={{ background: 'linear-gradient(to bottom, rgba(235,246,228,0.65) 0%, rgba(245,250,242,0.96) 50%)' }}
+            className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center"
+            style={{ background: 'linear-gradient(to bottom, rgba(235,246,228,0.65) 0%, rgba(245,250,242,0.97) 45%)' }}
           >
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#D8E8D4] bg-white shadow-sm">
               <NutriLogo size={28} />
             </div>
-            <div className="space-y-1.5">
-              <p className="font-black text-gray-900">Plan completo de 7 días</p>
-              <p className="text-xs text-muted-foreground leading-relaxed max-w-[220px]">
-                Porciones exactas · Lista de compras · Guía de implementación
+            <div className="space-y-1">
+              <p className="font-black text-gray-900 text-[1.05rem]">Tu plan nutricional completo</p>
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-[230px]">
+                {targets.targetCalories} kcal · {targets.macros.proteinG}g proteína · Plan de 30 días con porciones exactas
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-1.5">
-              {['🍳 Desayunos', '🥗 Almuerzos', '🍲 Cenas', '🍌 Snacks'].map(t => (
+              {['🍳 Desayunos', '🥗 Almuerzos', '🍲 Cenas', '🍌 Snacks', '🛒 Lista de compras'].map(t => (
                 <span key={t} className="rounded-full border border-primary/20 bg-primary/8 px-3 py-0.5 text-xs font-semibold text-primary">
                   {t}
                 </span>
               ))}
             </div>
+            <p className="text-xs text-muted-foreground">
+              🔒 Desbloquea tu plan para ver todo
+            </p>
           </div>
         </div>
 
         {/* Social proof */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
           <p className="text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Lo que dicen nuestros usuarios
+            Lo que dicen quienes ya lo tienen
           </p>
           {[
-            { name: 'María G.', country: '🇲🇽', text: 'Bajé 4 kg en el primer mes siguiendo el plan al pie de la letra.' },
-            { name: 'Carlos M.', country: '🇨🇴', text: 'Por fin entendí cómo comer para ganar músculo sin pasar hambre.' },
-          ].map(({ name, country, text }) => (
+            { initials: 'MG', color: 'bg-pink-400',    name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
+            { initials: 'CM', color: 'bg-blue-400',    name: 'Carlos M.', country: '🇨🇴', text: 'Entendí cómo comer para ganar músculo. Los números de mi plan eran exactos para mi cuerpo.' },
+            { initials: 'AP', color: 'bg-emerald-400', name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
+          ].map(({ initials, color, name, country, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
-              <div className="flex items-center gap-1">
-                {'⭐⭐⭐⭐⭐'.split('').map((s, i) => <span key={i} className="text-xs">{s}</span>)}
+              <div className="flex items-center gap-2">
+                <div className={`h-7 w-7 shrink-0 rounded-full ${color} flex items-center justify-center text-[10px] font-bold text-white`}>
+                  {initials}
+                </div>
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="10" height="10" viewBox="0 0 11 11" fill="#f59e0b">
+                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
+                    </svg>
+                  ))}
+                </div>
               </div>
               <p className="text-sm leading-relaxed text-gray-700">"{text}"</p>
               <p className="text-xs font-bold text-primary">{country} {name}</p>
@@ -343,18 +356,18 @@ export default function PreviewPage() {
               'hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)] hover:brightness-[1.04] active:scale-[0.99]',
             ].join(' ')}
           >
-            Desbloquear mi plan completo
+            Quiero mi plan completo
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
               <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
                 stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <div className="flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
+          <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground flex-wrap">
             <span className="flex items-center gap-1"><span>🔒</span> Pago seguro</span>
             <span className="h-3 w-px bg-border" />
             <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
             <span className="h-3 w-px bg-border" />
-            <span className="flex items-center gap-1"><span>📧</span> Soporte incluido</span>
+            <span className="flex items-center gap-1"><span>↩️</span> Garantía 7 días</span>
           </div>
         </div>
       </div>

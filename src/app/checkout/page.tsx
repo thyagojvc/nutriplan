@@ -11,11 +11,12 @@ const TESTIMONIALS = [
 ]
 
 const INCLUDES = [
-  '📊 Perfil nutricional completo (IMC, TMB, TDEE)',
-  '🍽️ Plan de alimentación semanal con porciones exactas',
-  '🛒 Lista de compras optimizada',
+  '📊 Tu perfil nutricional exacto (IMC, TMB, TDEE)',
+  '🍽️ Plan de 30 días con comidas y porciones exactas',
+  '🛒 Lista de compras optimizada para tu plan',
   '📋 Guía de implementación paso a paso',
-  '🔄 Sustituciones para adaptar a tu despensa',
+  '🔄 Sustituciones para adaptar a lo que tienes en casa',
+  '📄 PDF descargable para consultar cuando quieras',
 ]
 
 export default function CheckoutPage() {
@@ -97,9 +98,13 @@ export default function CheckoutPage() {
 
           {/* Título */}
           <div className="text-center space-y-1.5">
-            <h1 className="text-2xl font-black text-gray-900">Tu plan está listo</h1>
-            <p className="text-sm text-muted-foreground">
-              Completa el pago para recibir tu plan nutricional personalizado.
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1 text-xs font-semibold text-primary mb-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
+              Último paso
+            </div>
+            <h1 className="text-2xl font-black text-gray-900">Tu plan está calculado<br />y listo para ti</h1>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+              Completa el acceso y en minutos recibes tu plan nutricional personalizado en tu correo.
             </p>
           </div>
 
@@ -182,7 +187,7 @@ export default function CheckoutPage() {
           </button>
 
           <p className="text-center text-xs text-muted-foreground">
-            🔒 Pago 100% seguro procesado por Hotmart · Acceso inmediato tras la confirmación
+            🔒 Pago seguro por Hotmart · Acceso inmediato · Garantía de 7 días
           </p>
 
         </div>

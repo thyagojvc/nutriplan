@@ -1,11 +1,17 @@
 import Link from 'next/link'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
-const WHAT_YOU_GET = [
-  { emoji: '🔥', title: 'Tu metabolismo', desc: 'TMB y gasto calórico diario exacto' },
-  { emoji: '⚖️', title: 'Tu IMC', desc: 'Clasificación y distancia a tu meta' },
-  { emoji: '🥗', title: 'Tus macros', desc: 'Proteína, carbos y grasas a tu medida' },
-  { emoji: '📋', title: 'Plan nutricional completo', desc: 'Comidas concretas según tus gustos' },
+const BENEFITS = [
+  { emoji: '🔥', title: 'Cuánto comer exacto', desc: 'Tu metabolismo y gasto calórico calculado para tu cuerpo — sin adivinar' },
+  { emoji: '📏', title: 'Dónde estás hoy', desc: 'Tu IMC real y qué tan cerca estás de tu objetivo' },
+  { emoji: '🥗', title: 'Qué comer y cuánto', desc: 'Proteína, carbos y grasas a tu medida — para no pasar hambre' },
+  { emoji: '📋', title: 'Plan semana a semana', desc: 'Comidas reales con porciones exactas, según tus gustos' },
+]
+
+const PROOF_NUMBERS = [
+  { value: '+2.400', label: 'planes generados' },
+  { value: '4.8 ★',  label: 'valoración media' },
+  { value: '3 min',  label: 'para tu resultado' },
 ]
 
 export default function HomePage() {
@@ -28,17 +34,17 @@ export default function HomePage() {
         <div className="w-full max-w-lg pt-8 pb-6 text-center space-y-4 quiz-enter">
           <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1 text-xs font-semibold text-primary">
             <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-            Personalizado · Gratis · Solo 3 minutos
+            Gratis · Personalizado · Solo 3 minutos
           </div>
 
           <h1 className="text-[2rem] font-black leading-tight text-gray-900">
-            Tu plan nutricional<br />
-            <span className="text-primary">a tu medida</span>
+            Por fin, sabe exactamente<br />
+            <span className="text-primary">cuánto debes comer</span>
           </h1>
 
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-[17rem] mx-auto">
-            Responde 12 preguntas y recibe tu IMC, metabolismo y macros
-            calculados para tu objetivo.
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-[19rem] mx-auto">
+            Responde 12 preguntas y recibe tu plan nutricional calculado para
+            tu cuerpo, tu objetivo y tu estilo de vida — sin pasar hambre.
           </p>
         </div>
 
@@ -49,7 +55,7 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-2 gap-2.5">
-            {WHAT_YOU_GET.map(({ emoji, title, desc }) => (
+            {BENEFITS.map(({ emoji, title, desc }) => (
               <div
                 key={title}
                 className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-1.5 shadow-sm"
@@ -65,11 +71,7 @@ export default function HomePage() {
         {/* ── Números ─────────────────────────────────────────── */}
         <div className="w-full max-w-lg mt-3 rounded-2xl border border-[#D8E8D4] bg-white shadow-sm quiz-enter quiz-enter-delay-2">
           <div className="flex items-center divide-x divide-[#EAF2E6]">
-            {[
-              { value: '+2.400', label: 'planes generados' },
-              { value: '4.8 ★', label: 'valoración media' },
-              { value: '3 min', label: 'para tu resultado' },
-            ].map(({ value, label }) => (
+            {PROOF_NUMBERS.map(({ value, label }) => (
               <div key={label} className="flex-1 py-4 text-center">
                 <p className="text-xl font-black text-primary">{value}</p>
                 <p className="text-[10px] text-muted-foreground mt-0.5">{label}</p>
@@ -78,19 +80,67 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* ── Testimonio ──────────────────────────────────────── */}
-        <div className="w-full max-w-lg mt-2.5 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 quiz-enter quiz-enter-delay-2">
-          <div className="flex gap-3 items-start">
-            <div className="h-9 w-9 shrink-0 rounded-full bg-primary/12 flex items-center justify-center text-lg">
-              😊
-            </div>
-            <div>
-              <p className="text-sm leading-relaxed text-gray-700">
-                &ldquo;En 3 minutos tuve mi plan completo. Bajé 5 kg en 6 semanas siguiéndolo al pie de la letra.&rdquo;
-              </p>
-              <p className="mt-1.5 text-xs font-bold text-primary">🇲🇽 Valeria R.</p>
+        {/* ── Testimonios ─────────────────────────────────────── */}
+        <div className="w-full max-w-lg mt-2.5 space-y-2.5 quiz-enter quiz-enter-delay-2">
+          <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
+            <div className="flex gap-3 items-start">
+              <div className="h-9 w-9 shrink-0 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-500 text-sm">
+                VR
+              </div>
+              <div>
+                <div className="flex gap-0.5 mb-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="11" height="11" viewBox="0 0 11 11" fill="#f59e0b">
+                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed text-gray-700">
+                  &ldquo;Siempre pensé que tenía que pasar hambre para bajar de peso. Con mi plan vi exactamente qué comer y en qué cantidad. Bajé 5 kg en 6 semanas sin restricciones extremas.&rdquo;
+                </p>
+                <p className="mt-1.5 text-xs font-bold text-primary">🇲🇽 Valeria R. — Ciudad de México</p>
+              </div>
             </div>
           </div>
+
+          <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
+            <div className="flex gap-3 items-start">
+              <div className="h-9 w-9 shrink-0 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-500 text-sm">
+                AM
+              </div>
+              <div>
+                <div className="flex gap-0.5 mb-1">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="11" height="11" viewBox="0 0 11 11" fill="#f59e0b">
+                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
+                    </svg>
+                  ))}
+                </div>
+                <p className="text-sm leading-relaxed text-gray-700">
+                  &ldquo;Con dos hijos no tenía tiempo para contar calorías. El plan me dijo exactamente qué comer, cuánto y cuándo. En 3 semanas ya me sentía diferente.&rdquo;
+                </p>
+                <p className="mt-1.5 text-xs font-bold text-primary">🇨🇴 Andrea M. — Bogotá</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Para ti si ──────────────────────────────────────── */}
+        <div className="w-full max-w-lg mt-2.5 rounded-2xl border border-[#D8E8D4] bg-white shadow-sm p-5 quiz-enter quiz-enter-delay-2">
+          <p className="text-sm font-bold text-gray-900 mb-3">Este plan es para ti si…</p>
+          <ul className="space-y-2">
+            {[
+              'No sabes exactamente cuánto comer para tu cuerpo',
+              'Has probado dietas pero no ves resultados duraderos',
+              'Quieres comer rico sin pasar hambre ni contar calorías',
+              'Buscas un plan real, no genérico de internet',
+            ].map(item => (
+              <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                <span className="mt-0.5 shrink-0 text-primary font-bold">✓</span>
+                {item}
+              </li>
+            ))}
+          </ul>
         </div>
 
       </main>
@@ -107,7 +157,7 @@ export default function HomePage() {
               'transition-all duration-150 active:scale-[0.99]',
             ].join(' ')}
           >
-            Comenzar mi evaluación
+            Calcular mi plan gratis
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
               <path
                 d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
