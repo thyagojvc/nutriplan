@@ -1,7 +1,9 @@
 'use client'
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+
+const BACK_FLAG = 'nutriplan_can_go_back'
 
 // ---------------------------------------------------------------------------
 // NutriPlan — sistema de UI compartilhado do quiz
@@ -140,7 +142,20 @@ export function QuizProgress({
   const router = useRouter()
   const pathname = usePathname()
   const actualStep = parseInt(pathname?.split('/').pop() ?? '0', 10)
-  const canGoBack = step > 1 && step < total
+
+  // Mostra voltar só se acabou de avançar (flag gravada pelo QuizCta)
+  const [canGoBack, setCanGoBack] = useState(false)
+  useEffect(() => {
+    setCanGoBack(
+      step > 1 && step < total &&
+      sessionStorage.getItem(BACK_FLAG) === '1'
+    )
+  }, [step, total])
+
+  function handleBack() {
+    sessionStorage.removeItem(BACK_FLAG)
+    router.push(`/quiz/${actualStep - 1}`)
+  }
 
   return (
     <div className="space-y-2 quiz-enter">
@@ -149,7 +164,7 @@ export function QuizProgress({
           {canGoBack && (
             <button
               type="button"
-              onClick={() => router.push(`/quiz/${actualStep - 1}`)}
+              onClick={handleBack}
               className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
             >
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -375,10 +390,15 @@ export function QuizCta({
   children?: React.ReactNode
   type?: 'button' | 'submit'
 }) {
+  function handleClick() {
+    sessionStorage.setItem(BACK_FLAG, '1')
+    onClick?.()
+  }
+
   return (
     <button
       type={type}
-      onClick={onClick}
+      onClick={type === 'button' ? handleClick : undefined}
       disabled={disabled || loading}
       className={[
         'quiz-enter quiz-enter-delay-2',
