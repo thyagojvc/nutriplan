@@ -72,7 +72,7 @@ function Wordmark({ color = c.white, size = 13 }: { color?: string; size?: numbe
 const styles = StyleSheet.create({
   // Páginas
   page: { paddingTop: 40, paddingBottom: 50, paddingHorizontal: 40, fontSize: 10, color: c.text, fontFamily: 'Helvetica', backgroundColor: c.white },
-  cover: { backgroundColor: c.greenDeep, color: c.white, alignItems: 'center', justifyContent: 'center', padding: 50 },
+  heroCard: { backgroundColor: c.greenDeep, borderRadius: 16, paddingVertical: 46, paddingHorizontal: 32, alignItems: 'center', marginTop: 24 },
 
   // Capa
   coverBadge: { width: 96, height: 96, borderRadius: 48, backgroundColor: c.white, alignItems: 'center', justifyContent: 'center', marginBottom: 22 },
@@ -90,18 +90,18 @@ const styles = StyleSheet.create({
   coverTagline: { fontSize: 10, color: c.mint, marginTop: 28, fontFamily: 'Helvetica-Oblique' },
 
   // Cabeçalho de página de conteúdo
-  pageHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: c.border },
+  pageHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, paddingBottom: 9, borderBottomWidth: 1, borderBottomColor: c.border },
   pageHeadLeft: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   pageHeadTitle: { fontSize: 16, fontFamily: 'Helvetica-Bold', color: c.ink },
 
   // Section header com barra de destaque
-  sectionHead: { flexDirection: 'row', alignItems: 'center', marginTop: 18, marginBottom: 8 },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', marginTop: 12, marginBottom: 6 },
   accentBar: { width: 4, height: 15, backgroundColor: c.primary, borderRadius: 2, marginRight: 7 },
   h2: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: c.ink },
 
   // Métricas (página de resumo)
-  metricsRow: { flexDirection: 'row', gap: 8, marginBottom: 6 },
-  metric: { flex: 1, backgroundColor: c.softBg, borderRadius: 8, paddingVertical: 10, alignItems: 'center' },
+  metricsRow: { flexDirection: 'row', gap: 8, marginBottom: 4 },
+  metric: { flex: 1, backgroundColor: c.softBg, borderRadius: 8, paddingVertical: 8, alignItems: 'center' },
   metricValue: { fontSize: 15, fontFamily: 'Helvetica-Bold', color: c.greenDeep },
   metricUnit: { fontSize: 8, fontFamily: 'Helvetica', color: c.muted },
   metricLabel: { fontSize: 8, color: c.muted, marginTop: 2 },
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
   note: { fontSize: 9, color: c.text, flex: 1, lineHeight: 1.4 },
 
   // Cards genéricos
-  card: { backgroundColor: c.white, borderWidth: 1, borderColor: c.border, borderRadius: 8, padding: 12, marginBottom: 8 },
+  card: { backgroundColor: c.white, borderWidth: 1, borderColor: c.border, borderRadius: 8, padding: 9, marginBottom: 6 },
   catTitle: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 3 },
   catItems: { fontSize: 9, color: c.text, lineHeight: 1.4 },
   listItem: { fontSize: 9, color: c.text, marginBottom: 3, lineHeight: 1.4 },
 
   // Guia numerada
-  stepRow: { flexDirection: 'row', marginBottom: 5, alignItems: 'flex-start' },
+  stepRow: { flexDirection: 'row', marginBottom: 4, alignItems: 'flex-start' },
   stepNum: { width: 16, height: 16, borderRadius: 8, backgroundColor: c.primary, color: c.white, fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingTop: 3.5, marginRight: 7 },
   stepText: { fontSize: 9, color: c.text, flex: 1, lineHeight: 1.4, paddingTop: 1 },
 
@@ -184,46 +184,48 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
 
   return (
     <Document title="Tu Plan Nutricional — NutriPlan" author="NutriPlan">
-      {/* ── Capa ───────────────────────────────────────────────── */}
-      <Page size="A4" style={styles.cover}>
-        <View style={styles.coverBadge}>
-          <Leaf size={56} leaf={c.greenDeep} vein={c.white} />
-        </View>
-        <Wordmark color={c.white} size={16} />
-        <Text style={[styles.coverTitle, { marginTop: 26 }]}>Tu Plan Nutricional</Text>
-        <View style={styles.coverDivider} />
-        {!!name && <Text style={styles.coverName}>Preparado para {name}</Text>}
-        <View style={styles.goalPill}>
-          <Text style={styles.goalPillText}>{goal}</Text>
-        </View>
+      {/* ── Capa (card verde em página normal — padrão confiável) ── */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.heroCard}>
+          <View style={styles.coverBadge}>
+            <Leaf size={56} leaf={c.greenDeep} vein={c.white} />
+          </View>
+          <Wordmark color={c.white} size={16} />
+          <Text style={[styles.coverTitle, { marginTop: 24 }]}>Tu Plan Nutricional</Text>
+          <View style={styles.coverDivider} />
+          {!!name && <Text style={styles.coverName}>Preparado para {name}</Text>}
+          <View style={styles.goalPill}>
+            <Text style={styles.goalPillText}>{goal}</Text>
+          </View>
 
-        <View style={styles.coverCard}>
-          <View style={styles.coverMetric}>
-            <Text style={styles.coverMetricValue}>{summary.targetCalories}</Text>
-            <Text style={styles.coverMetricUnit}>kcal/día</Text>
-            <Text style={styles.coverMetricLabel}>Meta</Text>
+          <View style={styles.coverCard}>
+            <View style={styles.coverMetric}>
+              <Text style={styles.coverMetricValue}>{summary.targetCalories}</Text>
+              <Text style={styles.coverMetricUnit}>kcal/día</Text>
+              <Text style={styles.coverMetricLabel}>Meta</Text>
+            </View>
+            <View style={styles.coverDivV} />
+            <View style={styles.coverMetric}>
+              <Text style={styles.coverMetricValue}>{summary.macros.proteinG}</Text>
+              <Text style={styles.coverMetricUnit}>g</Text>
+              <Text style={styles.coverMetricLabel}>Proteína</Text>
+            </View>
+            <View style={styles.coverDivV} />
+            <View style={styles.coverMetric}>
+              <Text style={styles.coverMetricValue}>{summary.macros.carbsG}</Text>
+              <Text style={styles.coverMetricUnit}>g</Text>
+              <Text style={styles.coverMetricLabel}>Carbos</Text>
+            </View>
+            <View style={styles.coverDivV} />
+            <View style={styles.coverMetric}>
+              <Text style={styles.coverMetricValue}>{summary.macros.fatG}</Text>
+              <Text style={styles.coverMetricUnit}>g</Text>
+              <Text style={styles.coverMetricLabel}>Grasas</Text>
+            </View>
           </View>
-          <View style={styles.coverDivV} />
-          <View style={styles.coverMetric}>
-            <Text style={styles.coverMetricValue}>{summary.macros.proteinG}</Text>
-            <Text style={styles.coverMetricUnit}>g</Text>
-            <Text style={styles.coverMetricLabel}>Proteína</Text>
-          </View>
-          <View style={styles.coverDivV} />
-          <View style={styles.coverMetric}>
-            <Text style={styles.coverMetricValue}>{summary.macros.carbsG}</Text>
-            <Text style={styles.coverMetricUnit}>g</Text>
-            <Text style={styles.coverMetricLabel}>Carbos</Text>
-          </View>
-          <View style={styles.coverDivV} />
-          <View style={styles.coverMetric}>
-            <Text style={styles.coverMetricValue}>{summary.macros.fatG}</Text>
-            <Text style={styles.coverMetricUnit}>g</Text>
-            <Text style={styles.coverMetricLabel}>Grasas</Text>
-          </View>
-        </View>
 
-        <Text style={styles.coverTagline}>Tu nutrición, a tu medida.</Text>
+          <Text style={styles.coverTagline}>Tu nutrición, a tu medida.</Text>
+        </View>
       </Page>
 
       {/* ── Página: resumo + compras + guia ────────────────────── */}
@@ -236,7 +238,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
           <Wordmark color={c.primary} size={11} />
         </View>
 
-        <Text style={{ fontSize: 9, color: c.muted, marginBottom: 12 }}>
+        <Text style={{ fontSize: 9, color: c.muted, marginBottom: 8 }}>
           {goal} · ciclo de {summary.cycleDays} días repetible durante {summary.cycleWeeks} semanas
         </Text>
 
