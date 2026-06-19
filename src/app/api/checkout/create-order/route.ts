@@ -91,7 +91,12 @@ export async function POST(request: NextRequest) {
         .eq('idempotency_key', idempotencyKey)
         .single()
       if (existing) {
-        return NextResponse.json({ order_id: existing.id, idempotency_key: idempotencyKey, provider })
+        return NextResponse.json({
+          order_id: existing.id,
+          idempotency_key: idempotencyKey,
+          provider,
+          price: { amount: Number(plan.local_price), currency: plan.currency },
+        })
       }
     }
     console.error('[create-order] insert error:', orderError)
@@ -130,5 +135,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'items_creation_failed' }, { status: 500 })
   }
 
-  return NextResponse.json({ order_id: order.id, idempotency_key: idempotencyKey, provider })
+  return NextResponse.json({
+    order_id: order.id,
+    idempotency_key: idempotencyKey,
+    provider,
+    price: { amount: Number(plan.local_price), currency: plan.currency },
+  })
 }
