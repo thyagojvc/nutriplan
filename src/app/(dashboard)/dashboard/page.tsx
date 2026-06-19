@@ -61,7 +61,7 @@ export default async function DashboardPage() {
   // delivered → carregar e renderizar
   const { data: plan } = await svc
     .from('nutrition_plans')
-    .select('plan_json')
+    .select('plan_json, session_id')
     .eq('order_id', order.id)
     .maybeSingle()
 
