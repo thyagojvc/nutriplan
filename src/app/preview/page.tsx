@@ -46,6 +46,59 @@ export default function PreviewPage() {
   const router = useRouter()
   const [data, setData] = useState<PreviewData | null>(null)
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
+  const [orderId, setOrderId] = useState<string | null>(null)
+  const [hotmartUrl, setHotmartUrl] = useState<string | null>(null)
+  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
+  const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
+
+  useEffect(() => {
+    fetch('/api/checkout/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ include_bump: false }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        if (d.order_id) {
+          setOrderId(d.order_id)
+          setIdempotencyKey(d.idempotency_key)
+          const base = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL ?? ''
+          const step12 = sessionStorage.getItem('nutriplan_step_12')
+          const lead = step12 ? (JSON.parse(step12) as Record<string, string>) : {}
+          const params = new URLSearchParams()
+          if (lead.email) params.set('email', lead.email)
+          if (lead.name)  params.set('name',  lead.name)
+          setHotmartUrl(`${base}?${params.toString()}`)
+        }
+      })
+      .catch(() => {})
+  }, [])
+
+  async function handleCta() {
+    if (ctaState === 'loading') return
+    setCtaState('loading')
+    if (orderId) {
+      document.cookie = `nutriplan_order_id=${orderId}; path=/; max-age=3600; SameSite=Lax`
+      if (idempotencyKey) {
+        document.cookie = `nutriplan_order_key=${idempotencyKey}; path=/; max-age=3600; SameSite=Lax`
+        sessionStorage.setItem('nutriplan_idempotency_key', idempotencyKey)
+      }
+    }
+    if (process.env.NODE_ENV !== 'production' && orderId) {
+      await fetch('/api/dev/simulate-payment', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: orderId }),
+      })
+      router.push(`/exito?order=${orderId}`)
+      return
+    }
+    if (hotmartUrl) {
+      window.location.href = hotmartUrl
+    } else {
+      setCtaState('error')
+    }
+  }
 
   useEffect(() => {
     // Lê o draft do sessionStorage (preenchido passo a passo durante o quiz).
@@ -205,7 +258,7 @@ export default function PreviewPage() {
       </div>
 
       {/* ── Contenido ─────────────────────────────────────────── */}
-      <div className="w-full max-w-lg px-4 pb-32 space-y-3">
+      <div className="w-full max-w-lg px-4 pb-10 space-y-3">
 
         {/* Perfil */}
         <Card label="Tu perfil">
@@ -314,6 +367,42 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        {/* Precio */}
+        <div className="rounded-2xl border-2 border-primary/30 bg-white shadow-sm overflow-hidden">
+          <div className="p-5 space-y-4">
+            <div className="text-center space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                Accede a tu plan completo
+              </p>
+              <p className="text-4xl font-black text-gray-900">
+                $9<span className="text-2xl font-black">.90</span>
+                <span className="text-sm font-semibold text-muted-foreground ml-2">USD</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Pago único · sin suscripción · convertido a tu moneda automáticamente
+              </p>
+            </div>
+            <ul className="space-y-2">
+              {[
+                '📊 Tu perfil nutricional exacto (IMC, TMB, TDEE)',
+                '🍽️ Plan de 30 días con comidas y porciones exactas',
+                '🛒 Lista de compras optimizada para tu plan',
+                '📋 Guía de implementación paso a paso',
+                '🔄 Sustituciones para adaptar a lo que tienes en casa',
+                '📄 PDF descargable para consultar cuando quieras',
+                '👩‍⚕️ Metodología diseñada y validada por nutriólogos certificados',
+              ].map(item => (
+                <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
+                  <span className="text-primary font-bold mt-0.5 shrink-0">✓</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <CtaButton ctaState={ctaState} onClick={handleCta} />
+
         {/* Social proof */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
           <p className="text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -343,35 +432,64 @@ export default function PreviewPage() {
           ))}
         </div>
 
-      </div>
+        <CtaButton ctaState={ctaState} onClick={handleCta} />
 
-      {/* ── CTA fixo ──────────────────────────────────────────── */}
-      <div className="fixed bottom-0 left-0 right-0 border-t border-[#D8E8D4] bg-white/95 p-4 shadow-2xl backdrop-blur-md">
-        <div className="mx-auto max-w-lg space-y-2">
-          <button
-            onClick={() => router.push('/checkout')}
-            className={[
-              'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
-              'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)] transition-all duration-150',
-              'hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)] hover:brightness-[1.04] active:scale-[0.99]',
-            ].join(' ')}
-          >
-            Quiero mi plan completo
+      </div>
+    </PageShell>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// CTA reutilizável (aparece duas vezes na página)
+// ---------------------------------------------------------------------------
+
+function CtaButton({
+  ctaState,
+  onClick,
+}: {
+  ctaState: 'idle' | 'loading' | 'error'
+  onClick: () => void
+}) {
+  return (
+    <div className="space-y-2">
+      {ctaState === 'error' && (
+        <p className="text-center text-xs text-red-600">
+          Error al preparar el pedido. Recarga la página e intenta de nuevo.
+        </p>
+      )}
+      <button
+        onClick={onClick}
+        disabled={ctaState === 'loading'}
+        className={[
+          'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
+          'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)] transition-all duration-150',
+          'hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)] hover:brightness-[1.04] active:scale-[0.99]',
+          'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
+        ].join(' ')}
+      >
+        {ctaState === 'loading' ? (
+          <>
+            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+            Procesando…
+          </>
+        ) : (
+          <>
+            Desbloquear mi plan — $9.90 USD
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
               <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
                 stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
-          </button>
-          <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground flex-wrap">
-            <span className="flex items-center gap-1"><span>🔒</span> Pago seguro</span>
-            <span className="h-3 w-px bg-border" />
-            <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
-            <span className="h-3 w-px bg-border" />
-            <span className="flex items-center gap-1"><span>↩️</span> Garantía 7 días</span>
-          </div>
-        </div>
+          </>
+        )}
+      </button>
+      <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground flex-wrap">
+        <span className="flex items-center gap-1"><span>🔒</span> Pago seguro</span>
+        <span className="h-3 w-px bg-border" />
+        <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
+        <span className="h-3 w-px bg-border" />
+        <span className="flex items-center gap-1"><span>↩️</span> Garantía 7 días</span>
       </div>
-    </PageShell>
+    </div>
   )
 }
 
