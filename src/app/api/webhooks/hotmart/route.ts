@@ -334,12 +334,37 @@ async function handleRenewal({
 
 async function handleDeactivate(
   data: Record<string, unknown>,
-  _reason: 'refunded' | 'cancelled',
+  reason: 'refunded' | 'cancelled',
 ) {
   const buyer = data.buyer as Record<string, unknown> | undefined
   const email = buyer?.email as string | undefined
   if (!email) return
 
-  // Por ora apenas logamos — suspensão de conta será implementada na Fase D
-  console.info('[webhook/hotmart] deactivate', { email, _reason })
+  console.info('[webhook/hotmart] deactivate', { email, reason })
+
+  // Cancelamento de assinatura não revoga acesso imediato (período já pago ainda vale)
+  if (reason !== 'refunded') return
+
+  const supabase = createServiceClient()
+
+  const { data: user } = await supabase
+    .from('users')
+    .select('auth_user_id')
+    .eq('email', email)
+    .maybeSingle()
+
+  if (!user?.auth_user_id) {
+    console.warn('[webhook/hotmart] deactivate: usuário não encontrado para', email)
+    return
+  }
+
+  const { error } = await supabase.auth.admin.updateUserById(user.auth_user_id, {
+    ban_duration: '876600h',
+  })
+
+  if (error) {
+    console.error('[webhook/hotmart] deactivate: falha ao revogar acesso', { email, error })
+  } else {
+    console.info('[webhook/hotmart] deactivate: acesso revogado', { email })
+  }
 }
