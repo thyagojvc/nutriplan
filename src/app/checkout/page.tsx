@@ -17,6 +17,7 @@ const INCLUDES = [
   '📋 Guía de implementación paso a paso',
   '🔄 Sustituciones para adaptar a lo que tienes en casa',
   '📄 PDF descargable para consultar cuando quieras',
+  '👩‍⚕️ Metodología diseñada y validada por nutriólogos certificados',
 ]
 
 export default function CheckoutPage() {

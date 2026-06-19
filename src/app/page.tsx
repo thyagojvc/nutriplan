@@ -47,6 +47,10 @@ export default function HomePage() {
             Responde 9 preguntas y recibe tu plan nutricional calculado para
             tu cuerpo, tu objetivo y tu estilo de vida — sin pasar hambre.
           </p>
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-[#D8E8D4] bg-white px-3 py-1 text-xs text-muted-foreground">
+            <span>👩‍⚕️</span>
+            <span>Metodología validada por nutriólogos certificados</span>
+          </div>
         </div>
 
         {/* ── Lo que vas a descubrir ───────────────────────────── */}
