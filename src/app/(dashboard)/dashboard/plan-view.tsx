@@ -29,6 +29,13 @@ const DOC_LABEL: Record<string, string> = {
   training_plan: 'Plan de entrenamiento (PDF)',
 }
 
+const MEAL_EMOJI: Record<string, string> = {
+  Desayuno: '☀️',
+  Almuerzo: '🍽️',
+  Cena: '🌙',
+  Snack: '🍎',
+}
+
 interface Profile {
   age: number | null
   weightKg: number | null
@@ -41,11 +48,13 @@ export function PlanView({
   plan,
   name,
   docKinds = [],
+  devPdfHref,
   profile,
 }: {
   plan: NutritionPlanJson
   name: string
   docKinds?: string[]
+  devPdfHref?: string
   profile?: Profile
 }) {
   const [activeDay, setActiveDay] = useState(0)
@@ -71,13 +80,26 @@ export function PlanView({
 
       {/* Downloads */}
       {docKinds.length > 0 && (
-        <div className="flex flex-wrap gap-2 justify-center">
-          {docKinds.filter((k) => DOC_LABEL[k]).map((k) => (
-            <a key={k} href={`/api/documents/${k}`}
-              className="inline-flex items-center gap-1.5 rounded-md border px-3 py-1.5 text-sm font-medium hover:bg-muted">
-              ↓ {DOC_LABEL[k]}
-            </a>
-          ))}
+        <div className="space-y-2">
+          <p className="text-center text-xs text-muted-foreground">
+            Descarga tu plan para verlo sin internet
+          </p>
+          <div className="flex flex-col gap-2">
+            {docKinds.filter((k) => DOC_LABEL[k]).map((k) => (
+              <a
+                key={k}
+                href={devPdfHref ?? `/api/documents/${k}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.98] transition-all"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+                {DOC_LABEL[k]}
+              </a>
+            ))}
+          </div>
         </div>
       )}
 
@@ -169,29 +191,45 @@ export function PlanView({
 
         <div className="space-y-3">
           {day.meals.map((meal, i) => (
-            <div key={i} className="rounded-lg border p-4">
-              <div className="mb-2 flex items-center justify-between">
-                <h3 className="font-semibold">{meal.name}</h3>
-                <span className="text-xs text-muted-foreground">{meal.totals.kcal} kcal</span>
+            <div key={i} className="overflow-hidden rounded-xl border border-border">
+              {/* Header verde com emoji e kcal */}
+              <div className="flex items-center justify-between bg-primary px-4 py-2.5">
+                <span className="flex items-center gap-1.5 text-sm font-semibold text-primary-foreground">
+                  {MEAL_EMOJI[meal.name] ?? '🍽️'} {meal.name}
+                </span>
+                <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-xs font-medium text-white">
+                  {meal.totals.kcal} kcal
+                </span>
               </div>
-              <ul className="space-y-1.5">
+
+              {/* Itens */}
+              <div className="divide-y divide-border">
                 {meal.items.map((item, j) => (
-                  <li key={j} className="flex items-baseline justify-between gap-3 text-sm">
-                    <span>
-                      <span className="font-medium">{item.food}</span>
-                      <span className="text-muted-foreground"> · {item.quantity}</span>
-                    </span>
-                    <span className="shrink-0 text-xs text-muted-foreground">
-                      {item.proteinG}P · {item.carbsG}C · {item.fatG}G
-                    </span>
-                  </li>
+                  <div key={j} className="flex items-center justify-between gap-3 px-4 py-2.5">
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">{item.food}</p>
+                      <p className="text-xs text-muted-foreground">{item.quantity}</p>
+                    </div>
+                    <div className="flex shrink-0 gap-1">
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{item.proteinG}P</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{item.carbsG}C</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{item.fatG}G</span>
+                    </div>
+                  </div>
                 ))}
-              </ul>
+              </div>
+
+              {/* Rodapé com macros totais da refeição */}
+              <div className="bg-muted/40 px-4 py-1.5 text-right text-[11px] text-muted-foreground">
+                {meal.totals.proteinG}g prot · {meal.totals.carbsG}g carb · {meal.totals.fatG}g gras
+              </div>
             </div>
           ))}
-          <p className="text-right text-xs text-muted-foreground">
-            Total del día: {day.totals.kcal} kcal · {day.totals.proteinG}g proteína
-          </p>
+
+          <div className="rounded-lg bg-primary/5 border border-primary/20 px-4 py-2.5 flex justify-between items-center">
+            <span className="text-sm font-medium text-primary">Total del día</span>
+            <span className="text-sm font-semibold">{day.totals.kcal} kcal · {day.totals.proteinG}g proteína</span>
+          </div>
         </div>
       </section>
 
