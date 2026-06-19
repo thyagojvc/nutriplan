@@ -27,7 +27,6 @@ export default function CheckoutPage() {
   const [orderId, setOrderId] = useState<string | null>(null)
   const [hotmartUrl, setHotmartUrl] = useState<string | null>(null)
   const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
-  const [price, setPrice] = useState<{ amount: number; currency: string } | null>(null)
 
   useEffect(() => {
     fetch('/api/checkout/create-order', {
@@ -40,7 +39,7 @@ export default function CheckoutPage() {
         if (data.order_id) {
           setOrderId(data.order_id)
           setIdempotencyKey(data.idempotency_key)
-          if (data.price) setPrice(data.price)
+
           const base = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL ?? ''
           const step12 = sessionStorage.getItem('nutriplan_step_12')
           const lead = step12 ? (JSON.parse(step12) as Record<string, string>) : {}
@@ -151,30 +150,6 @@ export default function CheckoutPage() {
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* Preço */}
-          <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm p-5">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Precio de tu plan</p>
-                <p className="text-3xl font-black text-gray-900 mt-0.5">
-                  {price
-                    ? `${price.currency} ${Number(price.amount).toLocaleString('es-MX', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`
-                    : '…'}
-                </p>
-                <p className="text-xs text-muted-foreground mt-1">Pago único · Acceso de por vida</p>
-              </div>
-              <div className="text-right space-y-1">
-                <div className="inline-flex items-center gap-1 rounded-full bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">
-                  ✓ Garantía 7 días
-                </div>
-                <p className="text-xs text-muted-foreground">Reembolso sin preguntas</p>
-              </div>
-            </div>
-            <p className="mt-3 text-xs text-muted-foreground border-t border-[#EEF6EA] pt-3">
-              Al hacer clic serás redirigido a Hotmart, plataforma de pago segura. El precio que ves aquí es exactamente el que cobrarán.
-            </p>
           </div>
 
           {/* CTA */}
