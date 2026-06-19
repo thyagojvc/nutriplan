@@ -53,18 +53,22 @@ const LIMITATION_MAP: Record<string, PhysicalLimitation> = {
 // Restrições alimentares → categorias/alimentos a excluir do plano.
 // Usado tanto na prevenção (instrução ao gerador) quanto na validação.
 const RESTRICTION_EXCLUSIONS: Record<string, string[]> = {
-  vegetariano: ['pollo', 'carne_res', 'cerdo', 'pescado', 'mariscos'],
+  vegetariano: ['pollo', 'carne_res', 'cerdo', 'pescado', 'mariscos', 'atun', 'pavo'],
   vegano: [
     'pollo',
     'carne_res',
     'cerdo',
     'pescado',
     'mariscos',
+    'atun',
+    'pavo',
     'huevo',
     'lacteos',
+    'queso_fresco',
+    'yogur_griego',
   ],
-  sin_gluten: ['pasta', 'pan', 'avena'], // avena: contaminação cruzada comum
-  sin_lactosa: ['lacteos'],
+  sin_gluten: ['pasta', 'pan', 'avena', 'granola'], // avena/granola: contaminação cruzada comum
+  sin_lactosa: ['lacteos', 'queso_fresco', 'yogur_griego'],
   sin_mariscos: ['mariscos'],
   sin_cerdo: ['cerdo'],
 }

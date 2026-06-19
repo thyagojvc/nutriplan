@@ -19,7 +19,7 @@ const SAMPLE_DRAFT = {
   step_4: { sex: 'femenino' }, // femenino | masculino
   step_5: { age: 34, weight_kg: 72, height_cm: 165 },
   step_6: { activity_level: 'ligeramente_activo', activity_factor: 1.375 },
-  step_8: { restrictions: ['sin_lactosa'] }, // ex: ['vegetariano','sin_gluten']
+  step_8: { restrictions: [] }, // ex: ['sin_lactosa','vegetariano','sin_gluten']
   step_9: { health: ['ninguna_condicion'] },
   step_10: { limitations: ['ninguna'], experience: 'principiante', location: 'casa', frequency: '3_4' },
 }

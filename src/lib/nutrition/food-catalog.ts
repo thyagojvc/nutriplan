@@ -38,12 +38,17 @@ export const FOOD_CATALOG: CatalogFood[] = [
   { id: 'huevo', label: 'Huevo', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 143, proteinG: 13, carbsG: 1.1, fatG: 9.5, unit: 'g (≈1 huevo por c/50 g)' },
   { id: 'tofu', label: 'Tofu firme', role: 'protein', meals: PRINCIPALES, kcal: 144, proteinG: 17, carbsG: 2.8, fatG: 9, unit: 'g' },
   { id: 'legumbres', label: 'Lentejas / frijoles', role: 'protein', meals: PRINCIPALES, kcal: 116, proteinG: 9, carbsG: 20, fatG: 0.4, unit: 'g cocidos' },
+  { id: 'atun', label: 'Atún (en agua)', role: 'protein', meals: PRINCIPALES, kcal: 116, proteinG: 26, carbsG: 0, fatG: 1, unit: 'g (≈1 lata escurrida)' },
+  { id: 'pavo', label: 'Pechuga de pavo', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 135, proteinG: 29, carbsG: 0, fatG: 1.7, unit: 'g a la plancha' },
   // Carboidratos
   { id: 'arroz', label: 'Arroz cocido', role: 'carb', meals: PRINCIPALES, kcal: 130, proteinG: 2.7, carbsG: 28, fatG: 0.3, unit: 'g cocido' },
   { id: 'pasta', label: 'Pasta cocida', role: 'carb', meals: PRINCIPALES, kcal: 158, proteinG: 5.8, carbsG: 31, fatG: 0.9, unit: 'g cocida' },
   { id: 'pan', label: 'Pan integral', role: 'carb', meals: MANANA_SNACK, kcal: 265, proteinG: 9, carbsG: 49, fatG: 3.2, unit: 'g' },
   { id: 'avena', label: 'Avena', role: 'carb', meals: MANANA_SNACK, kcal: 389, proteinG: 17, carbsG: 66, fatG: 7, unit: 'g en hojuelas' },
   { id: 'papa', label: 'Papa cocida', role: 'carb', meals: PRINCIPALES, kcal: 87, proteinG: 1.9, carbsG: 20, fatG: 0.1, unit: 'g' },
+  { id: 'quinoa', label: 'Quinoa cocida', role: 'carb', meals: PRINCIPALES, kcal: 120, proteinG: 4.4, carbsG: 21, fatG: 1.9, unit: 'g cocida' },
+  { id: 'camote', label: 'Camote / batata', role: 'carb', meals: PRINCIPALES, kcal: 90, proteinG: 2, carbsG: 21, fatG: 0.1, unit: 'g cocido' },
+  { id: 'granola', label: 'Granola', role: 'carb', meals: MANANA_SNACK, kcal: 471, proteinG: 10, carbsG: 64, fatG: 20, unit: 'g' },
   // Regionais (México) — tortilla e nopales se comem también en el desayuno
   { id: 'tortilla_maiz', label: 'Tortilla de maíz', role: 'carb', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 218, proteinG: 5.7, carbsG: 44, fatG: 2.5, unit: 'g (≈2 tortillas medianas)' },
   // Regionais (Colombia) — la arepa es desayuno típico
@@ -52,10 +57,15 @@ export const FOOD_CATALOG: CatalogFood[] = [
   { id: 'yuca', label: 'Yuca cocida', role: 'carb', meals: PRINCIPALES, kcal: 160, proteinG: 1.4, carbsG: 38, fatG: 0.3, unit: 'g' },
   // Vegetais / frutas / gorduras
   { id: 'verduras', label: 'Verduras mixtas', role: 'veg', meals: PRINCIPALES, kcal: 35, proteinG: 2, carbsG: 7, fatG: 0.3, unit: 'g salteadas' },
+  { id: 'tomate', label: 'Tomate / ensalada', role: 'veg', meals: PRINCIPALES, kcal: 18, proteinG: 0.9, carbsG: 3.9, fatG: 0.2, unit: 'g' },
+  { id: 'espinaca', label: 'Espinaca', role: 'veg', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 23, proteinG: 2.9, carbsG: 3.6, fatG: 0.4, unit: 'g' },
   { id: 'nopales', label: 'Nopales', role: 'veg', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 16, proteinG: 1.4, carbsG: 3.3, fatG: 0.1, unit: 'g salteados' },
   { id: 'frutas', label: 'Fruta de temporada', role: 'fruit', meals: MANANA_SNACK, kcal: 60, proteinG: 0.8, carbsG: 15, fatG: 0.2, unit: 'g' },
   { id: 'aguacate', label: 'Aguacate', role: 'fat', meals: ['desayuno', 'almuerzo', 'cena', 'snack'], kcal: 160, proteinG: 2, carbsG: 9, fatG: 15, unit: 'g (~½ pieza)' },
+  { id: 'nueces', label: 'Nueces / frutos secos', role: 'fat', meals: MANANA_SNACK, kcal: 607, proteinG: 15, carbsG: 14, fatG: 54, unit: 'g (un puñado ≈30 g)' },
   { id: 'lacteos', label: 'Yogur natural / leche', role: 'dairy', meals: MANANA_SNACK, kcal: 61, proteinG: 3.5, carbsG: 4.7, fatG: 3.3, unit: 'ml' },
+  { id: 'queso_fresco', label: 'Queso fresco / panela', role: 'dairy', meals: ['desayuno', 'almuerzo', 'cena', 'snack'], kcal: 215, proteinG: 18, carbsG: 4, fatG: 14, unit: 'g' },
+  { id: 'yogur_griego', label: 'Yogur griego', role: 'dairy', meals: MANANA_SNACK, kcal: 59, proteinG: 10, carbsG: 3.6, fatG: 0.4, unit: 'g' },
   { id: 'aceite', label: 'Aceite de oliva', role: 'fat', meals: PRINCIPALES, kcal: 884, proteinG: 0, carbsG: 0, fatG: 100, unit: 'g (cucharadas)' },
 ]
 
