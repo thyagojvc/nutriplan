@@ -3,6 +3,7 @@
 // Renderiza plan_json em PDF com @react-pdf/renderer (JS puro, sem Chromium —
 // compatível com Vercel serverless). Documento complementar; o dashboard HTML
 // continua sendo a entrega primária.
+// Layout repaginado com a identidade da marca (capa verde + folha + cards).
 // =============================================================================
 
 import {
@@ -10,6 +11,8 @@ import {
   Page,
   Text,
   View,
+  Svg,
+  Path,
   StyleSheet,
   renderToBuffer,
 } from '@react-pdf/renderer'
@@ -23,149 +26,315 @@ const GOAL_LABEL: Record<string, string> = {
   health_energy: 'Salud y energía',
 }
 
+// ── Paleta de marca ──────────────────────────────────────────────────────────
 const c = {
-  primary: '#16a34a',
-  text: '#1f2937',
-  muted: '#6b7280',
-  border: '#e5e7eb',
-  amberBg: '#fffbeb',
-  amberText: '#92400e',
+  greenDeep: '#1E6340',
+  primary: '#226D45',
+  mint: '#A7E8C4',
+  cream: '#F5FAF2',
+  softBg: '#EEF6EA',
+  ink: '#1A2E22',
+  text: '#2B3A30',
+  muted: '#6B7B70',
+  border: '#D8E8D4',
+  white: '#FFFFFF',
+  amberBg: '#FFF8E6',
+  amberText: '#8A6D1A',
+  protein: '#D86A78',
+  carb: '#D79A33',
+  fat: '#4F90C6',
+}
+
+// ── Folha (logo) em SVG ──────────────────────────────────────────────────────
+function Leaf({ size, leaf = c.white, vein = c.greenDeep }: { size: number; leaf?: string; vein?: string }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24">
+      <Path
+        d="M12 2.5C7.5 2.5 3.5 6.8 3.5 12C3.5 16.4 6.2 20 10 21.8L12 22.5L14 21.8C17.8 20 20.5 16.4 20.5 12C20.5 6.8 16.5 2.5 12 2.5Z"
+        fill={leaf}
+      />
+      <Path d="M12 21.5V11.5" stroke={vein} strokeWidth={1.4} strokeLinecap="round" />
+      <Path d="M12 17.5L9 14.5" stroke={vein} strokeWidth={1.1} strokeLinecap="round" />
+      <Path d="M12 14.5L15 11.5" stroke={vein} strokeWidth={1.1} strokeLinecap="round" />
+    </Svg>
+  )
+}
+
+function Wordmark({ color = c.white, size = 13 }: { color?: string; size?: number }) {
+  return (
+    <Text style={{ fontSize: size, color }}>
+      <Text style={{ fontFamily: 'Helvetica' }}>Nutri</Text>
+      <Text style={{ fontFamily: 'Helvetica-Bold' }}>Plan</Text>
+    </Text>
+  )
 }
 
 const styles = StyleSheet.create({
-  page: { padding: 36, fontSize: 10, color: c.text, fontFamily: 'Helvetica' },
-  h1: { fontSize: 20, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 2 },
-  subtitle: { fontSize: 10, color: c.muted, marginBottom: 16 },
-  h2: { fontSize: 13, fontFamily: 'Helvetica-Bold', marginTop: 16, marginBottom: 6 },
-  metricsRow: { flexDirection: 'row', gap: 8, marginBottom: 12 },
-  metric: { flex: 1, borderWidth: 1, borderColor: c.border, borderRadius: 4, padding: 6, alignItems: 'center' },
-  metricLabel: { fontSize: 7, color: c.muted },
-  metricValue: { fontSize: 13, fontFamily: 'Helvetica-Bold' },
-  note: { fontSize: 9, color: c.muted, marginBottom: 2 },
-  mealBox: { borderWidth: 1, borderColor: c.border, borderRadius: 4, padding: 8, marginBottom: 6 },
-  mealHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 4 },
-  mealName: { fontSize: 11, fontFamily: 'Helvetica-Bold' },
-  mealKcal: { fontSize: 9, color: c.muted },
-  itemRow: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 1 },
-  itemFood: { fontSize: 9 },
-  itemMacros: { fontSize: 8, color: c.muted },
-  dayTitle: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.primary, marginTop: 10, marginBottom: 4 },
-  listItem: { fontSize: 9, marginBottom: 2 },
-  disclaimerBox: { backgroundColor: c.amberBg, borderRadius: 4, padding: 8, marginTop: 12 },
-  disclaimerText: { fontSize: 8, color: c.amberText, marginBottom: 2 },
-  footer: { position: 'absolute', bottom: 20, left: 36, right: 36, fontSize: 7, color: c.muted, textAlign: 'center' },
+  // Páginas
+  page: { paddingTop: 40, paddingBottom: 50, paddingHorizontal: 40, fontSize: 10, color: c.text, fontFamily: 'Helvetica', backgroundColor: c.white },
+  cover: { backgroundColor: c.greenDeep, color: c.white, alignItems: 'center', justifyContent: 'center', padding: 50 },
+
+  // Capa
+  coverBadge: { width: 96, height: 96, borderRadius: 48, backgroundColor: c.white, alignItems: 'center', justifyContent: 'center', marginBottom: 22 },
+  coverTitle: { fontSize: 30, fontFamily: 'Helvetica-Bold', color: c.white, textAlign: 'center', marginBottom: 6 },
+  coverDivider: { width: 54, height: 3, backgroundColor: c.mint, borderRadius: 2, marginVertical: 12 },
+  coverName: { fontSize: 13, color: c.mint, marginBottom: 14 },
+  goalPill: { borderWidth: 1, borderColor: c.mint, borderRadius: 20, paddingVertical: 5, paddingHorizontal: 16, marginBottom: 30 },
+  goalPillText: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: c.white },
+  coverCard: { backgroundColor: c.white, borderRadius: 12, flexDirection: 'row', paddingVertical: 16, paddingHorizontal: 10, width: '100%' },
+  coverMetric: { flex: 1, alignItems: 'center' },
+  coverMetricValue: { fontSize: 18, fontFamily: 'Helvetica-Bold', color: c.greenDeep },
+  coverMetricUnit: { fontSize: 8, fontFamily: 'Helvetica', color: c.muted },
+  coverMetricLabel: { fontSize: 8, color: c.muted, marginTop: 3 },
+  coverDivV: { width: 1, backgroundColor: c.border },
+  coverTagline: { fontSize: 10, color: c.mint, marginTop: 28, fontFamily: 'Helvetica-Oblique' },
+
+  // Cabeçalho de página de conteúdo
+  pageHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 18, paddingBottom: 10, borderBottomWidth: 1, borderBottomColor: c.border },
+  pageHeadLeft: { flexDirection: 'row', alignItems: 'center', gap: 8 },
+  pageHeadTitle: { fontSize: 16, fontFamily: 'Helvetica-Bold', color: c.ink },
+
+  // Section header com barra de destaque
+  sectionHead: { flexDirection: 'row', alignItems: 'center', marginTop: 18, marginBottom: 8 },
+  accentBar: { width: 4, height: 15, backgroundColor: c.primary, borderRadius: 2, marginRight: 7 },
+  h2: { fontSize: 13, fontFamily: 'Helvetica-Bold', color: c.ink },
+
+  // Métricas (página de resumo)
+  metricsRow: { flexDirection: 'row', gap: 8, marginBottom: 6 },
+  metric: { flex: 1, backgroundColor: c.softBg, borderRadius: 8, paddingVertical: 10, alignItems: 'center' },
+  metricValue: { fontSize: 15, fontFamily: 'Helvetica-Bold', color: c.greenDeep },
+  metricUnit: { fontSize: 8, fontFamily: 'Helvetica', color: c.muted },
+  metricLabel: { fontSize: 8, color: c.muted, marginTop: 2 },
+
+  // Notas
+  noteRow: { flexDirection: 'row', marginBottom: 3, paddingRight: 6 },
+  noteDot: { color: c.primary, fontFamily: 'Helvetica-Bold', marginRight: 5 },
+  note: { fontSize: 9, color: c.text, flex: 1, lineHeight: 1.4 },
+
+  // Cards genéricos
+  card: { backgroundColor: c.white, borderWidth: 1, borderColor: c.border, borderRadius: 8, padding: 12, marginBottom: 8 },
+  catTitle: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 3 },
+  catItems: { fontSize: 9, color: c.text, lineHeight: 1.4 },
+  listItem: { fontSize: 9, color: c.text, marginBottom: 3, lineHeight: 1.4 },
+
+  // Guia numerada
+  stepRow: { flexDirection: 'row', marginBottom: 5, alignItems: 'flex-start' },
+  stepNum: { width: 16, height: 16, borderRadius: 8, backgroundColor: c.primary, color: c.white, fontSize: 8, fontFamily: 'Helvetica-Bold', textAlign: 'center', paddingTop: 3.5, marginRight: 7 },
+  stepText: { fontSize: 9, color: c.text, flex: 1, lineHeight: 1.4, paddingTop: 1 },
+
+  // Dia
+  dayCard: { borderWidth: 1, borderColor: c.border, borderRadius: 8, marginBottom: 10, overflow: 'hidden' },
+  dayHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: c.primary, paddingVertical: 7, paddingHorizontal: 12 },
+  dayTitle: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.white },
+  dayKcal: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.mint },
+  dayBody: { padding: 10 },
+
+  // Refeição dentro do dia
+  meal: { marginBottom: 8 },
+  mealHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 },
+  mealName: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.greenDeep },
+  mealKcal: { fontSize: 8, color: c.muted },
+  itemRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 2, borderBottomWidth: 0.5, borderBottomColor: c.cream },
+  itemFood: { fontSize: 9, color: c.text, flex: 1 },
+  itemQty: { color: c.muted },
+  macroChips: { flexDirection: 'row', gap: 4 },
+  chip: { fontSize: 7, color: c.white, borderRadius: 3, paddingHorizontal: 3, paddingVertical: 1 },
+
+  // Disclaimer
+  disclaimerBox: { backgroundColor: c.amberBg, borderRadius: 8, padding: 10, marginTop: 14 },
+  disclaimerHead: { fontSize: 9, fontFamily: 'Helvetica-Bold', color: c.amberText, marginBottom: 3 },
+  disclaimerText: { fontSize: 8, color: c.amberText, marginBottom: 2, lineHeight: 1.4 },
+
+  // Footer
+  footer: { position: 'absolute', bottom: 22, left: 40, right: 40, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: c.border, paddingTop: 6 },
+  footerText: { fontSize: 7, color: c.muted },
 })
 
-function Metric({ label, value, unit }: { label: string; value: string; unit: string }) {
+function SectionHead({ title }: { title: string }) {
   return (
-    <View style={styles.metric}>
-      <Text style={styles.metricLabel}>{label}</Text>
-      <Text style={styles.metricValue}>
-        {value}
-        <Text style={{ fontSize: 8 }}> {unit}</Text>
-      </Text>
+    <View style={styles.sectionHead}>
+      <View style={styles.accentBar} />
+      <Text style={styles.h2}>{title}</Text>
+    </View>
+  )
+}
+
+function Footer({ subtitle }: { subtitle: string }) {
+  return (
+    <View style={styles.footer} fixed>
+      <Text style={styles.footerText}>NutriPlan · {subtitle}</Text>
+      <Text style={styles.footerText} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+    </View>
+  )
+}
+
+function MacroChips({ p, ca, f }: { p: number; ca: number; f: number }) {
+  return (
+    <View style={styles.macroChips}>
+      <Text style={[styles.chip, { backgroundColor: c.protein }]}>{p}P</Text>
+      <Text style={[styles.chip, { backgroundColor: c.carb }]}>{ca}C</Text>
+      <Text style={[styles.chip, { backgroundColor: c.fat }]}>{f}G</Text>
     </View>
   )
 }
 
 function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: string }) {
   const { summary } = plan
+  const goal = GOAL_LABEL[summary.goal] ?? summary.goal
+
   return (
-    <Document>
-      {/* Página 1: resumo + lista de compras + guia */}
+    <Document title="Tu Plan Nutricional — NutriPlan" author="NutriPlan">
+      {/* ── Capa ───────────────────────────────────────────────── */}
+      <Page size="A4" style={styles.cover}>
+        <View style={styles.coverBadge}>
+          <Leaf size={56} leaf={c.greenDeep} vein={c.white} />
+        </View>
+        <Wordmark color={c.white} size={16} />
+        <Text style={[styles.coverTitle, { marginTop: 26 }]}>Tu Plan Nutricional</Text>
+        <View style={styles.coverDivider} />
+        {!!name && <Text style={styles.coverName}>Preparado para {name}</Text>}
+        <View style={styles.goalPill}>
+          <Text style={styles.goalPillText}>{goal}</Text>
+        </View>
+
+        <View style={styles.coverCard}>
+          <View style={styles.coverMetric}>
+            <Text style={styles.coverMetricValue}>{summary.targetCalories}</Text>
+            <Text style={styles.coverMetricUnit}>kcal/día</Text>
+            <Text style={styles.coverMetricLabel}>Meta</Text>
+          </View>
+          <View style={styles.coverDivV} />
+          <View style={styles.coverMetric}>
+            <Text style={styles.coverMetricValue}>{summary.macros.proteinG}</Text>
+            <Text style={styles.coverMetricUnit}>g</Text>
+            <Text style={styles.coverMetricLabel}>Proteína</Text>
+          </View>
+          <View style={styles.coverDivV} />
+          <View style={styles.coverMetric}>
+            <Text style={styles.coverMetricValue}>{summary.macros.carbsG}</Text>
+            <Text style={styles.coverMetricUnit}>g</Text>
+            <Text style={styles.coverMetricLabel}>Carbos</Text>
+          </View>
+          <View style={styles.coverDivV} />
+          <View style={styles.coverMetric}>
+            <Text style={styles.coverMetricValue}>{summary.macros.fatG}</Text>
+            <Text style={styles.coverMetricUnit}>g</Text>
+            <Text style={styles.coverMetricLabel}>Grasas</Text>
+          </View>
+        </View>
+
+        <Text style={styles.coverTagline}>Tu nutrición, a tu medida.</Text>
+      </Page>
+
+      {/* ── Página: resumo + compras + guia ────────────────────── */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.h1}>Tu plan nutricional</Text>
-        <Text style={styles.subtitle}>
-          {name ? `${name} · ` : ''}
-          {GOAL_LABEL[summary.goal] ?? summary.goal} · ciclo de {summary.cycleDays} días repetible{' '}
-          {summary.cycleWeeks} semanas
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Resumen de tu plan</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
+        <Text style={{ fontSize: 9, color: c.muted, marginBottom: 12 }}>
+          {goal} · ciclo de {summary.cycleDays} días repetible durante {summary.cycleWeeks} semanas
         </Text>
 
         <View style={styles.metricsRow}>
-          <Metric label="Calorías/día" value={`${summary.targetCalories}`} unit="kcal" />
-          <Metric label="Proteína" value={`${summary.macros.proteinG}`} unit="g" />
-          <Metric label="Carbohidratos" value={`${summary.macros.carbsG}`} unit="g" />
-          <Metric label="Grasas" value={`${summary.macros.fatG}`} unit="g" />
+          <View style={styles.metric}><Text style={styles.metricValue}>{summary.bmr}<Text style={styles.metricUnit}> kcal</Text></Text><Text style={styles.metricLabel}>Metabolismo (TMB)</Text></View>
+          <View style={styles.metric}><Text style={styles.metricValue}>{summary.tdee}<Text style={styles.metricUnit}> kcal</Text></Text><Text style={styles.metricLabel}>Gasto diario (TDEE)</Text></View>
+          <View style={styles.metric}><Text style={styles.metricValue}>{summary.targetCalories}<Text style={styles.metricUnit}> kcal</Text></Text><Text style={styles.metricLabel}>Tu meta diaria</Text></View>
         </View>
 
+        {summary.notes.length > 0 && <SectionHead title="Lo que debes saber" />}
         {summary.notes.map((n, i) => (
-          <Text key={i} style={styles.note}>
-            • {n}
-          </Text>
-        ))}
-
-        <Text style={styles.h2}>Lista de compras</Text>
-        {plan.shoppingList.map((cat, i) => (
-          <View key={i} style={{ marginBottom: 4 }}>
-            <Text style={{ fontSize: 10, fontFamily: 'Helvetica-Bold' }}>{cat.category}</Text>
-            <Text style={styles.listItem}>{cat.items.map((it) => it.name).join(' · ')}</Text>
+          <View key={i} style={styles.noteRow}>
+            <Text style={styles.noteDot}>•</Text>
+            <Text style={styles.note}>{n}</Text>
           </View>
         ))}
 
-        <Text style={styles.h2}>Guía de implementación</Text>
+        <SectionHead title="Lista de compras" />
+        <View style={styles.card}>
+          {plan.shoppingList.map((cat, i) => (
+            <View key={i} style={{ marginBottom: i < plan.shoppingList.length - 1 ? 6 : 0 }}>
+              <Text style={styles.catTitle}>{cat.category}</Text>
+              <Text style={styles.catItems}>{cat.items.map((it) => it.name).join('  ·  ')}</Text>
+            </View>
+          ))}
+        </View>
+
+        <SectionHead title="Guía de implementación" />
         {plan.implementationGuide.map((step, i) => (
-          <Text key={i} style={styles.listItem}>
-            {i + 1}. {step}
-          </Text>
+          <View key={i} style={styles.stepRow}>
+            <Text style={styles.stepNum}>{i + 1}</Text>
+            <Text style={styles.stepText}>{step}</Text>
+          </View>
         ))}
 
         {plan.substitutions.length > 0 && (
           <>
-            <Text style={styles.h2}>Sustituciones</Text>
-            {plan.substitutions.map((s, i) => (
-              <Text key={i} style={styles.listItem}>
-                {s.food} → {s.alternatives.join(', ')}
-              </Text>
-            ))}
+            <SectionHead title="Sustituciones" />
+            <View style={styles.card}>
+              {plan.substitutions.map((s, i) => (
+                <Text key={i} style={[styles.listItem, { marginBottom: i < plan.substitutions.length - 1 ? 3 : 0 }]}>
+                  <Text style={{ fontFamily: 'Helvetica-Bold', color: c.primary }}>{s.food}</Text> → {s.alternatives.join(', ')}
+                </Text>
+              ))}
+            </View>
           </>
         )}
 
         {plan.disclaimers.length > 0 && (
           <View style={styles.disclaimerBox}>
+            <Text style={styles.disclaimerHead}>Aviso importante</Text>
             {plan.disclaimers.map((d, i) => (
-              <Text key={i} style={styles.disclaimerText}>
-                {d}
-              </Text>
+              <Text key={i} style={styles.disclaimerText}>{d}</Text>
             ))}
           </View>
         )}
-        <Text style={styles.footer} fixed>
-          NutriPlan · Plan generado de forma personalizada · No sustituye consejo médico profesional
-        </Text>
+
+        <Footer subtitle="Plan personalizado · No sustituye consejo médico" />
       </Page>
 
-      {/* Página 2+: os 7 días */}
+      {/* ── Página: menú de 7 días ─────────────────────────────── */}
       <Page size="A4" style={styles.page}>
-        <Text style={styles.h1}>Tu menú de 7 días</Text>
-        <Text style={styles.subtitle}>Repite este ciclo durante {summary.cycleWeeks} semanas</Text>
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Tu menú de 7 días</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
         {plan.days.map((day) => (
-          <View key={day.day} wrap={false}>
-            <Text style={styles.dayTitle}>
-              {day.label} — {day.totals.kcal} kcal
-            </Text>
-            {day.meals.map((meal, i) => (
-              <View key={i} style={styles.mealBox}>
-                <View style={styles.mealHeader}>
-                  <Text style={styles.mealName}>{meal.name}</Text>
-                  <Text style={styles.mealKcal}>{meal.totals.kcal} kcal</Text>
-                </View>
-                {meal.items.map((item, j) => (
-                  <View key={j} style={styles.itemRow}>
-                    <Text style={styles.itemFood}>
-                      {item.food} · {item.quantity}
-                    </Text>
-                    <Text style={styles.itemMacros}>
-                      {item.proteinG}P · {item.carbsG}C · {item.fatG}G
-                    </Text>
+          <View key={day.day} style={styles.dayCard} wrap={false}>
+            <View style={styles.dayHeader}>
+              <Text style={styles.dayTitle}>{day.label}</Text>
+              <Text style={styles.dayKcal}>{day.totals.kcal} kcal</Text>
+            </View>
+            <View style={styles.dayBody}>
+              {day.meals.map((meal, i) => (
+                <View key={i} style={[styles.meal, { marginBottom: i < day.meals.length - 1 ? 8 : 0 }]}>
+                  <View style={styles.mealHead}>
+                    <Text style={styles.mealName}>{meal.name}</Text>
+                    <Text style={styles.mealKcal}>{meal.totals.kcal} kcal</Text>
                   </View>
-                ))}
-              </View>
-            ))}
+                  {meal.items.map((item, j) => (
+                    <View key={j} style={styles.itemRow}>
+                      <Text style={styles.itemFood}>
+                        {item.food}  <Text style={styles.itemQty}>· {item.quantity}</Text>
+                      </Text>
+                      <MacroChips p={item.proteinG} ca={item.carbsG} f={item.fatG} />
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
           </View>
         ))}
-        <Text style={styles.footer} fixed>
-          NutriPlan · Plan generado de forma personalizada · No sustituye consejo médico profesional
-        </Text>
+
+        <Footer subtitle="Plan personalizado · No sustituye consejo médico" />
       </Page>
     </Document>
   )
@@ -173,46 +342,55 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
 
 function TrainingDocument({ plan, name }: { plan: TrainingPlanJson; name: string }) {
   return (
-    <Document>
+    <Document title="Tu Plan de Entrenamiento — NutriPlan" author="NutriPlan">
       <Page size="A4" style={styles.page}>
-        <Text style={styles.h1}>Tu plan de entrenamiento</Text>
-        <Text style={styles.subtitle}>
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Tu Plan de Entrenamiento</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
+        <Text style={{ fontSize: 9, color: c.muted, marginBottom: 8 }}>
           {name ? `${name} · ` : ''}
           {plan.summary.experience} · {plan.summary.location} · {plan.summary.frequency}
         </Text>
 
         {plan.summary.notes.map((n, i) => (
-          <Text key={i} style={styles.note}>
-            • {n}
-          </Text>
+          <View key={i} style={styles.noteRow}>
+            <Text style={styles.noteDot}>•</Text>
+            <Text style={styles.note}>{n}</Text>
+          </View>
         ))}
 
         {plan.days.map((session, i) => (
-          <View key={i} wrap={false}>
-            <Text style={styles.dayTitle}>
-              {session.label} — {session.focus}
-            </Text>
-            {session.exercises.map((ex, j) => (
-              <View key={j} style={styles.itemRow}>
-                <Text style={styles.itemFood}>{ex.name}</Text>
-                <Text style={styles.itemMacros}>{ex.sets}</Text>
-              </View>
-            ))}
+          <View key={i} style={styles.dayCard} wrap={false}>
+            <View style={styles.dayHeader}>
+              <Text style={styles.dayTitle}>{session.label}</Text>
+              <Text style={styles.dayKcal}>{session.focus}</Text>
+            </View>
+            <View style={styles.dayBody}>
+              {session.exercises.map((ex, j) => (
+                <View key={j} style={styles.itemRow}>
+                  <Text style={styles.itemFood}>{ex.name}</Text>
+                  <Text style={[styles.itemQty, { fontSize: 9 }]}>{ex.sets}</Text>
+                </View>
+              ))}
+            </View>
           </View>
         ))}
 
         {plan.disclaimers.length > 0 && (
           <View style={styles.disclaimerBox}>
+            <Text style={styles.disclaimerHead}>Aviso importante</Text>
             {plan.disclaimers.map((d, i) => (
-              <Text key={i} style={styles.disclaimerText}>
-                {d}
-              </Text>
+              <Text key={i} style={styles.disclaimerText}>{d}</Text>
             ))}
           </View>
         )}
-        <Text style={styles.footer} fixed>
-          NutriPlan · Plan de entrenamiento · Consulta a un profesional antes de iniciar
-        </Text>
+
+        <Footer subtitle="Plan de entrenamiento · Consulta a un profesional antes de iniciar" />
       </Page>
     </Document>
   )
