@@ -58,7 +58,8 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 9, answers: { health: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/10')
+      // Pula o step 10 (treino), oculto por enquanto — ver HIDDEN_STEPS em page.tsx.
+      router.push('/quiz/11')
     } catch {
       setError(true)
     } finally {

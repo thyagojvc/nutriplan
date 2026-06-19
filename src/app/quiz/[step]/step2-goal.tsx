@@ -46,7 +46,8 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 2, answers: { goal: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/3')
+      // Pula o step 3 (alimento imprescindível), oculto por enquanto — ver HIDDEN_STEPS em page.tsx.
+      router.push('/quiz/4')
     } catch {
       setError(true)
     } finally {
