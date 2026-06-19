@@ -302,13 +302,24 @@ export function QuizChip({
   selected,
   onToggle,
   fullWidth,
+  exclude,
 }: {
   label: string
   emoji?: string
   selected: boolean
   onToggle: () => void
   fullWidth?: boolean
+  // exclude: modo "evitar" — seleção fica vermelha com X (em vez de verde com check).
+  // Usado no step de alimentos que o usuário NÃO come.
+  exclude?: boolean
 }) {
+  const selectedCls = exclude
+    ? 'border-red-400 bg-red-50 font-semibold text-red-600 ring-1 ring-red-200'
+    : 'border-primary bg-primary/5 font-semibold text-primary ring-1 ring-primary/20'
+  const idleCls = exclude
+    ? 'border-[#E6D6D6] bg-white text-gray-700 hover:border-red-300 hover:bg-red-50/50'
+    : 'border-[#D8E8D4] bg-white text-gray-700 hover:border-primary/40 hover:bg-primary/[0.03]'
+
   return (
     <button
       type="button"
@@ -317,24 +328,29 @@ export function QuizChip({
         'flex items-center gap-2 rounded-xl border px-3 py-2.5 text-sm',
         'transition-all duration-150 active:scale-[0.99]',
         fullWidth ? 'w-full' : '',
-        selected
-          ? 'border-primary bg-primary/5 font-semibold text-primary ring-1 ring-primary/20'
-          : 'border-[#D8E8D4] bg-white text-gray-700 hover:border-primary/40 hover:bg-primary/[0.03]',
+        selected ? selectedCls : idleCls,
       ].join(' ')}
     >
-      {emoji && <span className="text-base leading-none">{emoji}</span>}
-      <span className="leading-tight">{label}</span>
+      {emoji && (
+        <span className={['text-base leading-none', exclude && selected ? 'opacity-50 grayscale' : ''].join(' ')}>
+          {emoji}
+        </span>
+      )}
+      <span className={['leading-tight', exclude && selected ? 'line-through decoration-red-400' : ''].join(' ')}>
+        {label}
+      </span>
       {selected && (
-        <span className="ml-auto shrink-0 text-primary">
-          <svg width="11" height="9" viewBox="0 0 11 9" fill="none">
-            <path
-              d="M1 4.5L4 7.5L10 1"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
+        <span className="ml-auto shrink-0">
+          {exclude ? (
+            // X vermelho — sinaliza "evitar"
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none" className="text-red-500">
+              <path d="M2 2L9 9M9 2L2 9" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+            </svg>
+          ) : (
+            <svg width="11" height="9" viewBox="0 0 11 9" fill="none" className="text-primary">
+              <path d="M1 4.5L4 7.5L10 1" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          )}
         </span>
       )}
     </button>
