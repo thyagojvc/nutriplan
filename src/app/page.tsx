@@ -43,7 +43,8 @@ export default function HomePage() {
           </h1>
 
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[19rem] mx-auto">
-            Responde 12 preguntas y recibe tu plan nutricional calculado para
+            {/* TODO: atualizar para 12 quando steps 3 e 10 forem reativados (IA + order bump) */}
+            Responde 9 preguntas y recibe tu plan nutricional calculado para
             tu cuerpo, tu objetivo y tu estilo de vida — sin pasar hambre.
           </p>
         </div>
