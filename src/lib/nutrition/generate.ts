@@ -24,6 +24,7 @@ import {
   FOOD_CATALOG,
   foodsByRole,
   foodsForMeal,
+  formatHomeMeasure,
   type CatalogFood,
   type FoodRole,
   type MealSlot,
@@ -73,31 +74,35 @@ function poolForMeal(
   return foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
 }
 
-/** Escala as porções de uma refeição para bater ~ a meta de kcal. */
-function scaleMeal(items: PlanItem[], targetKcal: number): PlanItem[] {
-  const rawKcal = items.reduce((s, it) => s + it.kcal, 0)
-  if (rawKcal <= 0) return items
-  const factor = targetKcal / rawKcal
-  return items.map((it) => ({
-    ...it,
-    quantity: it.quantity,
-    kcal: Math.round(it.kcal * factor),
-    proteinG: Math.round(it.proteinG * factor),
-    carbsG: Math.round(it.carbsG * factor),
-    fatG: Math.round(it.fatG * factor),
-  }))
-}
+// Ingrediente antes de fechar a porção: guarda o alimento e a grama base.
+type RawItem = { food: CatalogFood; grams: number }
 
+/** Converte gramas finais num item exibível: gramas + medida caseira + macros. */
 function itemFrom(food: CatalogFood, grams: number): PlanItem {
   const f = grams / 100
   return {
     food: food.label,
-    quantity: `${grams} ${food.unit}`,
+    quantity: `${grams} g · ${formatHomeMeasure(grams, food.home)}`,
     kcal: Math.round(food.kcal * f),
     proteinG: Math.round(food.proteinG * f),
     carbsG: Math.round(food.carbsG * f),
     fatG: Math.round(food.fatG * f),
   }
+}
+
+/**
+ * Fecha uma refeição: escala as GRAMAS de cada ingrediente para bater ~ a meta
+ * de kcal e só então formata as porções. Assim gramas, medida caseira e kcal
+ * exibidos ficam sempre consistentes entre si.
+ */
+function finalizeMeal(name: string, raw: RawItem[], targetKcal: number): PlanMeal {
+  const baseKcal = raw.reduce((s, r) => s + (r.food.kcal * r.grams) / 100, 0)
+  const factor = baseKcal > 0 ? targetKcal / baseKcal : 1
+  const items = raw.map((r) => {
+    const grams = Math.max(10, Math.round((r.grams * factor) / 5) * 5) // arredonda p/ 5 g
+    return itemFrom(r.food, grams)
+  })
+  return { name, targetKcal, items, totals: mealTotals(items) }
 }
 
 function mealTotals(items: PlanItem[]) {
@@ -132,7 +137,7 @@ function buildMeal(
   const rotate = <T,>(arr: T[], offset: number): T | null =>
     arr.length === 0 ? null : arr[(dayIndex + offset) % arr.length]
 
-  const items: PlanItem[] = []
+  const raw: RawItem[] = []
 
   if (slot === 'desayuno') {
     // café da manhã: carbo de manhã (avena/pan/tortilla) + proteína leve (huevo/lácteo) + fruta
@@ -140,16 +145,16 @@ function buildMeal(
     const protPool = [...poolForMeal('protein', slot, answers), ...poolForMeal('dairy', slot, answers)]
     const prot = rotate(protPool, 0)
     const fruit = rotate(poolForMeal('fruit', slot, answers), 0)
-    if (carb) items.push(itemFrom(carb, 60))
-    if (prot) items.push(itemFrom(prot, 80))
-    if (fruit) items.push(itemFrom(fruit, 120))
+    if (carb) raw.push({ food: carb, grams: 60 })
+    if (prot) raw.push({ food: prot, grams: 80 })
+    if (fruit) raw.push({ food: fruit, grams: 120 })
   } else if (slot === 'snack') {
     // lanche: fruta ou laticínio + gordura boa
     const snackPool = [...poolForMeal('fruit', slot, answers), ...poolForMeal('dairy', slot, answers)]
     const snack = rotate(snackPool, 1)
     const fat = rotate(poolForMeal('fat', slot, answers), 0)
-    if (snack) items.push(itemFrom(snack, 120))
-    if (fat) items.push(itemFrom(fat, 25))
+    if (snack) raw.push({ food: snack, grams: 120 })
+    if (fat) raw.push({ food: fat, grams: 25 })
   } else {
     // almuerzo / cena: proteína + carbo + vegetais. Offset distingue almoço de jantar
     // para não repetir a mesma proteína/carbo no mesmo dia.
@@ -157,26 +162,20 @@ function buildMeal(
     const prot = rotate(poolForMeal('protein', slot, answers), offset)
     const carb = rotate(poolForMeal('carb', slot, answers), offset + 1)
     const veg = rotate(poolForMeal('veg', slot, answers), offset + 2)
-    if (prot) items.push(itemFrom(prot, 150))
-    if (carb) items.push(itemFrom(carb, 120))
-    if (veg) items.push(itemFrom(veg, 150))
+    if (prot) raw.push({ food: prot, grams: 150 })
+    if (carb) raw.push({ food: carb, grams: 120 })
+    if (veg) raw.push({ food: veg, grams: 150 })
   }
 
   // garante ao menos 1 item (fallback se restrições zeraram o pool da refeição)
-  if (items.length === 0) {
+  if (raw.length === 0) {
     const anyFood =
       FOOD_CATALOG.find((f) => f.meals.includes(slot) && !isExcluded(f.id, answers.exclusions)) ??
       FOOD_CATALOG.find((f) => !isExcluded(f.id, answers.exclusions))
-    if (anyFood) items.push(itemFrom(anyFood, 100))
+    if (anyFood) raw.push({ food: anyFood, grams: 100 })
   }
 
-  const scaled = scaleMeal(items, targetKcal)
-  return {
-    name: mealName,
-    targetKcal,
-    items: scaled,
-    totals: mealTotals(scaled),
-  }
+  return finalizeMeal(mealName, raw, targetKcal)
 }
 
 function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number): PlanDay {
