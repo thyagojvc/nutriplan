@@ -2,6 +2,10 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import {
+  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw,
+} from 'lucide-react'
 import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
@@ -243,7 +247,7 @@ export default function PreviewPage() {
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
-          <span>✓</span>
+          <Check className="h-3.5 w-3.5" strokeWidth={3} />
           Análisis completado · Calculado solo para ti
         </div>
 
@@ -261,20 +265,20 @@ export default function PreviewPage() {
       <div className="w-full max-w-lg px-4 pb-10 space-y-3">
 
         {/* Perfil */}
-        <Card label="Tu perfil" icon="👤">
+        <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />}>
           <div className="grid grid-cols-3 gap-2">
-            <StatCard icon="🎂" label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
-            <StatCard icon="⚖️" label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
-            <StatCard icon="📏" label="Altura"    value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
-            <StatCard icon="🧮" label="IMC"       value={imc ? imc.toFixed(1) : '—'} accent />
-            <StatCard icon="🎯" label="Objetivo"  value={GOAL_LABEL[targets.goal] ?? targets.goal} />
-            <StatCard icon="⚡" label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
+            <StatCard icon={<Cake className="h-4 w-4" />}  label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
+            <StatCard icon={<Scale className="h-4 w-4" />} label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
+            <StatCard icon={<Ruler className="h-4 w-4" />} label="Altura"    value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
+            <StatCard icon={<Gauge className="h-4 w-4" />} label="IMC"       value={imc ? imc.toFixed(1) : '—'} accent />
+            <StatCard icon={<Target className="h-4 w-4" />} label="Objetivo" value={GOAL_LABEL[targets.goal] ?? targets.goal} />
+            <StatCard icon={<Zap className="h-4 w-4" />}   label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
           </div>
         </Card>
 
         {/* IMC */}
         {imc && (
-          <Card label="Tu IMC" icon="📊" badge={<ImcBadge imc={imc} />}>
+          <Card label="Tu IMC" icon={<Gauge className="h-4 w-4 text-primary" />} badge={<ImcBadge imc={imc} />}>
             <ImcScale imc={imc} />
             <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
               <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
@@ -283,7 +287,7 @@ export default function PreviewPage() {
         )}
 
         {/* Metabolismo */}
-        <Card label="Tu metabolismo" icon="🔥">
+        <Card label="Tu metabolismo" icon={<Flame className="h-4 w-4 text-primary" />}>
           <div className="grid grid-cols-3 gap-2">
             <MetricCard label="TMB"  sub="en reposo"    value={targets.bmr}            />
             <MetricCard label="TDEE" sub="gasto diario" value={targets.tdee}           />
@@ -309,7 +313,7 @@ export default function PreviewPage() {
         </Card>
 
         {/* Macros */}
-        <Card label="Distribución de macronutrientes" icon="🥑">
+        <Card label="Distribución de macronutrientes" icon={<PieChart className="h-4 w-4 text-primary" />}>
           <div className="flex items-center gap-5">
             <MacroDonut macros={targets.macros} />
             <div className="flex-1 space-y-2.5">
@@ -355,14 +359,20 @@ export default function PreviewPage() {
               </p>
             </div>
             <div className="flex flex-wrap justify-center gap-1.5">
-              {['🍳 Desayunos', '🥗 Almuerzos', '🍲 Cenas', '🍌 Snacks', '🛒 Lista de compras'].map(t => (
-                <span key={t} className="rounded-full border border-primary/20 bg-primary/8 px-3 py-0.5 text-xs font-semibold text-primary">
-                  {t}
+              {[
+                { Icon: Sunrise,      label: 'Desayunos' },
+                { Icon: Utensils,     label: 'Almuerzos' },
+                { Icon: Moon,         label: 'Cenas' },
+                { Icon: Apple,        label: 'Snacks' },
+                { Icon: ShoppingCart, label: 'Lista de compras' },
+              ].map(({ Icon, label }) => (
+                <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-3 py-0.5 text-xs font-semibold text-primary">
+                  <Icon className="h-3 w-3" /> {label}
                 </span>
               ))}
             </div>
-            <p className="text-xs text-muted-foreground">
-              🔒 Desbloquea tu plan para ver todo
+            <p className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
+              <Lock className="h-3 w-3" /> Desbloquea tu plan para ver todo
             </p>
           </div>
         </div>
@@ -395,7 +405,9 @@ export default function PreviewPage() {
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
                   <span className="flex items-center gap-2 text-gray-700">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-[11px] font-bold text-primary">✓</span>
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                      <Check className="h-3 w-3" strokeWidth={3} />
+                    </span>
                     {item}
                   </span>
                   <span className="shrink-0 text-xs font-semibold text-muted-foreground">{value}</span>
@@ -412,7 +424,9 @@ export default function PreviewPage() {
                 $9<span className="align-top text-3xl font-black">.90</span>
                 <span className="ml-2 text-sm font-semibold text-muted-foreground">USD</span>
               </p>
-              <p className="text-xs font-semibold text-primary">≈ $0.33 al día · menos que un café ☕</p>
+              <p className="flex items-center justify-center gap-1 text-xs font-semibold text-primary">
+                <Coffee className="h-3.5 w-3.5" /> ≈ $0.33 al día · menos que un café
+              </p>
               <p className="text-[11px] text-muted-foreground">Pago único · sin suscripción · en tu moneda local</p>
             </div>
           </div>
@@ -420,7 +434,9 @@ export default function PreviewPage() {
 
         {/* Garantía */}
         <div className="flex items-center gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white text-2xl">🛡️</div>
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white">
+            <ShieldCheck className="h-6 w-6 text-primary" />
+          </div>
           <div>
             <p className="text-sm font-bold text-gray-900">Garantía total de 30 días</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
@@ -493,7 +509,7 @@ function Countdown() {
 
   return (
     <div className="flex items-center justify-center gap-2 bg-[#FBE7DF] py-2">
-      <span className="text-sm">⏱️</span>
+      <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
       <span className="text-xs font-semibold text-[#993C1D]">
         Tu precio especial expira en {mm}:{ss}
       </span>
@@ -524,8 +540,8 @@ function CtaButton({
         disabled={ctaState === 'loading'}
         className={[
           'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
-          'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)] transition-all duration-150',
-          'hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)] hover:brightness-[1.04] active:scale-[0.99]',
+          'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
+          'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
           'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
         ].join(' ')}
       >
@@ -544,12 +560,22 @@ function CtaButton({
           </>
         )}
       </button>
-      <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground flex-wrap">
-        <span className="flex items-center gap-1"><span>🔒</span> Pago seguro</span>
+
+      {/* Selos de pagamento */}
+      <div className="flex items-center justify-center gap-1.5 pt-0.5">
+        {['VISA', 'Mastercard', 'PayPal', 'Pix'].map((m) => (
+          <span key={m} className="rounded-md border border-[#E0E0DA] bg-white px-2 py-1 text-[10px] font-bold tracking-wide text-gray-500">
+            {m}
+          </span>
+        ))}
+      </div>
+
+      <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-muted-foreground">
+        <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> Pago seguro</span>
         <span className="h-3 w-px bg-border" />
-        <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
+        <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Acceso inmediato</span>
         <span className="h-3 w-px bg-border" />
-        <span className="flex items-center gap-1"><span>↩️</span> Garantía 30 días</span>
+        <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 30 días</span>
       </div>
     </div>
   )
@@ -589,7 +615,7 @@ function Card({
   children,
 }: {
   label: string
-  icon?: string
+  icon?: React.ReactNode
   badge?: React.ReactNode
   children: React.ReactNode
 }) {
@@ -609,14 +635,14 @@ function Card({
   )
 }
 
-function StatCard({ icon, label, value, accent }: { icon: string; label: string; value: string; accent?: boolean }) {
+function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label: string; value: string; accent?: boolean }) {
   return (
     <div className={[
       'rounded-xl border p-3 text-center',
       accent ? 'border-primary/25 bg-primary/5' : 'border-[#E0EDD9] bg-[#FAFCF8]',
     ].join(' ')}>
-      <p className="text-base">{icon}</p>
-      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
+      <div className="flex justify-center text-primary">{icon}</div>
+      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mt-1">{label}</p>
       <p className={['mt-0.5 text-xs font-bold leading-tight', accent ? 'text-primary' : 'text-gray-800'].join(' ')}>{value}</p>
     </div>
   )
