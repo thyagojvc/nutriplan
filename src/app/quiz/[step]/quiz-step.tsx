@@ -12,7 +12,7 @@ interface Props {
 }
 
 // ssr: false em todos os steps — evita hydration mismatch com sessionStorage
-const Step1Dislikes    = dynamic(() => import('./step1-dislikes').then(m => ({ default: m.Step1Dislikes })), { ssr: false })
+const Step1Likes       = dynamic(() => import('./step1-likes').then(m => ({ default: m.Step1Likes })), { ssr: false })
 const Step2Goal        = dynamic(() => import('./step2-goal').then(m => ({ default: m.Step2Goal })), { ssr: false })
 const Step3MustHave    = dynamic(() => import('./step3-must-have').then(m => ({ default: m.Step3MustHave })), { ssr: false })
 const Step4Sex         = dynamic(() => import('./step4-sex').then(m => ({ default: m.Step4Sex })), { ssr: false })
@@ -51,7 +51,7 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
 
   const props = { stepNumber: displayStep, totalSteps: displayTotal }
 
-  if (stepNumber === 1)  return <Step1Dislikes {...props} detectedCountry={detectedCountry} />
+  if (stepNumber === 1)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 2)  return <Step2Goal {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
   if (stepNumber === 4)  return <Step4Sex {...props} />

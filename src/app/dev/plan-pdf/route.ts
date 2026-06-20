@@ -8,7 +8,7 @@ import { renderNutritionPdf } from '@/lib/nutrition/pdf'
 // http://localhost:3000/dev/plan-pdf  (404 em produção)
 
 const SAMPLE_DRAFT = {
-  step_1: { dislikes: ['cerdo', 'mariscos'] },
+  step_1: { likes: ['pollo', 'huevo', 'arroz', 'avena', 'frutas', 'verduras'] },
   step_2: { goal: 'perder_peso' },
   step_3: { must_have: 'café por la mañana' },
   step_4: { sex: 'femenino' },

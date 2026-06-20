@@ -38,12 +38,32 @@ const BASE_GROUPS: FoodGroup[] = [
     ],
   },
   {
-    title: 'Verduras y frutas',
+    title: 'Verduras',
     items: [
-      { id: 'verduras', label: 'Verduras', emoji: '🥦' },
-      { id: 'espinaca', label: 'Espinaca', emoji: '🥬' },
-      { id: 'tomate',   label: 'Tomate',   emoji: '🍅' },
-      { id: 'frutas',   label: 'Frutas',   emoji: '🍎' },
+      { id: 'verduras',    label: 'Verduras variadas', emoji: '🥦' },
+      { id: 'brocoli',     label: 'Brócoli',           emoji: '🥦' },
+      { id: 'zanahoria',   label: 'Zanahoria',         emoji: '🥕' },
+      { id: 'calabacin',   label: 'Calabacín',         emoji: '🥒' },
+      { id: 'ejotes',      label: 'Ejotes',            emoji: '🫛' },
+      { id: 'champinones', label: 'Champiñones',       emoji: '🍄' },
+      { id: 'pimiento',    label: 'Pimiento',          emoji: '🫑' },
+      { id: 'espinaca',    label: 'Espinaca',          emoji: '🥬' },
+      { id: 'tomate',      label: 'Tomate',            emoji: '🍅' },
+      { id: 'coliflor',    label: 'Coliflor',          emoji: '🥬' },
+      { id: 'pepino',      label: 'Pepino',            emoji: '🥒' },
+    ],
+  },
+  {
+    title: 'Frutas',
+    items: [
+      { id: 'frutas',  label: 'Frutas variadas', emoji: '🍎' },
+      { id: 'manzana', label: 'Manzana',         emoji: '🍎' },
+      { id: 'banana',  label: 'Plátano',         emoji: '🍌' },
+      { id: 'fresa',   label: 'Fresas',          emoji: '🍓' },
+      { id: 'papaya',  label: 'Papaya',          emoji: '🧡' },
+      { id: 'pina',    label: 'Piña',            emoji: '🍍' },
+      { id: 'mango',   label: 'Mango',           emoji: '🥭' },
+      { id: 'naranja', label: 'Naranja',         emoji: '🍊' },
     ],
   },
   {
@@ -62,7 +82,7 @@ const BASE_GROUPS: FoodGroup[] = [
 const REGIONAL: Record<string, Record<string, FoodItem[]>> = {
   MX: {
     Carbohidratos: [{ id: 'tortilla_maiz', label: 'Tortilla de maíz', emoji: '🌽' }],
-    'Verduras y frutas': [{ id: 'nopales', label: 'Nopales', emoji: '🌵' }],
+    Verduras: [{ id: 'nopales', label: 'Nopales', emoji: '🌵' }],
   },
   CO: {
     Carbohidratos: [
@@ -87,7 +107,7 @@ interface Props {
   detectedCountry?: string
 }
 
-export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props) {
+export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
   const router = useRouter()
   const GROUPS = buildGroups(detectedCountry)
 
@@ -95,8 +115,8 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
     if (typeof window === 'undefined') return []
     try {
       const cached = sessionStorage.getItem('nutriplan_step_1')
-      const parsed = cached ? (JSON.parse(cached) as { dislikes?: string[] }) : {}
-      return parsed.dislikes ?? []
+      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
+      return parsed.likes ?? []
     } catch { return [] }
   })
 
@@ -106,7 +126,7 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
   function toggle(id: string) {
     setSelected((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-      sessionStorage.setItem('nutriplan_step_1', JSON.stringify({ dislikes: next }))
+      sessionStorage.setItem('nutriplan_step_1', JSON.stringify({ likes: next }))
       return next
     })
   }
@@ -120,7 +140,7 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 1, answers: { dislikes: selected } }),
+        body: JSON.stringify({ step: 1, answers: { likes: selected } }),
       })
       if (!res.ok) { setError(true); return }
       router.push('/quiz/2')
@@ -142,15 +162,15 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
           <QuizHeader
             title={
               <>
-                ¿Hay algún alimento que <span className="text-red-600">NO</span> comes?
+                ¿Qué alimentos te <span className="text-primary">gusta</span> comer?
               </>
             }
-            subtitle="Marca únicamente lo que quieres EVITAR en tu plan. Todo lo que no marques será incluido. Si comes de todo, continúa sin marcar nada."
+            subtitle="Marca tus favoritos y armaremos tu plan con ellos. Si comes de todo, continúa sin marcar nada."
           />
 
-          <div className="flex items-center gap-2 rounded-xl border border-red-200 bg-red-50 px-3.5 py-2.5 text-xs font-medium text-red-700">
-            <span className="text-sm">⚠️</span>
-            Los alimentos marcados en rojo serán excluidos de tu plan.
+          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-xs font-medium text-primary">
+            <span className="text-sm">✅</span>
+            Los alimentos que marques tendrán prioridad en tu plan.
           </div>
 
           <div className="space-y-4">
@@ -162,7 +182,6 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
                       key={id}
                       label={label}
                       emoji={emoji}
-                      exclude
                       selected={selected.includes(id)}
                       onToggle={() => toggle(id)}
                     />
@@ -174,7 +193,7 @@ export function Step1Dislikes({ stepNumber, totalSteps, detectedCountry }: Props
 
           {selected.length > 0 && (
             <p className="text-center text-xs text-muted-foreground">
-              Evitaremos {selected.length} alimento{selected.length !== 1 ? 's' : ''} en tu plan
+              Incluiremos {selected.length} alimento{selected.length !== 1 ? 's' : ''} que te gusta{selected.length !== 1 ? 'n' : ''} en tu plan
             </p>
           )}
 

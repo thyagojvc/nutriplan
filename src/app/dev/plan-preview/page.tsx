@@ -13,7 +13,7 @@ import { PlanView } from '@/app/(dashboard)/dashboard/plan-view'
 
 // Respostas de exemplo no mesmo formato de generation_sessions.draft_answers
 const SAMPLE_DRAFT = {
-  step_1: { dislikes: ['cerdo', 'mariscos'] }, // alimentos que NÃO gosta (viram exclusão)
+  step_1: { likes: ['pollo', 'huevo', 'arroz', 'avena', 'frutas', 'verduras'] }, // alimentos preferidos (priorizados no plano)
   step_2: { goal: 'perder_peso' }, // perder_peso | mantener | ganar_masa
   step_3: { must_have: 'café por la mañana' },
   step_4: { sex: 'femenino' }, // femenino | masculino

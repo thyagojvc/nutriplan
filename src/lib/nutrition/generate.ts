@@ -61,17 +61,36 @@ function isExcluded(foodId: string, exclusions: string[]): boolean {
   return exclusions.includes(foodId)
 }
 
+// Mínimo de opções por papel/refeição para a rotação não repetir os mesmos
+// dias. Se os preferidos não chegam a esse número, completamos com outros
+// alimentos permitidos (preferidos sempre primeiro) só até atingir o mínimo.
+const MIN_VARIETY = 3
+
 /**
- * Pool de alimentos de um papel adequados a uma refeição, já sem os que o
- * usuário rejeitou (step 1) nem os bloqueados por restrição alimentar (step 8) —
- * ambos chegam em answers.exclusions. A rotação por dia cuida da variedade.
+ * Pool de alimentos de um papel adequados a uma refeição.
+ *
+ * 1) Remove os bloqueados por restrição alimentar (step 8) — answers.exclusions.
+ * 2) Prioriza os preferidos (step 1) que se encaixam neste papel/refeição.
+ *    - Se o usuário tem >= MIN_VARIETY preferidos aqui, usa SOMENTE eles.
+ *    - Se tem 1–2, completa com outros permitidos (preferidos primeiro) até
+ *      MIN_VARIETY, garantindo variedade na semana sem perder o reforço positivo.
+ *    - Se não marcou nenhum deste papel, usa o pool completo disponível.
+ *
+ * O fallback também garante que nenhuma refeição fique vazia.
  */
 function poolForMeal(
   role: FoodRole,
   meal: MealSlot,
   answers: ParsedAnswers,
 ): CatalogFood[] {
-  return foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
+  const available = foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
+  const liked = available.filter((f) => answers.likes.includes(f.id))
+
+  if (liked.length === 0) return available
+  if (liked.length >= MIN_VARIETY) return liked
+
+  const others = available.filter((f) => !answers.likes.includes(f.id))
+  return [...liked, ...others.slice(0, MIN_VARIETY - liked.length)]
 }
 
 // Ingrediente antes de fechar a porção: guarda o alimento e a grama base.
@@ -229,7 +248,11 @@ function buildShoppingList(days: PlanDay[]): NutritionPlanJson['shoppingList'] {
 function buildSubstitutions(answers: ParsedAnswers): NutritionPlanJson['substitutions'] {
   const out: NutritionPlanJson['substitutions'] = []
   for (const role of ['protein', 'carb'] as const) {
-    const pool = foodsByRole(role).filter((f) => !isExcluded(f.id, answers.exclusions))
+    const available = foodsByRole(role).filter((f) => !isExcluded(f.id, answers.exclusions))
+    // Preferidos primeiro, para que as sugestões reflitam o que o usuário gosta.
+    const liked = available.filter((f) => answers.likes.includes(f.id))
+    const rest = available.filter((f) => !answers.likes.includes(f.id))
+    const pool = [...liked, ...rest]
     if (pool.length >= 2) {
       out.push({
         food: pool[0].label,
