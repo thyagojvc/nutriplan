@@ -367,12 +367,21 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Beneficios */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm overflow-hidden">
-          <div className="p-5 space-y-3">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground text-center">
-              Tu plan incluye
-            </p>
+        {/* Precio */}
+        <div className="rounded-2xl border-2 border-primary/30 bg-white shadow-sm overflow-hidden">
+          <div className="p-5 space-y-4">
+            <div className="text-center space-y-1">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                Accede a tu plan completo
+              </p>
+              <p className="text-4xl font-black text-gray-900">
+                $9<span className="text-2xl font-black">.90</span>
+                <span className="text-sm font-semibold text-muted-foreground ml-2">USD</span>
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Pago único · sin suscripción · convertido a tu moneda automáticamente
+              </p>
+            </div>
             <ul className="space-y-2">
               {[
                 '📊 Tu perfil nutricional exacto (IMC, TMB, TDEE)',
@@ -465,7 +474,7 @@ function CtaButton({
           </>
         ) : (
           <>
-            Quiero mi plan completo
+            Quiero mi plan — $9.90 USD
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
               <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
                 stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
