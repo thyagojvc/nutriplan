@@ -19,13 +19,12 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [consented, setConsented] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!consented || submitting) return
+    if (submitting) return
 
     let country: string | undefined
     try {
@@ -110,29 +109,13 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
             />
           </div>
 
-          <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-[#DDE8D8] bg-[#F5FAF2] p-3">
-            <input
-              type="checkbox"
-              required
-              checked={consented}
-              onChange={(e) => setConsented(e.target.checked)}
-              className="mt-0.5 h-4 w-4 shrink-0 accent-primary"
-            />
-            <span className="text-xs leading-relaxed text-muted-foreground">
-              {CONSENT_TEXT}{' '}
-              <a href="/privacidad" target="_blank" className="underline hover:text-foreground">
-                Leer política completa
-              </a>
-            </span>
-          </label>
-
           {error && <QuizError message={error} />}
         </QuizCard>
 
         {/* CTA customizado para o step final */}
         <button
           type="submit"
-          disabled={!consented || submitting}
+          disabled={submitting}
           className={[
             'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-bold text-white',
             'bg-primary shadow-md transition-all duration-150',
@@ -153,6 +136,13 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
           )}
         </button>
 
+        <p className="text-center text-xs leading-relaxed text-muted-foreground">
+          Al continuar, aceptas los{' '}
+          <a href="/privacidad" target="_blank" className="underline hover:text-foreground">
+            Términos y la Política de Privacidad
+          </a>{' '}
+          y autorizas el tratamiento de tus datos para generar tu plan.
+        </p>
         <p className="text-center text-xs text-muted-foreground">
           🔒 Tus datos están seguros y nunca serán compartidos.
         </p>
