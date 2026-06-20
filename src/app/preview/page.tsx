@@ -242,9 +242,9 @@ export default function PreviewPage() {
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
-        <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3.5 py-1 text-xs font-semibold text-primary">
-          <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
-          Análisis listo · Calculado solo para ti
+        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
+          <span>✓</span>
+          Análisis completado · Calculado solo para ti
         </div>
 
         <h1 className="text-2xl font-black leading-tight text-gray-900">
@@ -261,7 +261,7 @@ export default function PreviewPage() {
       <div className="w-full max-w-lg px-4 pb-10 space-y-3">
 
         {/* Perfil */}
-        <Card label="Tu perfil">
+        <Card label="Tu perfil" icon="👤">
           <div className="grid grid-cols-3 gap-2">
             <StatCard icon="🎂" label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
             <StatCard icon="⚖️" label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
@@ -274,7 +274,7 @@ export default function PreviewPage() {
 
         {/* IMC */}
         {imc && (
-          <Card label="Tu IMC" badge={<ImcBadge imc={imc} />}>
+          <Card label="Tu IMC" icon="📊" badge={<ImcBadge imc={imc} />}>
             <ImcScale imc={imc} />
             <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
               <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
@@ -283,7 +283,7 @@ export default function PreviewPage() {
         )}
 
         {/* Metabolismo */}
-        <Card label="Tu metabolismo">
+        <Card label="Tu metabolismo" icon="🔥">
           <div className="grid grid-cols-3 gap-2">
             <MetricCard label="TMB"  sub="en reposo"    value={targets.bmr}            />
             <MetricCard label="TDEE" sub="gasto diario" value={targets.tdee}           />
@@ -309,7 +309,7 @@ export default function PreviewPage() {
         </Card>
 
         {/* Macros */}
-        <Card label="Distribución de macronutrientes">
+        <Card label="Distribución de macronutrientes" icon="🥑">
           <div className="flex items-center gap-5">
             <MacroDonut macros={targets.macros} />
             <div className="flex-1 space-y-2.5">
@@ -584,17 +584,24 @@ function PageShell({ children }: { children: React.ReactNode }) {
 
 function Card({
   label,
+  icon,
   badge,
   children,
 }: {
   label: string
+  icon?: string
   badge?: React.ReactNode
   children: React.ReactNode
 }) {
   return (
-    <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm">
+    <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
       <div className="flex items-center justify-between border-b border-[#EAF2E6] px-5 py-3">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+        <div className="flex items-center gap-2">
+          {icon && (
+            <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-sm">{icon}</span>
+          )}
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+        </div>
         {badge}
       </div>
       <div className="p-5 space-y-4">{children}</div>
@@ -610,7 +617,7 @@ function StatCard({ icon, label, value, accent }: { icon: string; label: string;
     ].join(' ')}>
       <p className="text-base">{icon}</p>
       <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mt-0.5">{label}</p>
-      <p className="mt-0.5 text-xs font-bold leading-tight text-gray-800">{value}</p>
+      <p className={['mt-0.5 text-xs font-bold leading-tight', accent ? 'text-primary' : 'text-gray-800'].join(' ')}>{value}</p>
     </div>
   )
 }
@@ -645,12 +652,19 @@ function ImcScale({ imc }: { imc: number }) {
 }
 
 function MetricCard({ label, sub, value, accent }: { label: string; sub: string; value: number; accent?: boolean }) {
+  if (accent) {
+    return (
+      <div className="rounded-xl bg-primary p-3 text-center shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
+        <p className="text-xs font-black text-white">{label}</p>
+        <p className="text-[10px] text-white/75 mb-1">{sub}</p>
+        <p className="text-xl font-black text-white">{value}</p>
+        <p className="text-[10px] text-white/75">kcal</p>
+      </div>
+    )
+  }
   return (
-    <div className={[
-      'rounded-xl border p-3 text-center',
-      accent ? 'border-primary/25 bg-primary/5' : 'border-[#E0EDD9] bg-[#FAFCF8]',
-    ].join(' ')}>
-      <p className={['text-xs font-black', accent ? 'text-primary' : 'text-gray-700'].join(' ')}>{label}</p>
+    <div className="rounded-xl border border-[#E0EDD9] bg-[#FAFCF8] p-3 text-center">
+      <p className="text-xs font-black text-gray-700">{label}</p>
       <p className="text-[10px] text-muted-foreground mb-1">{sub}</p>
       <p className="text-xl font-black text-gray-900">{value}</p>
       <p className="text-[10px] text-muted-foreground">kcal</p>
