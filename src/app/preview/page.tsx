@@ -367,37 +367,50 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Precio */}
+        {/* Oferta con ancla de valor */}
         <div className="rounded-2xl border-2 border-primary/30 bg-white shadow-sm overflow-hidden">
           <div className="p-5 space-y-4">
-            <div className="text-center space-y-1">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                Accede a tu plan completo
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground text-center">
+              Tu plan completo incluye
+            </p>
+            <ul className="space-y-2.5">
+              {[
+                { item: '🍽️ Plan de 30 días personalizado',         value: '$27' },
+                { item: '🛒 Lista de compras optimizada',            value: '$9'  },
+                { item: '📋 Guía de implementación paso a paso',      value: '$7'  },
+                { item: '🔄 Sustituciones para cada comida',          value: '$4'  },
+                { item: '📄 PDF descargable',                         value: 'incluido' },
+                { item: '👩‍⚕️ Validado por nutriólogos certificados',  value: 'incluido' },
+              ].map(({ item, value }) => (
+                <li key={item} className="flex items-center justify-between gap-3 text-sm">
+                  <span className="text-gray-700">{item}</span>
+                  <span className="shrink-0 text-xs font-semibold text-muted-foreground">{value}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="border-t border-[#EAF2E6] pt-3 text-center space-y-1">
+              <p className="text-sm text-muted-foreground">
+                Valor total <span className="line-through">$47 USD</span>
               </p>
               <p className="text-4xl font-black text-gray-900">
                 $9<span className="text-2xl font-black">.90</span>
-                <span className="text-sm font-semibold text-muted-foreground ml-2">USD</span>
+                <span className="text-sm font-semibold text-muted-foreground ml-2">USD hoy</span>
               </p>
               <p className="text-xs text-muted-foreground">
                 Pago único · sin suscripción · convertido a tu moneda automáticamente
               </p>
             </div>
-            <ul className="space-y-2">
-              {[
-                '📊 Tu perfil nutricional exacto (IMC, TMB, TDEE)',
-                '🍽️ Plan de 30 días con comidas y porciones exactas',
-                '🛒 Lista de compras optimizada para tu plan',
-                '📋 Guía de implementación paso a paso',
-                '🔄 Sustituciones para adaptar a lo que tienes en casa',
-                '📄 PDF descargable para consultar cuando quieras',
-                '👩‍⚕️ Metodología diseñada y validada por nutriólogos certificados',
-              ].map(item => (
-                <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span className="text-primary font-bold mt-0.5 shrink-0">✓</span>
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
+          </div>
+        </div>
+
+        {/* Garantía */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 flex items-start gap-3">
+          <span className="text-2xl shrink-0">🛡️</span>
+          <div>
+            <p className="text-sm font-bold text-gray-900">Garantía total de 30 días</p>
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Si no te encanta tu plan, te devolvemos el 100% de tu dinero. Sin preguntas.
+            </p>
           </div>
         </div>
 
@@ -487,7 +500,7 @@ function CtaButton({
         <span className="h-3 w-px bg-border" />
         <span className="flex items-center gap-1"><span>⚡</span> Acceso inmediato</span>
         <span className="h-3 w-px bg-border" />
-        <span className="flex items-center gap-1"><span>↩️</span> Garantía 7 días</span>
+        <span className="flex items-center gap-1"><span>↩️</span> Garantía 30 días</span>
       </div>
     </div>
   )
