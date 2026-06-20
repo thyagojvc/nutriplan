@@ -12,7 +12,7 @@ const PHASES = [
   'Adaptando a tus restricciones alimentarias…',
   'Seleccionando tus alimentos favoritos…',
   'Armando tu plan de 7 días…',
-  '¡Tu plan personalizado está listo!',
+  '¡Tu Calibración Metabólica está lista!',
 ]
 
 const ANIMATION_MS = 15_000
@@ -89,7 +89,7 @@ export default function CalculandoPage() {
           {/* Texto */}
           <div className="space-y-2">
             <h1 className="text-xl font-black text-gray-900">
-              {isLast ? '¡Listo!' : 'Creando tu plan'}
+              {isLast ? '¡Listo!' : 'Calibrando tu metabolismo'}
             </h1>
             <p
               key={phaseIndex}
@@ -124,7 +124,7 @@ export default function CalculandoPage() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Personalizando según tus respuestas — solo un momento…
+              Calibrando según tus respuestas — solo un momento…
             </p>
           </div>
 

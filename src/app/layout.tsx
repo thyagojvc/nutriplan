@@ -1,4 +1,4 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
@@ -17,6 +17,19 @@ export const metadata: Metadata = {
   title: 'NutriPlan — Tu plan nutricional personalizado',
   description:
     'Plan nutricional de 7 días personalizado con IA. Disponible para México, Colombia, Chile y España.',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'NutriPlan',
+  },
+  icons: {
+    icon: '/logo-perfil.png',
+    apple: '/logo-perfil.png',
+  },
+}
+
+export const viewport: Viewport = {
+  themeColor: '#226c45',
 }
 
 export default function RootLayout({

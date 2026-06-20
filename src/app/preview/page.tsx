@@ -248,7 +248,7 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          Análisis completado · Calculado solo para ti
+          Calibración Metabólica completada · solo para ti
         </div>
 
         <h1 className="text-2xl font-black leading-tight text-gray-900">
@@ -400,7 +400,7 @@ export default function PreviewPage() {
                 { item: 'Lista de compras optimizada',          value: '$9'  },
                 { item: 'Guía de implementación paso a paso',    value: '$7'  },
                 { item: 'Sustituciones para cada comida',        value: '$4'  },
-                { item: 'PDF descargable',                       value: 'incluido' },
+                { item: 'Acceso a tu panel personal + PDF',      value: 'incluido' },
                 { item: 'Validado por nutriólogos certificados', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">

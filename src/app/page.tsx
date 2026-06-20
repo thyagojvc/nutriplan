@@ -42,14 +42,36 @@ export default function HomePage() {
             <span className="text-primary">cuánto debes comer</span>
           </h1>
 
-          <p className="text-sm text-muted-foreground leading-relaxed max-w-[19rem] mx-auto">
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-[20rem] mx-auto">
             {/* TODO: atualizar para 12 quando steps 3 e 10 forem reativados (IA + order bump) */}
-            Responde 9 preguntas y recibe tu plan nutricional calculado para
-            tu cuerpo, tu objetivo y tu estilo de vida — sin pasar hambre.
+            El problema nunca fue tu fuerza de voluntad. Las dietas genéricas
+            te dan el mismo número de calorías que a todos, y tu metabolismo
+            es único. Responde 9 preguntas y descubre cuánto necesita
+            comer <span className="font-semibold text-gray-700">tu</span> cuerpo.
           </p>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#D8E8D4] bg-white px-3 py-1 text-xs text-muted-foreground">
             <span>👩‍⚕️</span>
             <span>Metodología validada por nutriólogos certificados</span>
+          </div>
+        </div>
+
+        {/* ── Método Calibración Metabólica ────────────────────── */}
+        <div className="w-full max-w-lg mb-3 quiz-enter quiz-enter-delay-1">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground text-center mb-3">
+            El método Calibración Metabólica
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { n: '1', t: 'Calcula', d: 'Tu metabolismo real' },
+              { n: '2', t: 'Calibra', d: 'Calorías y macros' },
+              { n: '3', t: 'Come', d: 'Lo que te gusta' },
+            ].map(({ n, t, d }) => (
+              <div key={n} className="rounded-2xl border border-[#D8E8D4] bg-white p-3 text-center shadow-sm">
+                <div className="mx-auto mb-1.5 flex h-7 w-7 items-center justify-center rounded-full bg-primary text-xs font-black text-white">{n}</div>
+                <p className="text-sm font-bold text-gray-900">{t}</p>
+                <p className="text-[11px] text-muted-foreground leading-snug">{d}</p>
+              </div>
+            ))}
           </div>
         </div>
 
