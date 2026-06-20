@@ -368,48 +368,63 @@ export default function PreviewPage() {
         </div>
 
         {/* Oferta con ancla de valor */}
-        <div className="rounded-2xl border-2 border-primary/30 bg-white shadow-sm overflow-hidden">
+        <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
+          {/* Selo de desconto */}
+          <div className="absolute right-3 top-3 z-10 rounded-full bg-[#D85A30] px-2.5 py-1 text-xs font-black text-white shadow-sm">
+            -79%
+          </div>
+
+          {/* Header colorido */}
+          <div className="bg-primary px-5 py-3 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Tu plan personalizado</p>
+            <p className="text-base font-black text-white">¡Está listo para ti!</p>
+          </div>
+
+          {/* Urgência */}
+          <Countdown />
+
           <div className="p-5 space-y-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground text-center">
-              Tu plan completo incluye
-            </p>
             <ul className="space-y-2.5">
               {[
-                { item: '🍽️ Plan de 30 días personalizado',         value: '$27' },
-                { item: '🛒 Lista de compras optimizada',            value: '$9'  },
-                { item: '📋 Guía de implementación paso a paso',      value: '$7'  },
-                { item: '🔄 Sustituciones para cada comida',          value: '$4'  },
-                { item: '📄 PDF descargable',                         value: 'incluido' },
-                { item: '👩‍⚕️ Validado por nutriólogos certificados',  value: 'incluido' },
+                { item: 'Plan de 30 días personalizado',        value: '$27' },
+                { item: 'Lista de compras optimizada',          value: '$9'  },
+                { item: 'Guía de implementación paso a paso',    value: '$7'  },
+                { item: 'Sustituciones para cada comida',        value: '$4'  },
+                { item: 'PDF descargable',                       value: 'incluido' },
+                { item: 'Validado por nutriólogos certificados', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
-                  <span className="text-gray-700">{item}</span>
+                  <span className="flex items-center gap-2 text-gray-700">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-[11px] font-bold text-primary">✓</span>
+                    {item}
+                  </span>
                   <span className="shrink-0 text-xs font-semibold text-muted-foreground">{value}</span>
                 </li>
               ))}
             </ul>
-            <div className="border-t border-[#EAF2E6] pt-3 text-center space-y-1">
-              <p className="text-sm text-muted-foreground">
-                Valor total <span className="line-through">$47 USD</span>
+
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1.5">
+              <div className="flex items-center justify-center gap-2">
+                <span className="text-sm text-muted-foreground line-through">$47 USD</span>
+                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">Ahorras $37</span>
+              </div>
+              <p className="text-5xl font-black leading-none text-gray-900">
+                $9<span className="align-top text-3xl font-black">.90</span>
+                <span className="ml-2 text-sm font-semibold text-muted-foreground">USD</span>
               </p>
-              <p className="text-4xl font-black text-gray-900">
-                $9<span className="text-2xl font-black">.90</span>
-                <span className="text-sm font-semibold text-muted-foreground ml-2">USD hoy</span>
-              </p>
-              <p className="text-xs text-muted-foreground">
-                Pago único · sin suscripción · convertido a tu moneda automáticamente
-              </p>
+              <p className="text-xs font-semibold text-primary">≈ $0.33 al día · menos que un café ☕</p>
+              <p className="text-[11px] text-muted-foreground">Pago único · sin suscripción · en tu moneda local</p>
             </div>
           </div>
         </div>
 
         {/* Garantía */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 flex items-start gap-3">
-          <span className="text-2xl shrink-0">🛡️</span>
+        <div className="flex items-center gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white text-2xl">🛡️</div>
           <div>
             <p className="text-sm font-bold text-gray-900">Garantía total de 30 días</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Si no te encanta tu plan, te devolvemos el 100% de tu dinero. Sin preguntas.
+              Si no te encanta tu plan, te devolvemos el 100%. Sin preguntas.
             </p>
           </div>
         </div>
@@ -449,6 +464,40 @@ export default function PreviewPage() {
 
       </div>
     </PageShell>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Contador de urgência — preço especial expira (persiste na sessão)
+// ---------------------------------------------------------------------------
+
+function Countdown() {
+  const [secs, setSecs] = useState<number | null>(null)
+
+  useEffect(() => {
+    const KEY = 'nutriplan_offer_deadline'
+    let deadline = Number(sessionStorage.getItem(KEY))
+    if (!deadline || deadline < Date.now()) {
+      deadline = Date.now() + 10 * 60 * 1000 // 10 minutos
+      sessionStorage.setItem(KEY, String(deadline))
+    }
+    const tick = () => setSecs(Math.max(0, Math.round((deadline - Date.now()) / 1000)))
+    tick()
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  if (secs === null) return null
+  const mm = String(Math.floor(secs / 60)).padStart(2, '0')
+  const ss = String(secs % 60).padStart(2, '0')
+
+  return (
+    <div className="flex items-center justify-center gap-2 bg-[#FBE7DF] py-2">
+      <span className="text-sm">⏱️</span>
+      <span className="text-xs font-semibold text-[#993C1D]">
+        Tu precio especial expira en {mm}:{ss}
+      </span>
+    </div>
   )
 }
 
