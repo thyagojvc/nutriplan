@@ -82,3 +82,8 @@
 
 .quiz-enter-delay-1 { animation-delay: 0.06s; }
 .quiz-enter-delay-2 { animation-delay: 0.12s; }
+
+/* Fraunces — fonte display para headings hero */
+.font-display {
+  font-family: var(--font-fraunces), serif;
+}

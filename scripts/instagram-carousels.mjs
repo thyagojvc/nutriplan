@@ -245,8 +245,8 @@ const POSTS = {
   post1: [
     coverSlide({ title: 'Tu cuerpo no necesita otra dieta.', accent: 'Necesita un plan a tu medida.', total: 3, active: 0 }),
     contentSlide({
-      title: 'Hecho para nadie',
-      body: 'La mayoría falla porque sigue planes genéricos de internet, calculados para "todos". Tu metabolismo, tu peso y tus gustos son únicos.',
+      title: 'Hecho para todos = hecho para nadie',
+      body: 'Las dietas genéricas no conocen tu metabolismo, tu peso ni lo que te gusta comer. Por eso siempre terminan en hambre, frustración y abandono.',
       total: 3, active: 1,
     }),
     ctaSlide({ title: 'Calcula qué y cuánto comer en 3 minutos. Sin pasar hambre.', ctaLabel: 'Empieza gratis', total: 3, active: 2 }),

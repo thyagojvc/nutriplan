@@ -88,6 +88,7 @@ export default function PreviewPage() {
   const [hotmartUrl, setHotmartUrl] = useState<string | null>(null)
   const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [showSticky, setShowSticky] = useState(false)
 
   useEffect(() => {
     fetch('/api/checkout/create-order', {
@@ -212,6 +213,12 @@ export default function PreviewPage() {
       .catch(() => setErrorKind(session ? 'calc_failed' : 'no_session'))
   }, [])
 
+  useEffect(() => {
+    const onScroll = () => setShowSticky(window.scrollY > 380)
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   if (errorKind) {
     const msgs: Record<ErrorKind, { emoji: string; title: string; body: string }> = {
       no_session: {
@@ -277,7 +284,8 @@ export default function PreviewPage() {
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
 
   return (
-    <PageShell>
+    <>
+      <PageShell>
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
@@ -286,7 +294,7 @@ export default function PreviewPage() {
           Calibración Metabólica completada · solo para ti
         </div>
 
-        <h1 className="text-2xl font-black leading-tight text-gray-900">
+        <h1 className="text-2xl font-black leading-tight text-gray-900 font-display">
           Aquí está tu perfil<br />
           <span className="text-primary">nutricional exacto</span>
         </h1>
@@ -297,7 +305,7 @@ export default function PreviewPage() {
       </div>
 
       {/* ── Contenido ─────────────────────────────────────────── */}
-      <div className="w-full max-w-lg px-4 pb-10 space-y-3">
+      <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
         {/* Perfil */}
         <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />}>
@@ -433,7 +441,11 @@ export default function PreviewPage() {
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Tu plan personalizado</p>
-            <p className="text-base font-black text-white">¡Está listo para ti!</p>
+            <p className="text-base font-black text-white">
+              {isLoss ? '¡Tu plan para adelgazar está listo!'
+                : isGain ? '¡Tu plan para ganar músculo está listo!'
+                : '¡Tu plan nutricional exacto está listo!'}
+            </p>
           </div>
 
           {/* Urgência */}
@@ -442,7 +454,7 @@ export default function PreviewPage() {
           <div className="p-5 space-y-4">
             <ul className="space-y-2.5">
               {[
-                { item: 'Plan de 30 días personalizado',        value: '$27' },
+                { item: 'Plan de 7 días personalizado',          value: '$27' },
                 { item: 'Lista de compras optimizada',          value: '$9'  },
                 { item: 'Guía de implementación paso a paso',    value: '$7'  },
                 { item: 'Sustituciones para cada comida',        value: '$4'  },
@@ -500,7 +512,7 @@ export default function PreviewPage() {
           </p>
           {[
             { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
-            { photo: '/testimonios/carlos.png', name: 'Carlos M.', country: '🇨🇴', text: 'Entendí cómo comer para ganar músculo. Los números de mi plan eran exactos para mi cuerpo.' },
+            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Ya no me siento culpable cuando como. El plan me enseñó cuánto necesita mi cuerpo y bajé 4 kg en un mes sin pasar hambre.' },
             { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
           ].map(({ photo, name, country, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
@@ -526,10 +538,64 @@ export default function PreviewPage() {
           ))}
         </div>
 
+        <FaqSection />
+
         <CtaButton ctaState={ctaState} onClick={handleCta} />
 
       </div>
     </PageShell>
+    <StickyCtaBar show={showSticky} ctaState={ctaState} onClick={handleCta} />
+    </>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// FAQ — quebra as 5 objeções mais comuns antes do CTA final
+// ---------------------------------------------------------------------------
+
+const FAQ_ITEMS = [
+  {
+    q: '¿Funciona si tengo hipotiroidismo o diabetes?',
+    a: 'Sí. Los cálculos se basan en tu metabolismo real y tu nivel de actividad. Si tienes una condición médica, el plan incluye un aviso para validar con tu médico.',
+  },
+  {
+    q: '¿Tengo que pesar la comida?',
+    a: 'No. Cada comida viene con medidas caseras: tazas, cucharadas y porciones visuales. Sin balanza.',
+  },
+  {
+    q: '¿Puedo comer fuera de casa o en restaurantes?',
+    a: 'Sí. El plan incluye sustituciones y equivalencias para adaptar a lo que tengas en casa o pidas en un restaurante.',
+  },
+  {
+    q: '¿Qué pasa si no me gusta el plan?',
+    a: 'Tienes garantía total de 30 días. Si no te convence, te devolvemos el 100%, sin preguntas.',
+  },
+  {
+    q: '¿En cuánto tiempo veo resultados?',
+    a: 'Depende de tu objetivo y tu cuerpo, pero la mayoría de usuarios reporta cambios visibles en 3 a 4 semanas siguiendo el plan.',
+  },
+]
+
+function FaqSection() {
+  return (
+    <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+      <div className="flex items-center gap-2 border-b border-[#EAF2E6] px-5 py-3">
+        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+          Preguntas frecuentes
+        </p>
+      </div>
+      <div className="divide-y divide-[#EAF2E6]">
+        {FAQ_ITEMS.map(({ q, a }) => (
+          <details key={q} className="group px-5">
+            <summary className="flex cursor-pointer list-none items-start justify-between gap-3 py-3.5 text-sm font-semibold text-gray-900 [&::-webkit-details-marker]:hidden">
+              <span>{q}</span>
+              <span className="mt-0.5 shrink-0 text-xl font-light text-primary leading-none transition-transform duration-150 group-open:rotate-45">+</span>
+            </summary>
+            <p className="pb-4 text-sm text-muted-foreground leading-relaxed">{a}</p>
+          </details>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -656,6 +722,53 @@ function CtaButton({
         <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Acceso inmediato</span>
         <span className="h-3 w-px bg-border" />
         <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 30 días</span>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// Barra de CTA fixa — aparece ao rolar além do hero
+// ---------------------------------------------------------------------------
+
+function StickyCtaBar({
+  show,
+  ctaState,
+  onClick,
+}: {
+  show: boolean
+  ctaState: 'idle' | 'loading' | 'error'
+  onClick: () => void
+}) {
+  if (!show) return null
+  return (
+    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-[#D4E8D0] bg-white/95 p-3 shadow-[0_-4px_24px_rgba(0,0,0,0.09)] backdrop-blur-md">
+      <div className="mx-auto max-w-lg space-y-1.5">
+        <button
+          onClick={onClick}
+          disabled={ctaState === 'loading'}
+          className={[
+            'flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-black text-white',
+            'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)]',
+            'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05]',
+            'transition-all duration-150 active:scale-[0.99]',
+            'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
+          ].join(' ')}
+        >
+          {ctaState === 'loading' ? (
+            <>
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+              Procesando…
+            </>
+          ) : (
+            'Quiero mi plan — $9.90 USD →'
+          )}
+        </button>
+        <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
+          <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> Pago seguro</span>
+          <span className="h-3 w-px bg-border" />
+          <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-primary" /> Garantía 30 días</span>
+        </div>
       </div>
     </div>
   )

@@ -2,22 +2,23 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { BarChart2, Utensils, ShoppingCart, BookOpen, RefreshCw, FileDown, GraduationCap } from 'lucide-react'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 const TESTIMONIALS = [
   { initials: 'LM', color: 'bg-pink-400',    name: 'Laura M.',  country: 'México',   text: 'Bajé 6 kg en 5 semanas. Por fin un plan que se adapta a lo que como normalmente.' },
-  { initials: 'CR', color: 'bg-blue-400',    name: 'Carlos R.', country: 'Colombia', text: 'Entendí exactamente cuánto comer para ganar músculo sin suplementos raros.' },
+  { initials: 'SR', color: 'bg-violet-400',  name: 'Sara R.',   country: 'Colombia', text: 'Ya no cuento calorías. El plan me dice exactamente qué comer y en 4 semanas noto la ropa más suelta.' },
   { initials: 'AP', color: 'bg-emerald-400', name: 'Ana P.',    country: 'España',   text: 'Comida real, sin dietas locas. En 3 semanas ya notaba diferencia en el espejo.' },
 ]
 
 const INCLUDES = [
-  '📊 Tu perfil nutricional exacto (IMC, TMB, TDEE)',
-  '🍽️ Plan de 30 días con comidas y porciones exactas',
-  '🛒 Lista de compras optimizada para tu plan',
-  '📋 Guía de implementación paso a paso',
-  '🔄 Sustituciones para adaptar a lo que tienes en casa',
-  '📄 PDF descargable para consultar cuando quieras',
-  '👩‍⚕️ Metodología diseñada y validada por nutriólogos certificados',
+  { Icon: BarChart2,    text: 'Tu perfil nutricional exacto (IMC, TMB, TDEE)' },
+  { Icon: Utensils,     text: 'Plan de 7 días personalizado con comidas y porciones exactas' },
+  { Icon: ShoppingCart, text: 'Lista de compras optimizada para tu plan' },
+  { Icon: BookOpen,     text: 'Guía de implementación paso a paso' },
+  { Icon: RefreshCw,    text: 'Sustituciones para adaptar a lo que tienes en casa' },
+  { Icon: FileDown,     text: 'PDF descargable para consultar cuando quieras' },
+  { Icon: GraduationCap, text: 'Metodología diseñada y validada por nutriólogos certificados' },
 ]
 
 export default function CheckoutPage() {
@@ -104,50 +105,46 @@ export default function CheckoutPage() {
               <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
               Último paso
             </div>
-            <h1 className="text-2xl font-black text-gray-900">Tu plan está calculado<br />y listo para ti</h1>
+            <h1 className="text-2xl font-black text-gray-900 font-display">Tu plan está calculado<br />y listo para ti</h1>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
               Completa el acceso y en minutos recibes tu plan nutricional personalizado en tu correo.
             </p>
           </div>
 
-          {/* Social proof */}
-          <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {TESTIMONIALS.map((t) => (
-                  <div
-                    key={t.initials}
-                    className={`h-8 w-8 rounded-full border-2 border-white ${t.color} flex items-center justify-center text-xs font-bold text-white`}
-                  >
-                    {t.initials}
-                  </div>
-                ))}
-                <div className="h-8 w-8 rounded-full border-2 border-white bg-[#E8F0E4] flex items-center justify-center text-xs font-semibold text-muted-foreground">
-                  +
-                </div>
-              </div>
-              <p className="text-sm font-medium">
-                Más de <span className="text-primary font-bold">1.200 personas</span> ya tienen su plan
-              </p>
-            </div>
+          {/* Urgência */}
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-[#FBE7DF] bg-[#FFF5F0] px-4 py-2.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#D85A30] animate-pulse" />
+            <span className="text-sm font-semibold text-[#993C1D]">Tu precio especial está reservado</span>
+          </div>
 
-            <div className="space-y-2">
+          {/* Social proof */}
+          <div className="flex items-center gap-3">
+            <div className="flex -space-x-2">
               {TESTIMONIALS.map((t) => (
-                <div key={t.initials} className="rounded-xl border border-[#D8E8D4] bg-white px-4 py-3 text-sm shadow-sm">
-                  <p className="text-gray-700">"{t.text}"</p>
-                  <p className="mt-1 text-xs font-bold text-primary">— {t.name}, {t.country}</p>
+                <div
+                  key={t.initials}
+                  className={`h-8 w-8 rounded-full border-2 border-white ${t.color} flex items-center justify-center text-xs font-bold text-white`}
+                >
+                  {t.initials}
                 </div>
               ))}
+              <div className="h-8 w-8 rounded-full border-2 border-white bg-[#E8F0E4] flex items-center justify-center text-xs font-semibold text-muted-foreground">
+                +
+              </div>
             </div>
+            <p className="text-sm font-medium">
+              Más de <span className="text-primary font-bold">1.800 mujeres</span> ya tienen su plan
+            </p>
           </div>
 
           {/* Lo que incluye */}
           <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-sm p-5 space-y-3">
             <p className="text-sm font-bold text-gray-900">¿Qué incluye tu plan?</p>
             <ul className="space-y-2">
-              {INCLUDES.map((item) => (
-                <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
-                  <span>{item}</span>
+              {INCLUDES.map(({ Icon, text }) => (
+                <li key={text} className="flex items-start gap-2 text-sm text-gray-700">
+                  <Icon className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
+                  <span>{text}</span>
                 </li>
               ))}
             </ul>
@@ -166,8 +163,8 @@ export default function CheckoutPage() {
             disabled={state === 'loading'}
             className={[
               'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
-              'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)]',
-              'hover:brightness-[1.04] hover:shadow-[0_6px_28px_0_rgba(0,0,0,0.22)]',
+              'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)]',
+              'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05]',
               'transition-all duration-150 active:scale-[0.99]',
               'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
             ].join(' ')}
@@ -179,7 +176,7 @@ export default function CheckoutPage() {
               </>
             ) : (
               <>
-                Completar mi compra
+                Completar mi compra — $9.90 USD
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
                   <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
                     stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
@@ -189,7 +186,7 @@ export default function CheckoutPage() {
           </button>
 
           <p className="text-center text-xs text-muted-foreground">
-            🔒 Pago seguro por Hotmart · Acceso inmediato · Garantía de 7 días
+            🔒 Pago seguro por Hotmart · Acceso inmediato · Garantía de 30 días
           </p>
 
         </div>

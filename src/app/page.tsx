@@ -1,16 +1,17 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { Flame, Gauge, Utensils, ClipboardList } from 'lucide-react'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 const BENEFITS = [
-  { emoji: '🔥', title: 'Cuánto comer exacto', desc: 'Tu metabolismo y gasto calórico calculado para tu cuerpo — sin adivinar' },
-  { emoji: '📏', title: 'Dónde estás hoy', desc: 'Tu IMC real y qué tan cerca estás de tu objetivo' },
-  { emoji: '🥗', title: 'Qué comer y cuánto', desc: 'Proteína, carbos y grasas a tu medida — para no pasar hambre' },
-  { emoji: '📋', title: 'Plan semana a semana', desc: 'Comidas reales con porciones exactas, según tus gustos' },
+  { Icon: Flame,         title: 'Cuánto comer exacto', desc: 'Tu metabolismo y gasto calórico calculado para tu cuerpo — sin adivinar' },
+  { Icon: Gauge,         title: 'Dónde estás hoy',     desc: 'Tu IMC real y qué tan cerca estás de tu objetivo' },
+  { Icon: Utensils,      title: 'Qué comer y cuánto',  desc: 'Proteína, carbos y grasas a tu medida — para no pasar hambre' },
+  { Icon: ClipboardList, title: 'Plan semana a semana', desc: 'Comidas reales con porciones exactas, según tus gustos' },
 ]
 
 const PROOF_NUMBERS = [
-  { value: '+2.400', label: 'planes generados' },
+  { value: '+1.800', label: 'planes generados' },
   { value: '4.8 ★',  label: 'valoración media' },
   { value: '3 min',  label: 'para tu resultado' },
 ]
@@ -38,9 +39,9 @@ export default function HomePage() {
             Gratis · Personalizado · Solo 3 minutos
           </div>
 
-          <h1 className="text-[2rem] font-black leading-tight text-gray-900">
-            Por fin sabrás exactamente<br />
-            <span className="text-primary">cuánto debes comer</span>
+          <h1 className="text-[2rem] font-black leading-tight text-gray-900 font-display">
+            Las dietas fallan porque no conocen<br />
+            <span className="text-primary">tu metabolismo</span>
           </h1>
 
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[20rem] mx-auto">
@@ -54,6 +55,27 @@ export default function HomePage() {
             <span>👩‍⚕️</span>
             <span>Metodología validada por nutriólogos certificados</span>
           </div>
+        </div>
+
+        {/* ── ¿Te suena? — identificación con el avatar ───────── */}
+        <div className="w-full max-w-lg mb-3 rounded-2xl border border-[#F5D8D0] bg-[#FFF8F6] shadow-sm p-5 quiz-enter quiz-enter-delay-1">
+          <p className="text-sm font-bold text-gray-900 mb-3">¿Te suena alguna de estas situaciones?</p>
+          <ul className="space-y-2">
+            {[
+              'Empiezas bien la semana y el fin de semana lo arruinas todo',
+              'Comes "sano" pero los kilos no se mueven',
+              'Tienes hambre a media tarde y picas lo que sea',
+              'Ya perdiste la cuenta de cuántas dietas has intentado',
+            ].map(item => (
+              <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
+                <span className="mt-0.5 shrink-0 font-bold text-red-400">✗</span>
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-3.5 text-xs text-muted-foreground leading-relaxed border-t border-[#EAF2E6] pt-3">
+            El problema no eres tú. Es que ninguna dieta calculó lo que necesita <em>tu</em> metabolismo.
+          </p>
         </div>
 
         {/* ── Método Calibración Metabólica ────────────────────── */}
@@ -83,12 +105,14 @@ export default function HomePage() {
           </p>
 
           <div className="grid grid-cols-2 gap-2.5">
-            {BENEFITS.map(({ emoji, title, desc }) => (
+            {BENEFITS.map(({ Icon, title, desc }) => (
               <div
                 key={title}
                 className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-1.5 shadow-sm"
               >
-                <p className="text-2xl">{emoji}</p>
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+                  <Icon className="h-4 w-4 text-primary" />
+                </div>
                 <p className="text-sm font-bold text-gray-900">{title}</p>
                 <p className="text-xs text-muted-foreground leading-snug">{desc}</p>
               </div>
@@ -203,7 +227,7 @@ export default function HomePage() {
               ))}
             </div>
             <span className="text-xs text-muted-foreground">
-              <span className="font-bold text-gray-700">+2.400 mujeres</span> ya calcularon su plan
+              <span className="font-bold text-gray-700">+1.800 mujeres</span> ya calcularon su plan
             </span>
           </div>
           <Link
