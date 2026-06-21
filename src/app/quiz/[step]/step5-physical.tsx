@@ -145,6 +145,10 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
             </div>
           </div>
 
+          <p className="text-center text-xs text-muted-foreground">
+            Cuanto más exactos sean tus datos, más preciso será tu plan 🎯
+          </p>
+
           {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
         </QuizCard>
 

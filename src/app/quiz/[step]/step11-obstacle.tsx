@@ -94,7 +94,9 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
         {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
       </QuizCard>
 
-      <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving} />
+      <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving}>
+        Continuar al último paso
+      </QuizCta>
     </QuizLayout>
   )
 }

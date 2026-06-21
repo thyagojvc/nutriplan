@@ -6,7 +6,8 @@ import {
   User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw,
 } from 'lucide-react'
-import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+import Image from 'next/image'
+import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 
@@ -42,6 +43,39 @@ interface PreviewData {
     goal: string
     macros: { proteinG: number; carbsG: number; fatG: number }
   }
+}
+
+// Dia-exemplo da vista previa: alimentos universais (LATAM), com kcal e macros
+// escalados aos alvos reais do visitante para que os números batam com o plano dele.
+const TEASER_TEMPLATE = [
+  { name: 'Desayuno', emoji: '☀️', share: 0.28, items: [
+    { food: 'Avena con frutas y semillas', qty: '1 tazón',   p: 0.55 },
+    { food: 'Huevos revueltos',            qty: '2 unidades', p: 0.45 },
+  ] },
+  { name: 'Almuerzo', emoji: '🍽️', share: 0.40, items: [
+    { food: 'Pechuga de pollo a la plancha', qty: '1 porción', p: 0.40 },
+    { food: 'Arroz integral',                qty: '1 taza',     p: 0.32 },
+    { food: 'Ensalada con aceite de oliva',  qty: 'al gusto',   p: 0.28 },
+  ] },
+  { name: 'Cena', emoji: '🌙', share: 0.32, items: [
+    { food: 'Salmón al horno',     qty: '1 filete',  p: 0.45 },
+    { food: 'Batata asada',        qty: '1 mediana', p: 0.30 },
+    { food: 'Verduras salteadas',  qty: '1 plato',   p: 0.25 },
+  ] },
+] as const
+
+function buildTeaser(kcal: number, macros: { proteinG: number; carbsG: number; fatG: number }) {
+  return TEASER_TEMPLATE.map((meal) => {
+    const mealKcal = Math.round(kcal * meal.share)
+    const items = meal.items.map((it) => ({
+      food: it.food,
+      qty: it.qty,
+      proteinG: Math.max(1, Math.round(macros.proteinG * meal.share * it.p)),
+      carbsG: Math.max(1, Math.round(macros.carbsG * meal.share * it.p)),
+      fatG: Math.max(1, Math.round(macros.fatG * meal.share * it.p)),
+    }))
+    return { name: meal.name, emoji: meal.emoji, kcal: mealKcal, items }
+  })
 }
 
 type ErrorKind = 'no_session' | 'calc_failed' | 'network'
@@ -238,6 +272,7 @@ export default function PreviewPage() {
     : null
   const delta = Math.abs(targets.tdee - targets.targetCalories)
   const totalKcal = targets.macros.proteinG * 4 + targets.macros.carbsG * 4 + targets.macros.fatG * 9 || 1
+  const teaser = buildTeaser(targets.targetCalories, targets.macros)
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
 
@@ -324,56 +359,67 @@ export default function PreviewPage() {
           </div>
         </Card>
 
-        {/* Plano bloqueado */}
-        <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white">
-          {/* Conteúdo fake desfocado */}
-          <div className="select-none blur-[3px] pointer-events-none p-5 space-y-3 opacity-60" aria-hidden>
-            <p className="font-bold text-gray-800 text-sm">Tu plan de 7 días — {targets.targetCalories} kcal/día</p>
-            {['Lunes', 'Martes', 'Miércoles'].map(d => (
-              <div key={d} className="rounded-xl border border-[#D8E8D4] p-3 space-y-2">
-                <div className="flex justify-between text-xs">
-                  <span className="font-semibold">{d}</span>
-                  <span className="text-muted-foreground">{targets.targetCalories} kcal</span>
-                </div>
-                <div className="space-y-1.5">
-                  {[88, 72, 60].map((w, i) => (
-                    <div key={i} className="h-2 rounded-full bg-primary/20" style={{ width: `${w}%` }} />
-                  ))}
-                </div>
-              </div>
-            ))}
+        {/* Vista previa real del plan */}
+        <div className="space-y-2">
+          <div className="flex items-end justify-between px-1">
+            <div>
+              <p className="text-sm font-black text-gray-900">Vista previa de tu plan</p>
+              <p className="text-[11px] text-muted-foreground">Ejemplo de un día · {targets.targetCalories} kcal</p>
+            </div>
+            <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
           </div>
 
-          {/* Overlay */}
-          <div
-            className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-6 text-center"
-            style={{ background: 'linear-gradient(to bottom, rgba(235,246,228,0.65) 0%, rgba(245,250,242,0.97) 45%)' }}
-          >
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#D8E8D4] bg-white shadow-sm">
-              <NutriLogo size={28} />
+          <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white p-3">
+            <div className="space-y-2.5">
+              {teaser.map((meal) => (
+                <div key={meal.name} className="overflow-hidden rounded-xl border border-[#D8E8D4]">
+                  <div className="flex items-center justify-between bg-primary px-3.5 py-2">
+                    <span className="text-sm font-semibold text-white">{meal.emoji} {meal.name}</span>
+                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-medium text-white">{meal.kcal} kcal</span>
+                  </div>
+                  <div className="divide-y divide-[#EAF2E6]">
+                    {meal.items.map((it) => (
+                      <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2">
+                        <div className="min-w-0">
+                          <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
+                          <p className="text-[11px] text-muted-foreground">{it.qty}</p>
+                        </div>
+                        <div className="flex shrink-0 gap-1">
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+              {/* espaço para o fade cobrir e sugerir continuação */}
+              <div className="h-16" />
             </div>
-            <div className="space-y-1">
-              <p className="font-black text-gray-900 text-[1.05rem]">Tu plan nutricional completo</p>
-              <p className="text-xs text-muted-foreground leading-relaxed max-w-[230px]">
-                {targets.targetCalories} kcal · {targets.macros.proteinG}g proteína · Plan de 30 días con porciones exactas
+
+            {/* Fade + cadeado: prova que o produto é real, mas trava o resto */}
+            <div
+              className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-2.5 px-4 pb-4 pt-20 text-center"
+              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.94) 42%, #fff 72%)' }}
+            >
+              <div className="flex flex-wrap justify-center gap-1.5">
+                {[
+                  { Icon: Sunrise,      label: 'Desayunos' },
+                  { Icon: Utensils,     label: 'Almuerzos' },
+                  { Icon: Moon,         label: 'Cenas' },
+                  { Icon: Apple,        label: 'Snacks' },
+                  { Icon: ShoppingCart, label: 'Lista de compras' },
+                ].map(({ Icon, label }) => (
+                  <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                    <Icon className="h-3 w-3" /> {label}
+                  </span>
+                ))}
+              </div>
+              <p className="flex items-center justify-center gap-1.5 text-xs font-bold text-gray-800">
+                <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear tu plan
               </p>
             </div>
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {[
-                { Icon: Sunrise,      label: 'Desayunos' },
-                { Icon: Utensils,     label: 'Almuerzos' },
-                { Icon: Moon,         label: 'Cenas' },
-                { Icon: Apple,        label: 'Snacks' },
-                { Icon: ShoppingCart, label: 'Lista de compras' },
-              ].map(({ Icon, label }) => (
-                <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-3 py-0.5 text-xs font-semibold text-primary">
-                  <Icon className="h-3 w-3" /> {label}
-                </span>
-              ))}
-            </div>
-            <p className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-              <Lock className="h-3 w-3" /> Desbloquea tu plan para ver todo
-            </p>
           </div>
         </div>
 
@@ -417,7 +463,7 @@ export default function PreviewPage() {
 
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1.5">
               <div className="flex items-center justify-center gap-2">
-                <span className="text-sm text-muted-foreground line-through">$47 USD</span>
+                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$47</span></span>
                 <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">Ahorras $37</span>
               </div>
               <p className="text-5xl font-black leading-none text-gray-900">
@@ -453,15 +499,19 @@ export default function PreviewPage() {
             Lo que dicen quienes ya lo tienen
           </p>
           {[
-            { initials: 'MG', color: 'bg-pink-400',    name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
-            { initials: 'CM', color: 'bg-blue-400',    name: 'Carlos M.', country: '🇨🇴', text: 'Entendí cómo comer para ganar músculo. Los números de mi plan eran exactos para mi cuerpo.' },
-            { initials: 'AP', color: 'bg-emerald-400', name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
-          ].map(({ initials, color, name, country, text }) => (
+            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
+            { photo: '/testimonios/carlos.png', name: 'Carlos M.', country: '🇨🇴', text: 'Entendí cómo comer para ganar músculo. Los números de mi plan eran exactos para mi cuerpo.' },
+            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
+          ].map(({ photo, name, country, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
               <div className="flex items-center gap-2">
-                <div className={`h-7 w-7 shrink-0 rounded-full ${color} flex items-center justify-center text-[10px] font-bold text-white`}>
-                  {initials}
-                </div>
+                <Image
+                  src={photo}
+                  alt={name}
+                  width={36}
+                  height={36}
+                  className="h-9 w-9 shrink-0 rounded-full object-cover object-top"
+                />
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
                     <svg key={i} width="10" height="10" viewBox="0 0 11 11" fill="#f59e0b">
@@ -504,6 +554,20 @@ function Countdown() {
   }, [])
 
   if (secs === null) return null
+
+  // Quando o contador zera, não congelamos em "00:00" (parece fake e quebra
+  // a credibilidade). Trocamos por uma mensagem de escassez honesta e estável.
+  if (secs === 0) {
+    return (
+      <div className="flex items-center justify-center gap-2 bg-[#FBE7DF] py-2">
+        <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
+        <span className="text-xs font-semibold text-[#993C1D]">
+          Tu precio especial está reservado solo por hoy
+        </span>
+      </div>
+    )
+  }
+
   const mm = String(Math.floor(secs / 60)).padStart(2, '0')
   const ss = String(secs % 60).padStart(2, '0')
 

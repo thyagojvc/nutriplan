@@ -37,3 +37,15 @@ Thumbs.db
 all_migrations.sql
 
 .vercel
+
+# ferramentas de skills (locais)
+.agents/
+skills-lock.json
+
+# assets locais de marketing/origem — NÃO deployar (evita publicar fotos originais)
+/hotmart-assets/
+/public/muie.html
+/public/muie_files/
+/public/fotos prova social/
+/public/Criativos/
+/public/foto-orderbump/

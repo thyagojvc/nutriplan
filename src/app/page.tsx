@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 const BENEFITS = [
@@ -38,7 +39,7 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-[2rem] font-black leading-tight text-gray-900">
-            Por fin, sabe exactamente<br />
+            Por fin sabrás exactamente<br />
             <span className="text-primary">cuánto debes comer</span>
           </h1>
 
@@ -111,9 +112,13 @@ export default function HomePage() {
         <div className="w-full max-w-lg mt-2.5 space-y-2.5 quiz-enter quiz-enter-delay-2">
           <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
             <div className="flex gap-3 items-start">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-pink-100 flex items-center justify-center font-bold text-pink-500 text-sm">
-                VR
-              </div>
+              <Image
+                src="/testimonios/valeria.png"
+                alt="Valeria R."
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-full object-cover object-top"
+              />
               <div>
                 <div className="flex gap-0.5 mb-1">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -132,9 +137,13 @@ export default function HomePage() {
 
           <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
             <div className="flex gap-3 items-start">
-              <div className="h-9 w-9 shrink-0 rounded-full bg-blue-100 flex items-center justify-center font-bold text-blue-500 text-sm">
-                AM
-              </div>
+              <Image
+                src="/testimonios/andrea.png"
+                alt="Andrea M."
+                width={44}
+                height={44}
+                className="h-11 w-11 shrink-0 rounded-full object-cover object-top"
+              />
               <div>
                 <div className="flex gap-0.5 mb-1">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -175,6 +184,28 @@ export default function HomePage() {
       {/* ── CTA fijo ──────────────────────────────────────────── */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-[#D8E8D4] bg-white/95 p-4 shadow-2xl backdrop-blur-md">
         <div className="mx-auto max-w-lg space-y-2">
+          <div className="flex items-center justify-center gap-2">
+            <div className="flex -space-x-2">
+              {[
+                '/testimonios/valeria.png',
+                '/testimonios/andrea.png',
+                '/testimonios/maria.png',
+                '/testimonios/ana.png',
+              ].map((src) => (
+                <Image
+                  key={src}
+                  src={src}
+                  alt=""
+                  width={24}
+                  height={24}
+                  className="h-6 w-6 rounded-full border-2 border-white object-cover object-top"
+                />
+              ))}
+            </div>
+            <span className="text-xs text-muted-foreground">
+              <span className="font-bold text-gray-700">+2.400 mujeres</span> ya calcularon su plan
+            </span>
+          </div>
           <Link
             href="/quiz/1"
             className={[
