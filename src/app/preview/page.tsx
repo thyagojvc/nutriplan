@@ -625,13 +625,29 @@ function CtaButton({
         )}
       </button>
 
-      {/* Selos de pagamento */}
-      <div className="flex items-center justify-center gap-1.5 pt-0.5">
-        {['VISA', 'Mastercard', 'PayPal', 'Pix'].map((m) => (
-          <span key={m} className="rounded-md border border-[#E0E0DA] bg-white px-2 py-1 text-[10px] font-bold tracking-wide text-gray-500">
-            {m}
-          </span>
-        ))}
+      {/* Logos de bandeiras */}
+      <div className="flex items-center justify-center gap-2 pt-0.5">
+        {/* VISA */}
+        <div className="flex h-7 w-12 items-center justify-center rounded-md border border-[#E0E0DA] bg-white">
+          <svg viewBox="0 0 48 16" width="36" height="12" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="13" fontFamily="Arial" fontSize="16" fontWeight="900" fontStyle="italic" fill="#1A1F71">VISA</text>
+          </svg>
+        </div>
+        {/* Mastercard */}
+        <div className="flex h-7 w-12 items-center justify-center rounded-md border border-[#E0E0DA] bg-white">
+          <svg viewBox="0 0 38 24" width="32" height="20" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="13" cy="12" r="11" fill="#EB001B"/>
+            <circle cx="25" cy="12" r="11" fill="#F79E1B"/>
+            <path d="M19 3.5a11 11 0 0 1 0 17 11 11 0 0 1 0-17z" fill="#FF5F00"/>
+          </svg>
+        </div>
+        {/* PayPal */}
+        <div className="flex h-7 w-14 items-center justify-center rounded-md border border-[#E0E0DA] bg-white px-1">
+          <svg viewBox="0 0 60 20" width="44" height="14" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="15" fontFamily="Arial" fontSize="15" fontWeight="bold" fill="#003087">Pay</text>
+            <text x="28" y="15" fontFamily="Arial" fontSize="15" fontWeight="bold" fill="#009CDE">Pal</text>
+          </svg>
+        </div>
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-muted-foreground">
