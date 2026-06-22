@@ -57,7 +57,13 @@ export function calcTargets(a: ParsedAnswers): NutritionTargets {
 
   // Macros
   const profile = MACRO_PROFILE[effectiveGoal]
-  const proteinG = Math.round(profile.proteinPerKg * a.weightKg)
+  // Proteína: para IMC alto dosamos sobre un peso "ajustado" con tope en IMC 30,
+  // para no extrapolar a gramos irreales (p. ej. 2 g/kg de 120 kg = 240 g). Hasta
+  // IMC 30 el tope iguala al peso real, así que los casos normales no cambian y la
+  // transición es continua (sin salto en la frontera).
+  const heightM = a.heightCm / 100
+  const proteinWeightKg = Math.min(a.weightKg, 30 * heightM * heightM)
+  const proteinG = Math.round(profile.proteinPerKg * proteinWeightKg)
   const fatG = Math.round((targetCalories * profile.fatPct) / 9)
   const proteinKcal = proteinG * 4
   const fatKcal = fatG * 9

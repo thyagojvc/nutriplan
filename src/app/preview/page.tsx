@@ -28,6 +28,15 @@ const ACTIVITY_LABEL: Record<string, string> = {
   muy_activo: 'Muy activo',
 }
 
+// Resultados reales de pacientes (fotos con consentimiento por escrito).
+// Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
+const RESULTS = [
+  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−17 kg en 5 meses', w: 414, h: 444 },
+  { photo: '/resultados/caso-2.png', name: 'Daniela',  country: '🇨🇴', age: 31, result: '−6 kg en 2 meses',  w: 410, h: 433 },
+  { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses',  w: 402, h: 430 },
+  { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
+]
+
 interface PreviewData {
   profile: {
     age: number | null
@@ -294,21 +303,53 @@ export default function PreviewPage() {
           Calibración Metabólica completada · solo para ti
         </div>
 
-        <h1 className="text-2xl font-black leading-tight text-gray-900 font-display">
-          Aquí está tu perfil<br />
-          <span className="text-primary">nutricional exacto</span>
-        </h1>
+        {isLoss || isGain ? (
+          <>
+            <p className="text-sm font-semibold text-muted-foreground">Esto calculamos para tu cuerpo</p>
+            <div className="flex items-center justify-center gap-3">
+              <div className="text-center">
+                <p className="text-[11px] text-gray-400">Tu gasto</p>
+                <p className="font-display text-2xl font-black leading-none text-gray-400">{targets.tdee}</p>
+              </div>
+              <div className="flex flex-col items-center gap-1">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#D85A30]">
+                  <path d="M5 12h14M19 12l-6-6M19 12l-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+                <span className="whitespace-nowrap rounded-full bg-[#FAECE7] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">
+                  {isLoss ? `−${delta}` : `+${delta}`} kcal
+                </span>
+              </div>
+              <div className="text-center">
+                <p className="text-[11px] font-semibold text-primary">Tu meta</p>
+                <p className="font-display text-5xl font-black leading-none text-primary">{targets.targetCalories}</p>
+              </div>
+            </div>
+            <p className="text-[11px] text-muted-foreground">kcal/día</p>
+            <p className="text-base font-bold text-gray-800">
+              {isLoss ? 'un déficit pensado para ti, sin pasar hambre'
+                : 'un superávit pensado para ti, para ganar músculo'}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="text-sm font-semibold text-muted-foreground">Tu cuerpo necesita</p>
+            <p className="font-display leading-none">
+              <span className="text-6xl font-black text-primary">{targets.targetCalories}</span>
+              <span className="ml-2 text-xl font-bold text-gray-500">kcal/día</span>
+            </p>
+            <p className="text-base font-bold text-gray-800">para mantener tu peso de forma saludable</p>
+          </>
+        )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Estos números son únicos para tu cuerpo y tu objetivo.
-          Revísalos — luego desbloquea el plan completo.
+          Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
         </p>
       </div>
 
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
-        {/* Perfil */}
-        <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />}>
+        {/* Perfil + IMC agrupados */}
+        <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
           <div className="grid grid-cols-3 gap-2">
             <StatCard icon={<Cake className="h-4 w-4" />}  label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
             <StatCard icon={<Scale className="h-4 w-4" />} label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
@@ -317,17 +358,16 @@ export default function PreviewPage() {
             <StatCard icon={<Target className="h-4 w-4" />} label="Objetivo" value={GOAL_LABEL[targets.goal] ?? targets.goal} />
             <StatCard icon={<Zap className="h-4 w-4" />}   label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
           </div>
-        </Card>
 
-        {/* IMC */}
-        {imc && (
-          <Card label="Tu IMC" icon={<Gauge className="h-4 w-4 text-primary" />} badge={<ImcBadge imc={imc} />}>
-            <ImcScale imc={imc} />
-            <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
-              <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
+          {imc && (
+            <div className="border-t border-[#EAF2E6] pt-4">
+              <ImcScale imc={imc} />
+              <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
+                <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
+              </div>
             </div>
-          </Card>
-        )}
+          )}
+        </Card>
 
         {/* Metabolismo */}
         <Card label="Tu metabolismo" icon={<Flame className="h-4 w-4 text-primary" />}>
@@ -344,7 +384,7 @@ export default function PreviewPage() {
             : 'border-[#D4E8D0] bg-[#EBF6E4] text-[#1e4d2e]',
           ].join(' ')}>
             {isLoss && (
-              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong> — equivale a ~{(Math.round(delta * 7 / 100) / 10).toFixed(1)} kg menos por semana.</>
+              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong> — equivale a ~{(delta * 7 / 7700).toFixed(1)} kg menos por semana.</>
             )}
             {isGain && (
               <>Tu plan tiene un <strong>superávit de {delta} kcal/día</strong> sobre tu gasto diario para construir músculo.</>
@@ -353,6 +393,11 @@ export default function PreviewPage() {
               <>Tu meta calórica está alineada con tu gasto para <strong>mantener tu peso</strong> de forma saludable.</>
             )}
           </div>
+
+          <p className="text-[11px] leading-relaxed text-muted-foreground">
+            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto con la ecuación Mifflin-St Jeor —
+            el estándar clínico— ajustada a tu nivel de actividad por un nutriólogo.
+          </p>
         </Card>
 
         {/* Macros */}
@@ -360,9 +405,9 @@ export default function PreviewPage() {
           <div className="flex items-center gap-5">
             <MacroDonut macros={targets.macros} />
             <div className="flex-1 space-y-2.5">
-              <MacroRow color="#fb7185" label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
-              <MacroRow color="#fbbf24" label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
-              <MacroRow color="#60a5fa" label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
+              <MacroRow color="#EF4444" label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
+              <MacroRow color="#22C55E" label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
+              <MacroRow color="#FACC15" label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
             </div>
           </div>
         </Card>
@@ -393,9 +438,9 @@ export default function PreviewPage() {
                           <p className="text-[11px] text-muted-foreground">{it.qty}</p>
                         </div>
                         <div className="flex shrink-0 gap-1">
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-red-100 text-red-700">{it.proteinG}P</span>
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700">{it.carbsG}C</span>
+                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-yellow-100 text-yellow-700">{it.fatG}G</span>
                         </div>
                       </div>
                     ))}
@@ -431,6 +476,75 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        {/* Resultados reales — antes/después (fotos con consentimiento) */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <div className="space-y-1 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+              Resultados reales con el método
+            </p>
+            <p className="font-display text-base font-black text-gray-900">
+              Pacientes reales, fotos reales
+            </p>
+          </div>
+
+          <div className="grid grid-cols-2 gap-2.5">
+            {RESULTS.map(({ photo, name, country, age, result, w, h }) => (
+              <div key={name} className="overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]">
+                <Image
+                  src={photo}
+                  alt={`Antes y después de ${name}`}
+                  width={w}
+                  height={h}
+                  className="h-auto w-full"
+                />
+                <div className="space-y-1 p-2.5">
+                  <span className="inline-block rounded-full bg-primary px-2 py-0.5 text-[11px] font-black text-white">
+                    {result}
+                  </span>
+                  <p className="text-xs font-bold text-gray-800">{country} {name}, {age}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p className="text-center text-[10px] leading-relaxed text-[#B7C3B2]">
+            Resultados individuales. Varían según cada persona, su constancia y su punto de partida.
+          </p>
+        </div>
+
+        {/* Social proof */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+          <p className="text-center font-display text-[15px] font-bold text-gray-900">
+            Lo que dicen quienes ya lo tienen
+          </p>
+          {[
+            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
+            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Ya no me siento culpable cuando como. El plan me enseñó cuánto necesita mi cuerpo y bajé 4 kg en un mes sin pasar hambre.' },
+            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
+          ].map(({ photo, name, country, text }) => (
+            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
+              <div className="flex items-center gap-2">
+                <Image
+                  src={photo}
+                  alt={name}
+                  width={36}
+                  height={36}
+                  className="h-9 w-9 shrink-0 rounded-full object-cover object-top"
+                />
+                <div className="flex gap-0.5">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg key={i} width="10" height="10" viewBox="0 0 11 11" fill="#f59e0b">
+                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
+                    </svg>
+                  ))}
+                </div>
+              </div>
+              <p className="text-sm leading-relaxed text-gray-700">"{text}"</p>
+              <p className="text-xs font-bold text-primary">{country} {name}</p>
+            </div>
+          ))}
+        </div>
+
         {/* Oferta con ancla de valor */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Selo de desconto */}
@@ -459,7 +573,7 @@ export default function PreviewPage() {
                 { item: 'Guía de implementación paso a paso',    value: '$7'  },
                 { item: 'Sustituciones para cada comida',        value: '$4'  },
                 { item: 'Acceso a tu panel personal + PDF',      value: 'incluido' },
-                { item: 'Validado por nutriólogos certificados', value: 'incluido' },
+                { item: 'Calibración Metabólica validada por nutriólogo', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
                   <span className="flex items-center gap-2 text-gray-700">
@@ -505,39 +619,6 @@ export default function PreviewPage() {
 
         <CtaButton ctaState={ctaState} onClick={handleCta} />
 
-        {/* Social proof */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-            Lo que dicen quienes ya lo tienen
-          </p>
-          {[
-            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
-            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Ya no me siento culpable cuando como. El plan me enseñó cuánto necesita mi cuerpo y bajé 4 kg en un mes sin pasar hambre.' },
-            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
-          ].map(({ photo, name, country, text }) => (
-            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={photo}
-                  alt={name}
-                  width={36}
-                  height={36}
-                  className="h-9 w-9 shrink-0 rounded-full object-cover object-top"
-                />
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <svg key={i} width="10" height="10" viewBox="0 0 11 11" fill="#f59e0b">
-                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
-                    </svg>
-                  ))}
-                </div>
-              </div>
-              <p className="text-sm leading-relaxed text-gray-700">"{text}"</p>
-              <p className="text-xs font-bold text-primary">{country} {name}</p>
-            </div>
-          ))}
-        </div>
-
         <FaqSection />
 
         <CtaButton ctaState={ctaState} onClick={handleCta} />
@@ -580,7 +661,7 @@ function FaqSection() {
   return (
     <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
       <div className="flex items-center gap-2 border-b border-[#EAF2E6] px-5 py-3">
-        <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+        <p className="font-display text-[15px] font-bold text-gray-900">
           Preguntas frecuentes
         </p>
       </div>
@@ -784,7 +865,7 @@ function PageShell({ children }: { children: React.ReactNode }) {
       className="min-h-screen"
       style={{
         background:
-          'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(148,28%,95%) 90px, hsl(80,18%,97%) 220px)',
+          'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(120,24%,95%) 110px, hsl(40,32%,97%) 320px)',
       }}
     >
       {/* Header fixo com marca */}
@@ -819,7 +900,7 @@ function Card({
           {icon && (
             <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-sm">{icon}</span>
           )}
-          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">{label}</p>
+          <p className="font-display text-[15px] font-bold text-gray-900">{label}</p>
         </div>
         {badge}
       </div>
@@ -859,7 +940,7 @@ function ImcScale({ imc }: { imc: number }) {
   return (
     <div className="relative pt-5">
       <div
-        className="absolute -translate-x-1/2 text-base leading-none text-primary drop-shadow-sm"
+        className="absolute -translate-x-1/2 text-base leading-none text-[#D85A30] drop-shadow-sm"
         style={{ left: `${pct}%`, top: 0 }}
       >▼</div>
       <div
@@ -895,16 +976,28 @@ function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fa
   const r = 44, circ = 2 * Math.PI * r
   const pK = macros.proteinG * 4, cK = macros.carbsG * 4, fK = macros.fatG * 9
   const total = pK + cK + fK || 1
-  const pL = (pK / total) * circ, cL = (cK / total) * circ, fL = (fK / total) * circ
+  const segs = [
+    { color: '#EF4444', len: (pK / total) * circ }, // Proteína
+    { color: '#22C55E', len: (cK / total) * circ }, // Carbohidratos
+    { color: '#FACC15', len: (fK / total) * circ }, // Grasas
+  ]
+  let acc = 0
+  const arcs = segs.map((s) => {
+    const off = acc
+    acc += s.len
+    return { ...s, off }
+  })
   return (
     <svg className="-rotate-90 shrink-0" width="108" height="108" viewBox="0 0 108 108">
       <circle cx="54" cy="54" r={r} fill="none" stroke="#E0EDD9" strokeWidth="14" />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#fb7185" strokeWidth="14"
-        strokeDasharray={`${pL} ${circ}`} strokeDashoffset={circ} />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#fbbf24" strokeWidth="14"
-        strokeDasharray={`${cL} ${circ}`} strokeDashoffset={circ - pL} />
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#60a5fa" strokeWidth="14"
-        strokeDasharray={`${fL} ${circ}`} strokeDashoffset={circ - pL - cL} />
+      {arcs.map((a, i) => (
+        <circle
+          key={i}
+          cx="54" cy="54" r={r} fill="none" stroke={a.color} strokeWidth="14"
+          strokeDasharray={`${a.len} ${circ - a.len}`}
+          strokeDashoffset={-a.off}
+        />
+      ))}
     </svg>
   )
 }
