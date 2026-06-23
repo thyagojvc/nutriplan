@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
+import { buildPreviewSample } from '@/lib/nutrition/generate'
 
 // Fatores de atividade — espelho dos valores definidos no quiz (step6-activity.tsx).
 const ACTIVITY_FACTORS: Record<string, number> = {
@@ -52,6 +53,7 @@ function buildPreview(draft: Record<string, unknown>, country: string) {
       goal: targets.goal,
       macros: targets.macros,
     },
+    sample: buildPreviewSample(answers, targets),
   }
 }
 

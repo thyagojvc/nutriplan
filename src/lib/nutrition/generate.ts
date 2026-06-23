@@ -213,6 +213,93 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number): P
   return { day: dayNum, label: `Día ${dayNum}`, meals, totals }
 }
 
+// ---------------------------------------------------------------------------
+// Amostra para a vista previa (pré-compra)
+// ---------------------------------------------------------------------------
+
+export interface SampleMealItem {
+  food: string
+  qty: string
+  proteinG: number
+  carbsG: number
+  fatG: number
+}
+export interface SampleMeal {
+  name: string
+  kcal: number
+  items: SampleMealItem[]
+}
+export interface PreviewSample {
+  meals: SampleMeal[]
+  /** true se o usuário marcou favoritos no step 1 (refeições personalizadas);
+   *  false = montada com alimentos comuns/confiáveis de fallback. */
+  personalized: boolean
+}
+
+/**
+ * Amostra determinística (stub) das 2 primeiras refeições do Día 1 — o que o
+ * teaser da /preview mostra. Reusa a MESMA lógica do plano real (poolForMeal):
+ * prioriza os favoritos do usuário e completa com alimentos comuns quando não
+ * há favoritos suficientes para a refeição, respeitando restrições. kcal,
+ * macros e adequação ao horário ficam coerentes com o plano entregue.
+ *
+ * Sempre via stub: a vista previa é grátis e instantânea, nunca chama a IA.
+ */
+export function buildPreviewSample(
+  answers: ParsedAnswers,
+  targets: NutritionTargets,
+): PreviewSample {
+  const kcal = targets.targetCalories
+
+  // No teaser mostramos SEMPRE o topo de cada pool (poolForMeal já coloca os
+  // favoritos primeiro) — sem a rotação por dia do plano real — para que as
+  // refeições visíveis destaquem os alimentos que a pessoa escolheu. Fallback a
+  // comuns quando não há favoritos, e a qualquer alimento permitido se restrições
+  // zerarem o pool. Reusa finalizeMeal → kcal/macros coerentes com o plano real.
+  const top = (pool: CatalogFood[]): CatalogFood | null => pool[0] ?? null
+
+  function sampleMeal(name: string, slot: MealSlot, targetKcal: number): SampleMeal {
+    const raw: RawItem[] = []
+    if (slot === 'desayuno') {
+      const carb = top(poolForMeal('carb', slot, answers))
+      const prot = top([...poolForMeal('protein', slot, answers), ...poolForMeal('dairy', slot, answers)])
+      const fruit = top(poolForMeal('fruit', slot, answers))
+      if (carb) raw.push({ food: carb, grams: 60 })
+      if (prot) raw.push({ food: prot, grams: 80 })
+      if (fruit) raw.push({ food: fruit, grams: 120 })
+    } else {
+      const prot = top(poolForMeal('protein', slot, answers))
+      const carb = top(poolForMeal('carb', slot, answers))
+      const veg = top(poolForMeal('veg', slot, answers))
+      if (prot) raw.push({ food: prot, grams: 150 })
+      if (carb) raw.push({ food: carb, grams: 120 })
+      if (veg) raw.push({ food: veg, grams: 150 })
+    }
+    if (raw.length === 0) {
+      const any = FOOD_CATALOG.find((f) => f.meals.includes(slot) && !isExcluded(f.id, answers.exclusions))
+      if (any) raw.push({ food: any, grams: 100 })
+    }
+    const m = finalizeMeal(name, raw, targetKcal)
+    return {
+      name: m.name,
+      kcal: m.totals.kcal,
+      items: m.items.map((it) => ({
+        food: it.food,
+        qty: it.quantity,
+        proteinG: it.proteinG,
+        carbsG: it.carbsG,
+        fatG: it.fatG,
+      })),
+    }
+  }
+
+  const meals: SampleMeal[] = [
+    sampleMeal('Desayuno', 'desayuno', Math.round(kcal * MEAL_DISTRIBUTION[0].pct)),
+    sampleMeal('Almuerzo', 'almuerzo', Math.round(kcal * MEAL_DISTRIBUTION[1].pct)),
+  ]
+  return { meals, personalized: answers.likes.length > 0 }
+}
+
 /** Lista de compras derivada dos alimentos que realmente aparecem no plano. */
 function buildShoppingList(days: PlanDay[]): NutritionPlanJson['shoppingList'] {
   const usedLabels = new Set<string>()

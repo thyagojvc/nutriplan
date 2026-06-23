@@ -10,6 +10,7 @@ import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
+import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 import { trackPixelOnce } from '@/lib/fb-pixel'
 
 const GOAL_LABEL: Record<string, string> = {
@@ -53,39 +54,39 @@ interface PreviewData {
     goal: string
     macros: { proteinG: number; carbsG: number; fatG: number }
   }
+  sample?: PreviewSample
 }
 
-// Dia-exemplo da vista previa: alimentos universais (LATAM), com kcal e macros
-// escalados aos alvos reais do visitante para que os números batam com o plano dele.
-const TEASER_TEMPLATE = [
-  { name: 'Desayuno', emoji: '☀️', share: 0.28, items: [
-    { food: 'Avena con frutas y semillas', qty: '1 tazón',   p: 0.55 },
-    { food: 'Huevos revueltos',            qty: '2 unidades', p: 0.45 },
-  ] },
-  { name: 'Almuerzo', emoji: '🍽️', share: 0.40, items: [
-    { food: 'Pechuga de pollo a la plancha', qty: '1 porción', p: 0.40 },
-    { food: 'Arroz integral',                qty: '1 taza',     p: 0.32 },
-    { food: 'Ensalada con aceite de oliva',  qty: 'al gusto',   p: 0.28 },
-  ] },
-  { name: 'Cena', emoji: '🌙', share: 0.32, items: [
-    { food: 'Salmón al horno',     qty: '1 filete',  p: 0.45 },
-    { food: 'Batata asada',        qty: '1 mediana', p: 0.30 },
-    { food: 'Verduras salteadas',  qty: '1 plato',   p: 0.25 },
-  ] },
-] as const
+// Emoji por refeição — só visual; as refeições reais vêm de buildPreviewSample.
+const MEAL_EMOJI: Record<string, string> = {
+  Desayuno: '☀️', Almuerzo: '🍽️', Cena: '🌙', Snack: '🍎',
+}
 
-function buildTeaser(kcal: number, macros: { proteinG: number; carbsG: number; fatG: number }) {
-  return TEASER_TEMPLATE.map((meal) => {
-    const mealKcal = Math.round(kcal * meal.share)
-    const items = meal.items.map((it) => ({
-      food: it.food,
-      qty: it.qty,
-      proteinG: Math.max(1, Math.round(macros.proteinG * meal.share * it.p)),
-      carbsG: Math.max(1, Math.round(macros.carbsG * meal.share * it.p)),
-      fatG: Math.max(1, Math.round(macros.fatG * meal.share * it.p)),
-    }))
-    return { name: meal.name, emoji: meal.emoji, kcal: mealKcal, items }
-  })
+// Uma refeição do teaser — amostra real do Día 1, montada com as likes do usuário.
+function TeaserMeal({ meal }: { meal: SampleMeal }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-[#D8E8D4]">
+      <div className="flex items-center justify-between bg-primary px-3.5 py-2">
+        <span className="text-sm font-semibold text-white">{MEAL_EMOJI[meal.name] ?? '🍴'} {meal.name}</span>
+        <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-medium text-white">{meal.kcal} kcal</span>
+      </div>
+      <div className="divide-y divide-[#EAF2E6]">
+        {meal.items.map((it) => (
+          <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2">
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
+              <p className="text-[11px] text-muted-foreground">{it.qty}</p>
+            </div>
+            <div className="flex shrink-0 gap-1">
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-red-100 text-red-700">{it.proteinG}P</span>
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700">{it.carbsG}C</span>
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-yellow-100 text-yellow-700">{it.fatG}G</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
 }
 
 type ErrorKind = 'no_session' | 'calc_failed' | 'network'
@@ -214,6 +215,7 @@ export default function PreviewPage() {
             goal: targets.goal,
             macros: targets.macros,
           },
+          sample: buildPreviewSample(answers, targets),
         })
         return
       } catch {
@@ -294,7 +296,8 @@ export default function PreviewPage() {
     : null
   const delta = Math.abs(targets.tdee - targets.targetCalories)
   const totalKcal = targets.macros.proteinG * 4 + targets.macros.carbsG * 4 + targets.macros.fatG * 9 || 1
-  const teaser = buildTeaser(targets.targetCalories, targets.macros)
+  const sample = data.sample?.meals ?? []
+  const personalized = data.sample?.personalized ?? false
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
 
@@ -348,6 +351,9 @@ export default function PreviewPage() {
         )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
+        </p>
+        <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
+          Saber tu número es el primer paso. Convertirlo en resultados —cada día, sin pensar— es lo que hace tu plan.
         </p>
       </div>
 
@@ -423,45 +429,21 @@ export default function PreviewPage() {
           <div className="flex items-end justify-between px-1">
             <div>
               <p className="text-sm font-black text-gray-900">Vista previa de tu plan</p>
-              <p className="text-[11px] text-muted-foreground">Ejemplo de un día · {targets.targetCalories} kcal</p>
+              <p className="text-[11px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal</p>
             </div>
             <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
           </div>
 
-          <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white p-3">
+          <div className="overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white p-3">
             <div className="space-y-2.5">
-              {teaser.map((meal) => (
-                <div key={meal.name} className="overflow-hidden rounded-xl border border-[#D8E8D4]">
-                  <div className="flex items-center justify-between bg-primary px-3.5 py-2">
-                    <span className="text-sm font-semibold text-white">{meal.emoji} {meal.name}</span>
-                    <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-medium text-white">{meal.kcal} kcal</span>
-                  </div>
-                  <div className="divide-y divide-[#EAF2E6]">
-                    {meal.items.map((it) => (
-                      <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2">
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
-                          <p className="text-[11px] text-muted-foreground">{it.qty}</p>
-                        </div>
-                        <div className="flex shrink-0 gap-1">
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-red-100 text-red-700">{it.proteinG}P</span>
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700">{it.carbsG}C</span>
-                          <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-yellow-100 text-yellow-700">{it.fatG}G</span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+              {/* Refeições reais do Día 1, montadas com os alimentos que ela escolheu */}
+              {sample.map((meal) => (
+                <TeaserMeal key={meal.name} meal={meal} />
               ))}
-              {/* espaço para o fade cobrir e sugerir continuação */}
-              <div className="h-16" />
             </div>
 
-            {/* Fade + cadeado: prova que o produto é real, mas trava o resto */}
-            <div
-              className="absolute inset-x-0 bottom-0 flex flex-col items-center justify-end gap-2.5 px-4 pb-4 pt-20 text-center"
-              style={{ background: 'linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.94) 42%, #fff 72%)' }}
-            >
+            {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
+            <div className="mt-3 flex flex-col items-center gap-2.5 rounded-xl border border-primary/15 bg-[#F5FAF2] px-4 py-3.5 text-center">
               <div className="flex flex-wrap justify-center gap-1.5">
                 {[
                   { Icon: Sunrise,      label: 'Desayunos' },
@@ -480,6 +462,15 @@ export default function PreviewPage() {
               </p>
             </div>
           </div>
+
+          {/* Loop: reforça personalização (ou comida confiável) + variedade dos 7 días */}
+          <p className="px-1 text-center text-[11px] leading-relaxed text-muted-foreground">
+            {personalized ? (
+              <>Armado con los alimentos que <span className="font-semibold text-gray-600">tú elegiste</span>. Los 7 días varían para que no te aburras.</>
+            ) : (
+              <>Comida común del día a día, ajustada a <span className="font-semibold text-gray-600">tu meta</span>. Los 7 días varían para que no te aburras.</>
+            )}
+          </p>
         </div>
 
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
