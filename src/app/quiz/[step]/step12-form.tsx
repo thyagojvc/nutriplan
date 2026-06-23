@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizCard, QuizInput, QuizError } from './quiz-ui'
+import { trackPixel } from '@/lib/fb-pixel'
 
 const POLICY_VERSION = 'v1.0'
 const CONSENT_TEXT =
@@ -55,6 +56,9 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
           : 'Ocurrió un error. Intenta de nuevo.')
         return
       }
+
+      // Quiz concluído com sucesso (lead capturado) — antes de seguir pra preview.
+      trackPixel('QuizComplete', undefined, { custom: true })
 
       router.push('/calculando' as never)
     } catch {

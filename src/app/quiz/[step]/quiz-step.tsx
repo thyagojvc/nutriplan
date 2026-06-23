@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import { trackPixelOnce } from '@/lib/fb-pixel'
 
 interface Props {
   stepNumber: number
@@ -38,6 +39,11 @@ function useEnsureSession() {
 
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession()
+
+  // Início do quiz: dispara uma vez por sessão quando o visitante chega no passo 1.
+  useEffect(() => {
+    if (stepNumber === 1) trackPixelOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
+  }, [stepNumber])
 
   if (sessionError) {
     return (

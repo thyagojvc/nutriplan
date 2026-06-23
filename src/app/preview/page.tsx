@@ -10,6 +10,7 @@ import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
+import { trackPixelOnce } from '@/lib/fb-pixel'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -121,6 +122,11 @@ export default function PreviewPage() {
       })
       .catch(() => {})
   }, [])
+
+  // Visualização da oferta: dispara quando a preview carrega com dados reais.
+  useEffect(() => {
+    if (data) trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
+  }, [data])
 
   async function handleCta() {
     if (ctaState === 'loading') return
