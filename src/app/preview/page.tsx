@@ -480,7 +480,7 @@ export default function PreviewPage() {
               Resultados reales con el método
             </p>
             <p className="font-display text-base font-black text-gray-900">
-              Pacientes reales, fotos reales
+              Así les fue a ellas
             </p>
           </div>
 
@@ -617,8 +617,6 @@ export default function PreviewPage() {
         <CtaButton ctaState={ctaState} onClick={handleCta} />
 
         <FaqSection />
-
-        <CtaButton ctaState={ctaState} onClick={handleCta} />
 
       </div>
     </PageShell>
