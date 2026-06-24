@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
-const bodySchema = z.object({ include_bump: z.boolean() })
+const bodySchema = z.object({
+  include_bump: z.boolean(),
+  plan_type: z.enum(['standard', '4weeks']).optional().default('standard'),
+})
 
 // Hotmart é o gateway para todos os mercados no MVP
 const PROVIDER_BY_COUNTRY: Record<string, 'hotmart'> = {
@@ -25,7 +28,8 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_params' }, { status: 400 })
   }
 
-  const { include_bump } = parsed.data
+  const { include_bump, plan_type } = parsed.data
+  const productCode = plan_type === '4weeks' ? 'PLAN_4WEEKS' : 'PLAN_STANDARD'
   const sessionId = request.cookies.get('nutriplan_session_id')?.value
   if (!sessionId) {
     return NextResponse.json({ error: 'no_session' }, { status: 401 })
@@ -48,9 +52,14 @@ export async function POST(request: NextRequest) {
     .select('product_code, currency, local_price, period_version')
     .eq('country', session.country)
     .is('effective_to', null)
-    .in('product_code', ['PLAN_STANDARD', 'TRAINING_BUMP'])
+    .in('product_code', [productCode, 'TRAINING_BUMP'])
 
-  const plan = prices?.find(p => p.product_code === 'PLAN_STANDARD')
+  const priceRow = prices?.find(p => p.product_code === productCode)
+  const plan = priceRow ?? (
+    plan_type === '4weeks'
+      ? { product_code: 'PLAN_4WEEKS', local_price: 19.90, currency: 'USD', period_version: 1 }
+      : null
+  )
   const bump = prices?.find(p => p.product_code === 'TRAINING_BUMP')
 
   if (!plan) {
@@ -58,7 +67,7 @@ export async function POST(request: NextRequest) {
   }
 
   const provider = PROVIDER_BY_COUNTRY[session.country] ?? 'hotmart'
-  const products = include_bump ? 'plan+bump' : 'plan'
+  const products = include_bump ? `${plan_type}+bump` : plan_type
   const idempotencyKey = `${sessionId}-${products}`
   const totalAmount =
     include_bump && bump
@@ -113,7 +122,7 @@ export async function POST(request: NextRequest) {
     {
       order_id: order.id,
       kind: 'nutrition',
-      product_code: 'PLAN_STANDARD',
+      product_code: productCode,
       unit_price: Number(plan.local_price),
       currency: plan.currency,
     },

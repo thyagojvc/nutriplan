@@ -95,33 +95,18 @@ export default function PreviewPage() {
   const router = useRouter()
   const [data, setData] = useState<PreviewData | null>(null)
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
-  const [orderId, setOrderId] = useState<string | null>(null)
-  const [hotmartUrl, setHotmartUrl] = useState<string | null>(null)
-  const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
+  const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [showSticky, setShowSticky] = useState(false)
 
   useEffect(() => {
-    fetch('/api/checkout/create-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ include_bump: false }),
-    })
-      .then(r => r.json())
-      .then(d => {
-        if (d.order_id) {
-          setOrderId(d.order_id)
-          setIdempotencyKey(d.idempotency_key)
-          const base = process.env.NEXT_PUBLIC_HOTMART_CHECKOUT_URL ?? ''
-          const step12 = sessionStorage.getItem('nutriplan_step_12')
-          const lead = step12 ? (JSON.parse(step12) as Record<string, string>) : {}
-          const params = new URLSearchParams()
-          if (lead.email) params.set('email', lead.email)
-          if (lead.name)  params.set('name',  lead.name)
-          setHotmartUrl(`${base}?${params.toString()}`)
-        }
-      })
-      .catch(() => {})
+    try {
+      const step12 = sessionStorage.getItem('nutriplan_step_12')
+      if (step12) {
+        const lead = JSON.parse(step12) as Record<string, string>
+        setLeadInfo({ email: lead.email, name: lead.name })
+      }
+    } catch {}
   }, [])
 
   // Visualização da oferta: dispara quando a preview carrega com dados reais.
@@ -129,28 +114,45 @@ export default function PreviewPage() {
     if (data) trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
   }, [data])
 
-  async function handleCta() {
+  const HOTMART_URLS: Record<string, string> = {
+    '4weeks':  'https://pay.hotmart.com/V106475995N',
+    'standard': 'https://pay.hotmart.com/O106407229L',
+  }
+
+  async function handleCta(type: '4weeks' | 'standard') {
     if (ctaState === 'loading') return
     setCtaState('loading')
-    if (orderId) {
-      document.cookie = `nutriplan_order_id=${orderId}; path=/; max-age=3600; SameSite=Lax`
-      if (idempotencyKey) {
-        document.cookie = `nutriplan_order_key=${idempotencyKey}; path=/; max-age=3600; SameSite=Lax`
-        sessionStorage.setItem('nutriplan_idempotency_key', idempotencyKey)
-      }
-    }
-    if (process.env.NODE_ENV !== 'production' && orderId) {
-      await fetch('/api/dev/simulate-payment', {
+    try {
+      const r = await fetch('/api/checkout/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ order_id: orderId }),
+        body: JSON.stringify({ include_bump: false, plan_type: type }),
       })
-      router.push(`/exito?order=${orderId}`)
-      return
-    }
-    if (hotmartUrl) {
-      window.location.href = hotmartUrl
-    } else {
+      const d = await r.json()
+      if (!d.order_id) { setCtaState('error'); return }
+
+      document.cookie = `nutriplan_order_id=${d.order_id}; path=/; max-age=3600; SameSite=Lax`
+      if (d.idempotency_key) {
+        document.cookie = `nutriplan_order_key=${d.idempotency_key}; path=/; max-age=3600; SameSite=Lax`
+        sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
+      }
+
+      if (process.env.NODE_ENV !== 'production') {
+        await fetch('/api/dev/simulate-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ order_id: d.order_id }),
+        })
+        router.push(`/exito?order=${d.order_id}`)
+        return
+      }
+
+      const base = HOTMART_URLS[type]
+      const params = new URLSearchParams()
+      if (leadInfo.email) params.set('email', leadInfo.email)
+      if (leadInfo.name)  params.set('name',  leadInfo.name)
+      window.location.href = `${base}?${params.toString()}`
+    } catch {
       setCtaState('error')
     }
   }
@@ -565,11 +567,11 @@ export default function PreviewPage() {
           <div className="p-5 space-y-4">
             <ul className="space-y-2.5">
               {[
-                { item: 'Plan de 7 días personalizado',          value: '$27' },
-                { item: 'Lista de compras optimizada',          value: '$9'  },
-                { item: 'Guía de implementación paso a paso',    value: '$7'  },
-                { item: 'Sustituciones para cada comida',        value: '$4'  },
-                { item: 'Acceso a tu panel personal + PDF',      value: 'incluido' },
+                { item: 'Plan de 4 semanas personalizado',            value: '$59' },
+                { item: 'Lista de compras semanal (×4)',              value: '$12' },
+                { item: 'Guía de implementación',                     value: '$14' },
+                { item: 'Sustituciones para cada comida',             value: '$12' },
+                { item: 'Acceso a tu panel personal + PDF',           value: 'incluido' },
                 { item: 'Calibración Metabólica validada por nutriólogo', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
@@ -584,19 +586,60 @@ export default function PreviewPage() {
               ))}
             </ul>
 
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1.5">
-              <div className="flex items-center justify-center gap-2">
-                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$47</span></span>
-                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">Ahorras $37</span>
+            {/* Price box — hero 4 semanas */}
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1">
+              <span className="inline-block rounded-full bg-primary px-3 py-0.5 text-[11px] font-bold text-white">más elegido</span>
+              <div className="flex items-center justify-center gap-2 mt-1">
+                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$97</span></span>
+                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">Ahorras $77</span>
               </div>
-              <p className="text-5xl font-black leading-none text-gray-900">
-                $9<span className="align-top text-3xl font-black">.90</span>
-                <span className="ml-2 text-sm font-semibold text-muted-foreground">USD</span>
+              <p className="leading-none">
+                <span className="text-5xl font-black text-gray-900">$5</span>
+                <span className="text-xl font-bold text-muted-foreground">/semana</span>
               </p>
-              <p className="flex items-center justify-center gap-1 text-xs font-semibold text-primary">
-                <Coffee className="h-3.5 w-3.5" /> ≈ $0.33 al día · menos que un café
+              <p className="text-sm font-bold text-primary">Pago único de $19.90 USD · sin suscripción</p>
+              <p className="flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
+                <Coffee className="h-3.5 w-3.5" /> ≈ $0.71 al día · menos que un café
               </p>
-              <p className="text-[11px] text-muted-foreground">Pago único · sin suscripción · en tu moneda local</p>
+            </div>
+
+            {/* CTA primário — 4 semanas */}
+            <button
+              onClick={() => handleCta('4weeks')}
+              disabled={ctaState === 'loading'}
+              className={[
+                'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
+                'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
+                'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
+                'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
+              ].join(' ')}
+            >
+              {ctaState === 'loading' ? (
+                <>
+                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                  Procesando…
+                </>
+              ) : (
+                <>
+                  <Lock className="h-4 w-4 opacity-80" />
+                  Desbloquear mis 4 semanas
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </>
+              )}
+            </button>
+
+            {/* Downsell — 1 semana */}
+            <div className="pt-1 text-center border-t border-[#EAF2E6]">
+              <p className="text-xs text-muted-foreground mb-1">¿Prefieres probar primero?</p>
+              <button
+                onClick={() => handleCta('standard')}
+                disabled={ctaState === 'loading'}
+                className="text-sm font-semibold text-primary hover:underline disabled:opacity-50"
+              >
+                Empieza con 1 semana por $9.90 →
+              </button>
             </div>
           </div>
         </div>
@@ -614,13 +657,13 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        <CtaButton ctaState={ctaState} onClick={handleCta} />
+        <CtaButton ctaState={ctaState} onClick={() => handleCta('4weeks')} />
 
         <FaqSection />
 
       </div>
     </PageShell>
-    <StickyCtaBar show={showSticky} ctaState={ctaState} onClick={handleCta} />
+    <StickyCtaBar show={showSticky} ctaState={ctaState} onClick={() => handleCta('4weeks')} />
     </>
   )
 }
@@ -758,7 +801,7 @@ function CtaButton({
           </>
         ) : (
           <>
-            Quiero mi plan — $9.90 USD
+            Desbloquear mis 4 semanas — $19.90
             <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
               <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
                 stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
@@ -837,7 +880,7 @@ function StickyCtaBar({
               Procesando…
             </>
           ) : (
-            'Quiero mi plan — $9.90 USD →'
+            'Desbloquear mis 4 semanas — $19.90 →'
           )}
         </button>
         <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
