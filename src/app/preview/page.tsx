@@ -64,26 +64,33 @@ const MEAL_EMOJI: Record<string, string> = {
 
 // Uma refeição do teaser — amostra real do Día 1, montada com as likes do usuário.
 function TeaserMeal({ meal }: { meal: SampleMeal }) {
+  const totals = meal.items.reduce(
+    (t, it) => ({ p: t.p + it.proteinG, c: t.c + it.carbsG, f: t.f + it.fatG }),
+    { p: 0, c: 0, f: 0 },
+  )
   return (
-    <div className="overflow-hidden rounded-xl border border-[#D8E8D4]">
-      <div className="flex items-center justify-between bg-primary px-3.5 py-2">
+    <div className="overflow-hidden rounded-xl border border-[#D8E8D4] shadow-sm">
+      <div className="flex items-center justify-between bg-primary px-3.5 py-2.5">
         <span className="text-sm font-semibold text-white">{MEAL_EMOJI[meal.name] ?? '🍴'} {meal.name}</span>
-        <span className="rounded-full bg-white/20 px-2 py-0.5 text-[11px] font-medium text-white">{meal.kcal} kcal</span>
+        <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white">{meal.kcal} kcal</span>
       </div>
       <div className="divide-y divide-[#EAF2E6]">
         {meal.items.map((it) => (
-          <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2">
+          <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
               <p className="text-[11px] text-muted-foreground">{it.qty}</p>
             </div>
             <div className="flex shrink-0 gap-1">
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-red-100 text-red-700">{it.proteinG}P</span>
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-green-100 text-green-700">{it.carbsG}C</span>
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-yellow-100 text-yellow-700">{it.fatG}G</span>
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
+              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
             </div>
           </div>
         ))}
+      </div>
+      <div className="bg-[#F5FAF2] px-3.5 py-1.5 text-right text-[10px] text-muted-foreground">
+        {totals.p}g prot · {totals.c}g carb · {totals.f}g gras
       </div>
     </div>
   )
