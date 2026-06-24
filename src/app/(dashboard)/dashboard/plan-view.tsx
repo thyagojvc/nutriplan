@@ -177,11 +177,13 @@ export function PlanView({
 
       {/* Seletor de dias */}
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">Tu plan semanal</h2>
+        <h2 className="text-lg font-semibold">
+          {plan.summary.cycleDays > 7 ? 'Tu plan de 4 semanas' : 'Tu plan semanal'}
+        </h2>
         <div className="flex gap-2 overflow-x-auto pb-1">
           {plan.days.map((d, i) => (
             <button key={d.day} onClick={() => setActiveDay(i)}
-              className={['shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-colors',
+              className={['shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
                 i === activeDay ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/70',
               ].join(' ')}>
               {d.label}

@@ -73,21 +73,22 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
       ? await loadCheckinForOrder(orderId, userId)
       : undefined
 
-    // 3. Detectar se o pedido inclui treino (order bump)
+    // 3. Detectar produto (4 semanas vs padrão) e treino (order bump)
     const { data: items } = await supabase
       .from('order_items')
-      .select('kind')
+      .select('kind, product_code')
       .eq('order_id', orderId)
     const hasTraining = (items ?? []).some((it) => it.kind === 'training')
+    const planWeeks: 1 | 4 = (items ?? []).some((it) => it.product_code === 'PLAN_4WEEKS') ? 4 : 1
 
     // 4. Gerar e salvar plano nutricional (sempre)
-    const nutritionPlan = await generateNutritionPlan(answers, targets, phaseNumber, checkin)
+    const nutritionPlan = await generateNutritionPlan(answers, targets, phaseNumber, checkin, planWeeks)
     const { error: nutErr } = await supabase.from('nutrition_plans').upsert(
       {
         order_id: orderId,
         user_id: userId,
         session_id: sessionId,
-        cycle_days: 7,
+        cycle_days: planWeeks * 7,
         cycle_weeks: 4,
         phase_number: phaseNumber,
         clinical_flags: answers.health,

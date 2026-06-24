@@ -30,7 +30,16 @@ import {
   type MealSlot,
 } from './food-catalog'
 
-export const PROMPT_VERSION = 'stub-v1'
+export const PROMPT_VERSION = 'stub-v2'
+
+// Alimentos típicos por país — entram na rotação como segunda prioridade
+// (depois dos favoritos do usuário, antes dos genéricos)
+const COUNTRY_STAPLE_IDS: Record<string, string[]> = {
+  MX: ['tortilla_maiz', 'legumbres', 'arroz', 'nopales', 'aguacate'],
+  CO: ['arepa', 'arroz', 'platano', 'yuca', 'legumbres'],
+  CL: ['pan', 'arroz', 'papa', 'aguacate'],
+  ES: ['pan', 'arroz', 'legumbres', 'pescado', 'aceite'],
+}
 
 export type PhaseNumber = 1 | 2 | 3
 
@@ -49,8 +58,9 @@ export async function generateNutritionPlan(
   targets: NutritionTargets,
   phaseNumber: PhaseNumber = 1,
   checkin?: CheckinContext,
+  planWeeks: 1 | 4 = 1,
 ): Promise<NutritionPlanJson> {
-  return generatePlanStub(answers, targets, phaseNumber, checkin)
+  return generatePlanStub(answers, targets, phaseNumber, checkin, planWeeks)
 }
 
 // ---------------------------------------------------------------------------
@@ -86,11 +96,15 @@ function poolForMeal(
   const available = foodsForMeal(meal, role).filter((f) => !isExcluded(f.id, answers.exclusions))
   const liked = available.filter((f) => answers.likes.includes(f.id))
 
-  if (liked.length === 0) return available
   if (liked.length >= MIN_VARIETY) return liked
 
-  const others = available.filter((f) => !answers.likes.includes(f.id))
-  return [...liked, ...others.slice(0, MIN_VARIETY - liked.length)]
+  // Staples do país como segunda prioridade — depois dos favoritos, antes dos genéricos
+  const stapleIds = COUNTRY_STAPLE_IDS[answers.country] ?? []
+  const staples = available.filter((f) => stapleIds.includes(f.id) && !answers.likes.includes(f.id))
+  const others = available.filter((f) => !answers.likes.includes(f.id) && !stapleIds.includes(f.id))
+
+  const combined = [...liked, ...staples, ...others]
+  return combined.length > 0 ? combined : available
 }
 
 // Ingrediente antes de fechar a porção: guarda o alimento e a grama base.
@@ -197,7 +211,7 @@ function buildMeal(
   return finalizeMeal(mealName, raw, targetKcal)
 }
 
-function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number): PlanDay {
+function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number, label?: string): PlanDay {
   const meals = MEAL_DISTRIBUTION.map((m) =>
     buildMeal(m.name, Math.round(targetKcal * m.pct), answers, dayNum - 1),
   )
@@ -210,7 +224,7 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number): P
     }),
     { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 },
   )
-  return { day: dayNum, label: `Día ${dayNum}`, meals, totals }
+  return { day: dayNum, label: label ?? `Día ${dayNum}`, meals, totals }
 }
 
 // ---------------------------------------------------------------------------
@@ -487,39 +501,67 @@ function generatePlanStub(
   targets: NutritionTargets,
   phase: PhaseNumber = 1,
   checkin?: CheckinContext,
+  planWeeks: 1 | 4 = 1,
 ): NutritionPlanJson {
-  const targetCalories = applyPhaseToTargets(targets, phase, checkin)
+  const totalDays = planWeeks === 4 ? 28 : 7
 
-  const days: PlanDay[] = Array.from({ length: 7 }, (_, i) =>
-    buildDay(i + 1, answers, targetCalories),
-  )
+  const days: PlanDay[] = Array.from({ length: totalDays }, (_, i) => {
+    // 4-week: semanas 1-2 → fase 1 (adaptação), semana 3 → fase 2 (aceleração), semana 4 → fase 3 (consolidação)
+    const effectivePhase: PhaseNumber = planWeeks === 4
+      ? (i < 14 ? 1 : i < 21 ? 2 : 3)
+      : phase
+    const kcal = applyPhaseToTargets(targets, effectivePhase, checkin)
+    const weekNum = Math.floor(i / 7) + 1
+    const dayInWeek = (i % 7) + 1
+    const label = planWeeks === 4 ? `Sem ${weekNum} · D${dayInWeek}` : `Día ${i + 1}`
+    return buildDay(i + 1, answers, kcal, label)
+  })
 
-  const notes: string[] = [...PHASE_NOTES[phase]]
+  const baseCalories = applyPhaseToTargets(targets, planWeeks === 4 ? 1 : phase, checkin)
+
+  const notes: string[] = planWeeks === 4
+    ? [
+        'Semanas 1–2 — Adaptación: tu cuerpo se ajusta al nuevo ritmo alimentario.',
+        'Semana 3 — Aceleración: las calorías se ajustan ligeramente para impulsar tus resultados.',
+        'Semana 4 — Consolidación: nos acercamos a tu metabolismo de mantenimiento para que los hábitos sean duraderos.',
+      ]
+    : [...PHASE_NOTES[phase]]
+
   if (targets.clinicalOverrideApplied) {
     notes.push('Tus calorías se ajustaron a mantenimiento por tu condición de salud.')
   }
   if (answers.mustHave) {
     notes.push(`Incluimos tu alimento imprescindible: ${answers.mustHave}.`)
   }
-  notes.push(
-    'Este es tu ciclo de 7 días, repetible durante 4 semanas. Varía las opciones usando la lista de sustituciones.',
-  )
+  if (planWeeks === 1) {
+    notes.push(
+      'Este es tu ciclo de 7 días, repetible durante 4 semanas. Varía las opciones usando la lista de sustituciones.',
+    )
+  }
+
+  const implementationGuide = planWeeks === 4
+    ? [
+        ...PHASE_GUIDE[1],
+        ...PHASE_GUIDE[2].slice(0, 2),
+        ...PHASE_GUIDE[3].slice(0, 2),
+      ]
+    : PHASE_GUIDE[phase]
 
   return {
     summary: {
       bmr: targets.bmr,
       tdee: targets.tdee,
-      targetCalories,
+      targetCalories: baseCalories,
       activityFactor: targets.activityFactor,
       goal: targets.goal,
       macros: targets.macros,
-      cycleDays: 7,
+      cycleDays: totalDays,
       cycleWeeks: 4,
       notes,
     },
     days,
     shoppingList: buildShoppingList(days),
-    implementationGuide: PHASE_GUIDE[phase],
+    implementationGuide,
     substitutions: buildSubstitutions(answers),
     disclaimers: clinicalDisclaimers(answers),
     generatedBy: 'stub',
