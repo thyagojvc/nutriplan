@@ -29,6 +29,15 @@ const DOC_LABEL: Record<string, string> = {
   training_plan: 'Plan de entrenamiento (PDF)',
 }
 
+const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+
+const WEEK_PHASES = [
+  { label: 'Adaptación',    color: 'text-emerald-600' },
+  { label: 'Adaptación',    color: 'text-emerald-600' },
+  { label: 'Aceleración',   color: 'text-amber-500'   },
+  { label: 'Consolidación', color: 'text-rose-500'    },
+]
+
 const MEAL_EMOJI: Record<string, string> = {
   Desayuno: '☀️',
   Almuerzo: '🍽️',
@@ -58,8 +67,10 @@ export function PlanView({
   profile?: Profile
 }) {
   const [activeDay, setActiveDay] = useState(0)
+  const [activeWeek, setActiveWeek] = useState(0)
   const { summary } = plan
-  const day = plan.days[activeDay]
+  const is4Week = plan.summary.cycleDays > 7
+  const day = plan.days[is4Week ? activeWeek * 7 + activeDay : activeDay]
 
   const imc =
     profile?.weightKg && profile?.heightCm
@@ -178,18 +189,67 @@ export function PlanView({
       {/* Seletor de dias */}
       <section className="space-y-3">
         <h2 className="text-lg font-semibold">
-          {plan.summary.cycleDays > 7 ? 'Tu plan de 4 semanas' : 'Tu plan semanal'}
+          {is4Week ? 'Tu plan de 4 semanas' : 'Tu plan semanal'}
         </h2>
-        <div className="flex gap-2 overflow-x-auto pb-1">
-          {plan.days.map((d, i) => (
-            <button key={d.day} onClick={() => setActiveDay(i)}
-              className={['shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors',
-                i === activeDay ? 'bg-primary text-primary-foreground' : 'bg-muted hover:bg-muted/70',
-              ].join(' ')}>
-              {d.label}
-            </button>
-          ))}
-        </div>
+
+        {is4Week ? (
+          <div className="space-y-2">
+            {/* Abas de semana */}
+            <div className="grid grid-cols-4 gap-1.5">
+              {WEEK_PHASES.map((phase, w) => (
+                <button key={w}
+                  onClick={() => { setActiveWeek(w); setActiveDay(0) }}
+                  className={[
+                    'flex flex-col items-center rounded-xl py-2.5 px-1 transition-all',
+                    w === activeWeek
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-muted hover:bg-muted/70',
+                  ].join(' ')}>
+                  <span className="text-sm font-bold">Sem {w + 1}</span>
+                  <span className={[
+                    'text-[9px] font-medium mt-0.5 leading-tight text-center',
+                    w === activeWeek ? 'text-primary-foreground/75' : phase.color,
+                  ].join(' ')}>
+                    {phase.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+            {/* Pills de dia */}
+            <div className="flex gap-1">
+              {Array.from({ length: 7 }, (_, i) => (
+                <button key={i}
+                  onClick={() => setActiveDay(i)}
+                  className={[
+                    'flex-1 rounded-full py-1.5 text-xs font-semibold transition-colors',
+                    i === activeDay
+                      ? 'bg-primary/15 text-primary ring-1 ring-primary/40'
+                      : 'bg-muted hover:bg-muted/70 text-muted-foreground',
+                  ].join(' ')}>
+                  D{i + 1}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className="grid grid-cols-7 gap-1.5">
+            {plan.days.map((d, i) => (
+              <button key={d.day} onClick={() => setActiveDay(i)}
+                className={[
+                  'flex flex-col items-center rounded-xl py-2.5 transition-all',
+                  i === activeDay
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : 'bg-muted hover:bg-muted/70',
+                ].join(' ')}>
+                <span className={[
+                  'text-[9px] font-medium',
+                  i === activeDay ? 'text-primary-foreground/70' : 'text-muted-foreground',
+                ].join(' ')}>{WEEKDAYS[i]}</span>
+                <span className="text-sm font-bold mt-0.5">{i + 1}</span>
+              </button>
+            ))}
+          </div>
+        )}
 
         <div className="space-y-3">
           {day.meals.map((meal, i) => (
