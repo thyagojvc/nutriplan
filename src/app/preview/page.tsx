@@ -610,6 +610,12 @@ export default function PreviewPage() {
               </p>
             </div>
 
+            {ctaState === 'error' && (
+              <p className="text-center text-xs text-red-600">
+                Error al preparar el pedido. Recarga la página e intenta de nuevo.
+              </p>
+            )}
+
             {/* CTA primário — 4 semanas */}
             <button
               onClick={() => handleCta('4weeks')}
@@ -637,15 +643,29 @@ export default function PreviewPage() {
               )}
             </button>
 
-            {/* Downsell — 1 semana */}
-            <div className="pt-1 text-center border-t border-[#EAF2E6]">
-              <p className="text-xs text-muted-foreground mb-1">¿Prefieres probar primero?</p>
+            {/* Trust signals logo abaixo do CTA — reforçam a decisão no ponto certo */}
+            <PaymentTrust />
+
+            {/* Downsell — 1 semana, como opção de entrada visível (não link escondido) */}
+            <div className="pt-3 border-t border-dashed border-[#D8E8D4]">
+              <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+                ¿Prefieres empezar de a poco?
+              </p>
               <button
                 onClick={() => handleCta('standard')}
                 disabled={ctaState === 'loading'}
-                className="text-sm font-semibold text-primary hover:underline disabled:opacity-50"
+                className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary/30 bg-white px-4 py-3 text-left transition-all hover:border-primary/55 hover:bg-[#F5FAF2] active:scale-[0.99] disabled:opacity-50"
               >
-                Empieza con 1 semana por $9.90 →
+                <span className="flex flex-col">
+                  <span className="text-sm font-bold text-gray-900">Plan de 1 semana</span>
+                  <span className="text-[11px] text-muted-foreground">Para probar el método antes</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1.5">
+                  <span className="text-lg font-black text-primary">$9.90</span>
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </button>
             </div>
           </div>
@@ -663,8 +683,6 @@ export default function PreviewPage() {
             </p>
           </div>
         </div>
-
-        <CtaButton ctaState={ctaState} onClick={() => handleCta('4weeks')} />
 
         <FaqSection />
 
@@ -774,49 +792,12 @@ function Countdown() {
 }
 
 // ---------------------------------------------------------------------------
-// CTA reutilizável (aparece duas vezes na página)
+// Trust signals (logos de pago + badges) — vão logo abaixo do CTA principal
 // ---------------------------------------------------------------------------
 
-function CtaButton({
-  ctaState,
-  onClick,
-}: {
-  ctaState: 'idle' | 'loading' | 'error'
-  onClick: () => void
-}) {
+function PaymentTrust() {
   return (
     <div className="space-y-2">
-      {ctaState === 'error' && (
-        <p className="text-center text-xs text-red-600">
-          Error al preparar el pedido. Recarga la página e intenta de nuevo.
-        </p>
-      )}
-      <button
-        onClick={onClick}
-        disabled={ctaState === 'loading'}
-        className={[
-          'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
-          'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
-          'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
-          'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
-        ].join(' ')}
-      >
-        {ctaState === 'loading' ? (
-          <>
-            <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
-            Procesando…
-          </>
-        ) : (
-          <>
-            Desbloquear mis 4 semanas — $19.90
-            <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
-              <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5"
-                stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </>
-        )}
-      </button>
-
       {/* Logos de bandeiras */}
       <div className="flex items-center justify-center gap-2 pt-0.5">
         {/* VISA */}
