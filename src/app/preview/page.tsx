@@ -437,8 +437,8 @@ export default function PreviewPage() {
         <div className="space-y-2">
           <div className="flex items-end justify-between px-1">
             <div>
-              <p className="text-sm font-black text-gray-900">Vista previa de tu plan</p>
-              <p className="text-[11px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal</p>
+              <p className="text-sm font-black text-gray-900">Tu Calibración Metabólica en acción</p>
+              <p className="text-[11px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal · para tu cuerpo</p>
             </div>
             <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
           </div>
@@ -482,11 +482,34 @@ export default function PreviewPage() {
           </p>
         </div>
 
+        {/* Por que a CM funciona quando outras dietas falharam — aborda ceticismo da persona */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-3">
+          <div className="text-center space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Por qué funciona cuando otras dietas fallaron</p>
+            <p className="font-display text-[15px] font-black text-gray-900">No es la dieta de otra persona. Es la tuya.</p>
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed text-center">
+            Las dietas genéricas fallan porque dan las mismas reglas a todos. La <span className="font-semibold text-gray-800">Calibración Metabólica</span> parte de <em>tu</em> TMB, <em>tu</em> actividad y <em>tu</em> objetivo — y convierte todo eso en comida real, sin que tengas que contar nada.
+          </p>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { contra: 'Contar calorías', pro: 'Ya calculado' },
+              { contra: 'Restricciones', pro: 'Comida real' },
+              { contra: 'Dieta genérica', pro: 'Solo para ti' },
+            ].map(({ contra, pro }) => (
+              <div key={pro} className="rounded-xl bg-[#F5FAF2] p-2.5 text-center space-y-1">
+                <p className="text-[10px] text-muted-foreground line-through">{contra}</p>
+                <p className="text-[11px] font-bold text-primary">{pro}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
             <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
-              Resultados reales con el método
+              Resultados reales con la Calibración Metabólica
             </p>
             <p className="font-display text-base font-black text-gray-900">
               Así les fue a ellas
@@ -560,11 +583,11 @@ export default function PreviewPage() {
 
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Tu plan personalizado</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Método Calibración Metabólica</p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu plan para adelgazar está listo!'
-                : isGain ? '¡Tu plan para ganar músculo está listo!'
-                : '¡Tu plan nutricional exacto está listo!'}
+              {isLoss ? '¡Tu Calibración está lista — empieza a adelgazar!'
+                : isGain ? '¡Tu Calibración está lista — empieza a ganar músculo!'
+                : '¡Tu Calibración Metabólica exacta está lista!'}
             </p>
           </div>
 
@@ -572,14 +595,23 @@ export default function PreviewPage() {
           <Countdown />
 
           <div className="p-5 space-y-4">
+            {/* Mecanismo Único — destacado como THE product, não como feature */}
+            <div className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-2.5">
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                <Check className="h-3.5 w-3.5" strokeWidth={3} />
+              </span>
+              <div>
+                <p className="text-sm font-bold text-gray-900">Calibración Metabólica validada por nutriólogo</p>
+                <p className="text-[11px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita — no una fórmula genérica</p>
+              </div>
+            </div>
             <ul className="space-y-2.5">
               {[
-                { item: 'Plan de 4 semanas personalizado',            value: '$59' },
-                { item: 'Lista de compras semanal (×4)',              value: '$12' },
-                { item: 'Guía de implementación',                     value: '$14' },
-                { item: 'Sustituciones para cada comida',             value: '$12' },
-                { item: 'Acceso a tu panel personal + PDF',           value: 'incluido' },
-                { item: 'Calibración Metabólica validada por nutriólogo', value: 'incluido' },
+                { item: 'Plan de 4 semanas personalizado',  value: '$59' },
+                { item: 'Lista de compras semanal (×4)',    value: '$12' },
+                { item: 'Guía de implementación',           value: '$14' },
+                { item: 'Sustituciones para cada comida',   value: '$12' },
+                { item: 'Acceso a tu panel personal + PDF', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
                   <span className="flex items-center gap-2 text-gray-700">
@@ -698,6 +730,10 @@ export default function PreviewPage() {
 // ---------------------------------------------------------------------------
 
 const FAQ_ITEMS = [
+  {
+    q: '¿En qué se diferencia de otras dietas que ya probé?',
+    a: 'Las dietas genéricas usan las mismas reglas para todo el mundo. La Calibración Metabólica calcula tu gasto basal real (TMB), lo ajusta a tu nivel de actividad y lo convierte en un plan de comida cotidiana, sin restricciones extremas ni conteo de calorías. No le das a tu cuerpo "lo que le funciona a otra persona" — le das exactamente lo que él necesita.',
+  },
   {
     q: '¿Funciona si tengo hipotiroidismo o diabetes?',
     a: 'Sí. Los cálculos se basan en tu metabolismo real y tu nivel de actividad. Si tienes una condición médica, el plan incluye un aviso para validar con tu médico.',
