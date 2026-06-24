@@ -482,27 +482,36 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Por que a CM funciona quando outras dietas falharam — aborda ceticismo da persona */}
+        {/* Por que a CM funciona quando outras dietas falharam — Estágio 4: nomeia o mecanismo do problema */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-3">
           <div className="text-center space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Por qué funciona cuando otras dietas fallaron</p>
-            <p className="font-display text-[15px] font-black text-gray-900">No es la dieta de otra persona. Es la tuya.</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Por qué otras dietas fallaron (y esta no)</p>
+            <p className="font-display text-[15px] font-black text-gray-900">El problema nunca fuiste tú. Fue el método.</p>
           </div>
-          <p className="text-sm text-gray-600 leading-relaxed text-center">
-            Las dietas genéricas fallan porque dan las mismas reglas a todos. La <span className="font-semibold text-gray-800">Calibración Metabólica</span> parte de <em>tu</em> TMB, <em>tu</em> actividad y <em>tu</em> objetivo — y convierte todo eso en comida real, sin que tengas que contar nada.
-          </p>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="space-y-2">
             {[
-              { contra: 'Contar calorías', pro: 'Ya calculado' },
-              { contra: 'Restricciones', pro: 'Comida real' },
-              { contra: 'Dieta genérica', pro: 'Solo para ti' },
-            ].map(({ contra, pro }) => (
-              <div key={pro} className="rounded-xl bg-[#F5FAF2] p-2.5 text-center space-y-1">
-                <p className="text-[10px] text-muted-foreground line-through">{contra}</p>
-                <p className="text-[11px] font-bold text-primary">{pro}</p>
+              {
+                label: 'Keto',
+                why: `Te quitó los carbohidratos sin saber cuánto quema tu cuerpo. Tu TMB real es ${targets.bmr} kcal. Keto no lo calcula.`,
+              },
+              {
+                label: 'Contar calorías',
+                why: `Te dieron 1.200 kcal genéricas cuando tu gasto real es ${targets.tdee} kcal. La diferencia te dejaba con hambre y sin resultados.`,
+              },
+              {
+                label: 'La dieta de la influencer',
+                why: 'Funciona para el cuerpo de ella. No para el tuyo. Tú tienes tu propio metabolismo, tu actividad y tu objetivo.',
+              },
+            ].map(({ label, why }) => (
+              <div key={label} className="rounded-xl border border-[#EAF2E6] bg-[#F5FAF2] px-3.5 py-2.5 space-y-0.5">
+                <p className="text-xs font-bold text-[#993C1D] line-through">{label}</p>
+                <p className="text-[11px] text-gray-600 leading-relaxed">{why}</p>
               </div>
             ))}
           </div>
+          <p className="text-[11px] text-center text-muted-foreground leading-relaxed pt-1">
+            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> usa tus números reales. Los que calculaste arriba son tuyos, no de otra persona.
+          </p>
         </div>
 
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
