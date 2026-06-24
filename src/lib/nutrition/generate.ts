@@ -20,6 +20,7 @@ import type {
 } from './types'
 import { MEAL_DISTRIBUTION, clinicalDisclaimers } from './math'
 import {
+  CATALOG_BY_ID,
   CATALOG_BY_LABEL,
   FOOD_CATALOG,
   foodsByRole,
@@ -123,18 +124,57 @@ function itemFrom(food: CatalogFood, grams: number): PlanItem {
   }
 }
 
+// Teto de gramas por alimento — impede porções irreais que denunciam geração
+// automática (5 ovos num prato, ¼ de litro de azeite, 2½ latas de atún).
+// Um nutricionista nunca escreveria isso à mão.
+const GRAM_CAP_BY_ID: Record<string, number> = {
+  huevo: 150,        // ≈3 huevos — máximo razoável en una comida
+  aceite: 20,        // ≈1½ cucharada
+  nueces: 45,
+  aguacate: 100,
+  granola: 80,
+  atun: 165,         // ≈1⅓ lata
+  queso_fresco: 120,
+}
+const GRAM_CAP_BY_ROLE: Record<FoodRole, number> = {
+  protein: 240, carb: 260, veg: 220, fruit: 220, fat: 45, dairy: 300,
+}
+function gramCap(food: CatalogFood): number {
+  return GRAM_CAP_BY_ID[food.id] ?? GRAM_CAP_BY_ROLE[food.role]
+}
+
 /**
- * Fecha uma refeição: escala as GRAMAS de cada ingrediente para bater ~ a meta
- * de kcal e só então formata as porções. Assim gramas, medida caseira e kcal
- * exibidos ficam sempre consistentes entre si.
+ * Fecha uma refeição: escala as GRAMAS para bater ~ a meta de kcal, mas
+ * respeitando um TETO realista por alimento. Quando um ingrediente bate o teto,
+ * a kcal que faltaria é redistribuída entre os outros itens com folga — assim a
+ * meta calórica é mantida sem inflar um único alimento a uma porção absurda.
  */
 function finalizeMeal(name: string, raw: RawItem[], targetKcal: number): PlanMeal {
   const baseKcal = raw.reduce((s, r) => s + (r.food.kcal * r.grams) / 100, 0)
   const factor = baseKcal > 0 ? targetKcal / baseKcal : 1
-  const items = raw.map((r) => {
-    const grams = Math.max(10, Math.round((r.grams * factor) / 5) * 5) // arredonda p/ 5 g
-    return itemFrom(r.food, grams)
+
+  // 1ª passada: escala por kcal, mas nunca acima do teto do alimento
+  const scaled = raw.map((r) => {
+    const want = Math.max(10, r.grams * factor)
+    const cap = gramCap(r.food)
+    return { food: r.food, grams: Math.min(want, cap) }
   })
+
+  // Redistribui a kcal que faltou para os itens que ainda têm folga até o teto
+  const kcalOf = (g: number, f: CatalogFood) => (f.kcal * g) / 100
+  let deficit = targetKcal - scaled.reduce((s, x) => s + kcalOf(x.grams, x.food), 0)
+  for (let pass = 0; pass < 4 && deficit > 1; pass++) {
+    const flexible = scaled.filter((x) => x.food.kcal > 0 && x.grams < gramCap(x.food))
+    if (flexible.length === 0) break
+    const share = deficit / flexible.length
+    for (const x of flexible) {
+      const target = Math.min(x.grams + (share * 100) / x.food.kcal, gramCap(x.food))
+      deficit -= kcalOf(target - x.grams, x.food)
+      x.grams = target
+    }
+  }
+
+  const items = scaled.map((x) => itemFrom(x.food, Math.max(10, Math.round(x.grams / 5) * 5)))
   return { name, targetKcal, items, totals: mealTotals(items) }
 }
 
@@ -155,6 +195,22 @@ const MEAL_SLOT: Record<string, MealSlot> = {
   Almuerzo: 'almuerzo',
   Cena: 'cena',
   Snack: 'snack',
+}
+
+// Proteínas com baixa densidade proteica (<18 g/100 g): sozinhas não fecham a
+// meta de proteína sem virar porção irreal. Um nutricionista combina com huevo
+// ou queso — frijoles con huevo, lentejas con queso. Autêntico e sobe a proteína.
+const LOW_DENSITY_PROTEIN = 18
+
+/**
+ * Gramas-base de uma proteína para mirar ~targetProtG de proteína do item,
+ * limitado a [110, maxG] para não criar porções irreais. Proteínas magras e
+ * densas (pollo, atún, pavo) recebem menos gramas; as mais leves, mais.
+ */
+function proteinBaseGrams(food: CatalogFood, targetProtG: number, maxG: number): number {
+  if (food.proteinG <= 0) return 150
+  const g = (targetProtG * 100) / food.proteinG
+  return Math.round(Math.min(Math.max(g, 110), maxG))
 }
 
 /** Constrói uma refeição para um índice de dia, rotacionando alimentos por variedade. */
@@ -178,8 +234,8 @@ function buildMeal(
     const protPool = [...poolForMeal('protein', slot, answers), ...poolForMeal('dairy', slot, answers)]
     const prot = rotate(protPool, 0)
     const fruit = rotate(poolForMeal('fruit', slot, answers), 0)
-    if (carb) raw.push({ food: carb, grams: 60 })
-    if (prot) raw.push({ food: prot, grams: 80 })
+    if (carb) raw.push({ food: carb, grams: 55 })
+    if (prot) raw.push({ food: prot, grams: proteinBaseGrams(prot, 18, 150) })
     if (fruit) raw.push({ food: fruit, grams: 120 })
   } else if (slot === 'snack') {
     // lanche: fruta ou laticínio + gordura boa
@@ -195,8 +251,18 @@ function buildMeal(
     const prot = rotate(poolForMeal('protein', slot, answers), offset)
     const carb = rotate(poolForMeal('carb', slot, answers), offset + 1)
     const veg = rotate(poolForMeal('veg', slot, answers), offset + 2)
-    if (prot) raw.push({ food: prot, grams: 150 })
-    if (carb) raw.push({ food: carb, grams: 120 })
+    if (prot) {
+      raw.push({ food: prot, grams: proteinBaseGrams(prot, 45, 230) })
+      // Proteína vegetal pobre → complementa com huevo/queso para fechar a
+      // proteína do prato de forma realista (combinación clásica).
+      if (prot.proteinG < LOW_DENSITY_PROTEIN) {
+        const compPool = [CATALOG_BY_ID['huevo'], CATALOG_BY_ID['queso_fresco']]
+          .filter((f) => f && !isExcluded(f.id, answers.exclusions) && f.id !== prot.id)
+        const comp = rotate(compPool, offset)
+        if (comp) raw.push({ food: comp, grams: comp.id === 'huevo' ? 100 : 60 })
+      }
+    }
+    if (carb) raw.push({ food: carb, grams: 95 })
     if (veg) raw.push({ food: veg, grams: 150 })
   }
 
