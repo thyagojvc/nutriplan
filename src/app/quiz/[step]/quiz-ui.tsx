@@ -62,25 +62,17 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 // ---------------------------------------------------------------------------
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  // O PNG tem ~32% de padding topo/base e ~12% esquerda/direita
-  // O conteúdo visual ocupa ~36% da altura e ~76% da largura do quadrado
-  const img  = { sm: 80,  md: 100, lg: 130  }[size]
-  const visH = { sm: 29,  md: 36,  lg: 47   }[size]
-  const visW = { sm: 61,  md: 76,  lg: 99   }[size]
-  const mtop = { sm: -26, md: -32, lg: -42  }[size]
-  const mlft = { sm: -10, md: -12, lg: -16  }[size]
+  const h = { sm: 28, md: 36, lg: 48 }[size]
 
   return (
-    <div className="select-none overflow-hidden" style={{ height: visH, width: visW }}>
-      <Image
-        src="/Logo Clara NutriPlan.png"
-        alt="NutriPlan"
-        height={img}
-        width={img}
-        className="object-contain"
-        style={{ height: img, width: img, marginTop: mtop, marginLeft: mlft, mixBlendMode: 'multiply' }}
-      />
-    </div>
+    <Image
+      src="/Logo Clara NutriPlan.png"
+      alt="NutriPlan"
+      height={h}
+      width={h * 4}
+      className="select-none object-contain"
+      style={{ height: h, width: 'auto' }}
+    />
   )
 }
 
