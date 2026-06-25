@@ -173,6 +173,19 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
             Los alimentos que marques tendrán prioridad en tu plan.
           </div>
 
+          {/* CTA antecipado — visível sem scroll para quem come de todo */}
+          <button
+            type="submit"
+            disabled={saving}
+            className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-primary/30 bg-white px-4 py-3 text-sm font-bold text-primary transition-all hover:border-primary/60 hover:bg-primary/5 active:scale-[0.99] disabled:opacity-50"
+          >
+            {saving ? (
+              <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary border-r-transparent" />
+            ) : (
+              selected.length === 0 ? 'Como de todo, continuar sin marcar' : `Continuar con ${selected.length} alimento${selected.length !== 1 ? 's' : ''}`
+            )}
+          </button>
+
           <div className="space-y-4">
             {GROUPS.map((group) => (
               <QuizSection key={group.title} title={group.title}>
