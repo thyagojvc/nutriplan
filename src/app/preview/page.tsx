@@ -356,7 +356,7 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Saber tu número es el primer paso. Convertirlo en resultados reales, cada día y sin pensar, es lo que hace tu plan.
+          Saber tu número es solo el primer paso. Lo difícil es decidir qué comer cada día. Tu plan ya viene decidido, para que tu rutina no te sabotee.
         </p>
       </div>
 
@@ -475,6 +475,19 @@ export default function PreviewPage() {
               <>Comida común del día a día, ajustada a <span className="font-semibold text-gray-600">tu meta</span>. Los 7 días varían para que no te aburras.</>
             )}
           </p>
+        </div>
+
+        {/* Eixo tempo/decisão — converte a conveniência (cardápio pronto) em alívio emocional, costura com a cética abaixo */}
+        <div className="flex items-start gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-3.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+            <Clock className="h-[18px] w-[18px] text-primary" />
+          </div>
+          <div className="space-y-0.5">
+            <p className="text-sm font-black text-gray-900">Ya no tienes que decidir qué comer</p>
+            <p className="text-[12px] leading-relaxed text-muted-foreground">
+              No fallas por falta de fuerza de voluntad. Fallas cuando, sin tiempo, comes lo primero que aparece. Aquí cada día ya viene decidido y calculado para ti. Tu rutina deja de sabotearte.
+            </p>
+          </div>
         </div>
 
         {/* Por que a CM funciona quando outras dietas falharam — Estágio 4: nomeia o mecanismo do problema */}
