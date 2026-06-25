@@ -33,7 +33,7 @@ const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
 
 const WEEK_PHASES = [
   { label: 'Adaptación',    color: 'text-emerald-600' },
-  { label: 'Adaptación',    color: 'text-emerald-600' },
+  { label: 'Calibración',   color: 'text-emerald-600' },
   { label: 'Aceleración',   color: 'text-amber-500'   },
   { label: 'Consolidación', color: 'text-rose-500'    },
 ]

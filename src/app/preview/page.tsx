@@ -586,14 +586,29 @@ export default function PreviewPage() {
           </div>
           <div className="space-y-1 p-4">
 
-            {/* Sem 1-2 */}
+            {/* Sem 1 */}
             <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[10px] font-black text-primary">1-2</span>
+                <span className="text-[10px] font-black text-primary">1</span>
               </div>
               <div className="pt-0.5">
                 <p className="text-sm font-bold text-gray-900">Adaptación</p>
                 <p className="text-[11px] leading-relaxed text-muted-foreground">Tu metabolismo aprende el nuevo ritmo sin hambre extrema. Tu cuerpo empieza a confiar en el plan.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-center py-0.5">
+              <div className="h-5 w-px bg-[#D8E8D4]" />
+            </div>
+
+            {/* Sem 2 */}
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
+                <span className="text-[10px] font-black text-primary">2</span>
+              </div>
+              <div className="pt-0.5">
+                <p className="text-sm font-bold text-gray-900">Calibración</p>
+                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu cuerpo ya aprendió el ritmo. El plan empieza a calibrarse a tu metabolismo real.</p>
               </div>
             </div>
 

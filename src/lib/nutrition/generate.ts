@@ -587,7 +587,8 @@ function generatePlanStub(
 
   const notes: string[] = planWeeks === 4
     ? [
-        'Semanas 1–2 — Adaptación: tu cuerpo se ajusta al nuevo ritmo alimentario.',
+        'Semana 1 — Adaptación: tu cuerpo se ajusta al nuevo ritmo alimentario.',
+        'Semana 2 — Calibración: el plan empieza a calibrarse a tu metabolismo real.',
         'Semana 3 — Aceleración: las calorías se ajustan ligeramente para impulsar tus resultados.',
         'Semana 4 — Consolidación: nos acercamos a tu metabolismo de mantenimiento para que los hábitos sean duraderos.',
       ]
