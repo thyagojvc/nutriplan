@@ -29,8 +29,8 @@ export const metadata: Metadata = {
     title: 'NutriPlan',
   },
   icons: {
-    icon: '/logo-perfil.png',
-    apple: '/logo-perfil.png',
+    icon: '/Logo Clara NutriPlan.png',
+    apple: '/Logo Clara NutriPlan.png',
   },
 }
 
