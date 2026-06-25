@@ -543,6 +543,34 @@ export default function PreviewPage() {
           </p>
         </div>
 
+        {/* Autoridade — responsável técnico */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
+          <div className="text-center space-y-1">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Quién está detrás de tu plan</p>
+            <p className="font-display text-[15px] font-black text-gray-900">Método desarrollado por el equipo de NutriPlan</p>
+          </div>
+          <div className="flex items-center gap-4 border-t border-[#D8E8D4] pt-4">
+            <Image
+              src="/FotoNutri.jpg"
+              alt="Tiago Vieira, Nutricionista"
+              width={72}
+              height={72}
+              className="h-[72px] w-[72px] shrink-0 rounded-full object-cover object-top border-2 border-[#D8E8D4]"
+            />
+            <div className="space-y-1">
+              <p className="text-sm font-black text-gray-900">Tiago Vieira</p>
+              <p className="text-[12px] font-semibold text-primary">Nutricionista · Responsable técnico</p>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[10px] font-bold text-primary">
+                <ShieldCheck className="h-3 w-3" />
+                Reg. 26101842
+              </span>
+            </div>
+          </div>
+          <p className="text-[11px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
+            Tiago diseñó personalmente las ecuaciones de la Calibración Metabólica. Cada plan se calcula con la ecuación Mifflin-St Jeor, el estándar clínico internacional, ajustada a tu cuerpo por nuestro equipo.
+          </p>
+        </div>
+
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
