@@ -78,7 +78,7 @@ export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
         height={img}
         width={img}
         className="object-contain"
-        style={{ height: img, width: img, marginTop: mtop, marginLeft: mlft }}
+        style={{ height: img, width: img, marginTop: mtop, marginLeft: mlft, mixBlendMode: 'multiply' }}
       />
     </div>
   )
