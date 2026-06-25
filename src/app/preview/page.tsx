@@ -344,8 +344,8 @@ export default function PreviewPage() {
             </div>
             <p className="text-[11px] text-muted-foreground">kcal/día</p>
             <p className="text-base font-bold text-gray-800">
-              {isLoss ? 'un déficit pensado para ti, sin pasar hambre'
-                : 'un superávit pensado para ti, para ganar músculo'}
+              {isLoss ? 'Un déficit pensado para ti, sin pasar hambre'
+                : 'Un superávit pensado para ti, para ganar músculo'}
             </p>
           </>
         ) : (
@@ -355,14 +355,14 @@ export default function PreviewPage() {
               <span className="text-6xl font-black text-primary">{targets.targetCalories}</span>
               <span className="ml-2 text-xl font-bold text-gray-500">kcal/día</span>
             </p>
-            <p className="text-base font-bold text-gray-800">para mantener tu peso de forma saludable</p>
+            <p className="text-base font-bold text-gray-800">Para mantener tu peso de forma saludable</p>
           </>
         )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Saber tu número es el primer paso. Convertirlo en resultados —cada día, sin pensar— es lo que hace tu plan.
+          Saber tu número es el primer paso. Convertirlo en resultados reales, cada día y sin pensar, es lo que hace tu plan.
         </p>
       </div>
 
@@ -405,7 +405,8 @@ export default function PreviewPage() {
             : 'border-[#D4E8D0] bg-[#EBF6E4] text-[#1e4d2e]',
           ].join(' ')}>
             {isLoss && (
-              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong> — equivale a ~{(delta * 7 / 7700).toFixed(1)} kg menos por semana.</>
+              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong>, equivale a ~{(delta * 7 / 7700).toFixed(1)} kg menos por semana.</>
+
             )}
             {isGain && (
               <>Tu plan tiene un <strong>superávit de {delta} kcal/día</strong> sobre tu gasto diario para construir músculo.</>
@@ -416,8 +417,8 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[11px] leading-relaxed text-muted-foreground">
-            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto con la ecuación Mifflin-St Jeor —
-            el estándar clínico— ajustada a tu nivel de actividad por un nutriólogo.
+            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto con la ecuación Mifflin-St Jeor,
+            el estándar clínico, ajustada a tu nivel de actividad por un nutriólogo.
           </p>
         </Card>
 
@@ -594,8 +595,8 @@ export default function PreviewPage() {
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Método Calibración Metabólica</p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu Calibración está lista — empieza a adelgazar!'
-                : isGain ? '¡Tu Calibración está lista — empieza a ganar músculo!'
+              {isLoss ? '¡Tu Calibración está lista. Empieza a adelgazar!'
+                : isGain ? '¡Tu Calibración está lista. Empieza a ganar músculo!'
                 : '¡Tu Calibración Metabólica exacta está lista!'}
             </p>
           </div>
@@ -611,7 +612,7 @@ export default function PreviewPage() {
               </span>
               <div>
                 <p className="text-sm font-bold text-gray-900">Calibración Metabólica validada por nutriólogo</p>
-                <p className="text-[11px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita — no una fórmula genérica</p>
+                <p className="text-[11px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
             <ul className="space-y-2.5">
@@ -741,7 +742,7 @@ export default function PreviewPage() {
 const FAQ_ITEMS = [
   {
     q: '¿En qué se diferencia de otras dietas que ya probé?',
-    a: 'Las dietas genéricas usan las mismas reglas para todo el mundo. La Calibración Metabólica calcula tu gasto basal real (TMB), lo ajusta a tu nivel de actividad y lo convierte en un plan de comida cotidiana, sin restricciones extremas ni conteo de calorías. No le das a tu cuerpo "lo que le funciona a otra persona" — le das exactamente lo que él necesita.',
+    a: 'Las dietas genéricas usan las mismas reglas para todo el mundo. La Calibración Metabólica calcula tu gasto basal real (TMB), lo ajusta a tu nivel de actividad y lo convierte en un plan de comida cotidiana, sin restricciones extremas ni conteo de calorías. No le das a tu cuerpo "lo que le funciona a otra persona". Le das exactamente lo que él necesita.',
   },
   {
     q: '¿Funciona si tengo hipotiroidismo o diabetes?',
@@ -913,7 +914,7 @@ function StickyCtaBar({
               Procesando…
             </>
           ) : (
-            'Desbloquear mis 4 semanas — $19.90 →'
+            'Desbloquear mis 4 semanas · $19.90 →'
           )}
         </button>
         <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
