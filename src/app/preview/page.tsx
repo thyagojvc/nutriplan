@@ -104,7 +104,6 @@ export default function PreviewPage() {
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
-  const [showSticky, setShowSticky] = useState(false)
 
   useEffect(() => {
     try {
@@ -239,11 +238,6 @@ export default function PreviewPage() {
       .catch(() => setErrorKind(session ? 'calc_failed' : 'no_session'))
   }, [])
 
-  useEffect(() => {
-    const onScroll = () => setShowSticky(window.scrollY > 380)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
 
   if (errorKind) {
     const msgs: Record<ErrorKind, { emoji: string; title: string; body: string }> = {
@@ -584,6 +578,67 @@ export default function PreviewPage() {
           ))}
         </div>
 
+        {/* Progressão das 4 semanas — âncora de valor antes da oferta */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
+          <div className="bg-primary/10 px-5 py-3 text-center">
+            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Por qué 4 semanas cambian todo</p>
+            <p className="mt-0.5 text-[15px] font-black text-gray-900">Tu cuerpo cambia en etapas, no de golpe</p>
+          </div>
+          <div className="space-y-1 p-4">
+
+            {/* Sem 1-2 */}
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
+                <span className="text-[10px] font-black text-primary">1-2</span>
+              </div>
+              <div className="pt-0.5">
+                <p className="text-sm font-bold text-gray-900">Adaptación</p>
+                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu metabolismo aprende el nuevo ritmo sin hambre extrema. Tu cuerpo empieza a confiar en el plan.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-center py-0.5">
+              <div className="h-5 w-px bg-[#D8E8D4]" />
+            </div>
+
+            {/* Sem 3 — destaque */}
+            <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
+                <span className="text-[10px] font-black text-white">3</span>
+              </div>
+              <div className="pt-0.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="text-sm font-bold text-gray-900">Aceleración</p>
+                  <span className="rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Aquí cambia todo</span>
+                </div>
+                <p className="text-[11px] leading-relaxed text-muted-foreground">La Calibración ajusta tus calorías con base en tu progreso real. El plan se recalibra para tu cuerpo actual y los resultados se aceleran.</p>
+              </div>
+            </div>
+
+            <div className="flex justify-center py-0.5">
+              <div className="h-5 w-px bg-[#D8E8D4]" />
+            </div>
+
+            {/* Sem 4 */}
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
+                <span className="text-[10px] font-black text-primary">4</span>
+              </div>
+              <div className="pt-0.5">
+                <p className="text-sm font-bold text-gray-900">Consolidación</p>
+                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu metabolismo se estabiliza. Los hábitos quedan. Sin efecto rebote.</p>
+              </div>
+            </div>
+
+          </div>
+          <div className="border-t border-[#D8E8D4] bg-[#F5FAF2] px-5 py-3">
+            <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+              El plan de 1 semana te da el primer paso. El de 4 semanas{' '}
+              <span className="font-semibold text-gray-700">te lleva hasta el resultado real.</span>
+            </p>
+          </div>
+        </div>
+
         {/* Oferta con ancla de valor */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Selo de desconto */}
@@ -728,9 +783,32 @@ export default function PreviewPage() {
 
         <FaqSection />
 
+        {/* CTA final — após perguntas frequentes */}
+        <div className="space-y-3 pb-10">
+          <button
+            onClick={() => handleCta('4weeks')}
+            disabled={ctaState === 'loading'}
+            className={[
+              'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
+              'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
+              'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
+              'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
+            ].join(' ')}
+          >
+            {ctaState === 'loading' ? (
+              <>
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                Procesando…
+              </>
+            ) : (
+              'Desbloquear mis 4 semanas · $19.90 →'
+            )}
+          </button>
+          <PaymentTrust />
+        </div>
+
       </div>
     </PageShell>
-    <StickyCtaBar show={showSticky} ctaState={ctaState} onClick={() => handleCta('4weeks')} />
     </>
   )
 }
@@ -880,52 +958,6 @@ function PaymentTrust() {
   )
 }
 
-// ---------------------------------------------------------------------------
-// Barra de CTA fixa — aparece ao rolar além do hero
-// ---------------------------------------------------------------------------
-
-function StickyCtaBar({
-  show,
-  ctaState,
-  onClick,
-}: {
-  show: boolean
-  ctaState: 'idle' | 'loading' | 'error'
-  onClick: () => void
-}) {
-  if (!show) return null
-  return (
-    <div className="fixed bottom-0 left-0 right-0 z-30 border-t border-[#D4E8D0] bg-white/95 p-3 shadow-[0_-4px_24px_rgba(0,0,0,0.09)] backdrop-blur-md">
-      <div className="mx-auto max-w-lg space-y-1.5">
-        <button
-          onClick={onClick}
-          disabled={ctaState === 'loading'}
-          className={[
-            'flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-black text-white',
-            'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)]',
-            'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05]',
-            'transition-all duration-150 active:scale-[0.99]',
-            'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
-          ].join(' ')}
-        >
-          {ctaState === 'loading' ? (
-            <>
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
-              Procesando…
-            </>
-          ) : (
-            'Desbloquear mis 4 semanas · $19.90 →'
-          )}
-        </button>
-        <div className="flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
-          <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> Pago seguro</span>
-          <span className="h-3 w-px bg-border" />
-          <span className="flex items-center gap-1"><ShieldCheck className="h-3 w-3 text-primary" /> Garantía 30 días</span>
-        </div>
-      </div>
-    </div>
-  )
-}
 
 // ---------------------------------------------------------------------------
 // Shell da página com header de marca
