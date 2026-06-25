@@ -104,6 +104,17 @@ export default function PreviewPage() {
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
+  const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
+
+  useEffect(() => {
+    try {
+      const s11 = sessionStorage.getItem('nutriplan_step_11')
+      if (s11) {
+        const { obstacles = [] } = JSON.parse(s11) as { obstacles?: string[] }
+        if (obstacles.includes('falta_tiempo')) setPainAngle('tiempo')
+      }
+    } catch { /* mantém default 'cetica' */ }
+  }, [])
 
   useEffect(() => {
     try {
@@ -356,7 +367,9 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Saber tu número es solo el primer paso. Lo difícil es decidir qué comer cada día. Tu plan ya viene decidido, para que tu rutina no te sabotee.
+          {painAngle === 'tiempo'
+            ? 'Saber tu número es solo el primer paso. Lo difícil es decidir qué comer cada día sin tiempo. Tu plan ya viene decidido, para que tu rutina no te sabotee.'
+            : 'Saber tu número es solo el primer paso. Pero es el primero que ninguna dieta que probaste tomó en serio. Este número es tuyo, no de otra persona.'}
         </p>
       </div>
 
@@ -477,15 +490,23 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Eixo tempo/decisão — converte a conveniência (cardápio pronto) em alívio emocional, costura com a cética abaixo */}
+        {/* Beat block — varia por ângulo de dor (tiempo | cetica) */}
         <div className="flex items-start gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-3.5">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-            <Clock className="h-[18px] w-[18px] text-primary" />
+            {painAngle === 'tiempo'
+              ? <Clock  className="h-[18px] w-[18px] text-primary" />
+              : <Target className="h-[18px] w-[18px] text-primary" />}
           </div>
           <div className="space-y-0.5">
-            <p className="text-sm font-black text-gray-900">Ya no tienes que decidir qué comer</p>
+            <p className="text-sm font-black text-gray-900">
+              {painAngle === 'tiempo'
+                ? 'Ya no tienes que decidir qué comer'
+                : 'Por fin un método que usa tus números reales'}
+            </p>
             <p className="text-[12px] leading-relaxed text-muted-foreground">
-              No fallas por falta de fuerza de voluntad. Fallas cuando, sin tiempo, comes lo primero que aparece. Aquí cada día ya viene decidido y calculado para ti. Tu rutina deja de sabotearte.
+              {painAngle === 'tiempo'
+                ? 'No fallas por falta de fuerza de voluntad. Fallas cuando, sin tiempo, comes lo primero que aparece. Aquí cada día ya viene decidido y calculado para ti. Tu rutina deja de sabotearte.'
+                : `No fallaste tú. Las otras dietas te daban calorías genéricas sin saber cuánto quema tu cuerpo. Tu gasto real es ${targets.tdee} kcal — eso no lo calcula ninguna app ni dieta de influencer. Este plan sí.`}
             </p>
           </div>
         </div>
