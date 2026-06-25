@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import { useRouter, usePathname } from 'next/navigation'
 
 const BACK_FLAG = 'nutriplan_can_go_back'
@@ -61,20 +62,17 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 // ---------------------------------------------------------------------------
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const textSize = { sm: '13px', md: '16px', lg: '22px' }[size]
-  const logoSize = { sm: 18, md: 22, lg: 30 }[size]
+  const height = { sm: 28, md: 36, lg: 50 }[size]
 
   return (
-    <div className="flex items-center gap-1.5 select-none">
-      <NutriLogo size={logoSize} />
-      <span
-        style={{ fontSize: textSize, lineHeight: 1, letterSpacing: '-0.01em' }}
-        className="text-primary"
-      >
-        <span style={{ fontWeight: 300 }}>Nutri</span>
-        <span style={{ fontWeight: 800 }}>Plan</span>
-      </span>
-    </div>
+    <Image
+      src="/Logo Clara NutriPlan.png"
+      alt="NutriPlan"
+      height={height}
+      width={height * 3}
+      className="select-none object-contain"
+      style={{ height, width: 'auto' }}
+    />
   )
 }
 
