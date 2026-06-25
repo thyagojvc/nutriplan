@@ -62,7 +62,7 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 // ---------------------------------------------------------------------------
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const h = { sm: 32, md: 48, lg: 64 }[size]
+  const h = { sm: 44, md: 72, lg: 96 }[size]
 
   return (
     <Image
