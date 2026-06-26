@@ -11,7 +11,7 @@ import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
-import { trackPixelOnce } from '@/lib/fb-pixel'
+import { trackPixel, trackPixelOnce, setPixelUserData } from '@/lib/fb-pixel'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -33,7 +33,7 @@ const ACTIVITY_LABEL: Record<string, string> = {
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
-  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−17 kg en 5 meses', w: 414, h: 444 },
+  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−12 kg en 5 meses', w: 414, h: 444 },
   { photo: '/resultados/caso-2.png', name: 'Daniela',  country: '🇨🇴', age: 31, result: '−6 kg en 2 meses',  w: 410, h: 433 },
   { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses',  w: 402, h: 430 },
   { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
@@ -72,24 +72,24 @@ function TeaserMeal({ meal }: { meal: SampleMeal }) {
     <div className="overflow-hidden rounded-xl border border-[#D8E8D4] shadow-sm">
       <div className="flex items-center justify-between bg-primary px-3.5 py-2.5">
         <span className="text-sm font-semibold text-white">{MEAL_EMOJI[meal.name] ?? '🍴'} {meal.name}</span>
-        <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[11px] font-semibold text-white">{meal.kcal} kcal</span>
+        <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[13px] font-semibold text-white">{meal.kcal} kcal</span>
       </div>
       <div className="divide-y divide-[#EAF2E6]">
         {meal.items.map((it) => (
           <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
             <div className="min-w-0">
               <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
-              <p className="text-[11px] text-muted-foreground">{it.qty}</p>
+              <p className="text-[13px] text-muted-foreground">{it.qty}</p>
             </div>
             <div className="flex shrink-0 gap-1">
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
-              <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
+              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
+              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
+              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
             </div>
           </div>
         ))}
       </div>
-      <div className="bg-[#F5FAF2] px-3.5 py-1.5 text-right text-[10px] text-muted-foreground">
+      <div className="bg-[#F5FAF2] px-3.5 py-1.5 text-right text-[11px] text-muted-foreground">
         {totals.p}g prot · {totals.c}g carb · {totals.f}g gras
       </div>
     </div>
@@ -122,6 +122,13 @@ export default function PreviewPage() {
       if (step12) {
         const lead = JSON.parse(step12) as Record<string, string>
         setLeadInfo({ email: lead.email, name: lead.name })
+        if (lead.email) {
+          const s4 = sessionStorage.getItem('nutriplan_step_4')
+          const s7 = sessionStorage.getItem('nutriplan_step_7')
+          const gender = s4 ? (JSON.parse(s4) as { sex?: string }).sex : undefined
+          const country = s7 ? (JSON.parse(s7) as { country?: string }).country : undefined
+          setPixelUserData(lead.email, lead.name, { gender, country })
+        }
       }
     } catch {}
   }, [])
@@ -153,6 +160,10 @@ export default function PreviewPage() {
         document.cookie = `nutriplan_order_key=${d.idempotency_key}; path=/; max-age=3600; SameSite=Lax`
         sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
       }
+
+      const purchaseValue = type === '4weeks' ? 19.90 : 9.90
+      sessionStorage.setItem('nutriplan_purchase_value', String(purchaseValue))
+      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'Método Calibración Metabólica™' })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {
@@ -331,24 +342,27 @@ export default function PreviewPage() {
             <p className="text-sm font-semibold text-muted-foreground">Esto calculamos para tu cuerpo</p>
             <div className="flex items-center justify-center gap-3">
               <div className="text-center">
-                <p className="text-[11px] text-gray-400">Tu gasto</p>
+                <p className="text-[13px] text-gray-400">Tu gasto</p>
                 <p className="font-display text-2xl font-black leading-none text-gray-400">{targets.tdee}</p>
               </div>
               <div className="flex flex-col items-center gap-1">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="text-[#D85A30]">
                   <path d="M5 12h14M19 12l-6-6M19 12l-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
-                <span className="whitespace-nowrap rounded-full bg-[#FAECE7] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">
+                <span className="whitespace-nowrap rounded-full bg-[#FAECE7] px-2 py-0.5 text-[13px] font-bold text-[#993C1D]">
                   {isLoss ? `−${delta}` : `+${delta}`} kcal
                 </span>
               </div>
               <div className="text-center">
-                <p className="text-[11px] font-semibold text-primary">Tu meta</p>
+                <p className="text-[13px] font-semibold text-primary">Tu meta</p>
                 <p className="font-display text-5xl font-black leading-none text-primary">{targets.targetCalories}</p>
               </div>
             </div>
-            <p className="text-[11px] text-muted-foreground">kcal/día</p>
+            <p className="text-[13px] text-muted-foreground">kcal/día</p>
             <p className="text-base font-bold text-gray-800">
+              Por primera vez tienes el número exacto para <span className="text-primary">tu cuerpo</span>.
+            </p>
+            <p className="text-sm font-medium text-muted-foreground">
               {isLoss ? 'Un déficit pensado para ti, sin pasar hambre'
                 : 'Un superávit pensado para ti, para ganar músculo'}
             </p>
@@ -390,7 +404,7 @@ export default function PreviewPage() {
           {imc && (
             <div className="border-t border-[#EAF2E6] pt-4">
               <ImcScale imc={imc} />
-              <div className="flex justify-between text-[10px] font-medium text-muted-foreground mt-1">
+              <div className="flex justify-between text-[11px] font-medium text-muted-foreground mt-1">
                 <span>Bajo peso</span><span>Normal</span><span>Sobrepeso</span><span>Obesidad</span>
               </div>
             </div>
@@ -423,9 +437,9 @@ export default function PreviewPage() {
             )}
           </div>
 
-          <p className="text-[11px] leading-relaxed text-muted-foreground">
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
             La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto con la ecuación Mifflin-St Jeor,
-            el estándar clínico, ajustada a tu nivel de actividad por un nutriólogo.
+            el estándar clínico, ajustada a tu nivel de actividad por un nutricionista.
           </p>
         </Card>
 
@@ -446,7 +460,7 @@ export default function PreviewPage() {
           <div className="flex items-end justify-between px-1">
             <div>
               <p className="text-sm font-black text-gray-900">Tu Calibración Metabólica en acción</p>
-              <p className="text-[11px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal · para tu cuerpo</p>
+              <p className="text-[13px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal · para tu cuerpo</p>
             </div>
             <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
           </div>
@@ -469,7 +483,7 @@ export default function PreviewPage() {
                   { Icon: Apple,        label: 'Snacks' },
                   { Icon: ShoppingCart, label: 'Lista de compras' },
                 ].map(({ Icon, label }) => (
-                  <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                  <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[13px] font-semibold text-primary">
                     <Icon className="h-3 w-3" /> {label}
                   </span>
                 ))}
@@ -481,7 +495,7 @@ export default function PreviewPage() {
           </div>
 
           {/* Loop: reforça personalização (ou comida confiável) + variedade dos 7 días */}
-          <p className="px-1 text-center text-[11px] leading-relaxed text-muted-foreground">
+          <p className="px-1 text-center text-[13px] leading-relaxed text-muted-foreground">
             {personalized ? (
               <>Armado con los alimentos que <span className="font-semibold text-gray-600">tú elegiste</span>. Los 7 días varían para que no te aburras.</>
             ) : (
@@ -503,7 +517,7 @@ export default function PreviewPage() {
                 ? 'Ya no tienes que decidir qué comer'
                 : 'Por fin un método que usa tus números reales'}
             </p>
-            <p className="text-[12px] leading-relaxed text-muted-foreground">
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
               {painAngle === 'tiempo'
                 ? 'No fallas por falta de fuerza de voluntad. Fallas cuando, sin tiempo, comes lo primero que aparece. Aquí cada día ya viene decidido y calculado para ti. Tu rutina deja de sabotearte.'
                 : `No fallaste tú. Las otras dietas te daban calorías genéricas sin saber cuánto quema tu cuerpo. Tu gasto real es ${targets.tdee} kcal — eso no lo calcula ninguna app ni dieta de influencer. Este plan sí.`}
@@ -514,8 +528,8 @@ export default function PreviewPage() {
         {/* Por que a CM funciona quando outras dietas falharam — Estágio 4: nomeia o mecanismo do problema */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-3">
           <div className="text-center space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Por qué otras dietas fallaron (y esta no)</p>
-            <p className="font-display text-[15px] font-black text-gray-900">El problema nunca fuiste tú. Fue el método.</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Por qué otras dietas fallaron (y esta no)</p>
+            <p className="font-display text-[16px] font-black text-gray-900">El problema nunca fuiste tú. Fue el método.</p>
           </div>
           <div className="space-y-2">
             {[
@@ -534,11 +548,11 @@ export default function PreviewPage() {
             ].map(({ label, why }) => (
               <div key={label} className="rounded-xl border border-[#EAF2E6] bg-[#F5FAF2] px-3.5 py-2.5 space-y-0.5">
                 <p className="text-xs font-bold text-[#993C1D] line-through">{label}</p>
-                <p className="text-[11px] text-gray-600 leading-relaxed">{why}</p>
+                <p className="text-[13px] text-gray-600 leading-relaxed">{why}</p>
               </div>
             ))}
           </div>
-          <p className="text-[11px] text-center text-muted-foreground leading-relaxed pt-1">
+          <p className="text-[13px] text-center text-muted-foreground leading-relaxed pt-1">
             La <span className="font-semibold text-gray-700">Calibración Metabólica</span> usa tus números reales. Los que calculaste arriba son tuyos, no de otra persona.
           </p>
         </div>
@@ -546,8 +560,8 @@ export default function PreviewPage() {
         {/* Autoridade — responsável técnico */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
           <div className="text-center space-y-1">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">Quién está detrás de tu plan</p>
-            <p className="font-display text-[15px] font-black text-gray-900">Método desarrollado por el equipo de NutriPlan</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Quién está detrás de tu plan</p>
+            <p className="font-display text-[16px] font-black text-gray-900">Creado por el nutricionista Tiago Vieira</p>
           </div>
           <div className="flex items-center gap-4 border-t border-[#D8E8D4] pt-4">
             <Image
@@ -559,14 +573,14 @@ export default function PreviewPage() {
             />
             <div className="space-y-1">
               <p className="text-sm font-black text-gray-900">Tiago Vieira</p>
-              <p className="text-[12px] font-semibold text-primary">Nutricionista · Responsable técnico</p>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[10px] font-bold text-primary">
+              <p className="text-[13px] font-semibold text-primary">Nutricionista · Responsable técnico</p>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
                 <ShieldCheck className="h-3 w-3" />
                 Reg. 26101842
               </span>
             </div>
           </div>
-          <p className="text-[11px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
+          <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
             Tiago diseñó personalmente las ecuaciones de la Calibración Metabólica. Cada plan se calcula con la ecuación Mifflin-St Jeor, el estándar clínico internacional, ajustada a tu cuerpo por nuestro equipo.
           </p>
         </div>
@@ -574,7 +588,7 @@ export default function PreviewPage() {
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
               Resultados reales con la Calibración Metabólica
             </p>
             <p className="font-display text-base font-black text-gray-900">
@@ -593,7 +607,7 @@ export default function PreviewPage() {
                   className="h-auto w-full"
                 />
                 <div className="space-y-1 p-2.5">
-                  <span className="inline-block rounded-full bg-primary px-2 py-0.5 text-[11px] font-black text-white">
+                  <span className="inline-block rounded-full bg-primary px-2 py-0.5 text-[13px] font-black text-white">
                     {result}
                   </span>
                   <p className="text-xs font-bold text-gray-800">{country} {name}, {age}</p>
@@ -602,21 +616,21 @@ export default function PreviewPage() {
             ))}
           </div>
 
-          <p className="text-center text-[10px] leading-relaxed text-[#B7C3B2]">
+          <p className="text-center text-[11px] leading-relaxed text-[#B7C3B2]">
             Resultados individuales. Varían según cada persona, su constancia y su punto de partida.
           </p>
         </div>
 
         {/* Social proof */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center font-display text-[15px] font-bold text-gray-900">
+          <p className="text-center font-display text-[16px] font-bold text-gray-900">
             Lo que dicen quienes ya lo tienen
           </p>
           {[
-            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'Bajé 4 kg en el primer mes. Por fin sé exactamente qué comer sin contar calorías a mano.' },
-            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Ya no me siento culpable cuando como. El plan me enseñó cuánto necesita mi cuerpo y bajé 4 kg en un mes sin pasar hambre.' },
-            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Comida real, sin pasar hambre. En 3 semanas ya me sentía con más energía y sin antojos.' },
-          ].map(({ photo, name, country, text }) => (
+            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', belief: 'Pensé que mi metabolismo estaba dañado de tanta dieta.', text: 'En 5 meses bajé 13 kg comiendo de verdad, sin contar calorías a mano.' },
+            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', belief: 'Llegaba agotada a casa y comía lo primero que veía.', text: 'Ahora mi plan ya viene decidido. Bajé sin pasar hambre y sin sentirme culpable.' },
+            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', belief: 'Probé keto, ayuno, de todo. Nada me duraba.', text: 'Esto fue lo primero que se adaptó a mi rutina. En pocas semanas, más energía y sin antojos.' },
+          ].map(({ photo, name, country, belief, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
               <div className="flex items-center gap-2">
                 <Image
@@ -634,7 +648,11 @@ export default function PreviewPage() {
                   ))}
                 </div>
               </div>
-              <p className="text-sm leading-relaxed text-gray-700">"{text}"</p>
+              <p className="text-[14px] italic leading-relaxed text-muted-foreground">"{belief}"</p>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="text-primary">
+                <path d="M12 5v14M12 19l-6-6M12 19l6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              <p className="text-sm font-medium leading-relaxed text-gray-800">{text}</p>
               <p className="text-xs font-bold text-primary">{country} {name}</p>
             </div>
           ))}
@@ -643,75 +661,111 @@ export default function PreviewPage() {
         {/* Progressão das 4 semanas — âncora de valor antes da oferta */}
         <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
           <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="text-[10px] font-bold uppercase tracking-widest text-primary">Por qué 4 semanas cambian todo</p>
-            <p className="mt-0.5 text-[15px] font-black text-gray-900">Tu cuerpo cambia en etapas, no de golpe</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Por qué 4 semanas cambian todo</p>
+            <p className="mt-0.5 text-[16px] font-black text-gray-900">Tu cuerpo cambia en etapas, no de golpe</p>
           </div>
           <div className="space-y-1 p-4">
 
             {/* Sem 1 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[10px] font-black text-primary">1</span>
+                <span className="text-[11px] font-black text-primary">1</span>
               </div>
               <div className="pt-0.5">
                 <p className="text-sm font-bold text-gray-900">Adaptación</p>
-                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu metabolismo aprende el nuevo ritmo sin hambre extrema. Tu cuerpo empieza a confiar en el plan.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu metabolismo aprende el nuevo ritmo sin hambre extrema. Tu cuerpo empieza a confiar en el plan.</p>
               </div>
             </div>
 
-            <div className="flex justify-center py-0.5">
-              <div className="h-5 w-px bg-[#D8E8D4]" />
+            <div className="flex justify-center">
+              <div className="h-2.5 w-px bg-[#D8E8D4]" />
             </div>
 
             {/* Sem 2 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[10px] font-black text-primary">2</span>
+                <span className="text-[11px] font-black text-primary">2</span>
               </div>
               <div className="pt-0.5">
                 <p className="text-sm font-bold text-gray-900">Calibración</p>
-                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu cuerpo ya aprendió el ritmo. El plan empieza a calibrarse a tu metabolismo real.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu cuerpo ya aprendió el ritmo. El plan empieza a calibrarse a tu metabolismo real.</p>
               </div>
             </div>
 
-            <div className="flex justify-center py-0.5">
-              <div className="h-5 w-px bg-[#D8E8D4]" />
+            <div className="flex justify-center">
+              <div className="h-2.5 w-px bg-[#D8E8D4]" />
             </div>
 
             {/* Sem 3 — destaque */}
-            <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2.5">
+            <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
-                <span className="text-[10px] font-black text-white">3</span>
+                <span className="text-[11px] font-black text-white">3</span>
               </div>
               <div className="pt-0.5">
                 <div className="flex flex-wrap items-center gap-2">
                   <p className="text-sm font-bold text-gray-900">Aceleración</p>
-                  <span className="rounded-full bg-primary px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">Aquí cambia todo</span>
+                  <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">Aquí cambia todo</span>
                 </div>
-                <p className="text-[11px] leading-relaxed text-muted-foreground">La Calibración ajusta tus calorías con base en tu progreso real. El plan se recalibra para tu cuerpo actual y los resultados se aceleran.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">La Calibración ajusta tus calorías con base en tu progreso real. El plan se recalibra para tu cuerpo actual y los resultados se aceleran.</p>
               </div>
             </div>
 
-            <div className="flex justify-center py-0.5">
-              <div className="h-5 w-px bg-[#D8E8D4]" />
+            <div className="flex justify-center">
+              <div className="h-2.5 w-px bg-[#D8E8D4]" />
             </div>
 
             {/* Sem 4 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2.5">
+            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
               <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[10px] font-black text-primary">4</span>
+                <span className="text-[11px] font-black text-primary">4</span>
               </div>
               <div className="pt-0.5">
                 <p className="text-sm font-bold text-gray-900">Consolidación</p>
-                <p className="text-[11px] leading-relaxed text-muted-foreground">Tu metabolismo se estabiliza. Los hábitos quedan. Sin efecto rebote.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu metabolismo se estabiliza. Los hábitos quedan. Sin efecto rebote.</p>
               </div>
             </div>
 
           </div>
           <div className="border-t border-[#D8E8D4] bg-[#F5FAF2] px-5 py-3">
-            <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+            <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
               El plan de 1 semana te da el primer paso. El de 4 semanas{' '}
               <span className="font-semibold text-gray-700">te lleva hasta el resultado real.</span>
+            </p>
+          </div>
+        </div>
+
+        {/* Âncora externa — quanto custaria com um nutricionista (consulta real) */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
+          <div className="bg-primary/10 px-5 py-3 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que vale un plan como este en el consultorio</p>
+            <p className="mt-0.5 text-[16px] font-black text-gray-900">Diseñado por nutricionistas. Sin el costo de volver cada mes.</p>
+          </div>
+          <div className="space-y-4 p-5">
+            <p className="text-[13px] leading-relaxed text-gray-700">
+              Sentarte con un nutricionista cuesta, en promedio, <strong>unos $35 USD</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
+            </p>
+            <p className="text-[13px] leading-relaxed text-gray-700">
+              El problema nunca fue el plan. Fue pagar una consulta cada mes y encontrar el tiempo para ir. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
+                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+$35</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
+              </div>
+              <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">Con NutriPlan</p>
+                <p className="mt-1 text-2xl font-black text-gray-900">$19.90</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">4 semanas completas, una sola vez</p>
+              </div>
+            </div>
+
+            <p className="text-center text-[13px] leading-relaxed text-gray-700">
+              Tus <strong>4 semanas</strong> son 4 menús distintos para tu cuerpo. El equivalente a volver al consultorio mes tras mes, por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
+            </p>
+            <p className="text-center text-sm font-bold text-primary">
+              Una semana sale a menos de $5. Lo que dejas en un café.
             </p>
           </div>
         </div>
@@ -720,12 +774,12 @@ export default function PreviewPage() {
         <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Selo de desconto */}
           <div className="absolute right-3 top-3 z-10 rounded-full bg-[#D85A30] px-2.5 py-1 text-xs font-black text-white shadow-sm">
-            -79%
+            -67%
           </div>
 
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Método Calibración Metabólica</p>
+            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Método Calibración Metabólica</p>
             <p className="text-base font-black text-white">
               {isLoss ? '¡Tu Calibración está lista. Empieza a adelgazar!'
                 : isGain ? '¡Tu Calibración está lista. Empieza a ganar músculo!'
@@ -743,16 +797,16 @@ export default function PreviewPage() {
                 <Check className="h-3.5 w-3.5" strokeWidth={3} />
               </span>
               <div>
-                <p className="text-sm font-bold text-gray-900">Calibración Metabólica validada por nutriólogo</p>
-                <p className="text-[11px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
+                <p className="text-sm font-bold text-gray-900">Calibración Metabólica validada por nutricionista</p>
+                <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
             <ul className="space-y-2.5">
               {[
-                { item: 'Plan de 4 semanas personalizado',  value: '$59' },
-                { item: 'Lista de compras semanal (×4)',    value: '$12' },
-                { item: 'Guía de implementación',           value: '$14' },
-                { item: 'Sustituciones para cada comida',   value: '$12' },
+                { item: 'Tu plan personalizado con la Calibración Metabólica',  value: '$18' },
+                { item: 'Lista de compras optimizada',      value: '$5' },
+                { item: 'Guía de implementación',           value: '$4' },
+                { item: 'Sustituciones para cada comida',   value: '$3' },
                 { item: 'Acceso a tu panel personal + PDF', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
@@ -767,20 +821,19 @@ export default function PreviewPage() {
               ))}
             </ul>
 
-            {/* Price box — hero 4 semanas */}
+            {/* Price box — hero 1 semana, entrada de baja barrera */}
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1">
-              <span className="inline-block rounded-full bg-primary px-3 py-0.5 text-[11px] font-bold text-white">más elegido</span>
+              <span className="inline-block rounded-full bg-primary px-3 py-0.5 text-[13px] font-bold text-white">empieza hoy</span>
               <div className="flex items-center justify-center gap-2 mt-1">
-                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$97</span></span>
-                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[11px] font-bold text-[#993C1D]">Ahorras $77</span>
+                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$30</span></span>
+                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[13px] font-bold text-[#993C1D]">Ahorras $20</span>
               </div>
               <p className="leading-none">
-                <span className="text-5xl font-black text-gray-900">$5</span>
-                <span className="text-xl font-bold text-muted-foreground">/semana</span>
+                <span className="text-5xl font-black text-gray-900">$9.90</span>
               </p>
-              <p className="text-sm font-bold text-primary">Pago único de $19.90 USD · sin suscripción</p>
+              <p className="text-sm font-bold text-primary">Pago único · 1 semana · sin suscripción</p>
               <p className="flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
-                <Coffee className="h-3.5 w-3.5" /> ≈ $0.71 al día · menos que un café
+                <Coffee className="h-3.5 w-3.5" /> Prueba el método completo durante 7 días
               </p>
             </div>
 
@@ -790,9 +843,9 @@ export default function PreviewPage() {
               </p>
             )}
 
-            {/* CTA primário — 4 semanas */}
+            {/* CTA primário — 1 semana $9.90 */}
             <button
-              onClick={() => handleCta('4weeks')}
+              onClick={() => handleCta('standard')}
               disabled={ctaState === 'loading'}
               className={[
                 'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
@@ -809,7 +862,7 @@ export default function PreviewPage() {
               ) : (
                 <>
                   <Lock className="h-4 w-4 opacity-80" />
-                  Desbloquear mis 4 semanas
+                  Empezar por $9.90
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
                     <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -820,22 +873,23 @@ export default function PreviewPage() {
             {/* Trust signals logo abaixo do CTA — reforçam a decisão no ponto certo */}
             <PaymentTrust />
 
-            {/* Downsell — 1 semana, como opção de entrada visível (não link escondido) */}
+            {/* Upgrade — 4 semanas, mejor valor por semana */}
             <div className="pt-3 border-t border-dashed border-[#D8E8D4]">
-              <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                ¿Prefieres empezar de a poco?
+              <p className="mb-2 text-center text-[13px] font-semibold uppercase tracking-wide text-muted-foreground">
+                ¿Quieres la transformación completa?
               </p>
               <button
-                onClick={() => handleCta('standard')}
+                onClick={() => handleCta('4weeks')}
                 disabled={ctaState === 'loading'}
-                className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary/30 bg-white px-4 py-3 text-left transition-all hover:border-primary/55 hover:bg-[#F5FAF2] active:scale-[0.99] disabled:opacity-50"
+                className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary/45 bg-[#F5FAF2] px-4 py-3 text-left transition-all hover:border-primary/65 hover:bg-[#EEF6E9] active:scale-[0.99] disabled:opacity-50"
               >
-                <span className="flex flex-col">
-                  <span className="text-sm font-bold text-gray-900">Plan de 1 semana</span>
-                  <span className="text-[11px] text-muted-foreground">Para probar el método antes</span>
+                <span className="flex min-w-0 flex-col gap-1">
+                  <span className="self-start whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-white">mejor valor</span>
+                  <span className="text-sm font-bold text-gray-900">4 semanas completas</span>
+                  <span className="text-[13px] text-muted-foreground">Solo $10 más y tu semana baja a $5. Llegas al resultado real.</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1.5">
-                  <span className="text-lg font-black text-primary">$9.90</span>
+                  <span className="text-lg font-black text-primary">$19.90</span>
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
                     <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -851,7 +905,7 @@ export default function PreviewPage() {
             <ShieldCheck className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">Garantía total de 30 días</p>
+            <p className="text-sm font-bold text-gray-900">Garantía total de 7 días</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
               Si no te encanta tu plan, te devolvemos el 100%. Sin preguntas.
             </p>
@@ -863,7 +917,7 @@ export default function PreviewPage() {
         {/* CTA final — após perguntas frequentes */}
         <div className="space-y-3 pb-10">
           <button
-            onClick={() => handleCta('4weeks')}
+            onClick={() => handleCta('standard')}
             disabled={ctaState === 'loading'}
             className={[
               'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
@@ -878,7 +932,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              'Desbloquear mis 4 semanas · $19.90 →'
+              'Empezar por $9.90 →'
             )}
           </button>
           <PaymentTrust />
@@ -913,7 +967,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Qué pasa si no me gusta el plan?',
-    a: 'Tienes garantía total de 30 días. Si no te convence, te devolvemos el 100%, sin preguntas.',
+    a: 'Tienes garantía total de 7 días. Si no te convence, te devolvemos el 100%, sin preguntas.',
   },
   {
     q: '¿En cuánto tiempo veo resultados?',
@@ -925,7 +979,7 @@ function FaqSection() {
   return (
     <div className="rounded-2xl border border-[#D8E8D4] bg-white shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
       <div className="flex items-center gap-2 border-b border-[#EAF2E6] px-5 py-3">
-        <p className="font-display text-[15px] font-bold text-gray-900">
+        <p className="font-display text-[16px] font-bold text-gray-900">
           Preguntas frecuentes
         </p>
       </div>
@@ -1024,12 +1078,12 @@ function PaymentTrust() {
         </div>
       </div>
 
-      <div className="flex flex-wrap items-center justify-center gap-3 text-[11px] text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-center gap-3 text-[13px] text-muted-foreground">
         <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> Pago seguro</span>
         <span className="h-3 w-px bg-border" />
         <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Acceso inmediato</span>
         <span className="h-3 w-px bg-border" />
-        <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 30 días</span>
+        <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 7 días</span>
       </div>
     </div>
   )
@@ -1081,7 +1135,7 @@ function Card({
           {icon && (
             <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary/10 text-sm">{icon}</span>
           )}
-          <p className="font-display text-[15px] font-bold text-gray-900">{label}</p>
+          <p className="font-display text-[16px] font-bold text-gray-900">{label}</p>
         </div>
         {badge}
       </div>
@@ -1097,7 +1151,7 @@ function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label
       accent ? 'border-primary/25 bg-primary/5' : 'border-[#E0EDD9] bg-[#FAFCF8]',
     ].join(' ')}>
       <div className="flex justify-center text-primary">{icon}</div>
-      <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground mt-1">{label}</p>
+      <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground mt-1">{label}</p>
       <p className={['mt-0.5 text-xs font-bold leading-tight', accent ? 'text-primary' : 'text-gray-800'].join(' ')}>{value}</p>
     </div>
   )
@@ -1110,7 +1164,7 @@ function ImcBadge({ imc }: { imc: number }) {
     : imc < 30  ? { label: 'Sobrepeso', cls: 'border-yellow-100 bg-yellow-50 text-yellow-700' }
     :              { label: 'Obesidad',  cls: 'border-red-100 bg-red-50 text-red-700' }
   return (
-    <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${cls}`}>
+    <span className={`rounded-full border px-2.5 py-0.5 text-[13px] font-bold ${cls}`}>
       {imc.toFixed(1)} · {label}
     </span>
   )
@@ -1137,18 +1191,18 @@ function MetricCard({ label, sub, value, accent }: { label: string; sub: string;
     return (
       <div className="rounded-xl bg-primary p-3 text-center shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
         <p className="text-xs font-black text-white">{label}</p>
-        <p className="text-[10px] text-white/75 mb-1">{sub}</p>
+        <p className="text-[11px] text-white/75 mb-1">{sub}</p>
         <p className="text-xl font-black text-white">{value}</p>
-        <p className="text-[10px] text-white/75">kcal</p>
+        <p className="text-[11px] text-white/75">kcal</p>
       </div>
     )
   }
   return (
     <div className="rounded-xl border border-[#E0EDD9] bg-[#FAFCF8] p-3 text-center">
       <p className="text-xs font-black text-gray-700">{label}</p>
-      <p className="text-[10px] text-muted-foreground mb-1">{sub}</p>
+      <p className="text-[11px] text-muted-foreground mb-1">{sub}</p>
       <p className="text-xl font-black text-gray-900">{value}</p>
-      <p className="text-[10px] text-muted-foreground">kcal</p>
+      <p className="text-[11px] text-muted-foreground">kcal</p>
     </div>
   )
 }
@@ -1193,7 +1247,7 @@ function MacroRow({ color, label, g, kcalPerG, total }: {
         <div className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
         <span className="flex-1 text-xs text-muted-foreground">{label}</span>
         <span className="text-xs font-bold text-gray-800">{g}g</span>
-        <span className="w-8 text-right text-[10px] text-muted-foreground">({pct}%)</span>
+        <span className="w-8 text-right text-[11px] text-muted-foreground">({pct}%)</span>
       </div>
       <div className="h-1 w-full rounded-full bg-border ml-4">
         <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
