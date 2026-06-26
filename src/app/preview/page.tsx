@@ -973,6 +973,18 @@ const FAQ_ITEMS = [
     q: '¿En cuánto tiempo veo resultados?',
     a: 'Depende de tu objetivo y tu cuerpo, pero la mayoría de usuarios reporta cambios visibles en 3 a 4 semanas siguiendo el plan.',
   },
+  {
+    q: '¿Cómo recibo mi plan?',
+    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras, sin necesidad de instalar ninguna app.',
+  },
+  {
+    q: '¿Funciona si soy vegetariana o tengo restricciones alimentarias?',
+    a: 'Sí. Durante el quiz puedes indicar tus preferencias y alimentos que no consumes. El plan se arma con lo que tú elegiste, y las sustituciones te permiten adaptar cualquier comida a lo que tienes disponible.',
+  },
+  {
+    q: '¿Hay suscripción o cobros recurrentes?',
+    a: 'No. Es un pago único, sin suscripción y sin cobros automáticos. Pagas una vez y el acceso a tu plan es tuyo para siempre.',
+  },
 ]
 
 function FaqSection() {
