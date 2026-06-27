@@ -369,12 +369,12 @@ export default function PreviewPage() {
           </>
         ) : (
           <>
-            <p className="text-sm font-semibold text-muted-foreground">Tu cuerpo necesita</p>
+            <p className="text-sm font-semibold text-muted-foreground">Tu número exacto para no perder lo que ya lograste</p>
             <p className="font-display leading-none">
               <span className="text-6xl font-black text-primary">{targets.targetCalories}</span>
               <span className="ml-2 text-xl font-bold text-gray-500">kcal/día</span>
             </p>
-            <p className="text-base font-bold text-gray-800">Para mantener tu peso de forma saludable</p>
+            <p className="text-base font-bold text-gray-800">Sin este número, mantener se convierte en subir de a poco, sin notarlo.</p>
           </>
         )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
@@ -734,42 +734,6 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Âncora externa — quanto custaria com um nutricionista (consulta real) */}
-        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
-          <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que vale un plan como este en el consultorio</p>
-            <p className="mt-0.5 text-[16px] font-black text-gray-900">Diseñado por nutricionistas. Sin el costo de volver cada mes.</p>
-          </div>
-          <div className="space-y-4 p-5">
-            <p className="text-[13px] leading-relaxed text-gray-700">
-              Sentarte con un nutricionista cuesta, en promedio, <strong>unos $35 USD</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
-            </p>
-            <p className="text-[13px] leading-relaxed text-gray-700">
-              El problema nunca fue el plan. Fue pagar una consulta cada mes y encontrar el tiempo para ir. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
-            </p>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
-                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+$35</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
-              </div>
-              <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">Con NutriPlan</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">$19.90</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">4 semanas completas, una sola vez</p>
-              </div>
-            </div>
-
-            <p className="text-center text-[13px] leading-relaxed text-gray-700">
-              Tus <strong>4 semanas</strong> son 4 menús distintos para tu cuerpo. El equivalente a volver al consultorio mes tras mes, por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
-            </p>
-            <p className="text-center text-sm font-bold text-primary">
-              Una semana sale a menos de $5. Lo que dejas en un café.
-            </p>
-          </div>
-        </div>
-
         {/* Oferta con ancla de valor */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Selo de desconto */}
@@ -912,6 +876,42 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        {/* Âncora externa — quanto custaria com um nutricionista (consulta real) */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
+          <div className="bg-primary/10 px-5 py-3 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que vale un plan como este en el consultorio</p>
+            <p className="mt-0.5 text-[16px] font-black text-gray-900">Diseñado por nutricionistas. Sin el costo de volver cada mes.</p>
+          </div>
+          <div className="space-y-4 p-5">
+            <p className="text-[13px] leading-relaxed text-gray-700">
+              Sentarte con un nutricionista cuesta, en promedio, <strong>unos $35 USD</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
+            </p>
+            <p className="text-[13px] leading-relaxed text-gray-700">
+              El problema nunca fue el plan. Fue pagar una consulta cada mes y encontrar el tiempo para ir. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
+            </p>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
+                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+$35</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
+              </div>
+              <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">4 semanas completas</p>
+                <p className="mt-1 text-2xl font-black text-gray-900">$19.90</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
+              </div>
+            </div>
+
+            <p className="text-center text-[13px] leading-relaxed text-gray-700">
+              4 semanas de menús distintos para tu cuerpo, con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
+            </p>
+            <p className="text-center text-sm font-bold text-primary">
+              Una semana sale a menos de $5. Lo que dejas en un café.
+            </p>
+          </div>
+        </div>
+
         {/* Garantía */}
         <div className="flex items-center gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
           <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white">
@@ -997,6 +997,10 @@ const FAQ_ITEMS = [
   {
     q: '¿Hay suscripción o cobros recurrentes?',
     a: 'No. Es un pago único, sin suscripción y sin cobros automáticos. Pagas una vez y el acceso a tu plan es tuyo para siempre.',
+  },
+  {
+    q: '¿Voy a tener soporte del nutricionista?',
+    a: 'Sí. Quienes adquieran su plan reciben por correo el contacto de WhatsApp del nutricionista Tiago Vieira para resolver dudas directamente con él.',
   },
 ]
 
