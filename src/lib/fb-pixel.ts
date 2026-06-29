@@ -22,6 +22,38 @@ export function trackPixel(
 }
 
 /**
+ * Passa dados do usuário (email, nome) para o pixel via Advanced Matching.
+ * Deve ser chamado logo que o email estiver disponível (ex: preview page).
+ * Chama fbq('init') novamente para atualizar os dados — isso é suportado pelo Meta.
+ */
+export async function setPixelUserData(
+  email: string,
+  firstName?: string,
+  extra?: { gender?: string; country?: string },
+): Promise<void> {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return
+  try {
+    const normalize = (s: string) => s.toLowerCase().trim()
+    const sha256 = async (s: string) => {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s))
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+    }
+    const userData: Record<string, string> = { em: await sha256(normalize(email)) }
+    if (firstName) userData.fn = await sha256(normalize(firstName))
+    if (extra?.gender) {
+      const ge = extra.gender === 'femenino' ? 'f' : extra.gender === 'masculino' ? 'm' : null
+      if (ge) userData.ge = await sha256(ge)
+    }
+    if (extra?.country && extra.country !== 'OTHER') {
+      userData.country = await sha256(normalize(extra.country))
+    }
+    window.fbq('init', '931028066102655', userData)
+  } catch {
+    // crypto.subtle indisponível (HTTP puro) ou fbq não carregado — sem-op seguro
+  }
+}
+
+/**
  * Dispara um evento só uma vez por sessão (dedupe via sessionStorage), evitando
  * dobrar a contagem em re-render, StrictMode ou navegação de volta.
  */

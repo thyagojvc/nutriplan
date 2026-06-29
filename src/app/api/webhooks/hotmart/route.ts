@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import { processPaidOrder } from '@/lib/nutrition/process-order'
 import { sendPlanReadyEmail, sendCheckinReminderEmail } from '@/lib/email'
+import { sendFacebookPurchase } from '@/lib/fb-conversions-api'
 import type { PhaseNumber } from '@/lib/nutrition/generate'
 
 // ID do produto order bump na Hotmart
@@ -72,18 +73,30 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   )
 
   if (recurrenceNumber === 0) {
-    const orderId = await activateNewSubscriber({ email, name, transactionId })
-    // Dispara a geração do plano logo após marcar o pedido pago.
-    // O stub é instantâneo; quando a IA entrar (10–30 s), mover para fila/background
-    // para não estourar o timeout do webhook do Hotmart.
-    if (orderId) {
+    const orderResult = await activateNewSubscriber({ email, name, transactionId })
+    if (orderResult) {
+      const { orderId, totalAmount, currency, fbc, fbp, clientIpAddress, clientUserAgent } = orderResult
+
       // Bump detectado no payload mas não pré-selecionado no checkout: adicionar item
       if (hasBumpInPayload) {
         await ensureTrainingItem(orderId)
       }
 
+      // Dispara a geração do plano logo após marcar o pedido pago.
       const result = await processPaidOrder(orderId)
       console.info('[webhook/hotmart] generation', result)
+
+      // Conversions API — Purchase (não bloqueia; não lança se falhar)
+      sendFacebookPurchase({
+        email,
+        transactionId,
+        value: totalAmount,
+        currency: currency ?? 'USD',
+        fbc,
+        fbp,
+        clientIpAddress,
+        clientUserAgent,
+      }).catch(err => console.error('[webhook/hotmart] fb-capi falhou (não bloqueante):', err))
 
       // E-mail pós-geração (não bloqueia a resposta ao Hotmart se falhar)
       try {
@@ -98,6 +111,16 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   }
 }
 
+interface ActivateResult {
+  orderId: string
+  totalAmount: number
+  currency: string
+  fbc?: string | null
+  fbp?: string | null
+  clientIpAddress?: string | null
+  clientUserAgent?: string | null
+}
+
 async function activateNewSubscriber({
   email,
   name,
@@ -106,7 +129,7 @@ async function activateNewSubscriber({
   email: string
   name: string
   transactionId?: string
-}): Promise<string | null> {
+}): Promise<ActivateResult | null> {
   const supabase = createServiceClient()
 
   // 1. Encontrar lead mais recente pelo e-mail
@@ -137,7 +160,7 @@ async function activateNewSubscriber({
 
   const { data: order } = await supabase
     .from('orders')
-    .select('id, status')
+    .select('id, status, total_amount, currency, fbc, fbp, client_ip_address, client_user_agent')
     .eq('session_id', sessionId)
     .eq('status', 'pending')
     .order('created_at', { ascending: false })
@@ -215,7 +238,17 @@ async function activateNewSubscriber({
       .eq('id', lead.id)
   }
 
-  return order?.id ?? null
+  if (!order?.id) return null
+
+  return {
+    orderId: order.id,
+    totalAmount: Number(order.total_amount ?? 0),
+    currency: order.currency ?? 'USD',
+    fbc: order.fbc,
+    fbp: order.fbp,
+    clientIpAddress: order.client_ip_address,
+    clientUserAgent: order.client_user_agent,
+  }
 }
 
 async function sendMagicLinkEmail(email: string, name: string) {

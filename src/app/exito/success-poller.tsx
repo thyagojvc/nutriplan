@@ -78,6 +78,7 @@ export function SuccessPoller() {
       const { hashed_token } = await response.json()
       isAuthenticating.current = true
       stopPolling()
+
       setState('authenticating')
 
       const { error } = await supabase.auth.verifyOtp({

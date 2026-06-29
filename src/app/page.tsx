@@ -53,7 +53,7 @@ export default function HomePage() {
           </p>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#D8E8D4] bg-white px-3 py-1 text-xs text-muted-foreground">
             <span>👩‍⚕️</span>
-            <span>Calibración Metabólica · método creado por un nutriólogo</span>
+            <span>Calibración Metabólica · método creado por un nutricionista</span>
           </div>
         </div>
 

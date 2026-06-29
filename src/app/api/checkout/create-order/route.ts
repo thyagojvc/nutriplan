@@ -74,6 +74,15 @@ export async function POST(request: NextRequest) {
       ? Number(plan.local_price) + Number(bump.local_price)
       : Number(plan.local_price)
 
+  // Cookies do Meta Pixel + contexto do navegador, capturados aqui (antes do
+  // redirect para a Hotmart) porque o webhook de pagamento é server-to-server
+  // e não tem acesso a cookies. Usados depois para mandar o Purchase pela
+  // Conversions API com bom match quality.
+  const fbc = request.cookies.get('_fbc')?.value ?? null
+  const fbp = request.cookies.get('_fbp')?.value ?? null
+  const clientUserAgent = request.headers.get('user-agent') ?? null
+  const clientIpAddress = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? null
+
   // Idempotent insert — on conflict (unique idempotency_key) return existing order
   const { data: order, error: orderError } = await supabase
     .from('orders')
@@ -87,6 +96,10 @@ export async function POST(request: NextRequest) {
       provider,
       price_book_period_version: plan.period_version,
       idempotency_key: idempotencyKey,
+      fbc,
+      fbp,
+      client_user_agent: clientUserAgent,
+      client_ip_address: clientIpAddress,
     })
     .select('id')
     .single()

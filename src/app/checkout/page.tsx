@@ -18,7 +18,7 @@ const INCLUDES = [
   { Icon: BookOpen,     text: 'Guía de implementación paso a paso' },
   { Icon: RefreshCw,    text: 'Sustituciones para adaptar a lo que tienes en casa' },
   { Icon: FileDown,     text: 'PDF descargable para consultar cuando quieras' },
-  { Icon: GraduationCap, text: 'Metodología diseñada y validada por nutriólogos certificados' },
+  { Icon: GraduationCap, text: 'Metodología diseñada y validada por nutricionistas certificados' },
 ]
 
 export default function CheckoutPage() {
