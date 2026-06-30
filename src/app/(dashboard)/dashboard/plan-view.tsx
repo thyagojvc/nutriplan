@@ -438,7 +438,7 @@ function MetabolismExplain({ goal, tdee, target }: { goal: string; tdee: number;
     <p className="rounded-lg bg-blue-50 px-4 py-3 text-sm text-blue-900">
       Para <strong>perder grasa</strong>, tu plan tiene un déficit de{' '}
       <strong>{delta} kcal/día</strong> respecto a lo que tu cuerpo quema.
-      Esto equivale a ~{Math.round((delta * 7) / 1000 * 10) / 10} kg menos por semana en condiciones ideales.
+      Esto equivale a ~{Math.round((delta * 7) / 7700 * 10) / 10} kg menos por semana en condiciones ideales.
     </p>
   )
   if (goal === 'gain_muscle') return (

@@ -29,7 +29,9 @@ export default async function DevPlanPreviewPage() {
 
   const answers = parseAnswers(SAMPLE_DRAFT, 'MX')
   const targets = calcTargets(answers)
-  const plan = await generateNutritionPlan(answers, targets, 1)
+  // planWeeks = 4 → plano completo de 4 semanas (abas de fase), o herói da oferta.
+  // Troque para 1 se quiser gravar a versão de ciclo semanal.
+  const plan = await generateNutritionPlan(answers, targets, 1, undefined, 4)
 
   const profile = {
     age: answers.age,
