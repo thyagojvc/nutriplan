@@ -9,13 +9,12 @@ import { SUPPORTED_CURRENCIES } from '@/lib/pricing/localize'
 // =============================================================================
 
 const FX_URL = 'https://open.er-api.com/v6/latest/USD'
-const TWELVE_HOURS = 60 * 60 * 12
 
-export const revalidate = TWELVE_HOURS
+export const revalidate = 43200 // 12h
 
 export async function GET() {
   try {
-    const res = await fetch(FX_URL, { next: { revalidate: TWELVE_HOURS } })
+    const res = await fetch(FX_URL, { next: { revalidate: 43200 } })
     const json = await res.json()
 
     if (json?.result !== 'success' || !json?.rates) {
