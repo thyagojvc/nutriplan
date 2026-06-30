@@ -12,6 +12,7 @@ import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 import { trackPixel, trackPixelOnce, setPixelUserData } from '@/lib/fb-pixel'
+import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -105,6 +106,33 @@ export default function PreviewPage() {
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
+  // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
+  // O pedido e o tracking continuam sempre em USD — ver handleCta.
+  const [fx, setFx] = useState<{ currency: string; rate: number }>({ currency: 'USD', rate: 1 })
+
+  // Localiza o preço pelo país do passo 7 (o mesmo que o checkout usa).
+  // Países fora do mapa ficam em USD e nem chamam a API de câmbio.
+  useEffect(() => {
+    let country: string | undefined
+    try {
+      const s7 = sessionStorage.getItem('nutriplan_step_7')
+      if (s7) country = (JSON.parse(s7) as { country?: string }).country
+    } catch {}
+
+    const currency = currencyForCountry(country)
+    if (currency === 'USD') return
+
+    fetch('/api/fx')
+      .then((r) => r.json())
+      .then((d) => {
+        const rate = d?.rates?.[currency]
+        if (typeof rate === 'number' && rate > 0) setFx({ currency, rate })
+      })
+      .catch(() => { /* mantém fallback USD */ })
+  }, [])
+
+  // Formata um valor em USD na moeda da visitante. Usado em toda a oferta.
+  const price = (usd: number) => formatPrice(usd, fx.currency, fx.rate)
 
   useEffect(() => {
     try {
@@ -767,10 +795,10 @@ export default function PreviewPage() {
             </div>
             <ul className="space-y-2.5">
               {[
-                { item: 'Tu plan personalizado con la Calibración Metabólica',  value: '$18' },
-                { item: 'Lista de compras optimizada',      value: '$5' },
-                { item: 'Guía de implementación',           value: '$4' },
-                { item: 'Sustituciones para cada comida',   value: '$3' },
+                { item: 'Tu plan personalizado con la Calibración Metabólica',  value: price(18) },
+                { item: 'Lista de compras optimizada',      value: price(5) },
+                { item: 'Guía de implementación',           value: price(4) },
+                { item: 'Sustituciones para cada comida',   value: price(3) },
                 { item: 'Acceso a tu panel personal + PDF', value: 'incluido' },
               ].map(({ item, value }) => (
                 <li key={item} className="flex items-center justify-between gap-3 text-sm">
@@ -802,16 +830,21 @@ export default function PreviewPage() {
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1">
               <span className="inline-block rounded-full bg-primary px-3 py-0.5 text-[13px] font-bold text-white">empieza hoy</span>
               <div className="flex items-center justify-center gap-2 mt-1">
-                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">$30</span></span>
-                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[13px] font-bold text-[#993C1D]">Ahorras $20</span>
+                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">{price(30)}</span></span>
+                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[13px] font-bold text-[#993C1D]">Ahorras {price(20)}</span>
               </div>
               <p className="leading-none">
-                <span className="text-5xl font-black text-gray-900">$9.90</span>
+                <span className="text-5xl font-black text-gray-900">{price(9.90)}</span>
               </p>
               <p className="text-sm font-bold text-primary">Pago único · 1 semana · sin suscripción</p>
               <p className="flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
                 <Coffee className="h-3.5 w-3.5" /> Prueba el método completo durante 7 días
               </p>
+              {fx.currency !== 'USD' && (
+                <p className="pt-1 text-[11px] text-muted-foreground">
+                  *Precio aproximado en {fx.currency}. Se cobra en tu moneda local.
+                </p>
+              )}
             </div>
 
             {ctaState === 'error' && (
@@ -839,7 +872,7 @@ export default function PreviewPage() {
               ) : (
                 <>
                   <Lock className="h-4 w-4 opacity-80" />
-                  Empezar por $9.90
+                  Empezar por {price(9.90)}
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
                     <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -863,10 +896,10 @@ export default function PreviewPage() {
                 <span className="flex min-w-0 flex-col gap-1">
                   <span className="self-start whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-white">mejor valor</span>
                   <span className="text-sm font-bold text-gray-900">4 semanas completas</span>
-                  <span className="text-[13px] text-muted-foreground">Solo $10 más y tu semana baja a $5. Llegas al resultado real.</span>
+                  <span className="text-[13px] text-muted-foreground">Solo {price(10)} más y tu semana baja a {price(5)}. Llegas al resultado real.</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1.5">
-                  <span className="text-lg font-black text-primary">$19.90</span>
+                  <span className="text-lg font-black text-primary">{price(19.90)}</span>
                   <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
                     <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
@@ -884,7 +917,7 @@ export default function PreviewPage() {
           </div>
           <div className="space-y-4 p-5">
             <p className="text-[13px] leading-relaxed text-gray-700">
-              Sentarte con un nutricionista cuesta, en promedio, <strong>unos $35 USD</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
+              Sentarte con un nutricionista cuesta, en promedio, <strong>unos {price(35)}</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
             </p>
             <p className="text-[13px] leading-relaxed text-gray-700">
               El problema nunca fue el plan. Fue pagar una consulta cada mes y encontrar el tiempo para ir. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
@@ -893,12 +926,12 @@ export default function PreviewPage() {
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
-                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+$35</p>
+                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+{price(35)}</p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
               </div>
               <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
                 <p className="text-[11px] font-bold uppercase tracking-wide text-primary">4 semanas completas</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">$19.90</p>
+                <p className="mt-1 text-2xl font-black text-gray-900">{price(19.90)}</p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
               </div>
             </div>
@@ -907,7 +940,7 @@ export default function PreviewPage() {
               4 semanas de menús distintos para tu cuerpo, con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
             </p>
             <p className="text-center text-sm font-bold text-primary">
-              Una semana sale a menos de $5. Lo que dejas en un café.
+              Una semana sale a menos de {price(5)}. Lo que dejas en un café.
             </p>
           </div>
         </div>
@@ -945,7 +978,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              'Empezar por $9.90 →'
+              `Empezar por ${price(9.90)} →`
             )}
           </button>
           <PaymentTrust />

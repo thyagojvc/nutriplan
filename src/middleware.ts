@@ -17,6 +17,7 @@ const PUBLIC_PATHS = [
   '/api/quiz/save-step',
   '/api/quiz/submit-step12',
   '/api/quiz/preview-data',
+  '/api/fx',
   '/api/checkout/resolve-price',
   '/api/checkout/create-order',
   '/api/dev/simulate-payment',
