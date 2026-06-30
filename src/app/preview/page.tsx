@@ -116,7 +116,11 @@ export default function PreviewPage() {
     let country: string | undefined
     try {
       const s7 = sessionStorage.getItem('nutriplan_step_7')
-      if (s7) country = (JSON.parse(s7) as { country?: string }).country
+      if (s7) {
+        const parsed = JSON.parse(s7) as { country?: string; country_detail?: string }
+        // country_detail tem o código ISO real (ex: 'BR'); country pode ser 'OTHER' para países fora do enum DB
+        country = parsed.country_detail ?? parsed.country
+      }
     } catch {}
 
     const currency = currencyForCountry(country)
