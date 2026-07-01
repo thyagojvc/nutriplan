@@ -8,9 +8,7 @@ const TOTAL_STEPS = 12
 //  - 3: alimento imprescindível — OCULTO POR ENQUANTO. Sem IA, o stub só adiciona
 //       uma nota de texto e não altera os alimentos de fato. Reativar junto com a IA.
 //  - 7: seleção de país (auto-avança por geolocalização)
-//  - 10: detalhes de treino — OCULTO POR ENQUANTO. Só alimenta o plano de treino
-//        (order bump), que ainda não está à venda. Reativar junto com IA + order bump.
-const HIDDEN_STEPS = [3, 7, 10]
+const HIDDEN_STEPS = [3, 7]
 
 interface Props {
   params: Promise<{ step: string }>
@@ -26,8 +24,7 @@ export default async function QuizStepPage({ params }: Props) {
 
   // Passos ocultos: redireciona para o anterior se alguém chegar via URL direta
   // ou pelo botão "Anterior" do passo seguinte.
-  if (stepNumber === 3)  redirect('/quiz/2')
-  if (stepNumber === 10) redirect('/quiz/9')
+  if (stepNumber === 3) redirect('/quiz/2')
 
   // Vercel injeta esse header automaticamente em produção (geolocalização por IP).
   // Em dev local fica undefined — o usuário só vê o dropdown vazio, sem quebrar nada.

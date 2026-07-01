@@ -31,6 +31,18 @@ const ACTIVITY_LABEL: Record<string, string> = {
   muy_activo: 'Muy activo',
 }
 
+const TRAINING_LOCATION_LABEL: Record<string, string> = {
+  casa: 'en casa',
+  gimnasio: 'en el gimnasio',
+  aire_libre: 'al aire libre',
+}
+
+const TRAINING_FREQUENCY_LABEL: Record<string, string> = {
+  '1_2': '1-2 días por semana',
+  '3_4': '3-4 días por semana',
+  '5_mas': '5+ días por semana',
+}
+
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
@@ -104,6 +116,7 @@ export default function PreviewPage() {
   const [data, setData] = useState<PreviewData | null>(null)
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
+  const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
@@ -146,6 +159,16 @@ export default function PreviewPage() {
         if (obstacles.includes('falta_tiempo')) setPainAngle('tiempo')
       }
     } catch { /* mantém default 'cetica' */ }
+  }, [])
+
+  useEffect(() => {
+    try {
+      const s10 = sessionStorage.getItem('nutriplan_step_10')
+      if (s10) {
+        const parsed = JSON.parse(s10) as { experience?: string; location?: string; frequency?: string }
+        if (parsed.experience && parsed.experience !== 'no_ejercicio') setTraining(parsed)
+      }
+    } catch {}
   }, [])
 
   useEffect(() => {
@@ -364,6 +387,7 @@ export default function PreviewPage() {
   const personalized = data.sample?.personalized ?? false
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
+  const firstName = leadInfo.name?.trim().split(' ')[0]
 
   return (
     <PageShell>
@@ -372,7 +396,7 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          Tu NutriPlan está listo · solo para ti
+          {firstName ? `${firstName}, tu NutriPlan está listo` : 'Tu NutriPlan está listo · solo para ti'}
         </div>
 
         {isLoss || isGain ? (
@@ -771,6 +795,23 @@ export default function PreviewPage() {
             </p>
           </div>
         </div>
+
+        {/* Teaser plan de entrenamiento — solo si respondió el step de ejercicio */}
+        {training && (
+          <div className="flex items-start gap-3 rounded-2xl border border-primary/25 bg-white p-4">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
+              <Zap className="h-[18px] w-[18px] text-primary" />
+            </div>
+            <div className="space-y-0.5">
+              <p className="text-sm font-black text-gray-900">También vimos que entrenas</p>
+              <p className="text-[13px] leading-relaxed text-muted-foreground">
+                Nos dijiste que entrenas {training.location ? TRAINING_LOCATION_LABEL[training.location] ?? '' : ''}
+                {training.frequency ? `, ${TRAINING_FREQUENCY_LABEL[training.frequency] ?? ''}` : ''}.
+                {' '}En el checkout vas a poder sumar tu plan de entrenamiento hecho para eso.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Oferta con ancla de valor */}
         <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
