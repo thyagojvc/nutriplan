@@ -50,7 +50,7 @@ export default async function QuizFunnelPage({
 }) {
   const params = await searchParams
   // Padrão: hoje (a partir de agora). Formato: YYYY-MM-DD
-  const today = new Date().toISOString().slice(0, 10)
+  const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date())
   const since = params.since ?? today
 
   const data = await getFunnelData(since)
