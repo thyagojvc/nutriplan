@@ -121,14 +121,23 @@ function VslGate({ children }: { children: React.ReactNode }) {
             {!playing && (
               <button
                 onClick={() => { videoRef.current?.play(); setPlaying(true) }}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-4 rounded-2xl bg-black/50"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-3.5 rounded-2xl bg-gradient-to-b from-black/25 via-black/40 to-black/60"
               >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(34,108,69,0.6)]">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="white">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(34,108,69,0.6)] ring-4 ring-white/20">
+                  <svg width="26" height="26" viewBox="0 0 24 24" fill="white" className="ml-0.5">
                     <path d="M8 5v14l11-7z" />
                   </svg>
                 </div>
-                <p className="text-sm font-semibold text-white drop-shadow">Ver mi plan personalizado</p>
+                <p className="font-display text-lg font-black tracking-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
+                  Ver mi plan personalizado
+                </p>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/95 backdrop-blur-sm ring-1 ring-white/15">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 7v5l3 2" />
+                  </svg>
+                  1:35 min
+                </span>
               </button>
             )}
           </div>
