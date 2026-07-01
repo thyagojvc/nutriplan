@@ -117,6 +117,7 @@ export default function PreviewPage() {
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
+  const [inputCount, setInputCount] = useState<number | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
@@ -168,6 +169,55 @@ export default function PreviewPage() {
         const parsed = JSON.parse(s10) as { experience?: string; location?: string; frequency?: string }
         if (parsed.experience && parsed.experience !== 'no_ejercicio') setTraining(parsed)
       }
+    } catch {}
+  }, [])
+
+  // Cuenta los datos reales que la usuaria dio en el quiz — refuerza que el
+  // plan no es una plantilla genérica, sin inventar un número falso.
+  useEffect(() => {
+    try {
+      let count = 0
+      const s1 = sessionStorage.getItem('nutriplan_step_1')
+      if (s1) count += (JSON.parse(s1).likes ?? []).length
+
+      const s2 = sessionStorage.getItem('nutriplan_step_2')
+      if (s2 && JSON.parse(s2).goal) count += 1
+
+      const s4 = sessionStorage.getItem('nutriplan_step_4')
+      if (s4 && JSON.parse(s4).sex) count += 1
+
+      const s5 = sessionStorage.getItem('nutriplan_step_5')
+      if (s5) {
+        const p = JSON.parse(s5) as Record<string, unknown>
+        count += [p.age, p.weight_kg, p.height_cm].filter((v) => v != null).length
+      }
+
+      const s6 = sessionStorage.getItem('nutriplan_step_6')
+      if (s6 && JSON.parse(s6).activity_level) count += 1
+
+      const s7 = sessionStorage.getItem('nutriplan_step_7')
+      if (s7 && JSON.parse(s7).country) count += 1
+
+      const s8 = sessionStorage.getItem('nutriplan_step_8')
+      if (s8) count += (JSON.parse(s8).restrictions ?? []).length
+
+      const s9 = sessionStorage.getItem('nutriplan_step_9')
+      if (s9) {
+        const health = (JSON.parse(s9).health ?? []) as unknown[]
+        count += health.length > 0 ? health.length : 1
+      }
+
+      const s10 = sessionStorage.getItem('nutriplan_step_10')
+      if (s10) {
+        const t = JSON.parse(s10) as Record<string, unknown>
+        count += [t.experience, t.location, t.frequency].filter(Boolean).length
+        count += ((t.limitations ?? []) as unknown[]).length
+      }
+
+      const s11 = sessionStorage.getItem('nutriplan_step_11')
+      if (s11) count += (JSON.parse(s11).obstacles ?? []).length
+
+      if (count > 0) setInputCount(count)
     } catch {}
   }, [])
 
@@ -398,6 +448,26 @@ export default function PreviewPage() {
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
           {firstName ? `${firstName}, tu NutriPlan está listo` : 'Tu NutriPlan está listo · solo para ti'}
         </div>
+
+        {/* Selos de personalización — refuerzan que no es una plantilla genérica */}
+        {(inputCount || training) && (
+          <div className="flex flex-wrap items-center justify-center gap-1.5">
+            {inputCount !== null && inputCount > 0 && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-bold text-primary">
+                <Check className="h-3 w-3" strokeWidth={3} />
+                Calculado con {inputCount} datos tuyos
+              </span>
+            )}
+            {training && (isLoss || isGain) && (
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-bold text-primary">
+                <Zap className="h-3 w-3" />
+                {isLoss
+                  ? 'Hecho para quien entrena y quiere bajar de peso'
+                  : 'Hecho para quien entrena y quiere ganar músculo'}
+              </span>
+            )}
+          </div>
+        )}
 
         {isLoss || isGain ? (
           <>
