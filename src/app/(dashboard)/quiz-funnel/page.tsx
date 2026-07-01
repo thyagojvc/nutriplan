@@ -15,20 +15,23 @@ const STEP_LABELS: Record<number, string> = {
   12: 'Ponte emocional (CTA)',
 }
 
-async function getFunnelData() {
+// Steps ocultos (auto-save sem UI): excluídos da análise de abandono.
+const HIDDEN_STEPS = new Set([7])
+
+async function getFunnelData(since: string) {
   const supabase = createServiceClient()
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('generation_sessions')
     .select('draft_answers, created_at')
     .order('created_at', { ascending: false })
 
+  if (since) query = query.gte('created_at', since)
+
+  const { data, error } = await query
   if (error || !data) return null
 
   const total = data.length
-  const last30 = data.filter(
-    (r) => new Date(r.created_at) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000),
-  ).length
 
   const stepCounts: Record<number, number> = {}
   for (let s = 1; s <= 12; s++) {
@@ -37,11 +40,20 @@ async function getFunnelData() {
     ).length
   }
 
-  return { total, last30, stepCounts }
+  return { total, stepCounts }
 }
 
-export default async function QuizFunnelPage() {
-  const data = await getFunnelData()
+export default async function QuizFunnelPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ since?: string }>
+}) {
+  const params = await searchParams
+  // Padrão: hoje (a partir de agora). Formato: YYYY-MM-DD
+  const today = new Date().toISOString().slice(0, 10)
+  const since = params.since ?? today
+
+  const data = await getFunnelData(since)
 
   if (!data) {
     return (
@@ -51,16 +63,41 @@ export default async function QuizFunnelPage() {
     )
   }
 
-  const { total, last30, stepCounts } = data
+  const { total, stepCounts } = data
   const step1 = stepCounts[1] || 1
 
   return (
-    <div className="mx-auto max-w-2xl space-y-8 p-6 pb-20">
-      <div>
-        <h1 className="text-2xl font-bold">Funil do quiz</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Sessões totais: <strong>{total}</strong> · Últimos 30 dias: <strong>{last30}</strong>
-        </p>
+    <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
+      <div className="flex items-start justify-between gap-4 flex-wrap">
+        <div>
+          <h1 className="text-2xl font-bold">Funil do quiz</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {total} sessões a partir de <strong>{since}</strong>
+          </p>
+        </div>
+
+        {/* Filtros rápidos */}
+        <div className="flex flex-wrap gap-2 text-xs">
+          {[
+            { label: 'Hoje', value: today },
+            { label: '7 dias', value: new Date(Date.now() - 7 * 86400000).toISOString().slice(0, 10) },
+            { label: '30 dias', value: new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10) },
+            { label: 'Tudo', value: '2024-01-01' },
+          ].map(({ label, value }) => (
+            <a
+              key={value}
+              href={`/quiz-funnel?since=${value}`}
+              className={[
+                'rounded-full border px-3 py-1 font-medium transition-colors',
+                since === value
+                  ? 'border-primary bg-primary text-primary-foreground'
+                  : 'border-border hover:bg-muted',
+              ].join(' ')}
+            >
+              {label}
+            </a>
+          ))}
+        </div>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border">
@@ -76,18 +113,22 @@ export default async function QuizFunnelPage() {
           </thead>
           <tbody className="divide-y divide-border">
             {Array.from({ length: 12 }, (_, i) => i + 1).map((step) => {
+              const isHidden = HIDDEN_STEPS.has(step)
               const count = stepCounts[step] ?? 0
               const prev = step === 1 ? step1 : (stepCounts[step - 1] ?? 0)
               const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
-              const isHighDrop = dropPct >= 20
+              const isHighDrop = !isHidden && dropPct >= 20
 
               return (
-                <tr key={step} className="hover:bg-muted/30 transition-colors">
+                <tr key={step} className={['transition-colors', isHidden ? 'opacity-40' : 'hover:bg-muted/30'].join(' ')}>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
                     {step}
                   </td>
-                  <td className="px-4 py-3 font-medium">{STEP_LABELS[step]}</td>
+                  <td className="px-4 py-3 font-medium">
+                    {STEP_LABELS[step]}
+                    {isHidden && <span className="ml-2 text-[10px] text-muted-foreground">(oculto)</span>}
+                  </td>
                   <td className="px-4 py-3 text-right tabular-nums">{count}</td>
                   <td className="px-4 py-3 text-right tabular-nums">
                     <span
@@ -104,15 +145,10 @@ export default async function QuizFunnelPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {step === 1 ? (
+                    {step === 1 || isHidden ? (
                       <span className="text-muted-foreground">—</span>
                     ) : (
-                      <span
-                        className={[
-                          'text-xs font-medium',
-                          isHighDrop ? 'text-red-600' : 'text-muted-foreground',
-                        ].join(' ')}
-                      >
+                      <span className={['text-xs font-medium', isHighDrop ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
                         {isHighDrop ? '⚠ ' : ''}{dropPct}%
                       </span>
                     )}
@@ -125,8 +161,8 @@ export default async function QuizFunnelPage() {
       </div>
 
       <p className="text-xs text-muted-foreground">
-        Abandono ⚠ sinaliza steps com queda ≥ 20% em relação ao step anterior.
-        Atualiza ao recarregar a página.
+        Steps ocultos (sem UI) aparecem esmaecidos e sem abandono calculado.
+        Abandono ⚠ sinaliza queda ≥ 20% em relação ao step anterior.
       </p>
     </div>
   )
