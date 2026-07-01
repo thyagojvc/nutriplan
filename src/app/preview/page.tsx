@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
@@ -94,57 +94,6 @@ function TeaserMeal({ meal }: { meal: SampleMeal }) {
         {totals.p}g prot · {totals.c}g carb · {totals.f}g gras
       </div>
     </div>
-  )
-}
-
-const VSL_URL =
-  'https://pub-777683ab442548ad8bf368e282687fb4.r2.dev/NutriPlan%20-%20VSL.mp4'
-
-function VslGate({ children }: { children: React.ReactNode }) {
-  const [revealed, setRevealed] = useState(false)
-  const [playing, setPlaying] = useState(false)
-  const videoRef = useRef<HTMLVideoElement>(null)
-
-  return (
-    <>
-      {!revealed && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black">
-          <div className="relative w-full max-w-[360px] px-4">
-            <video
-              ref={videoRef}
-              src={VSL_URL}
-              className="w-full rounded-2xl"
-              onEnded={() => setRevealed(true)}
-              onContextMenu={(e) => e.preventDefault()}
-              playsInline
-            />
-            {!playing && (
-              <button
-                onClick={() => { videoRef.current?.play(); setPlaying(true) }}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3.5 rounded-2xl bg-gradient-to-b from-black/25 via-black/40 to-black/60"
-              >
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary shadow-[0_0_30px_rgba(34,108,69,0.6)] ring-4 ring-white/20">
-                  <svg width="26" height="26" viewBox="0 0 24 24" fill="white" className="ml-0.5">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                </div>
-                <p className="font-display text-lg font-black tracking-tight text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.7)]">
-                  Ver mi plan personalizado
-                </p>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-xs font-semibold text-white/95 backdrop-blur-sm ring-1 ring-white/15">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                    <circle cx="12" cy="12" r="9" />
-                    <path d="M12 7v5l3 2" />
-                  </svg>
-                  58 seg
-                </span>
-              </button>
-            )}
-          </div>
-        </div>
-      )}
-      <div className={revealed ? '' : 'hidden'}>{children}</div>
-    </>
   )
 }
 
@@ -417,8 +366,7 @@ export default function PreviewPage() {
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
 
   return (
-    <VslGate>
-      <PageShell>
+    <PageShell>
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
@@ -604,13 +552,13 @@ export default function PreviewPage() {
           <div className="space-y-0.5">
             <p className="text-sm font-black text-gray-900">
               {painAngle === 'tiempo'
-                ? 'Ya no tienes que decidir qué comer'
-                : 'Por fin un método que usa tus números reales'}
+                ? 'Cero tiempo decidiendo qué comer'
+                : 'El primer plan con tus números reales'}
             </p>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
               {painAngle === 'tiempo'
-                ? 'No fallas por falta de fuerza de voluntad. Fallas cuando, sin tiempo, comes lo primero que aparece. Aquí cada día ya viene decidido y calculado para ti. Tu rutina deja de sabotearte.'
-                : `No fallaste tú. Las otras dietas te daban calorías genéricas sin saber cuánto quema tu cuerpo. Tu gasto real es ${targets.tdee} kcal — eso no lo calcula ninguna app ni dieta de influencer. Este plan sí.`}
+                ? 'Cada día ya viene armado y calculado para ti. Abres el plan, sigues el plan. Así de simple.'
+                : `Las otras dietas te dieron calorías genéricas. Tu gasto real es ${targets.tdee} kcal — ese número es tuyo, y este es el primer plan que lo usa.`}
             </p>
           </div>
         </div>
@@ -618,8 +566,8 @@ export default function PreviewPage() {
         {/* Por que a CM funciona quando outras dietas falharam — Estágio 4: nomeia o mecanismo do problema */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-3">
           <div className="text-center space-y-1">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Por qué otras dietas fallaron (y esta no)</p>
-            <p className="font-display text-[16px] font-black text-gray-900">El problema nunca fuiste tú. Fue el método.</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Ya las probaste. Por eso no funcionaron</p>
+            <p className="font-display text-[16px] font-black text-gray-900">Cada una ignoró tus números reales</p>
           </div>
           <div className="space-y-2">
             {[
@@ -1048,7 +996,6 @@ export default function PreviewPage() {
 
       </div>
     </PageShell>
-    </VslGate>
   )
 }
 
