@@ -28,7 +28,14 @@ async function getFunnelData(since: string) {
 
   if (since) query = query.gte('created_at', since)
 
-  const { data, error } = await query
+  const [{ data, error }, { count: ordersCount }] = await Promise.all([
+    query,
+    supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true })
+      .gte('created_at', since),
+  ])
+
   if (error || !data) return null
 
   const total = data.length
@@ -40,7 +47,11 @@ async function getFunnelData(since: string) {
     ).length
   }
 
-  return { total, stepCounts }
+  const previewViewed = data.filter(
+    (r) => r.draft_answers && typeof r.draft_answers === 'object' && '_ev_preview_viewed' in r.draft_answers,
+  ).length
+
+  return { total, stepCounts, previewViewed, ordersCount: ordersCount ?? 0 }
 }
 
 export default async function QuizFunnelPage({
@@ -63,7 +74,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts } = data
+  const { total, stepCounts, previewViewed, ordersCount } = data
   const step1 = stepCounts[1] || 1
 
   return (
@@ -156,6 +167,55 @@ export default async function QuizFunnelPage({
                 </tr>
               )
             })}
+            {/* Linha: Preview visualizada */}
+            {(() => {
+              const count = previewViewed
+              const prev = stepCounts[12] ?? 0
+              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+              return (
+                <tr className="hover:bg-muted/30 transition-colors border-t-2 border-primary/20">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
+                  <td className="px-4 py-3 font-medium text-primary">Viram a preview</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                      {pctStart}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                      {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })()}
+
+            {/* Linha: Clicaram no Hotmart */}
+            {(() => {
+              const count = ordersCount
+              const prev = previewViewed
+              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+              return (
+                <tr className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
+                  <td className="px-4 py-3 font-medium text-primary">Clicaram no Hotmart</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                      {pctStart}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                      {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })()}
           </tbody>
         </table>
       </div>

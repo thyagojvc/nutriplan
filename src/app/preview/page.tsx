@@ -167,7 +167,14 @@ export default function PreviewPage() {
 
   // Visualização da oferta: dispara quando a preview carrega com dados reais.
   useEffect(() => {
-    if (data) trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
+    if (!data) return
+    trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
+    // Registra no Supabase para o funil interno (fire-and-forget).
+    fetch('/api/quiz/track-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event: 'preview_viewed' }),
+    }).catch(() => {})
   }, [data])
 
   const HOTMART_URLS: Record<string, string> = {
