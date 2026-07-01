@@ -6,7 +6,7 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'NutriPlan — Tu plan nutricional personalizado',
     short_name: 'NutriPlan',
-    description: 'Tu Calibración Metabólica: cuánto comer exacto para tu cuerpo y tu objetivo.',
+    description: 'Tu NutriPlan: cuánto comer exacto para tu cuerpo y tu objetivo.',
     start_url: '/dashboard',
     display: 'standalone',
     background_color: '#ffffff',

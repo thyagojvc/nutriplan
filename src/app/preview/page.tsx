@@ -244,7 +244,7 @@ export default function PreviewPage() {
 
       const purchaseValue = type === '4weeks' ? 19.90 : 9.90
       sessionStorage.setItem('nutriplan_purchase_value', String(purchaseValue))
-      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'Método Calibración Metabólica™' })
+      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'NutriPlan' })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {
@@ -415,7 +415,7 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          Calibración Metabólica completada · solo para ti
+          Tu NutriPlan está listo · solo para ti
         </div>
 
         {isLoss || isGain ? (
@@ -540,7 +540,7 @@ export default function PreviewPage() {
         <div className="space-y-2">
           <div className="flex items-end justify-between px-1">
             <div>
-              <p className="text-sm font-black text-gray-900">Tu Calibración Metabólica en acción</p>
+              <p className="text-sm font-black text-gray-900">Tu NutriPlan en acción</p>
               <p className="text-[13px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal · para tu cuerpo</p>
             </div>
             <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
@@ -824,11 +824,11 @@ export default function PreviewPage() {
 
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
-            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Método Calibración Metabólica</p>
+            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu NutriPlan personalizado</p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu Calibración está lista. Empieza a adelgazar!'
-                : isGain ? '¡Tu Calibración está lista. Empieza a ganar músculo!'
-                : '¡Tu Calibración Metabólica exacta está lista!'}
+              {isLoss ? '¡Tu plan está listo. Empieza a adelgazar!'
+                : isGain ? '¡Tu plan está listo. Empieza a ganar músculo!'
+                : '¡Tu NutriPlan exacto está listo!'}
             </p>
           </div>
 

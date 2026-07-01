@@ -12,7 +12,7 @@ const PHASES = [
   'Adaptando a tus restricciones alimentarias…',
   'Seleccionando tus alimentos favoritos…',
   'Armando tu plan de 7 días…',
-  '¡Tu Calibración Metabólica está lista!',
+  '¡Tu NutriPlan está listo!',
 ]
 
 const ANIMATION_MS = 15_000
