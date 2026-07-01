@@ -118,6 +118,7 @@ export default function PreviewPage() {
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
   const [inputCount, setInputCount] = useState<number | null>(null)
+  const [activity, setActivity] = useState<{ count: number; label: string } | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
@@ -219,6 +220,16 @@ export default function PreviewPage() {
 
       if (count > 0) setInputCount(count)
     } catch {}
+  }, [])
+
+  // Prueba social honesta — solo muestra si hay volumen real que la sustente.
+  useEffect(() => {
+    fetch('/api/quiz/recent-activity')
+      .then((r) => r.json())
+      .then((d: { count: number | null; label: string | null }) => {
+        if (d.count && d.label) setActivity({ count: d.count, label: d.label })
+      })
+      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -522,6 +533,14 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
+        {/* Prueba social — número real de compras recientes (ver /api/quiz/recent-activity) */}
+        {activity && (
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
+            +{activity.count} mujeres ya empezaron su plan {activity.label}
+          </div>
+        )}
+
         {/* Perfil + IMC agrupados */}
         <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
           <div className="grid grid-cols-3 gap-2">
@@ -585,6 +604,12 @@ export default function PreviewPage() {
               <MacroRow color="#FACC15" label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
             </div>
           </div>
+          {training?.frequency && (
+            <p className="border-t border-[#EAF2E6] pt-3 text-[13px] leading-relaxed text-muted-foreground">
+              <span className="font-semibold text-gray-700">{targets.macros.proteinG}g de proteína</span> — el nivel que tu cuerpo necesita entrenando {TRAINING_FREQUENCY_LABEL[training.frequency] ?? ''}
+              {training.location ? ` ${TRAINING_LOCATION_LABEL[training.location] ?? ''}` : ''}.
+            </p>
+          )}
         </Card>
 
         {/* Vista previa real del plan */}
