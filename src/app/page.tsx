@@ -231,7 +231,7 @@ export default function HomePage() {
             </span>
           </div>
           <Link
-            href="/quiz/1"
+            href="/quiz/5"
             className={[
               'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
               'bg-primary shadow-[0_4px_20px_0_rgba(0,0,0,0.18)]',

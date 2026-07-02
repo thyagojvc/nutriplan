@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 const BACK_FLAG = 'nutriplan_can_go_back'
 
@@ -138,8 +138,6 @@ export function QuizProgress({
   pct: number
 }) {
   const router = useRouter()
-  const pathname = usePathname()
-  const actualStep = parseInt(pathname?.split('/').pop() ?? '0', 10)
 
   // Mostra voltar só se acabou de avançar (flag gravada pelo QuizCta)
   const [canGoBack, setCanGoBack] = useState(false)
@@ -150,9 +148,11 @@ export function QuizProgress({
     )
   }, [step, total])
 
+  // Volta pelo histórico do navegador: robusto à ordem das URLs do fluxo
+  // (que não é sequencial — ver VISIBLE_ORDER em page.tsx).
   function handleBack() {
     sessionStorage.removeItem(BACK_FLAG)
-    router.push(`/quiz/${actualStep - 1}`)
+    router.back()
   }
 
   return (
@@ -404,6 +404,9 @@ export function QuizCta({
   children?: React.ReactNode
   type?: 'button' | 'submit'
 }) {
+  // Marca que houve avanço in-quiz (habilita o "Anterior" no passo seguinte).
+  // Vale para type button e submit — em submit, onClick roda antes do submit
+  // nativo e onClick? é undefined, então o form ainda envia normalmente.
   function handleClick() {
     sessionStorage.setItem(BACK_FLAG, '1')
     onClick?.()
@@ -412,7 +415,7 @@ export function QuizCta({
   return (
     <button
       type={type}
-      onClick={type === 'button' ? handleClick : undefined}
+      onClick={handleClick}
       disabled={disabled || loading}
       className={[
         'quiz-enter quiz-enter-delay-2',

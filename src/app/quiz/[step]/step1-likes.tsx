@@ -143,7 +143,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
         body: JSON.stringify({ step: 1, answers: { likes: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/2')
+      router.push('/quiz/4') // → sexo
     } catch {
       setError(true)
     } finally {

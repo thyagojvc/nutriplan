@@ -443,7 +443,7 @@ export default function PreviewPage() {
                 Intentar de nuevo
               </button>
             )}
-            <a href="/quiz/1" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
+            <a href="/quiz/5" className="inline-flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white">
               Volver al quiz →
             </a>
           </div>

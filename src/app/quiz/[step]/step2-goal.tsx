@@ -48,8 +48,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 2, answers: { goal } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
-      // Pula o step 3 (alimento imprescindível), oculto por enquanto — ver HIDDEN_STEPS em page.tsx.
-      router.push('/quiz/4')
+      router.push('/quiz/1') // → alimentos favoritos
     } catch {
       setError(true)
       setSaving(false)

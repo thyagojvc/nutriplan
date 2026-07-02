@@ -69,7 +69,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 5, answers: { age, weight_kg: weight, height_cm: height } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/6')
+      router.push('/quiz/2') // → objetivo
     } catch {
       setError(true)
     } finally {
@@ -99,6 +99,14 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   return (
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
+
+      {/* Promessa de entrada — só aparece neste passo, que é o início do quiz */}
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
+        <span className="text-base">⏱️</span>
+        <p className="text-[13px] font-bold leading-snug text-primary">
+          Responde este quiz de 60 segundos y recibe tu plan y tu entrenamiento personalizados
+        </p>
+      </div>
 
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
