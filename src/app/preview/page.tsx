@@ -704,38 +704,6 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Por que a CM funciona quando outras dietas falharam — Estágio 4: nomeia o mecanismo do problema */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-4 space-y-3">
-          <div className="text-center space-y-1">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Ya las probaste. Por eso no funcionaron</p>
-            <p className="font-display text-[16px] font-black text-gray-900">Cada una ignoró tus números reales</p>
-          </div>
-          <div className="space-y-2">
-            {[
-              {
-                label: 'Keto',
-                why: `Te quitó los carbohidratos sin saber cuánto quema tu cuerpo. Tu TMB real es ${targets.bmr} kcal. Keto no lo calcula.`,
-              },
-              {
-                label: 'Contar calorías',
-                why: `Te dieron 1.200 kcal genéricas cuando tu gasto real es ${targets.tdee} kcal. La diferencia te dejaba con hambre y sin resultados.`,
-              },
-              {
-                label: 'La dieta de la influencer',
-                why: 'Funciona para el cuerpo de ella. No para el tuyo. Tú tienes tu propio metabolismo, tu actividad y tu objetivo.',
-              },
-            ].map(({ label, why }) => (
-              <div key={label} className="rounded-xl border border-[#EAF2E6] bg-[#F5FAF2] px-3.5 py-2.5 space-y-0.5">
-                <p className="text-xs font-bold text-[#993C1D] line-through">{label}</p>
-                <p className="text-[13px] text-gray-600 leading-relaxed">{why}</p>
-              </div>
-            ))}
-          </div>
-          <p className="text-[13px] text-center text-muted-foreground leading-relaxed pt-1">
-            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> usa tus números reales. Los que calculaste arriba son tuyos, no de otra persona.
-          </p>
-        </div>
-
         {/* Autoridade — responsável técnico */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
           <div className="text-center space-y-1">
@@ -835,82 +803,6 @@ export default function PreviewPage() {
               <p className="text-xs font-bold text-primary">{country} {name}</p>
             </div>
           ))}
-        </div>
-
-        {/* Progressão das 4 semanas — âncora de valor antes da oferta */}
-        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
-          <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Por qué 4 semanas cambian todo</p>
-            <p className="mt-0.5 text-[16px] font-black text-gray-900">Tu cuerpo cambia en etapas, no de golpe</p>
-          </div>
-          <div className="space-y-1 p-4">
-
-            {/* Sem 1 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[11px] font-black text-primary">1</span>
-              </div>
-              <div className="pt-0.5">
-                <p className="text-sm font-bold text-gray-900">Adaptación</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu metabolismo aprende el nuevo ritmo sin hambre extrema. Tu cuerpo empieza a confiar en el plan.</p>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="h-2.5 w-px bg-[#D8E8D4]" />
-            </div>
-
-            {/* Sem 2 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[11px] font-black text-primary">2</span>
-              </div>
-              <div className="pt-0.5">
-                <p className="text-sm font-bold text-gray-900">Calibración</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu cuerpo ya aprendió el ritmo. El plan empieza a calibrarse a tu metabolismo real.</p>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="h-2.5 w-px bg-[#D8E8D4]" />
-            </div>
-
-            {/* Sem 3 — destaque */}
-            <div className="flex items-start gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3 py-2">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary">
-                <span className="text-[11px] font-black text-white">3</span>
-              </div>
-              <div className="pt-0.5">
-                <div className="flex flex-wrap items-center gap-2">
-                  <p className="text-sm font-bold text-gray-900">Aceleración</p>
-                  <span className="rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold uppercase tracking-wide text-white">Aquí cambia todo</span>
-                </div>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">La Calibración ajusta tus calorías con base en tu progreso real. El plan se recalibra para tu cuerpo actual y los resultados se aceleran.</p>
-              </div>
-            </div>
-
-            <div className="flex justify-center">
-              <div className="h-2.5 w-px bg-[#D8E8D4]" />
-            </div>
-
-            {/* Sem 4 */}
-            <div className="flex items-start gap-3 rounded-xl px-3 py-2">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border-2 border-[#D8E8D4] bg-[#EAF3DE]">
-                <span className="text-[11px] font-black text-primary">4</span>
-              </div>
-              <div className="pt-0.5">
-                <p className="text-sm font-bold text-gray-900">Consolidación</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">Tu metabolismo se estabiliza. Los hábitos quedan. Sin efecto rebote.</p>
-              </div>
-            </div>
-
-          </div>
-          <div className="border-t border-[#D8E8D4] bg-[#F5FAF2] px-5 py-3">
-            <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-              El plan de 1 semana te da el primer paso. El de 4 semanas{' '}
-              <span className="font-semibold text-gray-700">te lleva hasta el resultado real.</span>
-            </p>
-          </div>
         </div>
 
         {/* Teaser plan de entrenamiento — solo si respondió el step de ejercicio */}
@@ -1141,17 +1033,14 @@ export default function PreviewPage() {
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
               </div>
               <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">4 semanas completas</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">{price(19.90)}</p>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan</p>
+                <p className="mt-1 text-2xl font-black text-gray-900">desde {price(7.90)}</p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
               </div>
             </div>
 
             <p className="text-center text-[13px] leading-relaxed text-gray-700">
-              4 semanas de menús distintos para tu cuerpo, con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
-            </p>
-            <p className="text-center text-sm font-bold text-primary">
-              Una semana sale a menos de {price(5)}. Lo que dejas en un café.
+              Tu plan con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
             </p>
           </div>
         </div>
