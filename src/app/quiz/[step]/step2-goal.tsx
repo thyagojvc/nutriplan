@@ -33,27 +33,30 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
   function handleSelect(id: string) {
     setSelected(id)
     sessionStorage.setItem('nutriplan_step_2', JSON.stringify({ goal: id }))
+    // Escolha única: avança direto, sem exigir o clique em Continuar
+    submit(id)
   }
 
-  async function handleContinue() {
-    if (!selected || saving) return
+  async function submit(goal: string) {
+    if (!goal || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 2, answers: { goal: selected } }),
+        body: JSON.stringify({ step: 2, answers: { goal } }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
       // Pula o step 3 (alimento imprescindível), oculto por enquanto — ver HIDDEN_STEPS em page.tsx.
       router.push('/quiz/4')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => { if (selected) submit(selected) }
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 

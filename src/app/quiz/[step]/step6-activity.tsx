@@ -42,20 +42,22 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
     const level = LEVELS.find((l) => l.id === id)!
     setSelected(id)
     sessionStorage.setItem('nutriplan_step_6', JSON.stringify({ activity_level: id, activity_factor: level.factor }))
+    // Escolha única: avança direto, sem exigir o clique em Continuar
+    submit(id)
   }
 
-  async function handleContinue() {
-    if (!selected || saving) return
-    const level = LEVELS.find((l) => l.id === selected)!
+  async function submit(activityLevel: string) {
+    if (!activityLevel || saving) return
+    const level = LEVELS.find((l) => l.id === activityLevel)!
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 6, answers: { activity_level: selected, activity_factor: level.factor } }),
+        body: JSON.stringify({ step: 6, answers: { activity_level: activityLevel, activity_factor: level.factor } }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
 
       const dbCountry = toDbCountry(detectedCountry)
       sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
@@ -68,10 +70,11 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
       router.push('/quiz/8')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => { if (selected) submit(selected) }
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 

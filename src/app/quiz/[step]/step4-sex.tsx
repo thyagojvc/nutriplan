@@ -32,26 +32,29 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
   function handleSelect(id: string) {
     setSelected(id)
     sessionStorage.setItem('nutriplan_step_4', JSON.stringify({ sex: id }))
+    // Escolha única: avança direto, sem exigir o clique em Continuar
+    submit(id)
   }
 
-  async function handleContinue() {
-    if (!selected || saving) return
+  async function submit(sex: string) {
+    if (!sex || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 4, answers: { sex: selected } }),
+        body: JSON.stringify({ step: 4, answers: { sex } }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
       router.push('/quiz/5')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => { if (selected) submit(selected) }
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 

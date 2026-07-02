@@ -116,6 +116,17 @@ export async function POST(request: NextRequest) {
         .eq('idempotency_key', idempotencyKey)
         .single()
       if (existing) {
+        // Cura pedidos que ficaram sem item (insert de items falhou na 1ª tentativa)
+        await supabase.from('order_items').upsert(
+          {
+            order_id: existing.id,
+            kind: 'nutrition',
+            product_code: productCode,
+            unit_price: Number(plan.local_price),
+            currency: plan.currency ?? 'USD',
+          },
+          { onConflict: 'order_id,product_code', ignoreDuplicates: true },
+        )
         return NextResponse.json({
           order_id: existing.id,
           idempotency_key: idempotencyKey,
@@ -128,32 +139,18 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'order_creation_failed' }, { status: 500 })
   }
 
-  const items: {
-    order_id: string
-    kind: 'nutrition' | 'training'
-    product_code: string
-    unit_price: number
-    currency: string
-  }[] = [
+  // Um único item por pedido: uq_order_item_product impede repetir o
+  // product_code no mesmo order. O tier training é detectado pelo próprio
+  // product_code (PLAN_TRAINING) no process-order — não precisa de item extra.
+  const items = [
     {
       order_id: order.id,
-      kind: 'nutrition',
+      kind: 'nutrition' as const,
       product_code: productCode,
       unit_price: Number(plan.local_price),
       currency: plan.currency ?? 'USD',
     },
   ]
-
-  // tier training inclui um item extra para disparar a geração do plano de treino
-  if (plan_type === 'training') {
-    items.push({
-      order_id: order.id,
-      kind: 'training',
-      product_code: productCode,
-      unit_price: 0,
-      currency: plan.currency ?? 'USD',
-    })
-  }
 
   const { error: itemsError } = await supabase.from('order_items').insert(items)
   if (itemsError) {
