@@ -908,10 +908,21 @@ export default function PreviewPage() {
                     </span>
                     {item}
                   </span>
-                  <span className="shrink-0 text-xs font-semibold text-muted-foreground">{value}</span>
+                  <span className={value === 'incluido'
+                    ? 'shrink-0 text-xs font-semibold text-primary'
+                    : 'shrink-0 text-xs font-semibold text-gray-400 line-through'}>{value}</span>
                 </li>
               ))}
             </ul>
+
+            {/* Valor total riscado — deja claro de una vez que NO es lo que paga */}
+            <div className="flex items-center justify-between gap-3 border-t border-[#EAF2E6] pt-3">
+              <span className="text-sm font-bold text-gray-900">Valor total</span>
+              <span className="text-base font-black text-gray-400 line-through">{price(30)}</span>
+            </div>
+            <p className="text-center text-[13px] text-gray-700">
+              Hoy no pagas eso. <span className="font-bold text-primary">Elige tu plan abajo.</span>
+            </p>
 
             {/* Soporte por WhatsApp con el nutricionista — risco reverso no ponto da decisão */}
             <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
@@ -943,7 +954,7 @@ export default function PreviewPage() {
               >
                 <span className="flex min-w-0 flex-col gap-0.5">
                   <span className="text-sm font-bold text-gray-900">Solo el plan · 7 días</span>
-                  <span className="text-[12px] text-muted-foreground">Plan nutricional + guía de implementación</span>
+                  <span className="text-[12px] text-muted-foreground">Menús personalizados para tu meta</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1.5">
                   <span className="text-base font-black text-gray-700">{price(7.90)}</span>
@@ -969,7 +980,7 @@ export default function PreviewPage() {
                 >
                   <span className="flex min-w-0 flex-col gap-0.5">
                     <span className="text-sm font-bold text-gray-900">Plan + 28 Recetas Fitness</span>
-                    <span className="text-[12px] text-muted-foreground">+ Lista de compras + Sustituciones</span>
+                    <span className="text-[12px] text-muted-foreground">Todo lo del plan + 28 recetas + lista de compras + sustituciones</span>
                   </span>
                   <span className="flex shrink-0 items-center gap-1.5">
                     <span className="text-lg font-black text-primary">{price(9.90)}</span>
@@ -991,7 +1002,7 @@ export default function PreviewPage() {
                     + plan de entrenamiento
                   </span>
                   <span className="text-sm font-bold text-gray-900">Plan + Recetas + Entrenamiento</span>
-                  <span className="text-[12px] text-muted-foreground">Casa o gimnasio, adaptado a tu perfil</span>
+                  <span className="text-[12px] text-muted-foreground">Todo lo anterior + tu rutina para casa o gimnasio, a tu perfil</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1.5">
                   <span className="text-base font-black text-gray-700">{price(14.90)}</span>

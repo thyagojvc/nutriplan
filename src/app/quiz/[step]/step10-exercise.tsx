@@ -78,18 +78,21 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
   }
 
   function toggleLimitation(id: string) {
-    setData((prev) => {
-      let next: string[]
-      if (id === 'ninguna') {
-        next = prev.limitations.includes('ninguna') ? [] : ['ninguna']
-      } else {
-        const without = prev.limitations.filter((x) => x !== 'ninguna')
-        next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
-      }
-      const updated = { ...prev, limitations: next }
-      sessionStorage.setItem('nutriplan_step_10', JSON.stringify(updated))
-      return updated
-    })
+    let next: string[]
+    if (id === 'ninguna') {
+      next = data.limitations.includes('ninguna') ? [] : ['ninguna']
+    } else {
+      const without = data.limitations.filter((x) => x !== 'ninguna')
+      next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
+    }
+    const updated = { ...data, limitations: next }
+    setData(updated)
+    sessionStorage.setItem('nutriplan_step_10', JSON.stringify(updated))
+    // "Sin limitaciones" avanza solo, pero solo si el resto del paso ya está completo
+    const restValid = updated.experience === 'no_ejercicio'
+      ? !!updated.experience
+      : !!updated.experience && !!updated.location && !!updated.frequency
+    if (id === 'ninguna' && next.includes('ninguna') && restValid) submit(updated)
   }
 
   const noExercise = data.experience === 'no_ejercicio'
@@ -97,24 +100,28 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
     ? !!data.experience && data.limitations.length > 0
     : !!data.experience && !!data.location && !!data.frequency && data.limitations.length > 0
 
-  async function handleContinue() {
-    if (!isValid || saving) return
+  async function submit(payload: ExerciseData) {
+    const valid = payload.experience === 'no_ejercicio'
+      ? !!payload.experience && payload.limitations.length > 0
+      : !!payload.experience && !!payload.location && !!payload.frequency && payload.limitations.length > 0
+    if (!valid || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 10, answers: data }),
+        body: JSON.stringify({ step: 10, answers: payload }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
       router.push('/quiz/11')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => submit(data)
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 

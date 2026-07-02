@@ -36,37 +36,38 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
   const [error, setError] = useState(false)
 
   function toggle(id: string) {
-    setSelected((prev) => {
-      let next: string[]
-      if (id === 'ninguna') {
-        next = prev.includes('ninguna') ? [] : ['ninguna']
-      } else {
-        const without = prev.filter((x) => x !== 'ninguna')
-        next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
-      }
-      sessionStorage.setItem('nutriplan_step_8', JSON.stringify({ restrictions: next }))
-      return next
-    })
+    let next: string[]
+    if (id === 'ninguna') {
+      next = selected.includes('ninguna') ? [] : ['ninguna']
+    } else {
+      const without = selected.filter((x) => x !== 'ninguna')
+      next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
+    }
+    setSelected(next)
+    sessionStorage.setItem('nutriplan_step_8', JSON.stringify({ restrictions: next }))
+    // Elegir la opción exclusiva "ninguna" avanza solo — menos fricción
+    if (id === 'ninguna' && next.includes('ninguna')) submit(next)
   }
 
-  async function handleContinue() {
-    if (selected.length === 0 || saving) return
+  async function submit(values: string[]) {
+    if (values.length === 0 || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 8, answers: { restrictions: selected } }),
+        body: JSON.stringify({ step: 8, answers: { restrictions: values } }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
       router.push('/quiz/9')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => submit(selected)
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 

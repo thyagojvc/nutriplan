@@ -34,37 +34,38 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
   const [error, setError] = useState(false)
 
   function toggle(id: string) {
-    setSelected((prev) => {
-      let next: string[]
-      if (id === 'ninguna_condicion') {
-        next = prev.includes('ninguna_condicion') ? [] : ['ninguna_condicion']
-      } else {
-        const without = prev.filter((x) => x !== 'ninguna_condicion')
-        next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
-      }
-      sessionStorage.setItem('nutriplan_step_9', JSON.stringify({ health: next }))
-      return next
-    })
+    let next: string[]
+    if (id === 'ninguna_condicion') {
+      next = selected.includes('ninguna_condicion') ? [] : ['ninguna_condicion']
+    } else {
+      const without = selected.filter((x) => x !== 'ninguna_condicion')
+      next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
+    }
+    setSelected(next)
+    sessionStorage.setItem('nutriplan_step_9', JSON.stringify({ health: next }))
+    // Elegir la opción exclusiva "ninguna condición" avanza solo — menos fricción
+    if (id === 'ninguna_condicion' && next.includes('ninguna_condicion')) submit(next)
   }
 
-  async function handleContinue() {
-    if (selected.length === 0 || saving) return
+  async function submit(values: string[]) {
+    if (values.length === 0 || saving) return
     setSaving(true)
     setError(false)
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 9, answers: { health: selected } }),
+        body: JSON.stringify({ step: 9, answers: { health: values } }),
       })
-      if (!res.ok) { setError(true); return }
+      if (!res.ok) { setError(true); setSaving(false); return }
       router.push('/quiz/10')
     } catch {
       setError(true)
-    } finally {
       setSaving(false)
     }
   }
+
+  const handleContinue = () => submit(selected)
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
