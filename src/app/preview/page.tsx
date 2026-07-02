@@ -547,8 +547,8 @@ export default function PreviewPage() {
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
           {painAngle === 'tiempo'
-            ? 'Saber tu número es solo el primer paso. Lo difícil es decidir qué comer cada día sin tiempo. Tu plan ya viene decidido, para que tu rutina no te sabotee.'
-            : 'Saber tu número es solo el primer paso. Pero es el primero que ninguna dieta que probaste tomó en serio. Este número es tuyo, no de otra persona.'}
+            ? 'Ya tienes tu número. Abajo está tu plan de comidas, listo y decidido, para que tu rutina no te sabotee. Y puedes sumarle tu entrenamiento.'
+            : 'Ya tienes tu número. Abajo está tu plan de comidas para tu cuerpo, y puedes sumarle tu entrenamiento. Todo listo para empezar hoy.'}
         </p>
       </div>
 
@@ -694,12 +694,12 @@ export default function PreviewPage() {
             <p className="text-sm font-black text-gray-900">
               {painAngle === 'tiempo'
                 ? 'Cero tiempo decidiendo qué comer'
-                : 'El primer plan con tus números reales'}
+                : 'Tu dieta y tu entreno, en un solo lugar'}
             </p>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
               {painAngle === 'tiempo'
                 ? 'Cada día ya viene armado y calculado para ti. Abres el plan, sigues el plan. Así de simple.'
-                : `Las otras dietas te dieron calorías genéricas. Tu gasto real es ${targets.tdee} kcal — ese número es tuyo, y este es el primer plan que lo usa.`}
+                : `Lo que pagarías a un nutricionista y a un personal, calculado para tus ${targets.targetCalories} kcal en minutos. Sin pagar los dos por separado.`}
             </p>
           </div>
         </div>
@@ -1015,32 +1015,32 @@ export default function PreviewPage() {
         {/* Âncora externa — quanto custaria com um nutricionista (consulta real) */}
         <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
           <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que vale un plan como este en el consultorio</p>
-            <p className="mt-0.5 text-[16px] font-black text-gray-900">Diseñado por nutricionistas. Sin el costo de volver cada mes.</p>
+            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que costaría por separado</p>
+            <p className="mt-0.5 text-[16px] font-black text-gray-900">Un nutricionista y un personal, en un solo plan.</p>
           </div>
           <div className="space-y-4 p-5">
             <p className="text-[13px] leading-relaxed text-gray-700">
-              Sentarte con un nutricionista cuesta, en promedio, <strong>unos {price(35)}</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
+              Una consulta con nutricionista cuesta, en promedio, <strong>unos {price(35)}</strong>. Y un personal que te arme la rutina, aparte. Los dos valen cada peso.
             </p>
             <p className="text-[13px] leading-relaxed text-gray-700">
-              El problema nunca fue el plan. Fue pagar una consulta cada mes y encontrar el tiempo para ir. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
+              La diferencia es que aquí no pagas los dos por separado ni cada mes. NutriPlan te da la dieta y el entrenamiento con la Calibración Metabólica que validó un nutricionista, listo en tus manos hoy.
             </p>
 
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">Solo el nutri</p>
                 <p className="mt-1 text-2xl font-black text-gray-400 line-through">+{price(35)}</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">y el personal, aparte y cada mes</p>
               </div>
               <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">desde {price(7.90)}</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
+                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan + entreno</p>
+                <p className="mt-1 text-2xl font-black text-gray-900">{price(14.90)}</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">los dos, pago único</p>
               </div>
             </div>
 
             <p className="text-center text-[13px] leading-relaxed text-gray-700">
-              Tu plan con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
+              Tu dieta y tu entreno, con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
             </p>
           </div>
         </div>
