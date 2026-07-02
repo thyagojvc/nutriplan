@@ -61,10 +61,20 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
 
   if (!email) return
 
-  console.info('[webhook/hotmart] produto recebido:', productId, HOTMART_PRODUCT_IDS[productId] ?? 'desconhecido')
+  // sck da URL de checkout (setado na preview) carrega o order_id do pedido
+  // pendente. É o caminho primário de match — o quiz não captura mais e-mail,
+  // então o lookup por lead/email virou apenas fallback de compatibilidade.
+  const origin = purchase?.origin as Record<string, unknown> | undefined
+  const sckRaw = origin?.sck ?? purchase?.sckPaymentLink ?? ''
+  const orderIdHint =
+    typeof sckRaw === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(sckRaw)
+      ? sckRaw
+      : undefined
+
+  console.info('[webhook/hotmart] produto recebido:', productId, HOTMART_PRODUCT_IDS[productId] ?? 'desconhecido', 'sck:', orderIdHint ?? 'ausente')
 
   if (recurrenceNumber === 0) {
-    const orderResult = await activateNewSubscriber({ email, name, transactionId })
+    const orderResult = await activateNewSubscriber({ email, name, transactionId, orderIdHint })
     if (orderResult) {
       const { orderId, totalAmount, currency, fbc, fbp, clientIpAddress, clientUserAgent } = orderResult
 
@@ -111,35 +121,56 @@ async function activateNewSubscriber({
   email,
   name,
   transactionId,
+  orderIdHint,
 }: {
   email: string
   name: string
   transactionId?: string
+  orderIdHint?: string
 }): Promise<ActivateResult | null> {
   const supabase = createServiceClient()
 
-  // 1. Encontrar lead mais recente pelo e-mail
+  // 0. Caminho primário: sck do checkout traz o order_id do pedido pendente.
+  //    Deriva a sessão direto do pedido, sem depender de lead por e-mail.
+  let hintedSessionId: string | null = null
+  if (orderIdHint) {
+    const { data: hinted } = await supabase
+      .from('orders')
+      .select('id, session_id, status')
+      .eq('id', orderIdHint)
+      .eq('status', 'pending')
+      .maybeSingle()
+    if (hinted?.session_id) hintedSessionId = hinted.session_id as string
+  }
+
+  // 1. Encontrar lead mais recente pelo e-mail (fallback + marcação converted)
   const { data: lead } = await supabase
     .from('leads')
     .select('id, name, country, session_id:generation_sessions(id)')
     .eq('email', email)
     .order('created_at', { ascending: false })
     .limit(1)
-    .single()
-
-  // lead.session_id pode ser gerado da relação inversa — buscar direto na session
-  const { data: session } = await supabase
-    .from('generation_sessions')
-    .select('id, country')
-    .eq('lead_id', lead?.id ?? '')
-    .order('created_at', { ascending: false })
-    .limit(1)
     .maybeSingle()
+
+  // Sessão: do pedido hintado (sck) ou, em fallback, via lead
+  const { data: session } = hintedSessionId
+    ? await supabase
+        .from('generation_sessions')
+        .select('id, country')
+        .eq('id', hintedSessionId)
+        .maybeSingle()
+    : await supabase
+        .from('generation_sessions')
+        .select('id, country')
+        .eq('lead_id', lead?.id ?? '')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle()
 
   // 2. Encontrar pedido pendente para esta sessão
   const sessionId = session?.id
   if (!sessionId) {
-    // Email não tem quiz preenchido (ex: payload de teste da Hotmart). Ignorar.
+    // Sem sck válido e sem quiz vinculado ao e-mail (ex: payload de teste). Ignorar.
     console.warn('[webhook/hotmart] activateNewSubscriber: sem sessão para', email)
     return null
   }

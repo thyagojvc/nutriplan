@@ -324,6 +324,9 @@ export default function PreviewPage() {
       const params = new URLSearchParams()
       if (leadInfo.email) params.set('email', leadInfo.email)
       if (leadInfo.name)  params.set('name',  leadInfo.name)
+      // sck volta no payload do webhook e permite casar a compra com o pedido
+      // sem depender de lead/email (o quiz não captura mais email).
+      params.set('sck', d.order_id)
       window.location.href = `${base}?${params.toString()}`
     } catch {
       setCtaState('error')

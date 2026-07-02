@@ -82,7 +82,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
       <QuizCard>
         <QuizHeader
           title="¿Cuál es tu nivel de actividad física?"
-          subtitle="Sé honesto — esto determina directamente cuántas calorías necesitas cada día."
+          subtitle="Sé honesta: esto determina directamente cuántas calorías necesitas cada día."
         />
 
         <div className="space-y-2.5">
