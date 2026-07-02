@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
+  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap, Dumbbell,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -41,6 +41,27 @@ const TRAINING_FREQUENCY_LABEL: Record<string, string> = {
   '1_2': '1-2 días por semana',
   '3_4': '3-4 días por semana',
   '5_mas': '5+ días por semana',
+}
+
+const TRAINING_PREVIEW_EXAMPLES: Record<string, string[]> = {
+  casa: [
+    'Calentamiento dinámico · 5-8 min',
+    'Sentadilla con peso corporal · 4 x 12-15',
+    'Hip thrust en suelo · 4 x 12-15',
+    'Plancha frontal · 3 x 40 seg',
+  ],
+  gimnasio: [
+    'Calentamiento dinámico · 5-8 min',
+    'Sentadilla goblet · 4 x 12-15',
+    'Hip thrust en banco con barra · 4 x 12-15',
+    'Jalón al pecho en polea · 3 x 15-20',
+  ],
+  aire_libre: [
+    'Calentamiento dinámico · 5-8 min',
+    'Sentadilla con peso corporal · 4 x 12-15',
+    'Zancada caminando · 4 x 12 por lado',
+    'Plancha frontal · 3 x 40 seg',
+  ],
 }
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
@@ -262,18 +283,19 @@ export default function PreviewPage() {
   }, [data])
 
   const HOTMART_URLS: Record<string, string> = {
-    '4weeks':  'https://pay.hotmart.com/V106475995N',
-    'standard': 'https://pay.hotmart.com/O106407229L',
+    basic:    'https://pay.hotmart.com/O106407229L',
+    recipes:  'https://pay.hotmart.com/V106475995N',
+    training: 'https://pay.hotmart.com/S106421785Q',
   }
 
-  async function handleCta(type: '4weeks' | 'standard') {
+  async function handleCta(type: 'basic' | 'recipes' | 'training') {
     if (ctaState === 'loading') return
     setCtaState('loading')
     try {
       const r = await fetch('/api/checkout/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ include_bump: false, plan_type: type }),
+        body: JSON.stringify({ plan_type: type }),
       })
       const d = await r.json()
       if (!d.order_id) { setCtaState('error'); return }
@@ -284,7 +306,7 @@ export default function PreviewPage() {
         sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
       }
 
-      const purchaseValue = type === '4weeks' ? 19.90 : 9.90
+      const purchaseValue = type === 'training' ? 14.90 : type === 'recipes' ? 9.90 : 7.90
       sessionStorage.setItem('nutriplan_purchase_value', String(purchaseValue))
       trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'NutriPlan' })
 
@@ -893,17 +915,57 @@ export default function PreviewPage() {
 
         {/* Teaser plan de entrenamiento — solo si respondió el step de ejercicio */}
         {training && (
-          <div className="flex items-start gap-3 rounded-2xl border border-primary/25 bg-white p-4">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-              <Zap className="h-[18px] w-[18px] text-primary" />
+          <div className="overflow-hidden rounded-2xl border border-primary/20 bg-white">
+            {/* Encabezado */}
+            <div className="flex items-center gap-3 bg-primary/[0.06] px-4 py-3">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15">
+                <Dumbbell className="h-4 w-4 text-primary" />
+              </div>
+              <div>
+                <p className="text-sm font-black text-gray-900">Tu plan de entrenamiento, también personalizado</p>
+                <p className="text-[12px] text-muted-foreground">
+                  {training.frequency ? TRAINING_FREQUENCY_LABEL[training.frequency] : ''}
+                  {training.location ? ` · ${TRAINING_LOCATION_LABEL[training.location]}` : ''}
+                </p>
+              </div>
             </div>
-            <div className="space-y-0.5">
-              <p className="text-sm font-black text-gray-900">También vimos que entrenas</p>
-              <p className="text-[13px] leading-relaxed text-muted-foreground">
-                Nos dijiste que entrenas {training.location ? TRAINING_LOCATION_LABEL[training.location] ?? '' : ''}
-                {training.frequency ? `, ${TRAINING_FREQUENCY_LABEL[training.frequency] ?? ''}` : ''}.
-                {' '}En el checkout vas a poder sumar tu plan de entrenamiento hecho para eso.
+
+            {/* Muestra de la sesión 1 */}
+            <div className="px-4 pt-3 pb-1">
+              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                Muestra — sesión 1
               </p>
+              <div className="space-y-2">
+                {TRAINING_PREVIEW_EXAMPLES[training.location ?? 'casa'].map((ex, i) => (
+                  <div key={i} className="flex items-center gap-2.5">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-black text-primary">
+                      {i + 1}
+                    </span>
+                    <span className="text-[13px] text-gray-700">{ex}</span>
+                  </div>
+                ))}
+                <p className="pt-0.5 text-[11px] text-muted-foreground">
+                  + más ejercicios incluidos en tu plan completo
+                </p>
+              </div>
+            </div>
+
+            {/* Sesiones bloqueadas */}
+            <div className="mx-4 mb-3 mt-3 flex items-center justify-between rounded-xl border border-primary/15 bg-[#F5FAF2] px-3 py-2">
+              <span className="flex items-center gap-1.5 text-[12px] font-semibold text-gray-700">
+                <Lock className="h-3 w-3 text-primary" />
+                {training.frequency === '5_mas' ? '5 sesiones' : training.frequency === '3_4' ? '4 sesiones' : '2 sesiones'} semanales personalizadas
+              </span>
+              <span className="text-[11px] text-muted-foreground">disponibles al comprar</span>
+            </div>
+
+            {/* Nota casa vs gimnasio */}
+            <div className="border-t border-[#EAF2E6] px-4 py-2.5 text-[12px] text-muted-foreground">
+              Ejercicios elegidos para{' '}
+              <span className="font-semibold text-gray-700">
+                {training.location === 'gimnasio' ? 'el gimnasio' : training.location === 'aire_libre' ? 'aire libre' : 'entrenar en casa'}
+              </span>
+              , adaptados a tu experiencia y sin agravar molestias físicas.
             </div>
           </div>
         )}
@@ -972,86 +1034,89 @@ export default function PreviewPage() {
               </div>
             </div>
 
-            {/* Price box — hero 1 semana, entrada de baja barrera */}
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-4 text-center space-y-1">
-              <span className="inline-block rounded-full bg-primary px-3 py-0.5 text-[13px] font-bold text-white">empieza hoy</span>
-              <div className="flex items-center justify-center gap-2 mt-1">
-                <span className="text-sm text-muted-foreground">Valor total <span className="line-through">{price(30)}</span></span>
-                <span className="rounded-full bg-[#FBE7DF] px-2 py-0.5 text-[13px] font-bold text-[#993C1D]">Ahorras {price(20)}</span>
-              </div>
-              <p className="leading-none">
-                <span className="text-5xl font-black text-gray-900">{price(9.90)}</span>
-              </p>
-              <p className="text-sm font-bold text-primary">Pago único · 1 semana · sin suscripción</p>
-              <p className="flex items-center justify-center gap-1 text-xs font-semibold text-muted-foreground">
-                <Coffee className="h-3.5 w-3.5" /> Prueba el método completo durante 7 días
-              </p>
-              {fx.currency !== 'USD' && (
-                <p className="pt-1 text-[11px] text-muted-foreground">
-                  *Precio aproximado en {fx.currency}. Se cobra en tu moneda local.
-                </p>
-              )}
-            </div>
-
             {ctaState === 'error' && (
               <p className="text-center text-xs text-red-600">
                 Error al preparar el pedido. Recarga la página e intenta de nuevo.
               </p>
             )}
 
-            {/* CTA primário — 1 semana $9.90 */}
-            <button
-              onClick={() => handleCta('standard')}
-              disabled={ctaState === 'loading'}
-              className={[
-                'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
-                'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
-                'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
-                'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
-              ].join(' ')}
-            >
-              {ctaState === 'loading' ? (
-                <>
-                  <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
-                  Procesando…
-                </>
-              ) : (
-                <>
-                  <Lock className="h-4 w-4 opacity-80" />
-                  Empezar por {price(9.90)}
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="opacity-80">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </>
-              )}
-            </button>
+            {/* 3 tiers — escada de valor */}
+            <div className="space-y-2.5 pt-1">
 
-            {/* Trust signals logo abaixo do CTA — reforçam a decisão no ponto certo */}
-            <PaymentTrust />
-
-            {/* Upgrade — 4 semanas, mejor valor por semana */}
-            <div className="pt-3 border-t border-dashed border-[#D8E8D4]">
-              <p className="mb-2 text-center text-[13px] font-semibold uppercase tracking-wide text-muted-foreground">
-                ¿Quieres la transformación completa?
-              </p>
+              {/* Tier 1 — básico $7.90 */}
               <button
-                onClick={() => handleCta('4weeks')}
+                onClick={() => handleCta('basic')}
                 disabled={ctaState === 'loading'}
-                className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary/45 bg-[#F5FAF2] px-4 py-3 text-left transition-all hover:border-primary/65 hover:bg-[#EEF6E9] active:scale-[0.99] disabled:opacity-50"
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-[#D8E8D4] bg-white px-4 py-3 text-left transition-all hover:border-primary/40 hover:bg-[#F9FCF7] active:scale-[0.99] disabled:opacity-50"
               >
-                <span className="flex min-w-0 flex-col gap-1">
-                  <span className="self-start whitespace-nowrap rounded-full bg-primary px-2 py-0.5 text-[11px] font-bold text-white">mejor valor</span>
-                  <span className="text-sm font-bold text-gray-900">4 semanas completas</span>
-                  <span className="text-[13px] text-muted-foreground">Solo {price(10)} más y tu semana baja a {price(5)}. Llegas al resultado real.</span>
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <span className="text-sm font-bold text-gray-900">Solo el plan · 7 días</span>
+                  <span className="text-[12px] text-muted-foreground">Plan nutricional + guía de implementación</span>
                 </span>
                 <span className="flex shrink-0 items-center gap-1.5">
-                  <span className="text-lg font-black text-primary">{price(19.90)}</span>
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <span className="text-base font-black text-gray-700">{price(7.90)}</span>
+                  <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </span>
               </button>
+
+              {/* Tier 2 — recetas $9.90 — HERO */}
+              <div className="relative">
+                <span className="absolute -top-2.5 left-4 z-10 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-bold text-white">
+                  más popular
+                </span>
+                <button
+                  onClick={() => handleCta('recipes')}
+                  disabled={ctaState === 'loading'}
+                  className={[
+                    'flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary bg-[#F5FAF2]',
+                    'px-4 pb-3.5 pt-5 text-left shadow-[0_4px_18px_0_rgba(34,109,69,0.12)]',
+                    'transition-all hover:brightness-[0.98] active:scale-[0.99] disabled:opacity-50',
+                  ].join(' ')}
+                >
+                  <span className="flex min-w-0 flex-col gap-0.5">
+                    <span className="text-sm font-bold text-gray-900">Plan + 28 Recetas Fitness</span>
+                    <span className="text-[12px] text-muted-foreground">+ Lista de compras + Sustituciones</span>
+                  </span>
+                  <span className="flex shrink-0 items-center gap-1.5">
+                    <span className="text-lg font-black text-primary">{price(9.90)}</span>
+                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
+                      <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+
+              {/* Tier 3 — entrenamiento $14.90 */}
+              <button
+                onClick={() => handleCta('training')}
+                disabled={ctaState === 'loading'}
+                className="flex w-full items-center justify-between gap-3 rounded-xl border border-primary/30 bg-white px-4 py-3 text-left transition-all hover:border-primary/50 hover:bg-[#F9FCF7] active:scale-[0.99] disabled:opacity-50"
+              >
+                <span className="flex min-w-0 flex-col gap-0.5">
+                  <span className="self-start rounded-full bg-[#FBF4F0] px-2 py-0.5 text-[10px] font-bold text-[#993C1D]">
+                    + plan de entrenamiento
+                  </span>
+                  <span className="text-sm font-bold text-gray-900">Plan + Recetas + Entrenamiento</span>
+                  <span className="text-[12px] text-muted-foreground">Casa o gimnasio, adaptado a tu perfil</span>
+                </span>
+                <span className="flex shrink-0 items-center gap-1.5">
+                  <span className="text-base font-black text-gray-700">{price(14.90)}</span>
+                  <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
+              </button>
+
+              {fx.currency !== 'USD' && (
+                <p className="text-center text-[11px] text-muted-foreground">
+                  *Precios aproximados en {fx.currency}. Se cobran en tu moneda local.
+                </p>
+              )}
             </div>
+
+            <PaymentTrust />
           </div>
         </div>
 
@@ -1109,7 +1174,7 @@ export default function PreviewPage() {
         {/* CTA final — após perguntas frequentes */}
         <div className="space-y-3 pb-10">
           <button
-            onClick={() => handleCta('standard')}
+            onClick={() => handleCta('recipes')}
             disabled={ctaState === 'loading'}
             className={[
               'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',

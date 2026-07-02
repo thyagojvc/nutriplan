@@ -14,6 +14,7 @@ import { parseAnswers } from './answers'
 import { calcTargets } from './math'
 import { generateNutritionPlan, generateTrainingPlan, type PhaseNumber } from './generate'
 import { renderNutritionPdf, renderTrainingPdf } from './pdf'
+import { renderRecipesPdf } from './recipes-pdf'
 import type { NutritionPlanJson } from './types'
 import type { TrainingPlanJson } from './generate'
 
@@ -73,13 +74,15 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
       ? await loadCheckinForOrder(orderId, userId)
       : undefined
 
-    // 3. Detectar produto (4 semanas vs padrão) e treino (order bump)
+    // 3. Detectar tier pelo product_code para decidir o que entregar
     const { data: items } = await supabase
       .from('order_items')
       .select('kind, product_code')
       .eq('order_id', orderId)
-    const hasTraining = (items ?? []).some((it) => it.kind === 'training')
-    const planWeeks: 1 | 4 = (items ?? []).some((it) => it.product_code === 'PLAN_4WEEKS') ? 4 : 1
+    const productCode = (items ?? []).find((it) => it.kind === 'nutrition')?.product_code ?? ''
+    const hasRecipes = productCode === 'PLAN_RECIPES' || productCode === 'PLAN_TRAINING'
+    const hasTraining = productCode === 'PLAN_TRAINING' || (items ?? []).some((it) => it.kind === 'training')
+    const planWeeks: 1 | 4 = 1 // todos os tiers são 7 dias
 
     // 4. Gerar e salvar plano nutricional (sempre)
     const nutritionPlan = await generateNutritionPlan(answers, targets, phaseNumber, checkin, planWeeks)
@@ -135,6 +138,7 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
         u?.name ?? '',
         nutritionPlan,
         trainingPlan,
+        hasRecipes,
       )
     } catch (pdfErr) {
       console.error('[process-order] falha ao gerar PDFs (não bloqueante):', orderId, pdfErr)
@@ -167,6 +171,7 @@ async function generateAndStoreDocuments(
   name: string,
   nutritionPlan: NutritionPlanJson,
   trainingPlan: TrainingPlanJson | null,
+  hasRecipes = false,
 ) {
   const supabase = createServiceClient()
 
@@ -182,6 +187,13 @@ async function generateAndStoreDocuments(
       kind: 'training_plan',
       fileName: 'plan-entrenamiento.pdf',
       buffer: await renderTrainingPdf(trainingPlan, name),
+    })
+  }
+  if (hasRecipes) {
+    docs.push({
+      kind: 'recipes',
+      fileName: '28-recetas-fitness.pdf',
+      buffer: await renderRecipesPdf(),
     })
   }
 

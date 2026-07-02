@@ -3,8 +3,7 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
 const bodySchema = z.object({
-  include_bump: z.boolean(),
-  plan_type: z.enum(['standard', '4weeks']).optional().default('standard'),
+  plan_type: z.enum(['basic', 'recipes', 'training']).optional().default('recipes'),
 })
 
 // Hotmart é o gateway para todos os mercados no MVP
@@ -28,8 +27,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'invalid_params' }, { status: 400 })
   }
 
-  const { include_bump, plan_type } = parsed.data
-  const productCode = plan_type === '4weeks' ? 'PLAN_4WEEKS' : 'PLAN_STANDARD'
+  const { plan_type } = parsed.data
+  const PRODUCT_CODE: Record<string, string> = {
+    basic: 'PLAN_BASIC',
+    recipes: 'PLAN_RECIPES',
+    training: 'PLAN_TRAINING',
+  }
+  const productCode = PRODUCT_CODE[plan_type]
   const sessionId = request.cookies.get('nutriplan_session_id')?.value
   if (!sessionId) {
     return NextResponse.json({ error: 'no_session' }, { status: 401 })
@@ -47,32 +51,31 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'session_not_found' }, { status: 404 })
   }
 
+  const FALLBACK_PRICES: Record<string, number> = {
+    PLAN_BASIC: 7.90,
+    PLAN_RECIPES: 9.90,
+    PLAN_TRAINING: 14.90,
+  }
+
   const { data: prices } = await supabase
     .from('price_book')
     .select('product_code, currency, local_price, period_version')
     .eq('country', session.country)
     .is('effective_to', null)
-    .in('product_code', [productCode, 'TRAINING_BUMP'])
+    .eq('product_code', productCode)
+    .limit(1)
 
-  const priceRow = prices?.find(p => p.product_code === productCode)
-  const plan = priceRow ?? (
-    plan_type === '4weeks'
-      ? { product_code: 'PLAN_4WEEKS', local_price: 19.90, currency: 'USD', period_version: 1 }
-      : null
-  )
-  const bump = prices?.find(p => p.product_code === 'TRAINING_BUMP')
-
-  if (!plan) {
-    return NextResponse.json({ error: 'prices_not_found' }, { status: 404 })
+  const priceRow = prices?.[0]
+  const plan = priceRow ?? {
+    product_code: productCode,
+    local_price: FALLBACK_PRICES[productCode] ?? 9.90,
+    currency: 'USD',
+    period_version: 1,
   }
 
   const provider = PROVIDER_BY_COUNTRY[session.country] ?? 'hotmart'
-  const products = include_bump ? `${plan_type}+bump` : plan_type
-  const idempotencyKey = `${sessionId}-${products}`
-  const totalAmount =
-    include_bump && bump
-      ? Number(plan.local_price) + Number(bump.local_price)
-      : Number(plan.local_price)
+  const idempotencyKey = `${sessionId}-${plan_type}`
+  const totalAmount = Number(plan.local_price)
 
   // Cookies do Meta Pixel + contexto do navegador, capturados aqui (antes do
   // redirect para a Hotmart) porque o webhook de pagamento é server-to-server
@@ -137,17 +140,18 @@ export async function POST(request: NextRequest) {
       kind: 'nutrition',
       product_code: productCode,
       unit_price: Number(plan.local_price),
-      currency: plan.currency,
+      currency: plan.currency ?? 'USD',
     },
   ]
 
-  if (include_bump && bump) {
+  // tier training inclui um item extra para disparar a geração do plano de treino
+  if (plan_type === 'training') {
     items.push({
       order_id: order.id,
       kind: 'training',
-      product_code: 'TRAINING_BUMP',
-      unit_price: Number(bump.local_price),
-      currency: plan.currency,
+      product_code: productCode,
+      unit_price: 0,
+      currency: plan.currency ?? 'USD',
     })
   }
 

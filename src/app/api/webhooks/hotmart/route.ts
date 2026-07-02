@@ -5,8 +5,12 @@ import { sendPlanReadyEmail, sendCheckinReminderEmail } from '@/lib/email'
 import { sendFacebookPurchase } from '@/lib/fb-conversions-api'
 import type { PhaseNumber } from '@/lib/nutrition/generate'
 
-// ID do produto order bump na Hotmart
-const HOTMART_TRAINING_PRODUCT_ID = '7973770'
+// IDs dos 3 produtos na Hotmart (para referência e logging)
+const HOTMART_PRODUCT_IDS: Record<string, string> = {
+  '7968007': 'PLAN_BASIC',
+  '7998986': 'PLAN_RECIPES',
+  '7973770': 'PLAN_TRAINING',
+}
 
 export async function POST(request: NextRequest) {
   // Hotmart v2.0.0 envia o hottok como query param: ?hottok=xxx
@@ -37,10 +41,7 @@ export async function POST(request: NextRequest) {
     const msg = err instanceof Error ? err.message : String(err)
     console.error('[webhook/hotmart] handler error:', msg)
 
-    // Erros de "ainda não existe" → 500 para a Hotmart retentar automaticamente
-    if (msg === 'training_bump_user_not_found_yet' || msg === 'training_bump_order_not_found') {
-      return NextResponse.json({ error: msg }, { status: 500 })
-    }
+    // Nenhum erro temporário esperado no modelo de 3 tiers separados
     // Demais erros: 200 para evitar loop de reenvios infinitos (logado acima)
   }
 
@@ -60,27 +61,12 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
 
   if (!email) return
 
-  // Webhook separado para o order bump de treino (produto 7973770)
-  if (productId === HOTMART_TRAINING_PRODUCT_ID) {
-    await handleTrainingBumpApproved({ email, name })
-    return
-  }
-
-  // Verificar se o payload da Hotmart inclui o bump em order_items (fallback)
-  const payloadItems = (purchase?.order_items as Array<Record<string, unknown>> | undefined) ?? []
-  const hasBumpInPayload = payloadItems.some(
-    (item) => String(item.product_id ?? '') === HOTMART_TRAINING_PRODUCT_ID,
-  )
+  console.info('[webhook/hotmart] produto recebido:', productId, HOTMART_PRODUCT_IDS[productId] ?? 'desconhecido')
 
   if (recurrenceNumber === 0) {
     const orderResult = await activateNewSubscriber({ email, name, transactionId })
     if (orderResult) {
       const { orderId, totalAmount, currency, fbc, fbp, clientIpAddress, clientUserAgent } = orderResult
-
-      // Bump detectado no payload mas não pré-selecionado no checkout: adicionar item
-      if (hasBumpInPayload) {
-        await ensureTrainingItem(orderId)
-      }
 
       // Dispara a geração do plano logo após marcar o pedido pago.
       const result = await processPaidOrder(orderId)
@@ -394,105 +380,6 @@ async function handleRenewal({
     phaseNumber,
     orderId: newOrder.id,
   })
-}
-
-/**
- * Webhook separado da Hotmart para o order bump de treino.
- * Encontra o order mais recente do comprador, garante o item de treino
- * e re-dispara a geração se o plano nutricional já estiver entregue.
- */
-async function handleTrainingBumpApproved({ email, name }: { email: string; name: string }) {
-  const supabase = createServiceClient()
-
-  const { data: user } = await supabase
-    .from('users')
-    .select('id')
-    .eq('email', email)
-    .maybeSingle()
-
-  if (!user) {
-    // Webhook do bump chegou antes do produto principal — Hotmart vai retentar no 500
-    console.warn('[webhook/hotmart] training bump: usuário ainda não existe para', email)
-    throw new Error('training_bump_user_not_found_yet')
-  }
-
-  const { data: order } = await supabase
-    .from('orders')
-    .select('id, status')
-    .eq('user_id', user.id)
-    .in('status', ['paid', 'generating', 'delivered'])
-    .order('created_at', { ascending: false })
-    .limit(1)
-    .maybeSingle()
-
-  if (!order) {
-    console.warn('[webhook/hotmart] training bump: nenhum order ativo para', email)
-    throw new Error('training_bump_order_not_found')
-  }
-
-  await ensureTrainingItem(order.id)
-
-  // Se o plano já foi entregue (sem treino): resetar para paid e re-gerar
-  if (order.status === 'delivered') {
-    const { data: reset } = await supabase
-      .from('orders')
-      .update({ status: 'paid', updated_at: new Date().toISOString() })
-      .eq('id', order.id)
-      .eq('status', 'delivered')
-      .select('id')
-      .maybeSingle()
-
-    if (reset) {
-      const result = await processPaidOrder(order.id)
-      console.info('[webhook/hotmart] training bump re-generation', result)
-      try {
-        await sendMagicLinkEmail(email, name)
-      } catch (emailErr) {
-        console.error('[webhook/hotmart] training bump email falhou (não bloqueante):', emailErr)
-      }
-    }
-  }
-  // Se paid ou generating: processPaidOrder em andamento detectará o item de treino
-}
-
-/**
- * Insere o item TRAINING_BUMP no order, idempotente.
- * Usa upsert com ignoreDuplicates para não quebrar se o item já existir
- * (ex: usuário pré-selecionou o bump em nossa página e Hotmart mandou webhook separado).
- */
-async function ensureTrainingItem(orderId: string) {
-  const supabase = createServiceClient()
-
-  const { data: order } = await supabase
-    .from('orders')
-    .select('country, currency')
-    .eq('id', orderId)
-    .single()
-
-  const { data: price } = order
-    ? await supabase
-        .from('price_book')
-        .select('local_price, currency')
-        .eq('country', order.country)
-        .eq('product_code', 'TRAINING_BUMP')
-        .is('effective_to', null)
-        .maybeSingle()
-    : { data: null }
-
-  const { error } = await supabase.from('order_items').upsert(
-    {
-      order_id: orderId,
-      kind: 'training',
-      product_code: 'TRAINING_BUMP',
-      unit_price: Number(price?.local_price ?? 4.90),
-      currency: price?.currency ?? order?.currency ?? 'USD',
-    },
-    { onConflict: 'order_id,product_code', ignoreDuplicates: true },
-  )
-
-  if (error) {
-    console.error('[webhook/hotmart] ensureTrainingItem error:', error.message)
-  }
 }
 
 async function handleDeactivate(

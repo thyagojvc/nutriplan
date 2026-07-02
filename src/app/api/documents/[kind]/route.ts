@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 
-const VALID_KINDS = ['nutrition_plan', 'training_plan', 'implementation_guide']
+const VALID_KINDS = ['nutrition_plan', 'training_plan', 'implementation_guide', 'recipes']
 const DOCS_BUCKET = 'documents'
 const SIGNED_URL_TTL = 120 // segundos
 

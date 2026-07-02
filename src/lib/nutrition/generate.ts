@@ -17,7 +17,18 @@ import type {
   PlanDay,
   PlanMeal,
   PlanItem,
+  GoalType,
 } from './types'
+import {
+  exercisesFor,
+  LEVEL_RANK,
+  CORE_FALLBACKS,
+  COMPOUND_FALLBACK,
+  type ExLocation,
+  type ExLevel,
+  type DayFocus,
+  type Exercise,
+} from './exercise-catalog'
 import { MEAL_DISTRIBUTION, clinicalDisclaimers } from './math'
 import {
   CATALOG_BY_ID,
@@ -139,8 +150,13 @@ const GRAM_CAP_BY_ID: Record<string, number> = {
 const GRAM_CAP_BY_ROLE: Record<FoodRole, number> = {
   protein: 240, carb: 260, veg: 220, fruit: 220, fat: 45, dairy: 300,
 }
+// Máximo de unidades caseiras num único prato — evita "9 tortillas" quando la
+// unidad casera es chica (tortilla, pan) y la meta calórica es alta.
+const MAX_HOME_UNITS = 4
+
 function gramCap(food: CatalogFood): number {
-  return GRAM_CAP_BY_ID[food.id] ?? GRAM_CAP_BY_ROLE[food.role]
+  const roleCap = GRAM_CAP_BY_ID[food.id] ?? GRAM_CAP_BY_ROLE[food.role]
+  return Math.min(roleCap, food.home.grams * MAX_HOME_UNITS)
 }
 
 /**
@@ -351,7 +367,17 @@ export function buildPreviewSample(
       const prot = top(poolForMeal('protein', slot, answers))
       const carb = top(poolForMeal('carb', slot, answers))
       const veg = top(poolForMeal('veg', slot, answers))
-      if (prot) raw.push({ food: prot, grams: 150 })
+      if (prot) {
+        raw.push({ food: prot, grams: 150 })
+        // Mesma regla que el plan real (buildMeal): proteína vegetal pobre se
+        // completa con huevo/queso para no mostrar una muestra con menos
+        // proteína de la que el plan comprado realmente entrega.
+        if (prot.proteinG < LOW_DENSITY_PROTEIN) {
+          const comp = [CATALOG_BY_ID['huevo'], CATALOG_BY_ID['queso_fresco']]
+            .filter((f): f is CatalogFood => !!f && !isExcluded(f.id, answers.exclusions) && f.id !== prot.id)[0]
+          if (comp) raw.push({ food: comp, grams: comp.id === 'huevo' ? 100 : 60 })
+        }
+      }
       if (carb) raw.push({ food: carb, grams: 120 })
       if (veg) raw.push({ food: veg, grams: 150 })
     }
@@ -431,7 +457,7 @@ function buildSubstitutions(answers: ParsedAnswers): NutritionPlanJson['substitu
 }
 
 // ---------------------------------------------------------------------------
-// Plano de treino (condicional ao order bump) — stub mínimo
+// Plano de treino — gerador determinístico por local / nível / limitações
 // ---------------------------------------------------------------------------
 
 export interface TrainingPlanJson {
@@ -442,51 +468,211 @@ export interface TrainingPlanJson {
   promptVersion: string
 }
 
-const LIMITATION_ADVICE: Record<string, string> = {
-  knee: 'Evita sentadillas profundas e impacto; prioriza prensa y extensiones controladas.',
-  lower_back: 'Evita peso muerto convencional; refuerza el core y cuida la postura.',
-  shoulder: 'Evita press por encima de la cabeza con carga alta; trabaja rango cómodo.',
-  other: 'Adapta los ejercicios a tu rango de movimiento sin dolor.',
+// Séries/reps adaptadas ao objetivo e tipo de exercício
+function setsStr(
+  goal: GoalType,
+  isCompound: boolean,
+  isTimed: boolean,
+  isUnilateral: boolean,
+  isNoExercise: boolean,
+): string {
+  if (isNoExercise) {
+    if (isTimed) return '2 x 20 seg'
+    if (isUnilateral) return '2 x 10 por lado'
+    return '2 x 10'
+  }
+  if (isTimed) return goal === 'lose_fat' ? '3 x 40 seg' : '3 x 30 seg'
+  if (isUnilateral) {
+    if (goal === 'gain_muscle') return isCompound ? '4 x 10 por lado' : '3 x 12 por lado'
+    return '3 x 12 por lado'
+  }
+  if (isCompound) {
+    if (goal === 'lose_fat') return '4 x 12–15'
+    if (goal === 'gain_muscle') return '4 x 8–10'
+    return '3 x 12–15'
+  }
+  if (goal === 'lose_fat') return '3 x 15–20'
+  if (goal === 'gain_muscle') return '3 x 10–12'
+  return '3 x 12'
+}
+
+interface SessionDef {
+  label: string
+  focuses: DayFocus[]
+  compounds: number
+  accessories: number
+  coreEx: number
+}
+
+function getSplitPlan(frequency: string, level: ExLevel): SessionDef[] {
+  if (frequency === '1_2') {
+    return [
+      { label: 'Full body A', focuses: ['full_body', 'lower', 'push'], compounds: 2, accessories: 2, coreEx: 1 },
+      { label: 'Full body B', focuses: ['full_body', 'upper', 'pull', 'lower'], compounds: 2, accessories: 2, coreEx: 1 },
+    ]
+  }
+  if (frequency === '3_4') {
+    if (level === 'principiante') {
+      return [
+        { label: 'Full body A', focuses: ['full_body', 'lower', 'push'], compounds: 2, accessories: 2, coreEx: 1 },
+        { label: 'Full body B', focuses: ['full_body', 'lower', 'pull'], compounds: 2, accessories: 2, coreEx: 1 },
+        { label: 'Full body C', focuses: ['lower', 'push', 'full_body'], compounds: 2, accessories: 2, coreEx: 1 },
+        { label: 'Full body D', focuses: ['lower', 'pull', 'full_body'], compounds: 2, accessories: 2, coreEx: 1 },
+      ]
+    }
+    return [
+      { label: 'Tren superior', focuses: ['push', 'pull'], compounds: 2, accessories: 3, coreEx: 1 },
+      { label: 'Tren inferior', focuses: ['lower'], compounds: 2, accessories: 3, coreEx: 1 },
+      { label: 'Empuje y core', focuses: ['push'], compounds: 2, accessories: 2, coreEx: 2 },
+      { label: 'Tracción y glúteos', focuses: ['pull', 'lower'], compounds: 2, accessories: 3, coreEx: 1 },
+    ]
+  }
+  // 5_mas
+  if (level === 'principiante') {
+    return [
+      { label: 'Full body A', focuses: ['full_body', 'lower', 'push'], compounds: 2, accessories: 2, coreEx: 1 },
+      { label: 'Tren inferior', focuses: ['lower'], compounds: 2, accessories: 3, coreEx: 1 },
+      { label: 'Tren superior', focuses: ['push', 'pull'], compounds: 2, accessories: 2, coreEx: 1 },
+      { label: 'Full body B', focuses: ['full_body', 'lower', 'pull'], compounds: 2, accessories: 2, coreEx: 1 },
+      { label: 'Core y movilidad', focuses: ['core', 'full_body'], compounds: 0, accessories: 2, coreEx: 3 },
+    ]
+  }
+  return [
+    { label: 'Empuje (pecho · hombros · tríceps)', focuses: ['push'], compounds: 2, accessories: 3, coreEx: 1 },
+    { label: 'Tren inferior A', focuses: ['lower'], compounds: 2, accessories: 3, coreEx: 1 },
+    { label: 'Tracción (espalda · bíceps)', focuses: ['pull'], compounds: 2, accessories: 3, coreEx: 1 },
+    { label: 'Tren inferior B', focuses: ['lower'], compounds: 2, accessories: 3, coreEx: 1 },
+    { label: 'Full body y core', focuses: ['full_body', 'push', 'pull', 'lower'], compounds: 2, accessories: 2, coreEx: 2 },
+  ]
+}
+
+function buildSession(
+  session: SessionDef,
+  location: ExLocation,
+  level: ExLevel,
+  limitations: import('./types').PhysicalLimitation[],
+  goal: GoalType,
+  isNoExercise: boolean,
+  sessionIdx: number,
+): { name: string; sets: string }[] {
+  const result: { name: string; sets: string }[] = []
+  const used = new Set<string>()
+
+  result.push({ name: 'Calentamiento dinámico', sets: '5–8 min' })
+
+  // Pool único (deduplicado) de todos os focos da sessão
+  const seenInPool = new Set<string>()
+  const sessionPool = session.focuses
+    .flatMap((f) => exercisesFor(location, f, level, limitations))
+    .filter((ex) => {
+      if (seenInPool.has(ex.name)) return false
+      seenInPool.add(ex.name)
+      return true
+    })
+
+  const compounds = sessionPool.filter((ex) => ex.isCompound)
+  const accessories = sessionPool.filter((ex) => !ex.isCompound && !ex.focus.includes('core'))
+
+  // Compostos principais
+  for (let i = 0; i < session.compounds; i++) {
+    const available = compounds.filter((ex) => !used.has(ex.name))
+    const ex = available.length > 0
+      ? available[(sessionIdx * 2 + i) % available.length]
+      : (!used.has(COMPOUND_FALLBACK.name) ? COMPOUND_FALLBACK : null)
+    if (!ex) continue
+    used.add(ex.name)
+    result.push({ name: ex.name, sets: setsStr(goal, true, ex.isTimed ?? false, ex.isUnilateral ?? false, isNoExercise) })
+  }
+
+  // Acessórios
+  for (let i = 0; i < session.accessories; i++) {
+    const available = accessories.filter((ex) => !used.has(ex.name))
+    if (available.length === 0) break
+    const ex = available[(sessionIdx * 3 + i * 2) % available.length]
+    used.add(ex.name)
+    result.push({ name: ex.name, sets: setsStr(goal, false, ex.isTimed ?? false, ex.isUnilateral ?? false, isNoExercise) })
+  }
+
+  // Core
+  const corePool = exercisesFor(location, 'core', level, limitations)
+  const coreFallbacks = CORE_FALLBACKS.filter((ex) => !used.has(ex.name))
+  const coreAvailable = [...corePool, ...coreFallbacks].filter(
+    (ex, i, arr) => !used.has(ex.name) && arr.findIndex((e) => e.name === ex.name) === i,
+  )
+  for (let i = 0; i < session.coreEx; i++) {
+    const available = coreAvailable.filter((ex) => !used.has(ex.name))
+    if (available.length === 0) break
+    const ex = available[(sessionIdx + i * 2) % available.length]
+    used.add(ex.name)
+    result.push({ name: ex.name, sets: setsStr(goal, false, ex.isTimed ?? false, ex.isUnilateral ?? false, isNoExercise) })
+  }
+
+  result.push({ name: 'Estiramiento y movilidad', sets: '5 min' })
+  return result
 }
 
 export async function generateTrainingPlan(
   answers: ParsedAnswers,
 ): Promise<TrainingPlanJson> {
   const t = answers.training
-  const focuses =
-    t.frequency === '5_mas'
-      ? ['Tren superior', 'Tren inferior', 'Empuje', 'Tracción', 'Full body']
-      : t.frequency === '3_4'
-        ? ['Tren superior', 'Tren inferior', 'Full body']
-        : ['Full body A', 'Full body B']
+  const isNoExercise = t.experience === 'no_ejercicio'
 
-  const days = focuses.map((focus, i) => ({
-    label: `Sesión ${i + 1}`,
-    focus,
-    exercises: [
-      { name: 'Calentamiento dinámico', sets: '5–8 min' },
-      { name: 'Ejercicio compuesto principal', sets: '4 x 8–10' },
-      { name: 'Accesorio 1', sets: '3 x 12' },
-      { name: 'Accesorio 2', sets: '3 x 12' },
-      { name: 'Core / estiramiento', sets: '3 x 30 s' },
-    ],
-  }))
+  const level: ExLevel =
+    t.experience === 'avanzado' ? 'avanzado'
+    : t.experience === 'intermedio' ? 'intermedio'
+    : 'principiante'
+
+  const location: ExLocation =
+    t.location === 'casa' || t.location === 'gimnasio' || t.location === 'aire_libre'
+      ? t.location
+      : 'casa'
+
+  const frequency = t.frequency ?? '3_4'
+  const limitations = t.limitations
+  const sessions = getSplitPlan(frequency, level)
 
   const notes: string[] = []
-  for (const lim of answers.training.limitations) {
-    if (lim !== 'none' && LIMITATION_ADVICE[lim]) notes.push(LIMITATION_ADVICE[lim])
+
+  if (answers.goal === 'lose_fat') {
+    notes.push('Descansa 45–60 seg entre series para mantener la frecuencia cardíaca elevada y el gasto calórico alto.')
+  } else if (answers.goal === 'gain_muscle') {
+    notes.push('Descansa 90–120 seg en compuestos y 60 seg en aislamientos para maximizar la recuperación muscular.')
+  } else {
+    notes.push('Descansa 60–90 seg entre series. Controla el movimiento en cada repetición.')
   }
+
+  if (isNoExercise) {
+    notes.push('Empieza con 2–3 sesiones esta semana, no todas. La consistencia importa más que la cantidad al inicio.')
+    notes.push('Si sientes dolor agudo (no solo esfuerzo muscular), detente y descansa.')
+  } else if (level === 'principiante') {
+    notes.push('Prioriza la técnica por encima del peso. La carga correcta llega sola cuando el movimiento es sólido.')
+  }
+
+  for (const lim of limitations) {
+    if (lim === 'knee') notes.push('Rodillas: evita impacto y rango profundo. Prefiere rangos parciales y carga controlada.')
+    if (lim === 'lower_back') notes.push('Espalda baja: mantén el core activado en todo momento. Los ejercicios de cadera y glúteo son tus aliados.')
+    if (lim === 'shoulder') notes.push('Hombros: evita movimientos por encima de la cabeza con carga. Trabaja en rango cómodo sin dolor.')
+    if (lim === 'wrist_elbow') notes.push('Muñecas/codos: mantén posición neutral. Si algún ejercicio genera dolor, sustitúyelo por la versión en cable o con banda.')
+    if (lim === 'varicose') notes.push('Várices: mueve los pies entre series. Prefiere ejercicios acostada o sentada cuando sea posible.')
+    if (lim === 'other') notes.push('Limitación adicional: adapta cualquier ejercicio al rango de movimiento que no genere dolor.')
+  }
+
+  const days = sessions.map((session, i) => ({
+    label: `Sesión ${i + 1} — ${session.label}`,
+    focus: session.label,
+    exercises: buildSession(session, location, level, limitations, answers.goal, isNoExercise, i),
+  }))
 
   return {
     summary: {
       experience: t.experience ?? 'principiante',
-      location: t.location ?? 'casa',
-      frequency: t.frequency ?? '3_4',
+      location,
+      frequency,
       notes,
     },
     days,
     disclaimers: [
-      'Consulta a un profesional antes de iniciar un programa de ejercicio, especialmente si tienes alguna condición médica.',
+      'Consulta a un profesional de salud antes de iniciar cualquier programa de ejercicio, especialmente si tienes condiciones médicas diagnosticadas.',
     ],
     generatedBy: 'stub',
     promptVersion: PROMPT_VERSION,
