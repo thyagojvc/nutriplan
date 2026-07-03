@@ -528,11 +528,13 @@ export default function PreviewPage() {
             </div>
             <p className="text-[13px] text-muted-foreground">kcal/día</p>
             <p className="text-base font-bold text-gray-800">
-              Por primera vez tienes el número exacto para <span className="text-primary">tu cuerpo</span>.
+              {isLoss
+                ? <>Es tu número exacto, el que empieza a <span className="text-primary">bajar de peso</span> sin pasar hambre.</>
+                : <>Es tu número exacto, el que empieza a <span className="text-primary">construir músculo</span> comiendo bien.</>}
             </p>
             <p className="text-sm font-medium text-muted-foreground">
-              {isLoss ? 'Un déficit pensado para ti, sin pasar hambre'
-                : 'Un superávit pensado para ti, para ganar músculo'}
+              {isLoss ? 'Nada de dietas de moda ni de contar cada caloría a mano.'
+                : 'Nada de comer de más a ciegas esperando que sea músculo.'}
             </p>
           </>
         ) : (

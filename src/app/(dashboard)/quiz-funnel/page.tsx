@@ -28,15 +28,21 @@ async function getFunnelData(since: string) {
 
   if (since) query = query.gte('created_at', since)
 
-  const [{ data, error }, { count: ordersCount }] = await Promise.all([
+  const [{ data, error }, { data: ordersRows }] = await Promise.all([
     query,
     supabase
       .from('orders')
-      .select('*', { count: 'exact', head: true })
+      .select('session_id')
       .gte('created_at', since),
   ])
 
   if (error || !data) return null
+
+  // Conta SESSÕES distintas que iniciaram checkout, não linhas de order.
+  // Um order é criado por tier clicado (idempotency = sessionId-plan_type),
+  // então a mesma pessoa comparando 2 tiers gera 2 orders. Deduplicar por
+  // session_id reflete pessoas, não cliques repetidos.
+  const ordersCount = new Set((ordersRows ?? []).map((o) => o.session_id)).size
 
   const total = data.length
 
