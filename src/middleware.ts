@@ -11,6 +11,7 @@ const PUBLIC_PATHS = [
   '/checkout',
   '/exito',
   '/auth/callback',
+  '/auth/magic',
   '/api/auth/session',
   '/api/auth/send-link',
   '/api/quiz/init-session',

@@ -20,6 +20,15 @@ function getResend(): Resend {
 // Com domínio verificado: trocar RESEND_FROM para 'NutriPlan <noreply@seudominio.com>'
 const FROM = process.env.RESEND_FROM ?? 'onboarding@resend.dev'
 
+// Envolve o action_link do Supabase numa página intermediária para evitar que
+// scanners de phishing (Gmail, Outlook) consumam o token antes do clique real.
+// A página /auth/magic lê o link do hash via JS — scanners não executam JS.
+function wrapMagicLink(actionLink: string): string {
+  const encoded = Buffer.from(actionLink).toString('base64')
+  const baseUrl = 'https://nutriplan-tzyt.vercel.app'
+  return `${baseUrl}/auth/magic#${encoded}`
+}
+
 // Layout base compartilhado pelos e-mails transacionais.
 function emailLayout({
   heading,
@@ -72,7 +81,7 @@ export async function sendPlanReadyEmail({
       heading: '¡Tu plan está listo! 🎉',
       greeting: `Hola ${displayName},`,
       body: 'Tu plan nutricional personalizado ya fue generado. Haz clic en el botón para acceder a él:',
-      magicLink,
+      magicLink: wrapMagicLink(magicLink),
       cta: 'Ver mi plan →',
       footer:
         'Este enlace es personal e intransferible. Expira en 24 horas.<br>' +
@@ -139,7 +148,7 @@ export async function sendLoginLinkEmail({
       heading: 'Accede a tu plan 🔑',
       greeting: 'Hola,',
       body: 'Recibimos una solicitud de acceso a tu cuenta. Haz clic en el botón para entrar — sin contraseña:',
-      magicLink,
+      magicLink: wrapMagicLink(magicLink),
       cta: 'Acceder a mi plan →',
       footer:
         'Este enlace es personal e intransferible. Expira en 1 hora.<br>' +
