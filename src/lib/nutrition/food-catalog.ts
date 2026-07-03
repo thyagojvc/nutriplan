@@ -48,8 +48,8 @@ export const FOOD_CATALOG: CatalogFood[] = [
   { id: 'pescado', label: 'Filete de pescado', role: 'protein', meals: PRINCIPALES, kcal: 128, proteinG: 26, carbsG: 0, fatG: 2.5, home: { unit: 'filete', grams: 120 } },
   { id: 'mariscos', label: 'Camarones', role: 'protein', meals: PRINCIPALES, kcal: 99, proteinG: 24, carbsG: 0.2, fatG: 0.3, home: PORCION_SM },
   { id: 'huevo', label: 'Huevo', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 143, proteinG: 13, carbsG: 1.1, fatG: 9.5, home: { unit: 'huevo', grams: 50 } },
-  { id: 'tofu', label: 'Tofu firme', role: 'protein', meals: PRINCIPALES, kcal: 144, proteinG: 17, carbsG: 2.8, fatG: 9, home: PORCION_SM },
-  { id: 'legumbres', label: 'Lentejas / frijoles', role: 'protein', meals: PRINCIPALES, kcal: 116, proteinG: 9, carbsG: 20, fatG: 0.4, home: { unit: 'taza', grams: 180 } },
+  { id: 'tofu', label: 'Tofu firme', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 144, proteinG: 17, carbsG: 2.8, fatG: 9, home: PORCION_SM },
+  { id: 'legumbres', label: 'Lentejas / frijoles', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 116, proteinG: 9, carbsG: 20, fatG: 0.4, home: { unit: 'taza', grams: 180 } },
   { id: 'atun', label: 'Atún (en agua)', role: 'protein', meals: PRINCIPALES, kcal: 116, proteinG: 26, carbsG: 0, fatG: 1, home: { unit: 'lata', grams: 120 } },
   { id: 'pavo', label: 'Pechuga de pavo', role: 'protein', meals: ['desayuno', 'almuerzo', 'cena'], kcal: 135, proteinG: 29, carbsG: 0, fatG: 1.7, home: PORCION },
   // Carboidratos

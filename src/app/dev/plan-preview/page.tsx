@@ -43,10 +43,7 @@ export default async function DevPlanPreviewPage() {
 
   return (
     <div>
-      <div className="bg-yellow-100 border-b border-yellow-300 px-4 py-2 text-center text-xs font-semibold text-yellow-900">
-        ⚙️ VISTA PREVIA (dev) — plan generado por el stub, sin IA. Edita SAMPLE_DRAFT en el archivo para probar otros perfiles.
-      </div>
-      <PlanView plan={plan} name="María González" docKinds={['nutrition_plan']} devPdfHref="/dev/plan-pdf" profile={profile} />
+      <PlanView plan={plan} name="Valentina García" docKinds={['nutrition_plan']} devPdfHref="/dev/plan-pdf" profile={profile} />
     </div>
   )
 }

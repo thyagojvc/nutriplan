@@ -13,6 +13,7 @@ import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 import { trackPixel, trackPixelOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
+import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 
 // Dispara um evento de funil pós-quiz no Supabase (fire-and-forget).
 // Mesma via do preview_viewed: grava _ev_<event> em draft_answers, lido no
@@ -120,19 +121,32 @@ function TeaserMeal({ meal }: { meal: SampleMeal }) {
         <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[13px] font-semibold text-white">{meal.kcal} kcal</span>
       </div>
       <div className="divide-y divide-[#EAF2E6]">
-        {meal.items.map((it) => (
-          <div key={it.food} className="flex items-center justify-between gap-3 px-3.5 py-2.5">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
-              <p className="text-[13px] text-muted-foreground">{it.qty}</p>
+        {meal.items.map((it) => {
+          const imgUrl = getFoodImageUrl(it.food)
+          return (
+            <div key={it.food} className="flex items-center gap-3 px-3.5 py-2.5">
+              {imgUrl && (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={imgUrl}
+                  alt={it.food}
+                  className="w-10 h-10 rounded-lg object-cover shrink-0"
+                  loading="lazy"
+                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
+                <p className="text-[13px] text-muted-foreground">{it.qty}</p>
+              </div>
+              <div className="flex shrink-0 gap-1">
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
+              </div>
             </div>
-            <div className="flex shrink-0 gap-1">
-              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
-              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
-              <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
       <div className="bg-[#F5FAF2] px-3.5 py-1.5 text-right text-[11px] text-muted-foreground">
         {totals.p}g prot · {totals.c}g carb · {totals.f}g gras
