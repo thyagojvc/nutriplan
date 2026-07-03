@@ -40,16 +40,14 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-[2rem] font-black leading-tight text-gray-900 font-display">
-            Las dietas fallan porque no conocen<br />
-            <span className="text-primary">tu metabolismo</span>
+            Tu dieta y tu entrenamiento,<br />
+            <span className="text-primary">hechos para tu cuerpo</span>
           </h1>
 
           <p className="text-sm text-muted-foreground leading-relaxed max-w-[20rem] mx-auto">
-            {/* TODO: atualizar para 12 quando steps 3 e 10 forem reativados (IA + order bump) */}
-            El problema nunca fue tu fuerza de voluntad. Las dietas genéricas
-            te dan el mismo número de calorías que a todos, y tu metabolismo
-            es único. Responde 9 preguntas y descubre cuánto necesita
-            comer <span className="font-semibold text-gray-700">tu</span> cuerpo.
+            Calculados solo para <span className="font-semibold text-gray-700">tu</span> cuerpo,
+            sin pagar un nutricionista caro ni un personal aparte.
+            Responde el quiz de 60 segundos y recibe tu plan hoy.
           </p>
           <div className="inline-flex items-center gap-1.5 rounded-full border border-[#D8E8D4] bg-white px-3 py-1 text-xs text-muted-foreground">
             <span>👩‍⚕️</span>
@@ -62,10 +60,10 @@ export default function HomePage() {
           <p className="text-sm font-bold text-gray-900 mb-3">¿Te suena alguna de estas situaciones?</p>
           <ul className="space-y-2">
             {[
-              'Empiezas bien la semana y el fin de semana lo arruinas todo',
-              'Comes "sano" pero los kilos no se mueven',
-              'Tienes hambre a media tarde y picas lo que sea',
-              'Ya perdiste la cuenta de cuántas dietas has intentado',
+              'Quieres entrenar y comer bien, pero no sabes cuántas calorías ni cuánta proteína te tocan',
+              'Un nutricionista y un personal por separado cuestan una fortuna',
+              'Los planes gratis de internet son genéricos, no están hechos para tu cuerpo',
+              'Sabes lo que quieres, solo te falta el plan exacto para empezar',
             ].map(item => (
               <li key={item} className="flex items-start gap-2.5 text-sm text-gray-700">
                 <span className="mt-0.5 shrink-0 font-bold text-red-400">✗</span>
@@ -74,7 +72,7 @@ export default function HomePage() {
             ))}
           </ul>
           <p className="mt-3.5 text-xs text-muted-foreground leading-relaxed border-t border-[#EAF2E6] pt-3">
-            El problema no eres tú. Es que ninguna dieta calculó lo que necesita <em>tu</em> metabolismo.
+            No te faltan ganas. Te falta el plan exacto, hecho para <em>tu</em> cuerpo y <em>tu</em> rutina.
           </p>
         </div>
 
@@ -152,7 +150,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-sm leading-relaxed text-gray-700">
-                  &ldquo;Siempre pensé que tenía que pasar hambre para bajar de peso. Con mi plan vi exactamente qué comer y en qué cantidad. Bajé 5 kg en 6 semanas sin restricciones extremas.&rdquo;
+                  &ldquo;Entrenaba pero comía a ojo y no veía cambios. El plan me dio los números exactos para mi cuerpo. En 6 semanas bajé 4 kg y por fin se me nota el trabajo.&rdquo;
                 </p>
                 <p className="mt-1.5 text-xs font-bold text-primary">🇲🇽 Valeria R. — Ciudad de México</p>
               </div>
@@ -177,7 +175,7 @@ export default function HomePage() {
                   ))}
                 </div>
                 <p className="text-sm leading-relaxed text-gray-700">
-                  &ldquo;Con dos hijos no tenía tiempo para contar calorías. El plan me dijo exactamente qué comer, cuánto y cuándo. En 3 semanas ya me sentía diferente.&rdquo;
+                  &ldquo;Pagar nutricionista y entrenador por separado no me daba el bolsillo. Aquí tuve mi dieta y mi rutina juntas, hechas para mí. Bajé comiendo lo que me gusta.&rdquo;
                 </p>
                 <p className="mt-1.5 text-xs font-bold text-primary">🇨🇴 Andrea M. — Bogotá</p>
               </div>
@@ -191,7 +189,7 @@ export default function HomePage() {
           <ul className="space-y-2">
             {[
               'No sabes exactamente cuánto comer para tu cuerpo',
-              'Has probado dietas pero no ves resultados duraderos',
+              'Quieres entrenar y comer bien sin pagar nutricionista y personal aparte',
               'Quieres comer rico sin pasar hambre ni contar calorías',
               'Buscas un plan real, no genérico de internet',
             ].map(item => (

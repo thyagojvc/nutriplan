@@ -779,9 +779,9 @@ export default function PreviewPage() {
             Lo que dicen quienes ya lo tienen
           </p>
           {[
-            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', belief: 'Pensé que mi metabolismo estaba dañado de tanta dieta.', text: 'En 5 meses bajé 13 kg comiendo de verdad, sin contar calorías a mano.' },
-            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', belief: 'Llegaba agotada a casa y comía lo primero que veía.', text: 'Ahora mi plan ya viene decidido. Bajé sin pasar hambre y sin sentirme culpable.' },
-            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', belief: 'Probé keto, ayuno, de todo. Nada me duraba.', text: 'Esto fue lo primero que se adaptó a mi rutina. En pocas semanas, más energía y sin antojos.' },
+            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', belief: 'Entrenaba en el gym pero comía a ojo y no bajaba.', text: 'Con mis números exactos bajé y empecé a marcar. Sin pasar hambre.' },
+            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', belief: 'Un nutri y un entrenador por separado no me alcanzaban.', text: 'Aquí tuve dieta y rutina juntas, hechas para mí. Bajé sin culpa.' },
+            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', belief: 'Sabía lo que quería, pero no el plan exacto para lograrlo.', text: 'Se adaptó a mi rutina y a mi entreno. En semanas, más energía y resultados.' },
           ].map(({ photo, name, country, belief, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
               <div className="flex items-center gap-2">
