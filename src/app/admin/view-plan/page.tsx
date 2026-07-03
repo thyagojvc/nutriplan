@@ -60,9 +60,18 @@ export default async function AdminViewPlanPage({
 
   const { data: docs } = await svc
     .from('generated_documents')
-    .select('kind')
+    .select('kind, storage_path')
     .eq('order_id', order.id)
   const docKinds = (docs ?? []).map((d) => d.kind as string)
+
+  // Gera URLs assinadas no servidor para contornar o check de sessão da API pública
+  const docUrls: Record<string, string> = {}
+  for (const doc of docs ?? []) {
+    const { data: signed } = await svc.storage
+      .from('documents')
+      .createSignedUrl(doc.storage_path, 300)
+    if (signed?.signedUrl) docUrls[doc.kind] = signed.signedUrl
+  }
 
   let profile = {
     age: null as number | null,
@@ -100,6 +109,7 @@ export default async function AdminViewPlanPage({
         plan={plan.plan_json as NutritionPlanJson}
         name={user.name ?? ''}
         docKinds={docKinds}
+        docUrls={docUrls}
         profile={profile}
       />
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import type { NutritionPlanJson } from '@/lib/nutrition/types'
+import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -58,12 +59,14 @@ export function PlanView({
   name,
   docKinds = [],
   devPdfHref,
+  docUrls,
   profile,
 }: {
   plan: NutritionPlanJson
   name: string
   docKinds?: string[]
   devPdfHref?: string
+  docUrls?: Record<string, string>
   profile?: Profile
 }) {
   const [activeDay, setActiveDay] = useState(0)
@@ -99,7 +102,7 @@ export function PlanView({
             {docKinds.filter((k) => DOC_LABEL[k]).map((k) => (
               <a
                 key={k}
-                href={devPdfHref ?? `/api/documents/${k}`}
+                href={docUrls?.[k] ?? devPdfHref ?? `/api/documents/${k}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 active:scale-[0.98] transition-all"
@@ -266,9 +269,21 @@ export function PlanView({
 
               {/* Itens */}
               <div className="divide-y divide-border">
-                {meal.items.map((item, j) => (
-                  <div key={j} className="flex items-center justify-between gap-3 px-4 py-2.5">
-                    <div className="min-w-0">
+                {meal.items.map((item, j) => {
+                  const imgUrl = getFoodImageUrl(item.food)
+                  return (
+                  <div key={j} className="flex items-center gap-3 px-3 py-2">
+                    {imgUrl && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={imgUrl}
+                        alt={item.food}
+                        className="w-12 h-12 rounded-lg object-cover shrink-0"
+                        loading="lazy"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                      />
+                    )}
+                    <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium">{item.food}</p>
                       <p className="text-xs text-muted-foreground">{item.quantity}</p>
                     </div>
@@ -278,7 +293,8 @@ export function PlanView({
                       <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{item.fatG}G</span>
                     </div>
                   </div>
-                ))}
+                  )
+                })}
               </div>
 
               {/* Rodapé com macros totais da refeição */}
