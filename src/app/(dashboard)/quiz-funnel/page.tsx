@@ -53,11 +53,14 @@ async function getFunnelData(since: string) {
     ).length
   }
 
-  const previewViewed = data.filter(
-    (r) => r.draft_answers && typeof r.draft_answers === 'object' && '_ev_preview_viewed' in r.draft_answers,
-  ).length
+  const hasEvent = (r: { draft_answers: unknown }, key: string) =>
+    !!r.draft_answers && typeof r.draft_answers === 'object' && key in (r.draft_answers as object)
 
-  return { total, stepCounts, previewViewed, ordersCount: ordersCount ?? 0 }
+  const previewViewed = data.filter((r) => hasEvent(r, '_ev_preview_viewed')).length
+  const offerReached = data.filter((r) => hasEvent(r, '_ev_offer_reached')).length
+  const tiersReached = data.filter((r) => hasEvent(r, '_ev_tiers_reached')).length
+
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, ordersCount: ordersCount ?? 0 }
 }
 
 export default async function QuizFunnelPage({
@@ -80,7 +83,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, ordersCount } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, ordersCount } = data
   const step1 = stepCounts[1] || 1
 
   return (
@@ -198,10 +201,60 @@ export default async function QuizFunnelPage({
               )
             })()}
 
+            {/* Linha: Chegaram na oferta (scroll) */}
+            {(() => {
+              const count = offerReached
+              const prev = previewViewed
+              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+              return (
+                <tr className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
+                  <td className="px-4 py-3 font-medium text-primary">Chegaram na oferta</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                      {pctStart}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                      {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })()}
+
+            {/* Linha: Chegaram nos botões de tier (scroll) */}
+            {(() => {
+              const count = tiersReached
+              const prev = offerReached
+              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+              return (
+                <tr className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
+                  <td className="px-4 py-3 font-medium text-primary">Chegaram nos botões</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                      {pctStart}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                      {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })()}
+
             {/* Linha: Clicaram no Hotmart */}
             {(() => {
               const count = ordersCount
-              const prev = previewViewed
+              const prev = tiersReached
               const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (

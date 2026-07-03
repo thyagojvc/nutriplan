@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
 const bodySchema = z.object({
-  event: z.enum(['preview_viewed']),
+  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached']),
 })
 
 // Registra eventos de funil pós-quiz em draft_answers como chaves extras

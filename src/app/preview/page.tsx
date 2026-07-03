@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap, Dumbbell,
@@ -13,6 +13,17 @@ import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 import { trackPixel, trackPixelOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
+
+// Dispara um evento de funil pós-quiz no Supabase (fire-and-forget).
+// Mesma via do preview_viewed: grava _ev_<event> em draft_answers, lido no
+// dashboard /quiz-funnel. Serve para medir até onde a lead rola a preview.
+function trackFunnelEvent(event: 'preview_viewed' | 'offer_reached' | 'tiers_reached') {
+  fetch('/api/quiz/track-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event }),
+  }).catch(() => {})
+}
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -146,6 +157,10 @@ export default function PreviewPage() {
   // O pedido e o tracking continuam sempre em USD — ver handleCta.
   const [fx, setFx] = useState<{ currency: string; rate: number }>({ currency: 'USD', rate: 1 })
 
+  // Âncoras de scroll para medir profundidade da lead na preview (ver observer abaixo).
+  const offerRef = useRef<HTMLDivElement | null>(null)
+  const tiersRef = useRef<HTMLDivElement | null>(null)
+
   // Localiza o preço pelo país do passo 7 (o mesmo que o checkout usa).
   // Países fora do mapa ficam em USD e nem chamam a API de câmbio.
   useEffect(() => {
@@ -274,12 +289,32 @@ export default function PreviewPage() {
   useEffect(() => {
     if (!data) return
     trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
-    // Registra no Supabase para o funil interno (fire-and-forget).
-    fetch('/api/quiz/track-event', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ event: 'preview_viewed' }),
-    }).catch(() => {})
+    trackFunnelEvent('preview_viewed')
+  }, [data])
+
+  // Profundidade de scroll: registra uma vez cada quando o bloco entra na tela.
+  // 'offer_reached' = viu a oferta; 'tiers_reached' = chegou nos botões de tier.
+  // Assim o funil mostra onde a lead para entre ver a preview e clicar.
+  useEffect(() => {
+    if (!data) return
+    const observers: IntersectionObserver[] = []
+    const watch = (el: HTMLElement | null, event: 'offer_reached' | 'tiers_reached') => {
+      if (!el) return
+      const obs = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            trackFunnelEvent(event)
+            obs.disconnect()
+          }
+        },
+        { threshold: 0.01 },
+      )
+      obs.observe(el)
+      observers.push(obs)
+    }
+    watch(offerRef.current, 'offer_reached')
+    watch(tiersRef.current, 'tiers_reached')
+    return () => observers.forEach((o) => o.disconnect())
   }, [data])
 
   const HOTMART_URLS: Record<string, string> = {
@@ -616,8 +651,8 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto con la ecuación Mifflin-St Jeor,
-            el estándar clínico, ajustada a tu nivel de actividad por un nutricionista.
+            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto real
+            con el estándar clínico que usan los nutricionistas en consulta, ajustado a tu cuerpo y tu nivel de actividad.
           </p>
         </Card>
 
@@ -733,7 +768,7 @@ export default function PreviewPage() {
             </div>
           </div>
           <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-            Tiago diseñó personalmente las ecuaciones de la Calibración Metabólica. Cada plan se calcula con la ecuación Mifflin-St Jeor, el estándar clínico internacional, ajustada a tu cuerpo por nuestro equipo.
+            Una calculadora de internet le da el mismo número a todas. La Calibración Metabólica hace lo contrario. Tiago parte de tu metabolismo real y lo ajusta a tu cuerpo, tu rutina y tu objetivo, con el mismo criterio clínico que usaría en una consulta. Por eso no es una dieta más que copias de alguien. Es tu número exacto, calibrado para ti y para nadie más.
           </p>
         </div>
 
@@ -868,7 +903,7 @@ export default function PreviewPage() {
         )}
 
         {/* Oferta con ancla de valor */}
-        <div className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
+        <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Selo de desconto */}
           <div className="absolute right-3 top-3 z-10 rounded-full bg-[#D85A30] px-2.5 py-1 text-xs font-black text-white shadow-sm">
             -67%
@@ -949,7 +984,7 @@ export default function PreviewPage() {
             )}
 
             {/* 3 tiers — escada de valor */}
-            <div className="space-y-2.5 pt-1">
+            <div ref={tiersRef} className="space-y-2.5 pt-1">
 
               {/* Tier 1 — básico $7.90 */}
               <button
