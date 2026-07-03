@@ -48,13 +48,17 @@ export async function GET(request: NextRequest) {
 
   const magicLink = linkData.properties.action_link
 
-  await sendPlanReadyEmail({ to: email, name: user.name, magicLink })
+  // &to=outro@email.com envia o link para um endereço diferente (teste admin)
+  const sendTo = searchParams.get('to') ?? email
+
+  await sendPlanReadyEmail({ to: sendTo, name: user.name, magicLink })
 
   return NextResponse.json({
     ok: true,
-    email,
+    accountEmail: email,
+    sentTo: sendTo,
     name: user.name,
-    redirectTo: appUrl + '/dashboard',
+    redirectTo: appUrl + '/auth/callback',
     message: 'E-mail enviado com sucesso',
   })
 }
