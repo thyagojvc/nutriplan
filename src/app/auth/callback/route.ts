@@ -1,5 +1,4 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -8,29 +7,31 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get('code')
 
   if (code) {
-    const cookieStore = await cookies()
+    // A resposta de redirect é criada primeiro para que os cookies da sessão
+    // sejam setados diretamente nela — se setados via cookieStore() e depois
+    // criado um NextResponse separado, os cookies não transferem e a sessão
+    // se perde antes de chegar ao middleware.
+    const response = NextResponse.redirect(`${origin}/dashboard`)
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
           getAll() {
-            return cookieStore.getAll()
+            return request.cookies.getAll()
           },
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          setAll(cookiesToSet: any[]) {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options),
-            )
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              response.cookies.set(name, value, options)
+            })
           },
         },
       },
     )
 
     const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      return NextResponse.redirect(`${origin}/dashboard`)
-    }
+    if (!error) return response
   }
 
   return NextResponse.redirect(`${origin}/login?error=auth_failed`)
