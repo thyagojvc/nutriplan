@@ -59,8 +59,9 @@ async function getFunnelData(since: string) {
   const previewViewed = data.filter((r) => hasEvent(r, '_ev_preview_viewed')).length
   const offerReached = data.filter((r) => hasEvent(r, '_ev_offer_reached')).length
   const tiersReached = data.filter((r) => hasEvent(r, '_ev_tiers_reached')).length
+  const pageEnd = data.filter((r) => hasEvent(r, '_ev_page_end')).length
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, ordersCount: ordersCount ?? 0 }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0 }
 }
 
 export default async function QuizFunnelPage({
@@ -83,7 +84,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, ordersCount } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount } = data
   const step1 = stepCounts[1] || 1
 
   return (
@@ -236,6 +237,31 @@ export default async function QuizFunnelPage({
                 <tr className="hover:bg-muted/30 transition-colors">
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
                   <td className="px-4 py-3 font-medium text-primary">Chegaram nos botões</td>
+                  <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                      {pctStart}%
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right tabular-nums">
+                    <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                      {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })()}
+
+            {/* Linha: Leram até o fim (após FAQ) */}
+            {(() => {
+              const count = pageEnd
+              const prev = tiersReached
+              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+              return (
+                <tr className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">—</td>
+                  <td className="px-4 py-3 font-medium text-primary">Leram até o fim</td>
                   <td className="px-4 py-3 text-right tabular-nums">{count}</td>
                   <td className="px-4 py-3 text-right tabular-nums">
                     <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pctStart >= 70 ? 'bg-green-100 text-green-700' : pctStart >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>

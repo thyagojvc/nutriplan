@@ -17,7 +17,7 @@ import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 // Dispara um evento de funil pós-quiz no Supabase (fire-and-forget).
 // Mesma via do preview_viewed: grava _ev_<event> em draft_answers, lido no
 // dashboard /quiz-funnel. Serve para medir até onde a lead rola a preview.
-function trackFunnelEvent(event: 'preview_viewed' | 'offer_reached' | 'tiers_reached') {
+function trackFunnelEvent(event: 'preview_viewed' | 'offer_reached' | 'tiers_reached' | 'page_end') {
   fetch('/api/quiz/track-event', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -160,6 +160,7 @@ export default function PreviewPage() {
   // Âncoras de scroll para medir profundidade da lead na preview (ver observer abaixo).
   const offerRef = useRef<HTMLDivElement | null>(null)
   const tiersRef = useRef<HTMLDivElement | null>(null)
+  const pageEndRef = useRef<HTMLDivElement | null>(null)
 
   // Localiza o preço pelo país do passo 7 (o mesmo que o checkout usa).
   // Países fora do mapa ficam em USD e nem chamam a API de câmbio.
@@ -298,7 +299,7 @@ export default function PreviewPage() {
   useEffect(() => {
     if (!data) return
     const observers: IntersectionObserver[] = []
-    const watch = (el: HTMLElement | null, event: 'offer_reached' | 'tiers_reached') => {
+    const watch = (el: HTMLElement | null, event: 'offer_reached' | 'tiers_reached' | 'page_end') => {
       if (!el) return
       const obs = new IntersectionObserver(
         (entries) => {
@@ -314,6 +315,7 @@ export default function PreviewPage() {
     }
     watch(offerRef.current, 'offer_reached')
     watch(tiersRef.current, 'tiers_reached')
+    watch(pageEndRef.current, 'page_end')
     return () => observers.forEach((o) => o.disconnect())
   }, [data])
 
@@ -1112,7 +1114,7 @@ export default function PreviewPage() {
         <FaqSection />
 
         {/* CTA final — após perguntas frequentes */}
-        <div className="space-y-3 pb-10">
+        <div ref={pageEndRef} className="space-y-3 pb-10">
           <button
             onClick={() => handleCta('recipes')}
             disabled={ctaState === 'loading'}
