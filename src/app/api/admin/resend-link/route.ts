@@ -31,7 +31,9 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: 'usuário não encontrado em users', email }, { status: 404 })
   }
 
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
+  // Usa sempre a URL de produção fixa para evitar que NEXT_PUBLIC_APP_URL
+  // aponte para um preview do Vercel e bloqueie o acesso da cliente.
+  const appUrl = 'https://nutriplan-tzyt.vercel.app'
 
   const { data: linkData, error } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
