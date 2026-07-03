@@ -108,7 +108,7 @@ export default function LoginPage() {
             <div className="text-center space-y-1.5">
               <h1 className="text-2xl font-black text-gray-900">Accede a tu plan</h1>
               <p className="text-sm text-muted-foreground">
-                Te enviamos un enlace al correo — sin contraseña.
+                Te enviamos un enlace al correo, sin contraseña.
               </p>
             </div>
 

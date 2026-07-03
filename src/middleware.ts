@@ -25,6 +25,8 @@ const PUBLIC_PATHS = [
   '/api/dev/simulate-payment',
   '/api/webhooks/hotmart',
   '/api/admin/generate',
+  '/api/admin/resend-link',
+  '/admin',
   '/dev', // páginas de preview dev-only (retornam 404 em produção)
 ]
 
