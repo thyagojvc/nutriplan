@@ -15,10 +15,11 @@ declare global {
 export function trackPixel(
   event: string,
   params?: Record<string, unknown>,
-  options?: { custom?: boolean },
+  options?: { custom?: boolean; eventID?: string },
 ): void {
   if (typeof window === 'undefined' || typeof window.fbq !== 'function') return
-  window.fbq(options?.custom ? 'trackCustom' : 'track', event, params)
+  const trackOptions = options?.eventID ? { eventID: options.eventID } : undefined
+  window.fbq(options?.custom ? 'trackCustom' : 'track', event, params, trackOptions)
 }
 
 /**

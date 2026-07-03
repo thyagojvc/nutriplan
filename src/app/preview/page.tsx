@@ -345,7 +345,7 @@ export default function PreviewPage() {
 
       const purchaseValue = type === 'training' ? 14.90 : type === 'recipes' ? 9.90 : 7.90
       sessionStorage.setItem('nutriplan_purchase_value', String(purchaseValue))
-      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'NutriPlan' })
+      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {

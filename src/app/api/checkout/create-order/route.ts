@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
+import { sendFacebookInitiateCheckout } from '@/lib/fb-conversions-api'
 
 const bodySchema = z.object({
   plan_type: z.enum(['basic', 'recipes', 'training']).optional().default('recipes'),
@@ -157,6 +158,18 @@ export async function POST(request: NextRequest) {
     console.error('[create-order] items insert error:', itemsError)
     return NextResponse.json({ error: 'items_creation_failed' }, { status: 500 })
   }
+
+  // Dispara InitiateCheckout via CAPI server-side (não depende do pixel do navegador).
+  // event_id compartilhado com o pixel client-side para que o Meta desduplique.
+  void sendFacebookInitiateCheckout({
+    orderId: order.id,
+    value: totalAmount,
+    currency: plan.currency ?? 'USD',
+    fbc,
+    fbp,
+    clientIpAddress,
+    clientUserAgent,
+  })
 
   return NextResponse.json({
     order_id: order.id,

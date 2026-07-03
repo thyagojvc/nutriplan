@@ -25,6 +25,58 @@ export interface FbPurchasePayload {
   clientUserAgent?: string | null
 }
 
+export interface FbInitiateCheckoutPayload {
+  orderId: string
+  value: number
+  currency: string
+  fbc?: string | null
+  fbp?: string | null
+  clientIpAddress?: string | null
+  clientUserAgent?: string | null
+}
+
+export async function sendFacebookInitiateCheckout(payload: FbInitiateCheckoutPayload): Promise<void> {
+  const token = process.env.FB_CONVERSIONS_API_TOKEN
+  if (!token) return
+
+  const userData: Record<string, string> = {}
+  if (payload.fbc) userData.fbc = payload.fbc
+  if (payload.fbp) userData.fbp = payload.fbp
+  if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
+  if (payload.clientUserAgent) userData.client_user_agent = payload.clientUserAgent
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: [
+          {
+            event_name: 'InitiateCheckout',
+            event_time: Math.floor(Date.now() / 1000),
+            event_id: `initiate_checkout_${payload.orderId}`,
+            action_source: 'website',
+            user_data: userData,
+            custom_data: {
+              value: payload.value,
+              currency: payload.currency.toUpperCase(),
+              content_name: 'NutriPlan',
+            },
+          },
+        ],
+        access_token: token,
+      }),
+    })
+
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('[fb-capi] InitiateCheckout falhou', res.status, text)
+    }
+  } catch (err) {
+    console.error('[fb-capi] erro ao enviar InitiateCheckout:', err)
+  }
+}
+
 export async function sendFacebookPurchase(payload: FbPurchasePayload): Promise<void> {
   const token = process.env.FB_CONVERSIONS_API_TOKEN
   if (!token) return
