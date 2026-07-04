@@ -18,6 +18,8 @@
 export const FX_BUFFER = 1.03
 
 // País (ISO-2, vem do passo 7) -> moeda. Fora desse mapa, cai em USD (fallback).
+// EC/PA/SV ficam de fora de propósito: são dolarizados oficialmente, USD já é a moeda certa.
+// VE/CU ficam de fora: câmbio instável (VES) ou sistema bancário isolado (CUP).
 const COUNTRY_TO_CURRENCY: Record<string, string> = {
   MX: 'MXN',
   CO: 'COP',
@@ -26,10 +28,21 @@ const COUNTRY_TO_CURRENCY: Record<string, string> = {
   AR: 'ARS',
   ES: 'EUR',
   BR: 'BRL',
+  GT: 'GTQ',
+  BO: 'BOB',
+  PY: 'PYG',
+  UY: 'UYU',
+  CR: 'CRC',
+  HN: 'HNL',
+  NI: 'NIO',
+  DO: 'DOP',
 }
 
 // Moedas que precisamos do endpoint de câmbio.
-export const SUPPORTED_CURRENCIES = ['MXN', 'COP', 'CLP', 'PEN', 'ARS', 'EUR', 'BRL'] as const
+export const SUPPORTED_CURRENCIES = [
+  'MXN', 'COP', 'CLP', 'PEN', 'ARS', 'EUR', 'BRL',
+  'GTQ', 'BOB', 'PYG', 'UYU', 'CRC', 'HNL', 'NIO', 'DOP',
+] as const
 
 // Estilo de arredondamento charm:
 //   cents90      -> termina em ,90  (EUR, USD)              ex: 18,90
@@ -52,6 +65,14 @@ const CURRENCY_CONFIG: Record<string, CurrencyConfig> = {
   COP: { symbol: '$', charm: 'nineHundred', locale: 'es-CO' },
   CLP: { symbol: '$', charm: 'nineHundred', locale: 'es-CL' },
   ARS: { symbol: '$', charm: 'nineHundred', locale: 'es-AR' },
+  GTQ: { symbol: 'Q', charm: 'nine', locale: 'es-GT' },
+  BOB: { symbol: 'Bs', charm: 'nine', locale: 'es-BO' },
+  PYG: { symbol: '₲', charm: 'nineHundred', locale: 'es-PY' },
+  UYU: { symbol: '$', charm: 'nine', locale: 'es-UY' },
+  CRC: { symbol: '₡', charm: 'nineHundred', locale: 'es-CR' },
+  HNL: { symbol: 'L', charm: 'nine', locale: 'es-HN' },
+  NIO: { symbol: 'C$', charm: 'nine', locale: 'es-NI' },
+  DOP: { symbol: 'RD$', charm: 'nine', locale: 'es-DO' },
 }
 
 export function currencyForCountry(country: string | undefined | null): string {
