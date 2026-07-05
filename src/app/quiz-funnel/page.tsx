@@ -19,6 +19,25 @@ const STEP_LABELS: Record<number, string> = {
 // Steps ocultos (auto-save sem UI): excluídos da análise de abandono.
 const HIDDEN_STEPS = new Set([7])
 
+const OFFER_LABELS: Record<string, string> = {
+  PLAN_BASIC: 'Solo el plan · 7 días',
+  PLAN_RECIPES: 'Plan + 28 Recetas Fitness',
+  PLAN_TRAINING: 'Plan + Recetas + Entrenamiento',
+  PLAN_STANDARD: 'Plan Standard (legado)',
+  TRAINING_BUMP: 'Bump Entrenamiento (legado)',
+  PLAN_4WEEKS: 'Transformación 4 semanas (legado)',
+}
+
+const STATUS_LABELS: Record<string, string> = {
+  pending: 'Pendiente',
+  paid: 'Pago',
+  generating: 'Generando',
+  needs_review: 'En revisión',
+  delivered: 'Entregado',
+  failed: 'Falló',
+  refunded: 'Reembolsado',
+}
+
 async function getFunnelData(since: string) {
   const supabase = createServiceClient()
 
@@ -33,7 +52,7 @@ async function getFunnelData(since: string) {
     query,
     supabase
       .from('orders')
-      .select('session_id')
+      .select('session_id, status, order_items(product_code)')
       .gte('created_at', since),
   ])
 
@@ -44,6 +63,17 @@ async function getFunnelData(since: string) {
   // então a mesma pessoa comparando 2 tiers gera 2 orders. Deduplicar por
   // session_id reflete pessoas, não cliques repetidos.
   const ordersCount = new Set((ordersRows ?? []).map((o) => o.session_id)).size
+
+  // Quebra por oferta (tier) + status — responde "para qual oferta foi essa
+  // finalização de compra". product_code vem de order_items (1 por order).
+  const offerCounts: Record<string, { total: number; byStatus: Record<string, number> }> = {}
+  for (const o of ordersRows ?? []) {
+    const items = (o as unknown as { order_items?: { product_code: string }[] }).order_items ?? []
+    const productCode = items[0]?.product_code ?? 'Sin ítem'
+    if (!offerCounts[productCode]) offerCounts[productCode] = { total: 0, byStatus: {} }
+    offerCounts[productCode].total += 1
+    offerCounts[productCode].byStatus[o.status] = (offerCounts[productCode].byStatus[o.status] ?? 0) + 1
+  }
 
   const total = data.length
 
@@ -72,7 +102,7 @@ async function getFunnelData(since: string) {
     countryCounts[country] = (countryCounts[country] ?? 0) + 1
   }
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts }
 }
 
 export default async function QuizFunnelPage({
@@ -95,9 +125,10 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts } = data
   const step1 = stepCounts[1] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
+  const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
@@ -321,6 +352,34 @@ export default async function QuizFunnelPage({
         Steps ocultos (sem UI) aparecem esmaecidos e sem abandono calculado.
         Abandono ⚠ sinaliza queda ≥ 20% em relação ao step anterior.
       </p>
+
+      {/* Ofertas — para qual tier foi cada finalização de compra, com status real */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Ofertas</p>
+          <p className="text-xs text-muted-foreground">Checkouts iniciados por tier. &quot;Pendiente&quot; = iniciou o pagamento mas ainda não confirmado na Hotmart.</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {offerRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem checkouts no período.</td></tr>
+            )}
+            {offerRows.map(([productCode, { total: offerTotal, byStatus }]) => (
+              <tr key={productCode} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5">
+                  <p className="font-medium">{OFFER_LABELS[productCode] ?? productCode}</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {Object.entries(byStatus)
+                      .map(([status, c]) => `${STATUS_LABELS[status] ?? status}: ${c}`)
+                      .join(' · ')}
+                  </p>
+                </td>
+                <td className="px-4 py-2.5 text-right tabular-nums font-semibold">{offerTotal}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Países — país real detectado no step 7 (country_detail), não o tier de preço */}
       <div className="overflow-hidden rounded-xl border border-border">
