@@ -8,7 +8,11 @@ const bodySchema = z.object({
 
 // Registra eventos de funil pós-quiz em draft_answers como chaves extras
 // (ex: { _ev_preview_viewed: "2026-07-01T..." }).
-// Sem migration: reutiliza o JSONB existente de generation_sessions.
+// Usa a RPC track_funnel_event (migration 0020): merge atômico via jsonb ||
+// direto no UPDATE. Antes fazia SELECT + merge em JS + UPDATE, o que perdia
+// eventos quando dois disparavam próximos (ex: scroll rápido cruzando
+// offer_reached e tiers_reached quase junto) — a escrita que chegava por
+// último sobrescrevia a coluna inteira e apagava o evento da outra.
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get('nutriplan_session_id')?.value
   if (!sessionId) return NextResponse.json({ ok: false }, { status: 200 })
@@ -22,23 +26,7 @@ export async function POST(request: NextRequest) {
   const key = `_ev_${parsed.data.event}`
   const supabase = createServiceClient()
 
-  const { data: row } = await supabase
-    .from('generation_sessions')
-    .select('draft_answers')
-    .eq('id', sessionId)
-    .single()
-
-  if (!row) return NextResponse.json({ ok: true })
-
-  const merged = {
-    ...(typeof row.draft_answers === 'object' && row.draft_answers !== null ? row.draft_answers : {}),
-    [key]: new Date().toISOString(),
-  }
-
-  await supabase
-    .from('generation_sessions')
-    .update({ draft_answers: merged })
-    .eq('id', sessionId)
+  await supabase.rpc('track_funnel_event', { p_session_id: sessionId, p_key: key })
 
   return NextResponse.json({ ok: true })
 }
