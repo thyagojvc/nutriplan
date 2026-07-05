@@ -774,16 +774,45 @@ export default function PreviewPage() {
               height={72}
               className="h-[72px] w-[72px] shrink-0 rounded-full object-cover object-top border-2 border-[#D8E8D4]"
             />
-            <div className="space-y-1">
+            <div className="space-y-1.5">
               <p className="text-sm font-black text-gray-900">Tiago Vieira</p>
               <p className="text-[13px] font-semibold text-primary">Nutricionista · Responsable técnico</p>
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                <ShieldCheck className="h-3 w-3" />
-                Reg. 26101842
-              </span>
+              <div className="flex flex-wrap gap-1.5">
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                  <ShieldCheck className="h-3 w-3" />
+                  Reg. 26101842
+                </span>
+                <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                  Hipertrofia femenina
+                </span>
+                <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                  Pérdida de grasa en mujeres
+                </span>
+              </div>
             </div>
           </div>
+
+          {/* Números reais da trajetória clínica — distinto do "+1.800 planes" do app */}
+          <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+              <p className="text-2xl font-black text-primary">6 años</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">de trayectoria clínica</p>
+            </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+              <p className="text-2xl font-black text-primary">+2.000</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres atendidas con su metodología</p>
+            </div>
+          </div>
+
           <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
+            Todo empezó con su mamá. Tiago la vio pasar años probando dietas que no consideraban su cuerpo, su edad ni su rutina, sin resultados. Fue su primera paciente, y también su primer caso de éxito. Desde ahí se especializó en un solo objetivo: ayudar a mujeres a perder grasa y ganar fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre.
+          </p>
+
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            El cuerpo femenino no responde igual al de un hombre: metabolismo basal más bajo, mayor tendencia a retener grasa en ciertas zonas, y muchas veces una relación con el entrenamiento frenada por miedo a &quot;ponerse grande&quot;. Por eso Tiago se especializó en hipertrofia femenina y pérdida de grasa con enfoque clínico, no genérico.
+          </p>
+
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
             Una calculadora de internet le da el mismo número a todas. La Calibración Metabólica hace lo contrario. Tiago parte de tu metabolismo real y lo ajusta a tu cuerpo, tu rutina y tu objetivo, con el mismo criterio clínico que usaría en una consulta. Por eso no es una dieta más que copias de alguien. Es tu número exacto, calibrado para ti y para nadie más.
           </p>
         </div>
