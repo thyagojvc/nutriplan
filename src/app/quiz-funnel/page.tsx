@@ -48,12 +48,23 @@ async function getFunnelData(since: string) {
 
   if (since) query = query.gte('created_at', since)
 
-  const [{ data, error }, { data: ordersRows }] = await Promise.all([
+  const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }] = await Promise.all([
     query,
     supabase
       .from('orders')
       .select('session_id, status, order_items(product_code)')
       .gte('created_at', since),
+    supabase
+      .from('orders')
+      .select(`
+        id, status, total_amount, currency, created_at, paid_at,
+        order_items(product_code),
+        generation_sessions(draft_answers),
+        users(name, email)
+      `)
+      .gte('created_at', since)
+      .order('created_at', { ascending: false })
+      .limit(20),
   ])
 
   if (error || !data) return null
@@ -102,7 +113,36 @@ async function getFunnelData(since: string) {
     countryCounts[country] = (countryCounts[country] ?? 0) + 1
   }
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts }
+  // Vendas recentes: nome/email só existem depois do webhook criar o user
+  // (pending ainda não tem comprador identificado). País vem do dado real
+  // (country_detail), não do bucket de preço (que pode ser "OTHER").
+  const recentSales = (recentSalesRows ?? []).map((o) => {
+    const row = o as unknown as {
+      id: string
+      status: string
+      total_amount: number
+      currency: string
+      created_at: string
+      paid_at: string | null
+      order_items?: { product_code: string }[]
+      generation_sessions?: { draft_answers?: Record<string, unknown> } | null
+      users?: { name: string | null; email: string } | null
+    }
+    const step7 = (row.generation_sessions?.draft_answers?.step_7 ?? {}) as { country?: string; country_detail?: string }
+    return {
+      id: row.id,
+      status: row.status,
+      totalAmount: row.total_amount,
+      currency: row.currency,
+      createdAt: row.created_at,
+      productCode: row.order_items?.[0]?.product_code ?? 'Sin ítem',
+      country: step7.country_detail ?? step7.country ?? '—',
+      buyerName: row.users?.name ?? null,
+      buyerEmail: row.users?.email ?? null,
+    }
+  })
+
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales }
 }
 
 export default async function QuizFunnelPage({
@@ -125,7 +165,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales } = data
   const step1 = stepCounts[1] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
@@ -352,6 +392,54 @@ export default async function QuizFunnelPage({
         Steps ocultos (sem UI) aparecem esmaecidos e sem abandono calculado.
         Abandono ⚠ sinaliza queda ≥ 20% em relação ao step anterior.
       </p>
+
+      {/* Vendas recentes — identifica cada pedido: comprador (se já pago), país real, produto e status */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Ventas recientes</p>
+          <p className="text-xs text-muted-foreground">Últimas 20 · comprador solo aparece después del webhook (pending aún no tiene datos)</p>
+        </div>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-muted/30 text-left text-xs text-muted-foreground">
+              <th className="px-4 py-2 font-medium">Fecha</th>
+              <th className="px-4 py-2 font-medium">Comprador</th>
+              <th className="px-4 py-2 font-medium">País</th>
+              <th className="px-4 py-2 font-medium">Producto</th>
+              <th className="px-4 py-2 font-medium">Estado</th>
+              <th className="px-4 py-2 text-right font-medium">Valor</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {recentSales.length === 0 && (
+              <tr><td colSpan={6} className="px-4 py-3 text-muted-foreground">Sin ventas en el período.</td></tr>
+            )}
+            {recentSales.map((s) => (
+              <tr key={s.id} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
+                  {new Date(s.createdAt).toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                </td>
+                <td className="px-4 py-2.5">
+                  {s.buyerEmail ? (
+                    <div>
+                      <p className="font-medium">{s.buyerName || '(sin nombre)'}</p>
+                      <p className="text-[11px] text-muted-foreground">{s.buyerEmail}</p>
+                    </div>
+                  ) : (
+                    <span className="text-xs text-muted-foreground">— pendiente —</span>
+                  )}
+                </td>
+                <td className="px-4 py-2.5 font-mono text-xs">{s.country}</td>
+                <td className="px-4 py-2.5 text-xs">{OFFER_LABELS[s.productCode] ?? s.productCode}</td>
+                <td className="px-4 py-2.5 text-xs">{STATUS_LABELS[s.status] ?? s.status}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums font-semibold">
+                  {s.currency} {s.totalAmount}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {/* Ofertas — para qual tier foi cada finalização de compra, com status real */}
       <div className="overflow-hidden rounded-xl border border-border">
