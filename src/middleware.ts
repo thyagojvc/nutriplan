@@ -28,6 +28,7 @@ const PUBLIC_PATHS = [
   '/api/admin/generate',
   '/api/admin/resend-link',
   '/admin',
+  '/quiz-funnel',
   '/dev', // páginas de preview dev-only (retornam 404 em produção)
 ]
 
