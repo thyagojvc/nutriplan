@@ -873,11 +873,11 @@ export default function PreviewPage() {
             Lo que dicen quienes ya lo tienen
           </p>
           {[
-            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', belief: 'Entrenaba en el gym pero comía a ojo y no bajaba.', text: 'Con mis números exactos bajé y empecé a marcar. Sin pasar hambre.' },
-            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', belief: 'Un nutri y un entrenador por separado no me alcanzaban.', text: 'Aquí tuve dieta y rutina juntas, hechas para mí. Bajé sin culpa.' },
-            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', belief: 'Sabía lo que quería, pero no el plan exacto para lograrlo.', text: 'Se adaptó a mi rutina y a mi entreno. En semanas, más energía y resultados.' },
-          ].map(({ photo, name, country, belief, text }) => (
-            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-1.5">
+            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 7 kilos en 3 meses y empecé a marcar, y lo que no me esperaba es que fue sin pasar hambre.' },
+            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 2 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.' },
+            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Yo sabía lo que quería, el problema es que no tenía el plan concreto para llegar. Esto se adaptó a mi rutina y a los días que entreno, que era justo lo que me faltaba. No fue de un día para otro, pero en 6 meses bajé 11 kilos y con más energía que antes.' },
+          ].map(({ photo, name, country, text }) => (
+            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-2">
               <div className="flex items-center gap-2">
                 <Image
                   src={photo}
@@ -894,11 +894,7 @@ export default function PreviewPage() {
                   ))}
                 </div>
               </div>
-              <p className="text-[14px] italic leading-relaxed text-muted-foreground">"{belief}"</p>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" className="text-primary">
-                <path d="M12 5v14M12 19l-6-6M12 19l6-6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-              <p className="text-sm font-medium leading-relaxed text-gray-800">{text}</p>
+              <p className="text-sm leading-relaxed text-gray-800">{text}</p>
               <p className="text-xs font-bold text-primary">{country} {name}</p>
             </div>
           ))}
@@ -935,35 +931,28 @@ export default function PreviewPage() {
                 <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
-            <ul className="space-y-2.5">
-              {[
-                { item: 'Tu plan personalizado con la Calibración Metabólica',  value: price(18) },
-                { item: 'Lista de compras optimizada',      value: price(5) },
-                { item: 'Guía de implementación',           value: price(4) },
-                { item: 'Sustituciones para cada comida',   value: price(3) },
-                { item: 'Acceso a tu panel personal + PDF', value: 'incluido' },
-              ].map(({ item, value }) => (
-                <li key={item} className="flex items-center justify-between gap-3 text-sm">
-                  <span className="flex items-center gap-2 text-gray-700">
+            <div>
+              <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye</p>
+              <ul className="space-y-2.5">
+                {[
+                  'Tu plan personalizado con la Calibración Metabólica',
+                  'Lista de compras optimizada',
+                  'Guía de implementación',
+                  'Sustituciones para cada comida',
+                  'Acceso a tu panel personal + PDF',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
                     {item}
-                  </span>
-                  <span className={value === 'incluido'
-                    ? 'shrink-0 text-xs font-semibold text-primary'
-                    : 'shrink-0 text-xs font-semibold text-gray-400 line-through'}>{value}</span>
-                </li>
-              ))}
-            </ul>
-
-            {/* Valor total riscado — deja claro de una vez que NO es lo que paga */}
-            <div className="flex items-center justify-between gap-3 border-t border-[#EAF2E6] pt-3">
-              <span className="text-sm font-bold text-gray-900">Valor total</span>
-              <span className="text-base font-black text-gray-400 line-through">{price(30)}</span>
+                  </li>
+                ))}
+              </ul>
             </div>
-            <p className="text-center text-[13px] text-gray-700">
-              Hoy no pagas eso. <span className="font-bold text-primary">Elige tu plan abajo.</span>
+
+            <p className="text-center text-[13px] text-gray-700 border-t border-[#EAF2E6] pt-3">
+              Todo esto en <span className="font-bold text-primary">un solo pago</span>, sin suscripción ni cobros cada mes. Elige tu plan abajo.
             </p>
 
             {/* Soporte por WhatsApp con el nutricionista — risco reverso no ponto da decisão */}
