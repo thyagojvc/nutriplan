@@ -1075,6 +1075,12 @@ export default function PreviewPage() {
               )}
             </div>
 
+            {/* Inversão de risco: último pensamento antes do clique, colado nos botões */}
+            <p className="flex items-center justify-center gap-1.5 text-center text-[12px] font-semibold text-gray-600">
+              <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
+              Si no te sirve, no pagas: garantía de 7 días, sin preguntas.
+            </p>
+
             <PaymentTrust />
           </div>
         </div>
@@ -1120,7 +1126,7 @@ export default function PreviewPage() {
           <div>
             <p className="text-sm font-bold text-gray-900">Garantía total de 7 días</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Si no te encanta tu plan, te devolvemos el 100%. Sin preguntas.
+              Sigue tu plan 7 días. Si no notas ningún cambio, te devolvemos el 100% y el plan es tuyo igual.
             </p>
           </div>
         </div>
@@ -1179,7 +1185,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Qué pasa si no me gusta el plan?',
-    a: 'Tienes garantía total de 7 días. Si no te convence, te devolvemos el 100%, sin preguntas.',
+    a: 'Sigue tu plan durante 7 días. Si no notas ningún cambio, te devolvemos el 100% de tu dinero y te quedas con el plan igual, sin preguntas.',
   },
   {
     q: '¿En cuánto tiempo veo resultados?',
