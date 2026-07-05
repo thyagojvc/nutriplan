@@ -987,10 +987,10 @@ export default function PreviewPage() {
                   <span className="text-sm font-bold text-gray-900">Solo el plan · 7 días</span>
                   <span className="text-[12px] text-muted-foreground">Menús personalizados para tu meta</span>
                 </span>
-                <span className="flex shrink-0 items-center gap-1.5">
-                  <span className="text-base font-black text-gray-700">{price(7.90)}</span>
-                  <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                <span className="flex shrink-0 items-center gap-1 rounded-lg border border-[#D8E8D4] bg-[#F5FAF2] px-2.5 py-1.5 text-sm font-black text-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                  {price(7.90)}
+                  <svg width="13" height="13" viewBox="0 0 15 15" fill="none">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </span>
               </button>
@@ -1013,10 +1013,10 @@ export default function PreviewPage() {
                     <span className="text-sm font-bold text-gray-900">Plan + 28 Recetas Fitness</span>
                     <span className="text-[12px] text-muted-foreground">Todo lo del plan + 28 recetas + lista de compras + sustituciones</span>
                   </span>
-                  <span className="flex shrink-0 items-center gap-1.5">
-                    <span className="text-lg font-black text-primary">{price(9.90)}</span>
-                    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
-                      <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <span className="flex shrink-0 items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-base font-black text-white shadow-[0_2px_8px_rgba(15,110,86,0.35)]">
+                    {price(9.90)}
+                    <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
+                      <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </span>
                 </button>
@@ -1035,10 +1035,10 @@ export default function PreviewPage() {
                   <span className="text-sm font-bold text-gray-900">Plan + Recetas + Entrenamiento</span>
                   <span className="text-[12px] text-muted-foreground">Todo lo anterior + tu rutina para casa o gimnasio, a tu perfil</span>
                 </span>
-                <span className="flex shrink-0 items-center gap-1.5">
-                  <span className="text-base font-black text-gray-700">{price(14.90)}</span>
-                  <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#9CA3AF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                <span className="flex shrink-0 items-center gap-1 rounded-lg border border-primary/30 bg-[#F5FAF2] px-2.5 py-1.5 text-sm font-black text-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+                  {price(14.90)}
+                  <svg width="13" height="13" viewBox="0 0 15 15" fill="none">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </span>
               </button>
@@ -1086,13 +1086,14 @@ export default function PreviewPage() {
                 className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center transition-all hover:border-primary hover:bg-[#EDF6E6] active:scale-[0.98] disabled:opacity-50"
               >
                 <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan</p>
-                <p className="mt-1 flex items-center justify-center gap-1 text-2xl font-black text-gray-900">
-                  {price(9.90)}
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </p>
+                <p className="mt-1 text-2xl font-black text-gray-900">{price(9.90)}</p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
+                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[12px] font-bold text-white shadow-[0_2px_6px_rgba(15,110,86,0.3)]">
+                  Elegir este plan
+                  <svg width="12" height="12" viewBox="0 0 15 15" fill="none">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </span>
               </button>
             </div>
 
