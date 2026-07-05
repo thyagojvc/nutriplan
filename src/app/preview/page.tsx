@@ -55,6 +55,38 @@ const TRAINING_FREQUENCY_LABEL: Record<string, string> = {
   '5_mas': '5+ días por semana',
 }
 
+// Cada obstáculo do step 11 reformulado como benefício (não repete a palavra
+// literal da opção do quiz). Usado no hero para conectar com o objetivo dela.
+const OBSTACLE_HERO_PHRASE: Record<string, string> = {
+  falta_tiempo:     'sin robarte horas que no tienes',
+  falta_motivacion: 'sin depender de la fuerza de voluntad',
+  no_se_que_comer:  'sin adivinar qué poner en el plato',
+  comer_fuera:      'que se adapta cuando comes fuera',
+  presupuesto:      'sin gastar de más en el súper',
+  antojos:          'sin pelearte con los antojos',
+}
+
+// Monta a promessa central do hero: "Come exactamente lo que tu cuerpo necesita
+// para [objetivo]" + até 2 obstáculos reformulados. Sem obstáculo, fecha com o
+// remate da promessa ("ni más, ni menos").
+function buildHeroPromise(goal: string, obstacles: string[]): string {
+  const verbByGoal: Record<string, string> = {
+    lose_fat:    'para bajar de peso',
+    perder_peso: 'para bajar de peso',
+    gain_muscle: 'para ganar músculo',
+    ganar_masa:  'para ganar músculo',
+  }
+  const base = `Come exactamente lo que tu cuerpo necesita ${verbByGoal[goal] ?? 'para llegar a tu meta'}`
+
+  const tails = obstacles
+    .map((o) => OBSTACLE_HERO_PHRASE[o])
+    .filter(Boolean)
+    .slice(0, 2)
+
+  if (tails.length === 0) return `${base}. Ni más, ni menos.`
+  return `${base}, ${tails.join(' y ')}.`
+}
+
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
@@ -146,6 +178,8 @@ export default function PreviewPage() {
   const [activity, setActivity] = useState<{ count: number; label: string } | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
+  // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
+  const [heroObstacles, setHeroObstacles] = useState<string[]>([])
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
   // O pedido e o tracking continuam sempre em USD — ver handleCta.
   const [fx, setFx] = useState<{ currency: string; rate: number }>({ currency: 'USD', rate: 1 })
@@ -189,6 +223,8 @@ export default function PreviewPage() {
       if (s11) {
         const { obstacles = [] } = JSON.parse(s11) as { obstacles?: string[] }
         if (obstacles.includes('falta_tiempo')) setPainAngle('tiempo')
+        // Guarda no máximo 2 (ordem do quiz) para não sobrecarregar o hero.
+        setHeroObstacles(obstacles.slice(0, 2))
       }
     } catch { /* mantém default 'cetica' */ }
   }, [])
@@ -504,6 +540,8 @@ export default function PreviewPage() {
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
   const firstName = leadInfo.name?.trim().split(' ')[0]
+  // Promessa central do hero, personalizada pelo objetivo + obstáculos dela.
+  const heroPromise = buildHeroPromise(targets.goal, heroObstacles)
 
   return (
     <PageShell>
@@ -514,6 +552,14 @@ export default function PreviewPage() {
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
           {firstName ? `${firstName}, tu NutriPlan está listo` : 'Tu NutriPlan está listo · solo para ti'}
         </div>
+
+        {/* Promessa central — message match com o anúncio ("exactamente") + obstáculo dela */}
+        {(isLoss || isGain) && (
+          <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
+            Come <span className="text-primary">exactamente</span>
+            {heroPromise.replace(/^Come exactamente/, '')}
+          </h1>
+        )}
 
         {/* Selos de personalización — refuerzan que no es una plantilla genérica */}
         {(inputCount || training) && (
@@ -712,6 +758,21 @@ export default function PreviewPage() {
             )}
           </p>
         </div>
+
+        {/* CTA intermediário — quem já está convencido pula direto pra oferta */}
+        <button
+          onClick={() => offerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+          className={[
+            'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-black text-white',
+            'bg-primary shadow-[0_4px_18px_rgba(15,110,86,0.28)] transition-all duration-150',
+            'hover:brightness-[1.05] hover:shadow-[0_6px_26px_rgba(15,110,86,0.38)] active:scale-[0.99]',
+          ].join(' ')}
+        >
+          Quiero empezar a comer para mí
+          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
+            <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+          </svg>
+        </button>
 
         {/* Autoridade — responsável técnico */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
