@@ -10,11 +10,14 @@ function toDbCountry(code: string | undefined): string {
   return code && PRICED_COUNTRIES.has(code) ? code : 'OTHER'
 }
 
+// Descripciones sobre la RUTINA DIARIA (trabajo, movimiento cotidiano), no
+// sobre entrenamiento estructurado — eso se pregunta aparte en el step de
+// ejercicio, para no sonar como la misma pregunta repetida dos veces.
 const LEVELS = [
-  { id: 'sedentario',            factor: 1.2,   label: 'Sedentario',               desc: 'Poco o ningún ejercicio, trabajo de oficina',        emoji: '🛋️' },
-  { id: 'ligeramente_activo',    factor: 1.375, label: 'Ligeramente activo',        desc: 'Ejercicio ligero 1–3 días por semana',               emoji: '🚶' },
-  { id: 'moderadamente_activo',  factor: 1.55,  label: 'Moderadamente activo',      desc: 'Ejercicio moderado 3–5 días por semana',             emoji: '🏃' },
-  { id: 'muy_activo',            factor: 1.725, label: 'Muy activo',                desc: 'Ejercicio intenso 6–7 días por semana',              emoji: '⚡' },
+  { id: 'sedentario',            factor: 1.2,   label: 'Sedentario',               desc: 'Trabajo de oficina, mayormente sentada todo el día',            emoji: '🛋️' },
+  { id: 'ligeramente_activo',    factor: 1.375, label: 'Ligeramente activo',        desc: 'Te mueves bastante: caminas, subes escaleras, trabajo de pie',  emoji: '🚶' },
+  { id: 'moderadamente_activo',  factor: 1.55,  label: 'Moderadamente activo',      desc: 'Tu día es físicamente exigente, con movimiento constante',      emoji: '🏃' },
+  { id: 'muy_activo',            factor: 1.725, label: 'Muy activo',                desc: 'Trabajo físico intenso (cargar peso, de pie todo el día)',      emoji: '⚡' },
 ]
 
 interface Props {
@@ -84,8 +87,8 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
 
       <QuizCard>
         <QuizHeader
-          title="¿Cuál es tu nivel de actividad física?"
-          subtitle="Sé honesta: esto determina directamente cuántas calorías necesitas cada día."
+          title="¿Cómo es tu rutina diaria, más allá del ejercicio?"
+          subtitle="Esto determina cuántas calorías necesitas cada día. Sobre tu entrenamiento te preguntamos más adelante."
         />
 
         <div className="space-y-2.5">
