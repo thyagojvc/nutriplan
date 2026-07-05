@@ -52,7 +52,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 11, answers: { obstacles: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/12')
+      router.push('/quiz/13')
     } catch {
       setError(true)
     } finally {
@@ -95,7 +95,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
       </QuizCard>
 
       <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving}>
-        Continuar al último paso
+        Continuar
       </QuizCta>
     </QuizLayout>
   )

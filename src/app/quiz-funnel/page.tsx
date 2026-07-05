@@ -12,6 +12,7 @@ const STEP_LABELS: Record<number, string> = {
   9:  'Condições de saúde',
   10: 'Exercício',
   11: 'Obstáculos',
+  13: 'Incômodo corporal',
   12: 'Ponte emocional (CTA)',
 }
 
@@ -47,7 +48,7 @@ async function getFunnelData(since: string) {
   const total = data.length
 
   const stepCounts: Record<number, number> = {}
-  for (let s = 1; s <= 12; s++) {
+  for (let s = 1; s <= 13; s++) {
     stepCounts[s] = data.filter(
       (r) => r.draft_answers && typeof r.draft_answers === 'object' && `step_${s}` in r.draft_answers,
     ).length
@@ -144,7 +145,7 @@ export default async function QuizFunnelPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {Array.from({ length: 12 }, (_, i) => i + 1).map((step) => {
+            {Array.from({ length: 13 }, (_, i) => i + 1).map((step) => {
               const isHidden = HIDDEN_STEPS.has(step)
               const count = stepCounts[step] ?? 0
               const prev = step === 1 ? step1 : (stepCounts[step - 1] ?? 0)

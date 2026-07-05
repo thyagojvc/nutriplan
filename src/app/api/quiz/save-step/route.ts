@@ -3,7 +3,7 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
 const bodySchema = z.object({
-  step: z.number().int().min(1).max(12),
+  step: z.number().int().min(1).max(13),
   answers: z.record(z.unknown()),
   // country chegará apenas no step 7; omitido nos demais
   country: z.string().optional(),

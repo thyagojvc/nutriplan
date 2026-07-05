@@ -25,6 +25,7 @@ const Step9Health      = dynamic(() => import('./step9-health').then(m => ({ def
 const Step10Exercise   = dynamic(() => import('./step10-exercise').then(m => ({ default: m.Step10Exercise })), { ssr: false })
 const Step11Obstacle   = dynamic(() => import('./step11-obstacle').then(m => ({ default: m.Step11Obstacle })), { ssr: false })
 const Step12Form       = dynamic(() => import('./step12-form').then(m => ({ default: m.Step12Form })), { ssr: false })
+const Step13BodyConcern = dynamic(() => import('./step13-body-concern').then(m => ({ default: m.Step13BodyConcern })), { ssr: false })
 
 function useEnsureSession() {
   const [error, setError] = useState(false)
@@ -68,5 +69,6 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   if (stepNumber === 9)  return <Step9Health {...props} />
   if (stepNumber === 10) return <Step10Exercise {...props} />
   if (stepNumber === 11) return <Step11Obstacle {...props} />
+  if (stepNumber === 13) return <Step13BodyConcern {...props} />
   return <Step12Form {...props} />
 }
