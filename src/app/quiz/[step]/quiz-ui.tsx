@@ -314,9 +314,12 @@ export function QuizChip({
   const selectedCls = exclude
     ? 'border-red-400 bg-red-50 font-semibold text-red-600 ring-1 ring-red-200'
     : 'border-primary bg-primary/5 font-semibold text-primary ring-1 ring-primary/20'
+  // Sombra sutil no estado ocioso: sinaliza que é clicável, não só um rótulo
+  // de texto (usuários menos familiarizados com tecnologia tendem a não
+  // perceber botões planos sem elevação).
   const idleCls = exclude
-    ? 'border-[#E6D6D6] bg-white text-gray-700 hover:border-red-300 hover:bg-red-50/50'
-    : 'border-[#D8E8D4] bg-white text-gray-700 hover:border-primary/40 hover:bg-primary/[0.03]'
+    ? 'border-[#E6D6D6] bg-white text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:border-red-300 hover:bg-red-50/50 hover:shadow-[0_2px_6px_rgba(0,0,0,0.1)]'
+    : 'border-[#D8E8D4] bg-white text-gray-700 shadow-[0_1px_3px_rgba(0,0,0,0.08)] hover:border-primary/40 hover:bg-primary/[0.03] hover:shadow-[0_2px_6px_rgba(0,0,0,0.1)]'
 
   return (
     <button

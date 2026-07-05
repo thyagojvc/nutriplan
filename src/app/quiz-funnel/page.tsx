@@ -61,7 +61,17 @@ async function getFunnelData(since: string) {
   const tiersReached = data.filter((r) => hasEvent(r, '_ev_tiers_reached')).length
   const pageEnd = data.filter((r) => hasEvent(r, '_ev_page_end')).length
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0 }
+  // País real (ISO detectado no step 7, guardado em country_detail). Cai no
+  // código de DB (ex: 'OTHER') se o detalhe não foi salvo (sessões antigas).
+  const countryCounts: Record<string, number> = {}
+  for (const r of data) {
+    const draft = (r.draft_answers ?? {}) as Record<string, unknown>
+    const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
+    const country = s7.country_detail ?? s7.country ?? 'Sin dato'
+    countryCounts[country] = (countryCounts[country] ?? 0) + 1
+  }
+
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts }
 }
 
 export default async function QuizFunnelPage({
@@ -84,8 +94,9 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts } = data
   const step1 = stepCounts[1] || 1
+  const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
@@ -309,6 +320,30 @@ export default async function QuizFunnelPage({
         Steps ocultos (sem UI) aparecem esmaecidos e sem abandono calculado.
         Abandono ⚠ sinaliza queda ≥ 20% em relação ao step anterior.
       </p>
+
+      {/* Países — país real detectado no step 7 (country_detail), não o tier de preço */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Países</p>
+          <p className="text-xs text-muted-foreground">País detectado por sessão (mesma pessoa em aparelhos diferentes conta mais de uma vez)</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {countryRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões no período.</td></tr>
+            )}
+            {countryRows.map(([country, count]) => (
+              <tr key={country} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 font-mono text-xs">{country}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }
