@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap, Dumbbell,
+  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -53,27 +53,6 @@ const TRAINING_FREQUENCY_LABEL: Record<string, string> = {
   '1_2': '1-2 días por semana',
   '3_4': '3-4 días por semana',
   '5_mas': '5+ días por semana',
-}
-
-const TRAINING_PREVIEW_EXAMPLES: Record<string, string[]> = {
-  casa: [
-    'Calentamiento dinámico · 5-8 min',
-    'Sentadilla con peso corporal · 4 x 12-15',
-    'Hip thrust en suelo · 4 x 12-15',
-    'Plancha frontal · 3 x 40 seg',
-  ],
-  gimnasio: [
-    'Calentamiento dinámico · 5-8 min',
-    'Sentadilla goblet · 4 x 12-15',
-    'Hip thrust en banco con barra · 4 x 12-15',
-    'Jalón al pecho en polea · 3 x 15-20',
-  ],
-  aire_libre: [
-    'Calentamiento dinámico · 5-8 min',
-    'Sentadilla con peso corporal · 4 x 12-15',
-    'Zancada caminando · 4 x 12 por lado',
-    'Plancha frontal · 3 x 40 seg',
-  ],
 }
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
@@ -665,11 +644,6 @@ export default function PreviewPage() {
               <>Tu meta calórica está alineada con tu gasto para <strong>mantener tu peso</strong> de forma saludable.</>
             )}
           </div>
-
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            La <span className="font-semibold text-gray-700">Calibración Metabólica</span> calcula tu gasto real
-            con el estándar clínico que usan los nutricionistas en consulta, ajustado a tu cuerpo y tu nivel de actividad.
-          </p>
         </Card>
 
         {/* Macros */}
@@ -737,27 +711,6 @@ export default function PreviewPage() {
               <>Comida común del día a día, ajustada a <span className="font-semibold text-gray-600">tu meta</span>. Los 7 días varían para que no te aburras.</>
             )}
           </p>
-        </div>
-
-        {/* Beat block — varia por ângulo de dor (tiempo | cetica) */}
-        <div className="flex items-start gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-3.5">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/10">
-            {painAngle === 'tiempo'
-              ? <Clock  className="h-[18px] w-[18px] text-primary" />
-              : <Target className="h-[18px] w-[18px] text-primary" />}
-          </div>
-          <div className="space-y-0.5">
-            <p className="text-sm font-black text-gray-900">
-              {painAngle === 'tiempo'
-                ? 'Cero tiempo decidiendo qué comer'
-                : 'Tu dieta y tu entreno, en un solo lugar'}
-            </p>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              {painAngle === 'tiempo'
-                ? 'Cada día ya viene armado y calculado para ti. Abres el plan, sigues el plan. Así de simple.'
-                : `Lo que pagarías a un nutricionista y a un personal, calculado para tus ${targets.targetCalories} kcal en minutos. Sin pagar los dos por separado.`}
-            </p>
-          </div>
         </div>
 
         {/* Autoridade — responsável técnico */}
@@ -889,63 +842,6 @@ export default function PreviewPage() {
             </div>
           ))}
         </div>
-
-        {/* Teaser plan de entrenamiento — solo si respondió el step de ejercicio */}
-        {training && (
-          <div className="overflow-hidden rounded-2xl border border-primary/20 bg-white">
-            {/* Encabezado */}
-            <div className="flex items-center gap-3 bg-primary/[0.06] px-4 py-3">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/15">
-                <Dumbbell className="h-4 w-4 text-primary" />
-              </div>
-              <div>
-                <p className="text-sm font-black text-gray-900">Tu plan de entrenamiento, también personalizado</p>
-                <p className="text-[12px] text-muted-foreground">
-                  {training.frequency ? TRAINING_FREQUENCY_LABEL[training.frequency] : ''}
-                  {training.location ? ` · ${TRAINING_LOCATION_LABEL[training.location]}` : ''}
-                </p>
-              </div>
-            </div>
-
-            {/* Muestra de la sesión 1 */}
-            <div className="px-4 pt-3 pb-1">
-              <p className="mb-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                Muestra — sesión 1
-              </p>
-              <div className="space-y-2">
-                {TRAINING_PREVIEW_EXAMPLES[training.location ?? 'casa'].map((ex, i) => (
-                  <div key={i} className="flex items-center gap-2.5">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[11px] font-black text-primary">
-                      {i + 1}
-                    </span>
-                    <span className="text-[13px] text-gray-700">{ex}</span>
-                  </div>
-                ))}
-                <p className="pt-0.5 text-[11px] text-muted-foreground">
-                  + más ejercicios incluidos en tu plan completo
-                </p>
-              </div>
-            </div>
-
-            {/* Sesiones bloqueadas */}
-            <div className="mx-4 mb-3 mt-3 flex items-center justify-between rounded-xl border border-primary/15 bg-[#F5FAF2] px-3 py-2">
-              <span className="flex items-center gap-1.5 text-[12px] font-semibold text-gray-700">
-                <Lock className="h-3 w-3 text-primary" />
-                {training.frequency === '5_mas' ? '5 sesiones' : training.frequency === '3_4' ? '4 sesiones' : '2 sesiones'} semanales personalizadas
-              </span>
-              <span className="text-[11px] text-muted-foreground">disponibles al comprar</span>
-            </div>
-
-            {/* Nota casa vs gimnasio */}
-            <div className="border-t border-[#EAF2E6] px-4 py-2.5 text-[12px] text-muted-foreground">
-              Ejercicios elegidos para{' '}
-              <span className="font-semibold text-gray-700">
-                {training.location === 'gimnasio' ? 'el gimnasio' : training.location === 'aire_libre' ? 'aire libre' : 'entrenar en casa'}
-              </span>
-              , adaptados a tu experiencia y sin agravar molestias físicas.
-            </div>
-          </div>
-        )}
 
         {/* Oferta con ancla de valor */}
         <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
@@ -1134,11 +1030,20 @@ export default function PreviewPage() {
                 <p className="mt-1 text-2xl font-black text-gray-400 line-through">+{price(35)}</p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
               </div>
-              <div className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center">
+              <button
+                onClick={() => handleCta('recipes')}
+                disabled={ctaState === 'loading'}
+                className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center transition-all hover:border-primary hover:bg-[#EDF6E6] active:scale-[0.98] disabled:opacity-50"
+              >
                 <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">{price(9.90)}</p>
+                <p className="mt-1 flex items-center justify-center gap-1 text-2xl font-black text-gray-900">
+                  {price(9.90)}
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" className="text-primary">
+                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                </p>
                 <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
-              </div>
+              </button>
             </div>
 
             <p className="text-center text-[13px] leading-relaxed text-gray-700">
@@ -1199,10 +1104,6 @@ const FAQ_ITEMS = [
   {
     q: '¿En qué se diferencia de otras dietas que ya probé?',
     a: 'Las dietas genéricas usan las mismas reglas para todo el mundo. La Calibración Metabólica calcula tu gasto basal real (TMB), lo ajusta a tu nivel de actividad y lo convierte en un plan de comida cotidiana, sin restricciones extremas ni conteo de calorías. No le das a tu cuerpo "lo que le funciona a otra persona". Le das exactamente lo que él necesita.',
-  },
-  {
-    q: '¿Funciona si tengo hipotiroidismo o diabetes?',
-    a: 'Sí. Los cálculos se basan en tu metabolismo real y tu nivel de actividad. Si tienes una condición médica, el plan incluye un aviso para validar con tu médico.',
   },
   {
     q: '¿Tengo que pesar la comida?',
