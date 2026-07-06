@@ -49,6 +49,16 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
+      <head>
+        {/* Abre conexão cedo com os domínios externos usados na página (fotos dos
+            alimentos + pixel), reduzindo o tempo de handshake TLS na hora do fetch. */}
+        <link rel="preconnect" href="https://spoonacular.com" />
+        <link rel="preconnect" href="https://images.pexels.com" />
+        <link rel="preconnect" href="https://connect.facebook.net" />
+        <link rel="dns-prefetch" href="https://spoonacular.com" />
+        <link rel="dns-prefetch" href="https://images.pexels.com" />
+        <link rel="dns-prefetch" href="https://connect.facebook.net" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
       >
