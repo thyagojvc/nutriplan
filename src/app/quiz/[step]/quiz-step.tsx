@@ -31,7 +31,14 @@ function useEnsureSession() {
   const [error, setError] = useState(false)
   useEffect(() => {
     if (sessionStorage.getItem('nutriplan_session_init')) return
-    fetch('/api/quiz/init-session', { method: 'POST' })
+    // Captura o criativo/anúncio de origem (utm_content) da URL, se veio de
+    // anúncio pago. Configurar no Meta Ads: URL parameters -> utm_content={{ad.name}}
+    const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
+    fetch('/api/quiz/init-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ad_ref: adRef }),
+    })
       .then(() => sessionStorage.setItem('nutriplan_session_init', '1'))
       .catch(() => setError(true))
   }, [])

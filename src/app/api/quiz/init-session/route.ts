@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
 // Cria uma generation_session com country=NULL (migration 0013).
@@ -11,11 +12,24 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ session_id: existingSessionId })
   }
 
+  // ad_ref: nome do criativo/anúncio, vindo do parâmetro utm_content da URL
+  // (configurado no Meta Ads como utm_content={{ad.name}}). Guardado como chave
+  // extra em draft_answers (mesmo padrão dos eventos _ev_*), sem precisar de
+  // migration. Só acontece no insert inicial, então não tem risco de race
+  // condition como o antigo /api/quiz/track-event tinha (ver migration 0020).
+  let body: unknown
+  try { body = await request.json() } catch { body = {} }
+  const parsed = z.object({ ad_ref: z.string().max(200).optional() }).safeParse(body)
+  const adRef = parsed.success ? parsed.data.ad_ref : undefined
+
   const supabase = createServiceClient()
 
   const { data, error } = await supabase
     .from('generation_sessions')
-    .insert({ country: null })
+    .insert({
+      country: null,
+      ...(adRef ? { draft_answers: { _ad_ref: adRef } } : {}),
+    })
     .select('id')
     .single()
 

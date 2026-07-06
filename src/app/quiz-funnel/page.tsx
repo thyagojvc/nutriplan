@@ -106,11 +106,17 @@ async function getFunnelData(since: string) {
   // País real (ISO detectado no step 7, guardado em country_detail). Cai no
   // código de DB (ex: 'OTHER') se o detalhe não foi salvo (sessões antigas).
   const countryCounts: Record<string, number> = {}
+  // Criativo/anúncio de origem (_ad_ref, capturado do utm_content na entrada
+  // do quiz). Sessões de antes dessa captura existir caem em "Sin dato".
+  const adRefCounts: Record<string, number> = {}
   for (const r of data) {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
     const country = s7.country_detail ?? s7.country ?? 'Sin dato'
     countryCounts[country] = (countryCounts[country] ?? 0) + 1
+
+    const adRef = (draft._ad_ref as string | undefined) ?? 'Sin dato'
+    adRefCounts[adRef] = (adRefCounts[adRef] ?? 0) + 1
   }
 
   // Vendas recentes: nome/email só existem depois do webhook criar o user
@@ -128,7 +134,8 @@ async function getFunnelData(since: string) {
       generation_sessions?: { draft_answers?: Record<string, unknown> } | null
       users?: { name: string | null; email: string } | null
     }
-    const step7 = (row.generation_sessions?.draft_answers?.step_7 ?? {}) as { country?: string; country_detail?: string }
+    const draft = row.generation_sessions?.draft_answers ?? {}
+    const step7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
     return {
       id: row.id,
       status: row.status,
@@ -137,12 +144,13 @@ async function getFunnelData(since: string) {
       createdAt: row.created_at,
       productCode: row.order_items?.[0]?.product_code ?? 'Sin ítem',
       country: step7.country_detail ?? step7.country ?? '—',
+      adRef: (draft._ad_ref as string | undefined) ?? '—',
       buyerName: row.users?.name ?? null,
       buyerEmail: row.users?.email ?? null,
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts }
 }
 
 export default async function QuizFunnelPage({
@@ -165,10 +173,11 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts } = data
   const step1 = stepCounts[1] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
+  const adRefRows = Object.entries(adRefCounts).sort((a, b) => b[1] - a[1])
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
@@ -405,6 +414,7 @@ export default async function QuizFunnelPage({
               <th className="px-4 py-2 font-medium">Fecha</th>
               <th className="px-4 py-2 font-medium">Comprador</th>
               <th className="px-4 py-2 font-medium">País</th>
+              <th className="px-4 py-2 font-medium">Anuncio</th>
               <th className="px-4 py-2 font-medium">Producto</th>
               <th className="px-4 py-2 font-medium">Estado</th>
               <th className="px-4 py-2 text-right font-medium">Valor</th>
@@ -412,7 +422,7 @@ export default async function QuizFunnelPage({
           </thead>
           <tbody className="divide-y divide-border">
             {recentSales.length === 0 && (
-              <tr><td colSpan={6} className="px-4 py-3 text-muted-foreground">Sin ventas en el período.</td></tr>
+              <tr><td colSpan={7} className="px-4 py-3 text-muted-foreground">Sin ventas en el período.</td></tr>
             )}
             {recentSales.map((s) => (
               <tr key={s.id} className="hover:bg-muted/30 transition-colors">
@@ -430,6 +440,7 @@ export default async function QuizFunnelPage({
                   )}
                 </td>
                 <td className="px-4 py-2.5 font-mono text-xs">{s.country}</td>
+                <td className="px-4 py-2.5 text-xs">{s.adRef}</td>
                 <td className="px-4 py-2.5 text-xs">{OFFER_LABELS[s.productCode] ?? s.productCode}</td>
                 <td className="px-4 py-2.5 text-xs">{STATUS_LABELS[s.status] ?? s.status}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold">
@@ -463,6 +474,31 @@ export default async function QuizFunnelPage({
                   </p>
                 </td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold">{offerTotal}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Criativos — utm_content capturado na entrada do quiz. Sessões antes dessa
+          captura existir (ou tráfego sem utm) caem em "Sin dato". */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Criativos</p>
+          <p className="text-xs text-muted-foreground">Configura utm_content={'{{ad.name}}'} nos parâmetros de URL do anúncio no Meta Ads pra aparecer aqui</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {adRefRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões no período.</td></tr>
+            )}
+            {adRefRows.map(([adRef, count]) => (
+              <tr key={adRef} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs">{adRef}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
               </tr>
             ))}
           </tbody>
