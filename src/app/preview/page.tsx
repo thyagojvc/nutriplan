@@ -376,20 +376,19 @@ export default function PreviewPage() {
     return () => observers.forEach((o) => o.disconnect())
   }, [data])
 
-  const HOTMART_URLS: Record<string, string> = {
-    basic:    'https://pay.hotmart.com/O106407229L',
-    recipes:  'https://pay.hotmart.com/V106475995N',
-    training: 'https://pay.hotmart.com/S106421785Q',
-  }
+  // Único produto na sales page. Recetas e Entrenamiento viram order bump
+  // dentro do próprio checkout Hotmart (configurado no painel deles), não
+  // são mais links escolhidos aqui.
+  const HOTMART_BASIC_URL = 'https://pay.hotmart.com/O106407229L'
 
-  async function handleCta(type: 'basic' | 'recipes' | 'training') {
+  async function handleCta() {
     if (ctaState === 'loading') return
     setCtaState('loading')
     try {
       const r = await fetch('/api/checkout/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ plan_type: type }),
+        body: JSON.stringify({ plan_type: 'basic' }),
       })
       const d = await r.json()
       if (!d.order_id) { setCtaState('error'); return }
@@ -400,9 +399,8 @@ export default function PreviewPage() {
         sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
       }
 
-      const purchaseValue = type === 'training' ? 14.90 : type === 'recipes' ? 9.90 : 7.90
-      sessionStorage.setItem('nutriplan_purchase_value', String(purchaseValue))
-      trackPixel('InitiateCheckout', { value: purchaseValue, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
+      sessionStorage.setItem('nutriplan_purchase_value', '7.90')
+      trackPixel('InitiateCheckout', { value: 7.90, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {
@@ -414,14 +412,13 @@ export default function PreviewPage() {
         return
       }
 
-      const base = HOTMART_URLS[type]
       const params = new URLSearchParams()
       if (leadInfo.email) params.set('email', leadInfo.email)
       if (leadInfo.name)  params.set('name',  leadInfo.name)
       // sck volta no payload do webhook e permite casar a compra com o pedido
       // sem depender de lead/email (o quiz não captura mais email).
       params.set('sck', d.order_id)
-      window.location.href = `${base}?${params.toString()}`
+      window.location.href = `${HOTMART_BASIC_URL}?${params.toString()}`
     } catch {
       setCtaState('error')
     }
@@ -847,15 +844,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-            Todo empezó con su mamá. Tiago la vio pasar años probando dietas que no consideraban su cuerpo, su edad ni su rutina, sin resultados. Fue su primera paciente, y también su primer caso de éxito. Desde ahí se especializó en un solo objetivo: ayudar a mujeres a perder grasa y ganar fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre.
-          </p>
-
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            El cuerpo femenino no responde igual al de un hombre: metabolismo basal más bajo, mayor tendencia a retener grasa en ciertas zonas, y muchas veces una relación con el entrenamiento frenada por miedo a &quot;ponerse grande&quot;. Por eso Tiago se especializó en hipertrofia femenina y pérdida de grasa con enfoque clínico, no genérico.
-          </p>
-
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Una calculadora de internet le da el mismo número a todas. La Calibración Metabólica hace lo contrario. Tiago parte de tu metabolismo real y lo ajusta a tu cuerpo, tu rutina y tu objetivo, con el mismo criterio clínico que usaría en una consulta. Por eso no es una dieta más que copias de alguien. Es tu número exacto, calibrado para ti y para nadie más.
+            Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
           </p>
         </div>
 
@@ -903,7 +892,6 @@ export default function PreviewPage() {
           {[
             { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 7 kilos en 3 meses y empecé a marcar, y lo que no me esperaba es que fue sin pasar hambre.' },
             { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 2 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.' },
-            { photo: '/testimonios/ana.png',    name: 'Ana P.',    country: '🇪🇸', text: 'Yo sabía lo que quería, el problema es que no tenía el plan concreto para llegar. Esto se adaptó a mi rutina y a los días que entreno, que era justo lo que me faltaba. No fue de un día para otro, pero en 6 meses bajé 11 kilos y con más energía que antes.' },
           ].map(({ photo, name, country, text }) => (
             <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-2">
               <div className="flex items-center gap-2">
@@ -930,11 +918,6 @@ export default function PreviewPage() {
 
         {/* Oferta con ancla de valor */}
         <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
-          {/* Selo de desconto */}
-          <div className="absolute right-3 top-3 z-10 rounded-full bg-[#D85A30] px-2.5 py-1 text-xs font-black text-white shadow-sm">
-            -67%
-          </div>
-
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu NutriPlan personalizado</p>
@@ -980,7 +963,7 @@ export default function PreviewPage() {
             </div>
 
             <p className="text-center text-[13px] text-gray-700 border-t border-[#EAF2E6] pt-3">
-              Todo esto en <span className="font-bold text-primary">un solo pago</span>, sin suscripción ni cobros cada mes. Elige tu plan abajo.
+              Todo esto en <span className="font-bold text-primary">un solo pago</span>, sin suscripción ni cobros cada mes.
             </p>
 
             {/* Soporte por WhatsApp con el nutricionista — risco reverso no ponto da decisão */}
@@ -1002,78 +985,30 @@ export default function PreviewPage() {
               </p>
             )}
 
-            {/* 3 tiers — escada de valor */}
-            <div ref={tiersRef} className="space-y-2.5 pt-1">
-
-              {/* Tier 1 — básico $7.90 */}
+            {/* CTA único — producto único, sin comparación de tiers */}
+            <div ref={tiersRef} className="pt-1">
               <button
-                onClick={() => handleCta('basic')}
+                onClick={handleCta}
                 disabled={ctaState === 'loading'}
-                className="flex w-full items-center justify-between gap-3 rounded-xl border border-[#D8E8D4] bg-white px-4 py-3 text-left transition-all hover:border-primary/40 hover:bg-[#F9FCF7] active:scale-[0.99] disabled:opacity-50"
+                className={[
+                  'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
+                  'bg-[#D85A30] shadow-[0_4px_20px_0_rgba(216,90,48,0.38)] transition-all duration-150',
+                  'hover:shadow-[0_6px_28px_0_rgba(216,90,48,0.48)] hover:brightness-[1.05] active:scale-[0.99]',
+                  'disabled:cursor-not-allowed disabled:opacity-50 disabled:shadow-none',
+                ].join(' ')}
               >
-                <span className="flex min-w-0 flex-col gap-0.5">
-                  <span className="text-sm font-bold text-gray-900">Solo el plan · 7 días</span>
-                  <span className="text-[12px] text-muted-foreground">Menús personalizados para tu meta</span>
-                </span>
-                <span className="flex shrink-0 items-center gap-1 rounded-lg border border-[#D8E8D4] bg-[#F5FAF2] px-2.5 py-1.5 text-sm font-black text-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                  {price(7.90)}
-                  <svg width="13" height="13" viewBox="0 0 15 15" fill="none">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
+                {ctaState === 'loading' ? (
+                  <>
+                    <span className="h-4 w-4 animate-spin rounded-full border-2 border-white border-r-transparent" />
+                    Procesando…
+                  </>
+                ) : (
+                  `Ver mi plan por ${price(7.90)} →`
+                )}
               </button>
-
-              {/* Tier 2 — recetas $9.90 — HERO */}
-              <div className="relative">
-                <span className="absolute -top-2.5 left-4 z-10 rounded-full bg-primary px-2.5 py-0.5 text-[11px] font-bold text-white">
-                  más popular
-                </span>
-                <button
-                  onClick={() => handleCta('recipes')}
-                  disabled={ctaState === 'loading'}
-                  className={[
-                    'flex w-full items-center justify-between gap-3 rounded-xl border-2 border-primary bg-[#F5FAF2]',
-                    'px-4 pb-3.5 pt-5 text-left shadow-[0_4px_18px_0_rgba(34,109,69,0.12)]',
-                    'transition-all hover:brightness-[0.98] active:scale-[0.99] disabled:opacity-50',
-                  ].join(' ')}
-                >
-                  <span className="flex min-w-0 flex-col gap-0.5">
-                    <span className="text-sm font-bold text-gray-900">Plan + 28 Recetas Fitness</span>
-                    <span className="text-[12px] text-muted-foreground">Todo lo del plan + 28 recetas + lista de compras + sustituciones</span>
-                  </span>
-                  <span className="flex shrink-0 items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-base font-black text-white shadow-[0_2px_8px_rgba(15,110,86,0.35)]">
-                    {price(9.90)}
-                    <svg width="14" height="14" viewBox="0 0 15 15" fill="none">
-                      <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                  </span>
-                </button>
-              </div>
-
-              {/* Tier 3 — entrenamiento $14.90 */}
-              <button
-                onClick={() => handleCta('training')}
-                disabled={ctaState === 'loading'}
-                className="flex w-full items-center justify-between gap-3 rounded-xl border border-primary/30 bg-white px-4 py-3 text-left transition-all hover:border-primary/50 hover:bg-[#F9FCF7] active:scale-[0.99] disabled:opacity-50"
-              >
-                <span className="flex min-w-0 flex-col gap-0.5">
-                  <span className="self-start rounded-full bg-[#FBF4F0] px-2 py-0.5 text-[10px] font-bold text-[#993C1D]">
-                    + plan de entrenamiento
-                  </span>
-                  <span className="text-sm font-bold text-gray-900">Plan + Recetas + Entrenamiento</span>
-                  <span className="text-[12px] text-muted-foreground">Todo lo anterior + tu rutina para casa o gimnasio, a tu perfil</span>
-                </span>
-                <span className="flex shrink-0 items-center gap-1 rounded-lg border border-primary/30 bg-[#F5FAF2] px-2.5 py-1.5 text-sm font-black text-gray-800 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
-                  {price(14.90)}
-                  <svg width="13" height="13" viewBox="0 0 15 15" fill="none">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="#6B7280" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </button>
-
               {fx.currency !== 'USD' && (
-                <p className="text-center text-[11px] text-muted-foreground">
-                  *Precios aproximados en {fx.currency}. Se cobran en tu moneda local.
+                <p className="mt-2 text-center text-[11px] text-muted-foreground">
+                  *Precio aproximado en {fx.currency}. Se cobra en tu moneda local.
                 </p>
               )}
             </div>
@@ -1085,49 +1020,6 @@ export default function PreviewPage() {
             </p>
 
             <PaymentTrust />
-          </div>
-        </div>
-
-        {/* Âncora externa — quanto custaria com um nutricionista (consulta real) */}
-        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
-          <div className="bg-primary/10 px-5 py-3 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Lo que vale un plan como este en el consultorio</p>
-            <p className="mt-0.5 text-[16px] font-black text-gray-900">Diseñado por un nutricionista. Sin volver a pagar cada mes.</p>
-          </div>
-          <div className="space-y-4 p-5">
-            <p className="text-[13px] leading-relaxed text-gray-700">
-              Una consulta con nutricionista cuesta, en promedio, <strong>unos {price(35)}</strong>. Y vale cada peso: te calcula un plan pensado para tu cuerpo.
-            </p>
-            <p className="text-[13px] leading-relaxed text-gray-700">
-              La diferencia es que aquí no pagas una consulta nueva cada mes. NutriPlan hace ese mismo cálculo, con la Calibración Metabólica que validó un nutricionista, y lo pone en tus manos hoy.
-            </p>
-
-            <div className="grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-[#E6D9D2] bg-[#FBF4F0] p-3 text-center">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-[#993C1D]">En consulta</p>
-                <p className="mt-1 text-2xl font-black text-gray-400 line-through">+{price(35)}</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">una visita, y vuelves a pagar cada mes</p>
-              </div>
-              <button
-                onClick={() => handleCta('recipes')}
-                disabled={ctaState === 'loading'}
-                className="rounded-xl border-2 border-primary/40 bg-[#F5FAF2] p-3 text-center transition-all hover:border-primary hover:bg-[#EDF6E6] active:scale-[0.98] disabled:opacity-50"
-              >
-                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">NutriPlan</p>
-                <p className="mt-1 text-2xl font-black text-gray-900">{price(9.90)}</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">pago único, sin suscripción</p>
-                <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-[12px] font-bold text-white shadow-[0_2px_6px_rgba(15,110,86,0.3)]">
-                  Elegir este plan
-                  <svg width="12" height="12" viewBox="0 0 15 15" fill="none">
-                    <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </span>
-              </button>
-            </div>
-
-            <p className="text-center text-[13px] leading-relaxed text-gray-700">
-              Tu plan con macros, lista de compras y sustituciones. Por <strong>menos que una sola consulta</strong>, incluso la más barata de la región.
-            </p>
           </div>
         </div>
 
@@ -1149,7 +1041,7 @@ export default function PreviewPage() {
         {/* CTA final — após perguntas frequentes */}
         <div ref={pageEndRef} className="space-y-3 pb-10">
           <button
-            onClick={() => handleCta('recipes')}
+            onClick={handleCta}
             disabled={ctaState === 'loading'}
             className={[
               'flex w-full items-center justify-center gap-2.5 rounded-xl py-4 text-sm font-black text-white',
@@ -1164,7 +1056,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Empezar por ${price(9.90)} →`
+              `Ver mi plan por ${price(7.90)} →`
             )}
           </button>
           <PaymentTrust />
@@ -1181,40 +1073,16 @@ export default function PreviewPage() {
 
 const FAQ_ITEMS = [
   {
-    q: '¿En qué se diferencia de otras dietas que ya probé?',
-    a: 'Las dietas genéricas usan las mismas reglas para todo el mundo. La Calibración Metabólica calcula tu gasto basal real (TMB), lo ajusta a tu nivel de actividad y lo convierte en un plan de comida cotidiana, sin restricciones extremas ni conteo de calorías. No le das a tu cuerpo "lo que le funciona a otra persona". Le das exactamente lo que él necesita.',
-  },
-  {
-    q: '¿Tengo que pesar la comida?',
-    a: 'No. Cada comida viene con medidas caseras: tazas, cucharadas y porciones visuales. Sin balanza.',
-  },
-  {
-    q: '¿Puedo comer fuera de casa o en restaurantes?',
-    a: 'Sí. El plan incluye sustituciones y equivalencias para adaptar a lo que tengas en casa o pidas en un restaurante.',
-  },
-  {
-    q: '¿Qué pasa si no me gusta el plan?',
-    a: 'Sigue tu plan durante 7 días. Si no notas ningún cambio, te devolvemos el 100% de tu dinero y te quedas con el plan igual, sin preguntas.',
-  },
-  {
-    q: '¿En cuánto tiempo veo resultados?',
-    a: 'Depende de tu objetivo y tu cuerpo, pero la mayoría de usuarios reporta cambios visibles en 3 a 4 semanas siguiendo el plan.',
-  },
-  {
-    q: '¿Cómo recibo mi plan?',
-    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras, sin necesidad de instalar ninguna app.',
-  },
-  {
-    q: '¿Funciona si soy vegetariana o tengo restricciones alimentarias?',
-    a: 'Sí. Durante el quiz puedes indicar tus preferencias y alimentos que no consumes. El plan se arma con lo que tú elegiste, y las sustituciones te permiten adaptar cualquier comida a lo que tienes disponible.',
-  },
-  {
     q: '¿Hay suscripción o cobros recurrentes?',
     a: 'No. Es un pago único, sin suscripción y sin cobros automáticos. Pagas una vez y el acceso a tu plan es tuyo para siempre.',
   },
   {
-    q: '¿Voy a tener soporte del nutricionista?',
-    a: 'Sí. Quienes adquieran su plan reciben por correo el contacto de WhatsApp del nutricionista Tiago Vieira para resolver dudas directamente con él.',
+    q: '¿Funciona si tengo restricciones alimentarias o tiroides?',
+    a: 'Sí. Durante el quiz indicaste tus preferencias y condiciones. El plan se arma con eso, y las sustituciones te permiten adaptar cualquier comida a lo que tienes disponible.',
+  },
+  {
+    q: '¿Cómo y cuándo recibo mi plan?',
+    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras.',
   },
 ]
 

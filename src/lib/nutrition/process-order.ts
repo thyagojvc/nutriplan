@@ -80,7 +80,10 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
       .select('kind, product_code')
       .eq('order_id', orderId)
     const productCode = (items ?? []).find((it) => it.kind === 'nutrition')?.product_code ?? ''
+    // Recetas y entrenamiento ahora también llegan como order bump del Hotmart
+    // (item separado con kind próprio), no solo por el product_code del tier principal.
     const hasRecipes = productCode === 'PLAN_RECIPES' || productCode === 'PLAN_TRAINING'
+      || (items ?? []).some((it) => it.kind === 'recipes')
     const hasTraining = productCode === 'PLAN_TRAINING' || (items ?? []).some((it) => it.kind === 'training')
     const planWeeks: 1 | 4 = 1 // todos os tiers são 7 dias
 

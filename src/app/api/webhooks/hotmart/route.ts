@@ -5,7 +5,9 @@ import { sendPlanReadyEmail, sendCheckinReminderEmail } from '@/lib/email'
 import { sendFacebookPurchase } from '@/lib/fb-conversions-api'
 import type { PhaseNumber } from '@/lib/nutrition/generate'
 
-// IDs dos 3 produtos na Hotmart (para referência e logging)
+// IDs dos 3 produtos na Hotmart. PLAN_BASIC é o produto principal da sales page;
+// PLAN_RECIPES e PLAN_TRAINING agora são order bumps do checkout do PLAN_BASIC
+// (mesmo produto Hotmart de antes, só renomeado/reprecificado no painel deles).
 const HOTMART_PRODUCT_IDS: Record<string, string> = {
   '7968007': 'PLAN_BASIC',
   '7998986': 'PLAN_RECIPES',
@@ -58,6 +60,7 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   const transactionId = purchase?.transaction as string | undefined
   const recurrenceNumber = (purchase?.recurrence_number as number | undefined) ?? 0
   const productId = String(product?.id ?? '')
+  const productCode = HOTMART_PRODUCT_IDS[productId]
 
   if (!email) return
 
@@ -71,7 +74,21 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
       ? sckRaw
       : undefined
 
-  console.info('[webhook/hotmart] produto recebido:', productId, HOTMART_PRODUCT_IDS[productId] ?? 'desconhecido', 'sck:', orderIdHint ?? 'ausente')
+  console.info('[webhook/hotmart] produto recebido:', productId, productCode ?? 'desconhecido', 'sck:', orderIdHint ?? 'ausente')
+
+  // Hotmart dispara um PURCHASE_APPROVED separado para cada order bump
+  // marcado no checkout, além do produto principal. Recetas e Entrenamiento
+  // hoje só existem como bump, então tratam de um jeito diferente do PLAN_BASIC.
+  if (productCode === 'PLAN_RECIPES' || productCode === 'PLAN_TRAINING') {
+    const price = purchase?.price as Record<string, unknown> | undefined
+    await handleOrderBump({
+      productCode,
+      orderIdHint,
+      unitPrice: Number(price?.value ?? 0),
+      currency: (price?.currency_value as string | undefined) ?? 'USD',
+    })
+    return
+  }
 
   if (recurrenceNumber === 0) {
     const orderResult = await activateNewSubscriber({ email, name, transactionId, orderIdHint })
@@ -104,6 +121,72 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   } else {
     // Renovação: cria novo order, check-in pendente e envia email de check-in
     await handleRenewal({ email, name, transactionId, recurrenceNumber })
+  }
+}
+
+// Order bump (Recetas/Entrenamiento): identifica o pedido pelo sck do checkout
+// (o mesmo carrinho do produto principal) e grava o item, sem depender de
+// email/lead — o bump pode chegar antes, depois ou junto do webhook principal.
+async function handleOrderBump({
+  productCode,
+  orderIdHint,
+  unitPrice,
+  currency,
+}: {
+  productCode: 'PLAN_RECIPES' | 'PLAN_TRAINING'
+  orderIdHint?: string
+  unitPrice: number
+  currency: string
+}) {
+  if (!orderIdHint) {
+    console.warn('[webhook/hotmart] bump sem sck válido, não foi possível asociar ao pedido:', productCode)
+    return
+  }
+
+  const supabase = createServiceClient()
+  const { data: order } = await supabase
+    .from('orders')
+    .select('id, status')
+    .eq('id', orderIdHint)
+    .maybeSingle()
+
+  if (!order) {
+    console.warn('[webhook/hotmart] bump: pedido não encontrado para sck', orderIdHint)
+    return
+  }
+
+  const kind = productCode === 'PLAN_TRAINING' ? 'training' : 'recipes'
+
+  await supabase.from('order_items').upsert(
+    {
+      order_id: order.id,
+      kind,
+      product_code: productCode,
+      unit_price: unitPrice,
+      currency,
+    },
+    { onConflict: 'order_id,product_code', ignoreDuplicates: true },
+  )
+
+  console.info('[webhook/hotmart] order bump registrado:', productCode, 'order', order.id, 'status atual:', order.status)
+
+  // Se o produto principal já entregou o plano antes do bump chegar, reabre
+  // o pedido e refaz a geração agora que o item extra já está salvo. Se ainda
+  // estiver 'pending' ou 'generating', não faz nada: o fluxo principal (ou o
+  // próprio retry do Hotmart) vai ler este item quando processar.
+  if (order.status === 'delivered') {
+    const { data: reopened } = await supabase
+      .from('orders')
+      .update({ status: 'paid' })
+      .eq('id', order.id)
+      .eq('status', 'delivered')
+      .select('id')
+      .maybeSingle()
+
+    if (reopened) {
+      const result = await processPaidOrder(order.id)
+      console.info('[webhook/hotmart] bump: replay de generation', result)
+    }
   }
 }
 
