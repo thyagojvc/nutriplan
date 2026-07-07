@@ -378,8 +378,10 @@ export default function PreviewPage() {
 
   // Único produto na sales page. Recetas e Entrenamiento viram order bump
   // dentro do próprio checkout Hotmart (configurado no painel deles), não
-  // são mais links escolhidos aqui.
-  const HOTMART_BASIC_URL = 'https://pay.hotmart.com/O106407229L'
+  // são mais links escolhidos aqui. checkoutMode=10 é obrigatório na URL:
+  // é o modelo de checkout onde os order bumps foram configurados no painel,
+  // sem esse parâmetro a Hotmart serve um checkout sem a seção de bump.
+  const HOTMART_BASIC_URL = 'https://pay.hotmart.com/O106407229L?checkoutMode=10'
 
   async function handleCta() {
     if (ctaState === 'loading') return
@@ -418,7 +420,7 @@ export default function PreviewPage() {
       // sck volta no payload do webhook e permite casar a compra com o pedido
       // sem depender de lead/email (o quiz não captura mais email).
       params.set('sck', d.order_id)
-      window.location.href = `${HOTMART_BASIC_URL}?${params.toString()}`
+      window.location.href = `${HOTMART_BASIC_URL}&${params.toString()}`
     } catch {
       setCtaState('error')
     }
