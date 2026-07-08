@@ -4,11 +4,11 @@ import { useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 
-// Callback de autenticação — lida com dois fluxos do Supabase:
-//   PKCE (moderno):   ?code=xxx  → exchangeCodeForSession
-//   Implicit (legado): #access_token=xxx → setSession
-// O route handler server-side não consegue ler hash fragments (não enviados ao servidor).
-export default function AuthCallbackPage() {
+// Callback de autenticação exclusivo do admin. Caminho fixo, sem query string,
+// pra não depender de a lista de Redirect URLs do Supabase aceitar parâmetros
+// extras (o /auth/callback com ?next= voltava pro destino padrão porque a
+// URL com query não batia com a allow-list configurada no painel).
+export default function AdminAuthCallbackPage() {
   const router = useRouter()
 
   useEffect(() => {
@@ -23,16 +23,16 @@ export default function AuthCallbackPage() {
 
     if (code) {
       supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
-        router.replace(error ? '/login?error=auth_failed' : '/dashboard')
+        router.replace(error ? '/admin/login?error=auth_failed' : '/quiz-funnel')
       })
     } else if (accessToken && refreshToken) {
       supabase.auth
         .setSession({ access_token: accessToken, refresh_token: refreshToken })
         .then(({ error }) => {
-          router.replace(error ? '/login?error=auth_failed' : '/dashboard')
+          router.replace(error ? '/admin/login?error=auth_failed' : '/quiz-funnel')
         })
     } else {
-      router.replace('/login?error=auth_failed')
+      router.replace('/admin/login?error=auth_failed')
     }
   }, [router])
 

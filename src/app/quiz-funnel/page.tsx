@@ -431,10 +431,7 @@ export default async function QuizFunnelPage({
                 </td>
                 <td className="px-4 py-2.5">
                   {s.buyerEmail ? (
-                    <div>
-                      <p className="font-medium">{s.buyerName || '(sin nombre)'}</p>
-                      <p className="text-[11px] text-muted-foreground">{s.buyerEmail}</p>
-                    </div>
+                    <p className="font-medium">{s.buyerName?.trim().split(' ')[0] || 'Cliente'}</p>
                   ) : (
                     <span className="text-xs text-muted-foreground">— pendiente —</span>
                   )}

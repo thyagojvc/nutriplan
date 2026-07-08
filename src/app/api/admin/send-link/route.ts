@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
     type: 'magiclink',
     email,
     options: {
-      redirectTo: `${origin}/auth/callback?next=/quiz-funnel`,
+      redirectTo: `${origin}/admin/callback`,
     },
   })
 
