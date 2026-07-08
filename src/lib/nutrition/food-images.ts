@@ -70,7 +70,7 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   tomate:                    `${CDN}/tomato.jpg`,
   ensalada:                  `${CDN}/romaine.jpg`,
   espinaca:                  `${CDN}/spinach.jpg`,
-  // nopales: sem imagem verificada — onError esconde silenciosamente
+  nopales:                   px(33646202),
   'brócoli':                 `${CDN}/broccoli.jpg`,
   brocoli:                   `${CDN}/broccoli.jpg`,
   zanahoria:                 `${CDN}/carrots.jpg`,
