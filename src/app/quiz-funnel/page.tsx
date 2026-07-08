@@ -427,7 +427,7 @@ export default async function QuizFunnelPage({
             {recentSales.map((s) => (
               <tr key={s.id} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
-                  {new Date(s.createdAt).toLocaleDateString('es-MX', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                  {new Date(s.createdAt).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'America/Sao_Paulo' })}
                 </td>
                 <td className="px-4 py-2.5">
                   {s.buyerEmail ? (
