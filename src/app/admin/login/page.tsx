@@ -12,12 +12,20 @@ export default function AdminLoginPage() {
   const [state, setState] = useState<'idle' | 'loading' | 'sent' | 'authenticating' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
 
-  // Lê o ?error=... que /admin/callback manda de volta quando o login falha.
-  // Sem isso a página voltava "limpa" mesmo quando a autenticação quebrava.
+  // Lê o ?error=... que /admin/callback ou o guard de /quiz-funnel mandam de
+  // volta quando algo falha. Sem isso a página voltava "limpa" mesmo quando
+  // a autenticação (ou a checagem de admin) quebrava por trás.
   useEffect(() => {
-    if (searchParams.get('error') === 'auth_failed') {
+    const err = searchParams.get('error')
+    if (err === 'auth_failed') {
       setState('error')
       setErrorMsg('El enlace expiró o no es válido. Solicita uno nuevo.')
+    } else if (err === 'not_admin') {
+      setState('error')
+      setErrorMsg('Ese correo no tiene permisos de administrador.')
+    } else if (err === 'no_session') {
+      setState('error')
+      setErrorMsg('No se pudo verificar tu sesión. Solicita el enlace de nuevo.')
     }
   }, [searchParams])
 

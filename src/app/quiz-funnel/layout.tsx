@@ -15,12 +15,16 @@ export default async function QuizFunnelLayout({
   } = await supabase.auth.getUser()
 
   if (!user) {
-    redirect('/admin/login')
+    redirect('/admin/login?error=no_session')
   }
 
-  const { data: isAdmin } = await supabase.rpc('is_admin')
+  const { data: isAdmin, error: rpcError } = await supabase.rpc('is_admin')
+  if (rpcError) {
+    console.error('[quiz-funnel/layout] is_admin rpc error:', user.email, rpcError)
+  }
   if (!isAdmin) {
-    redirect('/admin/login')
+    console.warn('[quiz-funnel/layout] usuário autenticado mas não é admin:', user.email)
+    redirect('/admin/login?error=not_admin')
   }
 
   return <>{children}</>
