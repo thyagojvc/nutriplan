@@ -952,6 +952,7 @@ export default function PreviewPage() {
                   'Lista de compras optimizada',
                   'Guía de implementación',
                   'Sustituciones para cada comida',
+                  'Bono: Guía Anti-Celulitis',
                   'Acceso a tu panel personal + PDF',
                 ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
