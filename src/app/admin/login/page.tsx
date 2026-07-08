@@ -1,15 +1,25 @@
 'use client'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
 export default function AdminLoginPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
   const [state, setState] = useState<'idle' | 'loading' | 'sent' | 'authenticating' | 'error'>('idle')
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
+
+  // Lê o ?error=... que /admin/callback manda de volta quando o login falha.
+  // Sem isso a página voltava "limpa" mesmo quando a autenticação quebrava.
+  useEffect(() => {
+    if (searchParams.get('error') === 'auth_failed') {
+      setState('error')
+      setErrorMsg('El enlace expiró o no es válido. Solicita uno nuevo.')
+    }
+  }, [searchParams])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
