@@ -15,6 +15,7 @@ import { calcTargets } from './math'
 import { generateNutritionPlan, generateTrainingPlan, type PhaseNumber } from './generate'
 import { renderNutritionPdf, renderTrainingPdf } from './pdf'
 import { renderRecipesPdf } from './recipes-pdf'
+import { renderAntiCelulitisPdf } from './anti-celulitis-pdf'
 import type { NutritionPlanJson } from './types'
 import type { TrainingPlanJson } from './generate'
 
@@ -183,6 +184,12 @@ async function generateAndStoreDocuments(
       kind: 'nutrition_plan',
       fileName: 'plan-nutricional.pdf',
       buffer: await renderNutritionPdf(nutritionPlan, name),
+    },
+    {
+      // Bônus incluído em todos os tiers (não condicional a hasRecipes/hasTraining).
+      kind: 'anti_celulitis',
+      fileName: 'guia-anti-celulitis.pdf',
+      buffer: await renderAntiCelulitisPdf(),
     },
   ]
   if (trainingPlan) {
