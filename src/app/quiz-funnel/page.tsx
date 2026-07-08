@@ -38,8 +38,14 @@ const STATUS_LABELS: Record<string, string> = {
   refunded: 'Reembolsado',
 }
 
-async function getFunnelData(since: string) {
+async function getFunnelData(sinceDate: string) {
   const supabase = createServiceClient()
+
+  // "sinceDate" é só a data (YYYY-MM-DD, calculada em America/Sao_Paulo).
+  // Sem a hora/fuso explícitos, o Postgres interpretava como meia-noite UTC,
+  // que é 21h da noite anterior em Brasília — por isso "Hoje" já vinha com
+  // horas de "ontem" contadas. Ancora explicitamente em meia-noite de Brasília.
+  const since = sinceDate ? `${sinceDate}T00:00:00-03:00` : sinceDate
 
   let query = supabase
     .from('generation_sessions')
