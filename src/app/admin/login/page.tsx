@@ -1,11 +1,22 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
+// useSearchParams() exige um Suspense boundary em página pré-renderizada,
+// senão o build de produção quebra (next build falha, Vercel serve a
+// versão anterior sem avisar no deploy — foi o que aconteceu aqui).
 export default function AdminLoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminLoginForm />
+    </Suspense>
+  )
+}
+
+function AdminLoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const [email, setEmail] = useState('')
