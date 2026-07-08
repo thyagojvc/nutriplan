@@ -1,7 +1,16 @@
 // Mapeamento de label de alimento → foto do ingrediente.
 // Chaves são substrings lowercase do label (mais específica primeiro).
 // CDN Spoonacular: ingredientes em inglês, lowercase-hyphenated.
-// Pexels: IDs verificados visualmente.
+//
+// AUDITORIA 2026-07-08: todas as imagens abaixo foram baixadas e conferidas
+// visualmente uma a uma (montagem em grid). Corrigidos na auditoria: atún
+// (mostrava prato empratado), arroz (prato pronto), verduras mixtas
+// (mostrava FRUTAS), ensalada (slug 404, nunca renderizava), ejotes (salada
+// com abacate) e queso fresco (cream cheese embalado). Estilo padronizado:
+// foto do INGREDIENTE cru/simples, nunca refeição pronta ou empratada.
+// Ao adicionar imagem nova: baixar e OLHAR antes de commitar. Slug inexistente
+// no CDN da Spoonacular devolve página 404 (o onError do <img> esconde a foto
+// silenciosamente, então o erro não aparece em teste rápido).
 
 const CDN = 'https://spoonacular.com/cdn/ingredients_250x250'
 const px = (id: number) =>
@@ -20,8 +29,8 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   salmon:                    `${CDN}/salmon.jpg`,
   camarones:                 `${CDN}/shrimp.jpg`,
   mariscos:                  `${CDN}/shrimp.jpg`,
-  'atún':                    px(3655916),
-  atun:                      px(3655916),
+  'atún':                    `${CDN}/canned-tuna.png`,
+  atun:                      `${CDN}/canned-tuna.png`,
   huevo:                     `${CDN}/egg.jpg`,
   'tofu firme':              `${CDN}/tofu.jpg`,
   tofu:                      `${CDN}/tofu.jpg`,
@@ -30,8 +39,8 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   frijoles:                  `${CDN}/black-beans.jpg`,
   legumbre:                  `${CDN}/black-beans.jpg`,
   // ── Carboidratos ─────────────────────────────────────────────────────────────
-  'arroz cocido':            px(1640772),
-  arroz:                     px(1640772),
+  'arroz cocido':            `${CDN}/cooked-white-rice.jpg`,
+  arroz:                     `${CDN}/cooked-white-rice.jpg`,
   'pasta cocida':            `${CDN}/spaghetti.jpg`,
   pasta:                     `${CDN}/spaghetti.jpg`,
   'pan integral':            `${CDN}/whole-wheat-bread.jpg`,
@@ -55,11 +64,11 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   'yuca cocida':             `${CDN}/cassava.jpg`,
   yuca:                      `${CDN}/cassava.jpg`,
   // ── Vegetais ─────────────────────────────────────────────────────────────────
-  'verduras mixtas':         px(1300975),
-  verduras:                  px(1300975),
+  'verduras mixtas':         `${CDN}/mixed-vegetables.png`,
+  verduras:                  `${CDN}/mixed-vegetables.png`,
   'tomate / ensalada':       `${CDN}/tomato.jpg`,
   tomate:                    `${CDN}/tomato.jpg`,
-  ensalada:                  `${CDN}/romaine-lettuce.jpg`,
+  ensalada:                  `${CDN}/romaine.jpg`,
   espinaca:                  `${CDN}/spinach.jpg`,
   // nopales: sem imagem verificada — onError esconde silenciosamente
   'brócoli':                 `${CDN}/broccoli.jpg`,
@@ -67,9 +76,9 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   zanahoria:                 `${CDN}/carrots.jpg`,
   'calabacín':               `${CDN}/zucchini.jpg`,
   calabacin:                 `${CDN}/zucchini.jpg`,
-  'ejotes / judías verdes':  px(1580466),
-  ejotes:                    px(1580466),
-  'judías verdes':           px(1580466),
+  'ejotes / judías verdes':  px(3004798),
+  ejotes:                    px(3004798),
+  'judías verdes':           px(3004798),
   'champiñones':             `${CDN}/mushrooms.jpg`,
   champinones:               `${CDN}/mushrooms.jpg`,
   pimiento:                  `${CDN}/red-bell-pepper.jpg`,
@@ -100,9 +109,9 @@ const FOOD_IMAGE_MAP: Record<string, string> = {
   'yogur natural / leche':   `${CDN}/plain-yogurt.jpg`,
   yogur:                     `${CDN}/plain-yogurt.jpg`,
   leche:                     `${CDN}/milk.jpg`,
-  'queso fresco / panela':   `${CDN}/cream-cheese.jpg`,
-  'queso fresco':            `${CDN}/cream-cheese.jpg`,
-  queso:                     `${CDN}/cream-cheese.jpg`,
+  'queso fresco / panela':   `${CDN}/feta.png`,
+  'queso fresco':            `${CDN}/feta.png`,
+  queso:                     `${CDN}/feta.png`,
   'aceite de oliva':         `${CDN}/olive-oil.jpg`,
   aceite:                    `${CDN}/olive-oil.jpg`,
 }
