@@ -27,8 +27,8 @@ const PUBLIC_PATHS = [
   '/api/webhooks/hotmart',
   '/api/admin/generate',
   '/api/admin/resend-link',
+  '/api/admin/send-link',
   '/admin',
-  '/quiz-funnel',
   '/dev', // páginas de preview dev-only (retornam 404 em produção)
 ]
 
@@ -69,10 +69,11 @@ export async function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl
 
-  // Rota protegida sem sessão → redirecionar para /login
+  // Rota protegida sem sessão → redirecionar para o login certo.
+  // /quiz-funnel é admin-only, então vai pro login de admin, não o de cliente.
   if (!user && !isPublic(pathname)) {
     const loginUrl = request.nextUrl.clone()
-    loginUrl.pathname = '/login'
+    loginUrl.pathname = pathname.startsWith('/quiz-funnel') ? '/admin/login' : '/login'
     return NextResponse.redirect(loginUrl)
   }
 
