@@ -48,7 +48,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 2, answers: { goal } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
-      router.push('/quiz/1') // → alimentos favoritos
+      router.push('/quiz/2') // → dados físicos (URL 2 renderiza Step5Physical)
     } catch {
       setError(true)
       setSaving(false)
