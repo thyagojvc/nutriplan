@@ -66,14 +66,15 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   const props = { stepNumber: displayStep, totalSteps: displayTotal }
 
   // NOTA: a URL /quiz/5 é a porta de entrada dos anúncios e por isso renderiza o
-  // 1º passo do fluxo. Para reduzir abandono no início, o 1º passo agora é o
-  // OBJETIVO (pergunta fácil, 1 toque) em vez dos dados físicos. Por isso a URL 5
-  // renderiza Step2Goal e a URL 2 renderiza Step5Physical (conteúdo trocado). As
-  // chaves de dados continuam fixas por componente (goal→step_2, físico→step_5).
+  // 1º passo do fluxo. Para reduzir abandono no início, a ordem visível começa
+  // por perguntas fáceis: 1º OBJETIVO, 2º SEXO, 3º alimentos, 4º dados físicos.
+  // Por isso o conteúdo das URLs está trocado em relação ao número: URL 5→objetivo,
+  // URL 2→sexo, URL 4→dados físicos. As chaves de dados continuam fixas por
+  // componente (goal→step_2, sexo→step_4, físico→step_5), sem afetar geração.
   if (stepNumber === 1)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
-  if (stepNumber === 2)  return <Step5Physical {...props} />
+  if (stepNumber === 2)  return <Step4Sex {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
-  if (stepNumber === 4)  return <Step4Sex {...props} />
+  if (stepNumber === 4)  return <Step5Physical {...props} />
   if (stepNumber === 5)  return <Step2Goal {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />

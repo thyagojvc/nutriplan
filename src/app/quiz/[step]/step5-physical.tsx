@@ -69,7 +69,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 5, answers: { age, weight_kg: weight, height_cm: height } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/1') // → alimentos favoritos
+      router.push('/quiz/6') // → nivel de actividad
     } catch {
       setError(true)
     } finally {

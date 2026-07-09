@@ -10,7 +10,7 @@ const TOTAL_STEPS = 13
 // conteúdo dessas duas URLs está TROCADO em quiz-step.tsx para reduzir abandono
 // no início. As chaves de dados seguem fixas por componente (goal→step_2,
 // físico→step_5), então o array de URLs abaixo não muda com a troca.
-//   URL 5=objetivo · 2=físico · 1=alimentos · 4=sexo · 6=atividade(+país) ·
+//   URL 5=objetivo · 2=sexo · 1=alimentos · 4=físico · 6=atividade(+país) ·
 //   8=restrições · 9=saúde · 10=exercício · 11=obstáculos ·
 //   13=incômodo corporal · 12=ponte
 const VISIBLE_ORDER = [5, 2, 1, 4, 6, 8, 9, 10, 11, 13, 12]
