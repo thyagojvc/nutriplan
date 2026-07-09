@@ -4,7 +4,23 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 
-const PHASES = [
+const ACTIVITY_LABELS: Record<string, string> = {
+  sedentario: 'sedentario',
+  ligeramente_activo: 'ligeramente activo',
+  moderadamente_activo: 'moderadamente activo',
+  muy_activo: 'muy activo',
+}
+
+const GOAL_LABELS: Record<string, string> = {
+  perder_peso: 'perder grasa',
+  mantener: 'mantener tu peso',
+  ganar_masa: 'ganar masa muscular',
+}
+
+// Frases genéricas — usadas no primeiro render (servidor e cliente, antes do
+// useEffect rodar) pra manter o mesmo número de fases e evitar mismatch de
+// hidratação, já que sessionStorage só existe no cliente.
+const FALLBACK_PHASES = [
   'Analizando tus respuestas…',
   'Calculando tu metabolismo basal…',
   'Determinando tus calorías objetivo…',
@@ -15,14 +31,66 @@ const PHASES = [
   '¡Tu NutriPlan está listo!',
 ]
 
+// Injeta os dados reais da sessão nas frases — reforça que o cálculo é
+// personalizado de verdade, não uma animação genérica igual pra todo mundo.
+function buildPersonalizedPhases(): string[] {
+  let weightKg: number | undefined
+  let goalLabel: string | undefined
+  let activityLabel: string | undefined
+  let likesCount = 0
+  let restrictionsCount = 0
+
+  try {
+    const s5 = sessionStorage.getItem('nutriplan_step_5')
+    if (s5) weightKg = (JSON.parse(s5) as { weight_kg?: number }).weight_kg
+
+    const s2 = sessionStorage.getItem('nutriplan_step_2')
+    if (s2) goalLabel = GOAL_LABELS[(JSON.parse(s2) as { goal?: string }).goal ?? '']
+
+    const s6 = sessionStorage.getItem('nutriplan_step_6')
+    if (s6) activityLabel = ACTIVITY_LABELS[(JSON.parse(s6) as { activity_level?: string }).activity_level ?? '']
+
+    const s1 = sessionStorage.getItem('nutriplan_step_1')
+    if (s1) likesCount = ((JSON.parse(s1) as { likes?: string[] }).likes ?? []).length
+
+    const s8 = sessionStorage.getItem('nutriplan_step_8')
+    if (s8) restrictionsCount = ((JSON.parse(s8) as { restrictions?: string[] }).restrictions ?? []).length
+  } catch {
+    return FALLBACK_PHASES
+  }
+
+  const metabolismoDetail = weightKg && activityLabel ? ` (${weightKg}kg · ${activityLabel})` : ''
+  const caloriasDetail = goalLabel ? ` para ${goalLabel}` : ''
+  const restriccionesDetail = restrictionsCount > 0 ? ` (${restrictionsCount} restricciones)` : ''
+  const alimentosDetail = likesCount > 0 ? ` (${likesCount} alimentos)` : ''
+
+  return [
+    'Analizando tus respuestas…',
+    `Calculando tu metabolismo basal${metabolismoDetail}…`,
+    `Determinando tus calorías objetivo${caloriasDetail}…`,
+    'Distribuyendo tus macronutrientes…',
+    `Adaptando a tus restricciones alimentarias${restriccionesDetail}…`,
+    `Seleccionando tus alimentos favoritos${alimentosDetail}…`,
+    'Armando tu plan de 7 días…',
+    '¡Tu NutriPlan está listo!',
+  ]
+}
+
 const ANIMATION_MS = 15_000
-const PHASE_DURATION = ANIMATION_MS / PHASES.length
+const PHASE_DURATION = ANIMATION_MS / FALLBACK_PHASES.length
 
 export default function CalculandoPage() {
   const router = useRouter()
+  const [phases, setPhases] = useState<string[]>(FALLBACK_PHASES)
   const [phaseIndex, setPhaseIndex] = useState(0)
   const [progress, setProgress] = useState(0)
   const done = useRef(false)
+
+  // Troca pras frases personalizadas assim que montar no cliente (sessionStorage
+  // não existe no servidor). Mesmo tamanho de array, então não muda o layout.
+  useEffect(() => {
+    setPhases(buildPersonalizedPhases())
+  }, [])
 
   useEffect(() => {
     const start = Date.now()
@@ -30,7 +98,7 @@ export default function CalculandoPage() {
       const elapsed = Date.now() - start
       const pct = Math.min((elapsed / ANIMATION_MS) * 100, 100)
       setProgress(pct)
-      setPhaseIndex(Math.min(Math.floor(elapsed / PHASE_DURATION), PHASES.length - 1))
+      setPhaseIndex(Math.min(Math.floor(elapsed / PHASE_DURATION), FALLBACK_PHASES.length - 1))
       if (elapsed >= ANIMATION_MS && !done.current) {
         done.current = true
         clearInterval(tick)
@@ -41,7 +109,7 @@ export default function CalculandoPage() {
   }, [router])
 
   const circumference = 2 * Math.PI * 34
-  const isLast = phaseIndex === PHASES.length - 1
+  const isLast = phaseIndex === phases.length - 1
 
   return (
     <div
@@ -96,13 +164,13 @@ export default function CalculandoPage() {
               className="min-h-[1.5rem] text-sm font-semibold text-primary"
               style={{ animation: 'quiz-enter 0.3s ease-out both' }}
             >
-              {PHASES[phaseIndex]}
+              {phases[phaseIndex]}
             </p>
           </div>
 
           {/* Dots de fase */}
           <div className="flex justify-center gap-1.5">
-            {PHASES.map((_, i) => (
+            {phases.map((_, i) => (
               <div
                 key={i}
                 className="rounded-full transition-all duration-300"

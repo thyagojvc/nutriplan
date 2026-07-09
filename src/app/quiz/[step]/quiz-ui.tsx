@@ -391,6 +391,67 @@ export function QuizInput({
 }
 
 // ---------------------------------------------------------------------------
+// Slider numérico — número grande animado + trilho arrastável (edad/peso/altura)
+// ---------------------------------------------------------------------------
+
+export function QuizSlider({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  unit,
+  hint,
+}: {
+  label: string
+  value: number
+  onChange: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  unit: string
+  hint?: React.ReactNode
+}) {
+  const pct = ((value - min) / (max - min)) * 100
+
+  return (
+    <div className="space-y-2.5">
+      <p className="text-center text-sm font-semibold text-gray-700">{label}</p>
+
+      <div className="flex items-baseline justify-center gap-1.5">
+        <span className="font-display text-[2.75rem] font-black leading-none text-primary tabular-nums">
+          {value}
+        </span>
+        <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+          {unit}
+        </span>
+      </div>
+
+      <input
+        type="range"
+        className="quiz-slider"
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        onChange={(e) => onChange(Number(e.target.value))}
+        style={{
+          background: `linear-gradient(to right, hsl(var(--primary)) ${pct}%, hsl(var(--muted)) ${pct}%)`,
+        }}
+      />
+
+      <div className="flex justify-between text-[11px] font-medium text-muted-foreground">
+        <span>{min}</span>
+        <span>{max}</span>
+      </div>
+
+      {hint && <p className="text-center text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Botão CTA
 // ---------------------------------------------------------------------------
 

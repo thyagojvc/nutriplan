@@ -2,12 +2,12 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizInput, QuizCta, QuizError } from './quiz-ui'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizSlider, QuizCta, QuizError } from './quiz-ui'
 
 interface PhysicalData {
-  age: string
-  weight_kg: string
-  height_cm: string
+  age: number
+  weight_kg: number
+  height_cm: number
 }
 
 interface Props {
@@ -15,50 +15,39 @@ interface Props {
   totalSteps: number
 }
 
+const DEFAULTS: PhysicalData = { age: 30, weight_kg: 70, height_cm: 165 }
+
 export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const router = useRouter()
 
+  // Sliders sempre têm um valor válido dentro do range; min de edad = 18 já
+  // exclui menores de idade estruturalmente, sem precisar de tela de bloqueio
+  // depois do envio (o que existia antes, quando o campo era texto livre).
   const [data, setData] = useState<PhysicalData>(() => {
-    if (typeof window === 'undefined') return { age: '', weight_kg: '', height_cm: '' }
+    if (typeof window === 'undefined') return DEFAULTS
     try {
       const cached = sessionStorage.getItem('nutriplan_step_5')
       const parsed = cached ? (JSON.parse(cached) as Partial<PhysicalData>) : {}
       return {
-        age: String(parsed.age ?? ''),
-        weight_kg: String(parsed.weight_kg ?? ''),
-        height_cm: String(parsed.height_cm ?? ''),
+        age: parsed.age ?? DEFAULTS.age,
+        weight_kg: parsed.weight_kg ?? DEFAULTS.weight_kg,
+        height_cm: parsed.height_cm ?? DEFAULTS.height_cm,
       }
-    } catch { return { age: '', weight_kg: '', height_cm: '' } }
+    } catch { return DEFAULTS }
   })
 
-  const [ageBlocked, setAgeBlocked] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  function handleChange(field: keyof PhysicalData, val: string) {
+  function handleChange(field: keyof PhysicalData, val: number) {
     const next = { ...data, [field]: val }
     setData(next)
-    setAgeBlocked(false)
     sessionStorage.setItem('nutriplan_step_5', JSON.stringify(next))
   }
 
-  const age = parseInt(data.age, 10)
-  const weight = parseFloat(data.weight_kg)
-  const height = parseFloat(data.height_cm)
-
-  const isValid =
-    !isNaN(age) && age >= 1 && age <= 100 &&
-    !isNaN(weight) && weight >= 40 && weight <= 250 &&
-    !isNaN(height) && height >= 130 && height <= 220
-
   async function handleContinue(e: React.FormEvent) {
     e.preventDefault()
-    if (!isValid || saving) return
-
-    if (age < 18) {
-      setAgeBlocked(true)
-      return
-    }
+    if (saving) return
 
     setSaving(true)
     setError(false)
@@ -66,7 +55,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ step: 5, answers: { age, weight_kg: weight, height_cm: height } }),
+        body: JSON.stringify({ step: 5, answers: data }),
       })
       if (!res.ok) { setError(true); return }
       router.push('/quiz/6') // → nivel de actividad
@@ -79,34 +68,9 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
   const progress = Math.round((stepNumber / totalSteps) * 100)
 
-  if (ageBlocked) {
-    return (
-      <QuizLayout>
-        <QuizCard>
-          <div className="py-4 text-center space-y-4">
-            <p className="text-5xl">🚫</p>
-            <h1 className="text-xl font-bold text-gray-900">Lo sentimos</h1>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              NutriPlan es exclusivo para personas mayores de 18 años.
-              No podemos continuar con tu solicitud.
-            </p>
-          </div>
-        </QuizCard>
-      </QuizLayout>
-    )
-  }
-
   return (
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
-
-      {/* Promessa de entrada — só aparece neste passo, que é o início do quiz */}
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
-        <span className="text-base">⏱️</span>
-        <p className="text-[13px] font-bold leading-snug text-primary">
-          Responde este quiz de 60 segundos y recibe tu plan y tu entrenamiento personalizados
-        </p>
-      </div>
 
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
@@ -115,52 +79,38 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
             subtitle="Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
           />
 
-          <div className="space-y-4">
-            <QuizInput
-              label="Edad (años)"
-              type="number"
-              min={1}
-              max={100}
-              placeholder="Ej: 28"
+          <div className="space-y-5">
+            <QuizSlider
+              label="¿Cuántos años tienes?"
+              unit="años"
+              min={18}
+              max={80}
               value={data.age}
-              onChange={(e) => handleChange('age', e.target.value)}
-              autoFocus
-              hint={data.age !== '' && !isNaN(parseInt(data.age)) && parseInt(data.age) < 18
-                ? 'Debes tener al menos 18 años.'
-                : undefined}
+              onChange={(v) => handleChange('age', v)}
             />
-
-            <div className="grid grid-cols-2 gap-3">
-              <QuizInput
-                label="Peso (kg)"
-                type="number"
-                min={40}
-                max={250}
-                step={0.1}
-                placeholder="Ej: 70"
-                value={data.weight_kg}
-                onChange={(e) => handleChange('weight_kg', e.target.value)}
-              />
-              <QuizInput
-                label="Altura (cm)"
-                type="number"
-                min={130}
-                max={220}
-                placeholder="Ej: 170"
-                value={data.height_cm}
-                onChange={(e) => handleChange('height_cm', e.target.value)}
-              />
-            </div>
+            <QuizSlider
+              label="¿Cuál es tu peso hoy?"
+              unit="kg"
+              min={40}
+              max={180}
+              value={data.weight_kg}
+              onChange={(v) => handleChange('weight_kg', v)}
+              hint="Sin juicios, es solo tu punto de partida."
+            />
+            <QuizSlider
+              label="¿Cuál es tu altura?"
+              unit="cm"
+              min={130}
+              max={210}
+              value={data.height_cm}
+              onChange={(v) => handleChange('height_cm', v)}
+            />
           </div>
-
-          <p className="text-center text-xs text-muted-foreground">
-            Cuanto más exactos sean tus datos, más preciso será tu plan 🎯
-          </p>
 
           {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
         </QuizCard>
 
-        <QuizCta type="submit" disabled={!isValid} loading={saving} />
+        <QuizCta type="submit" loading={saving} />
       </form>
     </QuizLayout>
   )
