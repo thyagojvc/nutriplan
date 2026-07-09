@@ -28,6 +28,8 @@ const SEX_LABEL: Record<string, string> = {
 const DOC_LABEL: Record<string, string> = {
   nutrition_plan: 'Plan nutricional (PDF)',
   training_plan: 'Plan de entrenamiento (PDF)',
+  anti_celulitis: 'Guía anti-celulitis (PDF)',
+  recipes: '28 recetas fitness (PDF)',
 }
 
 const WEEKDAYS = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
