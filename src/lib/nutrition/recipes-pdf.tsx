@@ -1,7 +1,10 @@
 // =============================================================================
 // NutriPlan — PDF de 28 Recetas Fitness
-// Documento estático entregue em tiers $9.90+.
-// Layout: capa + 14 páginas com 2 receitas por página.
+// Documento estático entregue en tiers $9.90+.
+// Layout: capa + páginas con tarjetas (2 por página aprox.), cada una con foto
+// del plato, y página final de créditos fotográficos (imágenes CC-BY).
+// Las fotos van embebidas como data-URI (recipe-photos-data.ts) para no depender
+// de red ni del sistema de archivos en el momento de la entrega.
 // =============================================================================
 
 import {
@@ -9,12 +12,15 @@ import {
   Page,
   Text,
   View,
+  Image,
   Svg,
   Path,
   StyleSheet,
   renderToBuffer,
 } from '@react-pdf/renderer'
 import { RECIPES, CATEGORY_LABEL, type Recipe } from './recipes'
+import { RECIPE_PHOTOS } from './recipe-photos-data'
+import { RECIPE_PHOTO_CREDITS } from './recipe-photo-credits'
 
 const c = {
   greenDeep: '#1E6340',
@@ -85,6 +91,7 @@ const s = StyleSheet.create({
 
   // Card de receita
   recipeCard: { borderWidth: 1, borderColor: c.border, borderRadius: 10, marginBottom: 14, overflow: 'hidden' },
+  cardPhoto: { width: '100%', height: 118, objectFit: 'cover' },
   cardHeader: { backgroundColor: c.softBg, paddingVertical: 9, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardName: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.ink, flex: 1, paddingRight: 8 },
   categoryBadge: { borderRadius: 20, paddingVertical: 3, paddingHorizontal: 8 },
@@ -118,6 +125,12 @@ const s = StyleSheet.create({
   tipLabel: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: '#8A6D1A', marginBottom: 2 },
   tipText: { fontSize: 8.5, color: c.text, lineHeight: 1.4 },
 
+  // Créditos
+  creditsIntro: { fontSize: 9.5, lineHeight: 1.55, color: c.muted, marginBottom: 12 },
+  creditRow: { marginBottom: 4 },
+  creditText: { fontSize: 8, color: c.muted, lineHeight: 1.4 },
+  creditBold: { color: c.text },
+
   // Footer
   footer: { position: 'absolute', bottom: 20, left: 36, right: 36, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 0.5, borderTopColor: c.border, paddingTop: 8 },
   footerText: { fontSize: 8, color: c.muted },
@@ -127,9 +140,12 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
   const totalMin = recipe.prepMin + recipe.cookMin
   const catBg = c.categoryColors[recipe.category] ?? c.cream
   const catColor = c.categoryText[recipe.category] ?? c.primary
+  const photo = RECIPE_PHOTOS[recipe.id]
 
   return (
-    <View style={s.recipeCard}>
+    <View style={s.recipeCard} wrap={false}>
+      {photo && <Image src={photo} style={s.cardPhoto} />}
+
       <View style={s.cardHeader}>
         <Text style={s.cardName}>{recipe.name}</Text>
         <View style={[s.categoryBadge, { backgroundColor: catBg }]}>
@@ -190,14 +206,26 @@ function RecipeCard({ recipe }: { recipe: Recipe }) {
   )
 }
 
-function PageFooter({ pageNum, total }: { pageNum: number; total: number }) {
+function PageFooter() {
   return (
     <View style={s.footer} fixed>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
         <Leaf size={10} leaf={c.primary} vein={c.mint} />
         <Text style={s.footerText}>NutriPlan · 28 Recetas Fitness</Text>
       </View>
-      <Text style={s.footerText}>{pageNum} / {total}</Text>
+      <Text style={s.footerText} render={({ pageNumber, totalPages }) => `${pageNumber} / ${totalPages}`} />
+    </View>
+  )
+}
+
+function PageHeaderBar() {
+  return (
+    <View style={s.pageHeader} fixed>
+      <View style={s.pageHeaderLeft}>
+        <Leaf size={14} leaf={c.primary} vein={c.mint} />
+        <Text style={s.pageHeaderTitle}>NutriPlan · 28 Recetas Fitness</Text>
+      </View>
+      <Text style={{ fontSize: 9, color: c.muted }}>nutriplan.app</Text>
     </View>
   )
 }
@@ -249,38 +277,33 @@ function CoverPage() {
         </View>
       </View>
 
-      <PageFooter pageNum={1} total={15} />
+      <PageFooter />
     </Page>
   )
 }
 
-function RecipesPage({ recipes, pageNum }: { recipes: Recipe[]; pageNum: number }) {
+function CreditsSection() {
+  if (RECIPE_PHOTO_CREDITS.length === 0) return null
   return (
-    <Page size="A4" style={s.page}>
-      <View style={s.pageHeader}>
-        <View style={s.pageHeaderLeft}>
-          <Leaf size={14} leaf={c.primary} vein={c.mint} />
-          <Text style={s.pageHeaderTitle}>NutriPlan · 28 Recetas Fitness</Text>
+    <View break>
+      <Text style={[s.pageHeaderTitle, { fontSize: 15, marginBottom: 10 }]}>Créditos fotográficos</Text>
+      <Text style={s.creditsIntro}>
+        Algunas fotografías de este recetario se usan bajo licencia Creative Commons Attribution
+        (CC BY / CC BY-SA), que permite su uso incluso comercial siempre que se atribuya al autor.
+        Las demás imágenes son de dominio público o de bancos propios. Agradecemos a sus autores.
+      </Text>
+      {RECIPE_PHOTO_CREDITS.map((cr, i) => (
+        <View key={i} style={s.creditRow}>
+          <Text style={s.creditText}>
+            <Text style={s.creditBold}>{cr.title}</Text> — {cr.author} · {cr.license}
+          </Text>
         </View>
-        <Text style={{ fontSize: 9, color: c.muted }}>nutriplan.app</Text>
-      </View>
-
-      {recipes.map((recipe) => (
-        <RecipeCard key={recipe.id} recipe={recipe} />
       ))}
-
-      <PageFooter pageNum={pageNum} total={15} />
-    </Page>
+    </View>
   )
 }
 
 function RecipesPdfDocument() {
-  // Divide as 28 receitas em pares para 14 páginas
-  const pages: Recipe[][] = []
-  for (let i = 0; i < RECIPES.length; i += 2) {
-    pages.push(RECIPES.slice(i, i + 2))
-  }
-
   return (
     <Document
       title="NutriPlan — 28 Recetas Fitness"
@@ -289,9 +312,14 @@ function RecipesPdfDocument() {
       creator="NutriPlan"
     >
       <CoverPage />
-      {pages.map((pair, idx) => (
-        <RecipesPage key={idx} recipes={pair} pageNum={idx + 2} />
-      ))}
+      <Page size="A4" style={s.page}>
+        <PageHeaderBar />
+        {RECIPES.map((recipe) => (
+          <RecipeCard key={recipe.id} recipe={recipe} />
+        ))}
+        <CreditsSection />
+        <PageFooter />
+      </Page>
     </Document>
   )
 }
