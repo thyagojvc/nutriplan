@@ -23,6 +23,15 @@ export interface FbPurchasePayload {
   fbp?: string | null
   clientIpAddress?: string | null
   clientUserAgent?: string | null
+  firstName?: string | null
+  lastName?: string | null
+  /** Já normalizado: só dígitos, com código do país (ex: 5511999999999) */
+  phone?: string | null
+  city?: string | null
+  state?: string | null
+  zip?: string | null
+  /** Documento único do comprador (ex: CPF), usado como external_id */
+  externalId?: string | null
 }
 
 export interface FbInitiateCheckoutPayload {
@@ -88,6 +97,13 @@ export async function sendFacebookPurchase(payload: FbPurchasePayload): Promise<
   if (payload.fbp) userData.fbp = payload.fbp
   if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
   if (payload.clientUserAgent) userData.client_user_agent = payload.clientUserAgent
+  if (payload.firstName) userData.fn = [sha256(payload.firstName)]
+  if (payload.lastName) userData.ln = [sha256(payload.lastName)]
+  if (payload.phone) userData.ph = [sha256(payload.phone)]
+  if (payload.city) userData.ct = [sha256(payload.city)]
+  if (payload.state) userData.st = [sha256(payload.state)]
+  if (payload.zip) userData.zp = [sha256(payload.zip)]
+  if (payload.externalId) userData.external_id = [sha256(payload.externalId)]
 
   const event: Record<string, unknown> = {
     event_name: 'Purchase',

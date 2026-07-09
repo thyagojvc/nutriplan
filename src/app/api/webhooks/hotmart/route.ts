@@ -50,6 +50,35 @@ export async function POST(request: NextRequest) {
   return NextResponse.json({ ok: true })
 }
 
+// Extrai os dados de Advanced Matching que a Hotmart já coleta no checkout
+// (nome, telefone, endereço, documento), pra melhorar a qualidade de
+// correspondência do evento Purchase no Meta sem pedir nada a mais ao comprador.
+function extractAdvancedMatching(buyer: Record<string, unknown> | undefined, fullName: string) {
+  const address = buyer?.address as Record<string, unknown> | undefined
+
+  let firstName = buyer?.first_name as string | undefined
+  let lastName = buyer?.last_name as string | undefined
+  if (!firstName && fullName) {
+    const parts = fullName.trim().split(/\s+/)
+    firstName = parts[0]
+    lastName = parts.slice(1).join(' ') || undefined
+  }
+
+  const phoneCode = (buyer?.checkout_phone_code as string | undefined) ?? ''
+  const phoneNumber = (buyer?.checkout_phone as string | undefined) ?? ''
+  const phoneDigits = `${phoneCode}${phoneNumber}`.replace(/\D/g, '')
+
+  return {
+    firstName: firstName || undefined,
+    lastName: lastName || undefined,
+    phone: phoneDigits || undefined,
+    city: (address?.city as string | undefined) || undefined,
+    state: (address?.state as string | undefined) || undefined,
+    zip: (address?.zipcode as string | undefined) || undefined,
+    externalId: (buyer?.document as string | undefined) || undefined,
+  }
+}
+
 async function handlePurchaseApproved(data: Record<string, unknown>) {
   const buyer = data.buyer as Record<string, unknown> | undefined
   const purchase = data.purchase as Record<string, unknown> | undefined
@@ -58,6 +87,7 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
   const email = buyer?.email as string | undefined
   const name = (buyer?.name as string | undefined) ?? ''
   const transactionId = purchase?.transaction as string | undefined
+  const advancedMatching = extractAdvancedMatching(buyer, name)
   const recurrenceNumber = (purchase?.recurrence_number as number | undefined) ?? 0
   const productId = String(product?.id ?? '')
   const productCode = HOTMART_PRODUCT_IDS[productId]
@@ -109,6 +139,7 @@ async function handlePurchaseApproved(data: Record<string, unknown>) {
         fbp,
         clientIpAddress,
         clientUserAgent,
+        ...advancedMatching,
       }).catch(err => console.error('[webhook/hotmart] fb-capi falhou (não bloqueante):', err))
 
       // E-mail pós-geração (não bloqueia a resposta ao Hotmart se falhar)
