@@ -19,6 +19,13 @@ const STEP_LABELS: Record<number, string> = {
 // Steps ocultos (auto-save sem UI): excluídos da análise de abandono.
 const HIDDEN_STEPS = new Set([7])
 
+// Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
+// número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
+// numeração step_N é fixa por componente e não reflete mais a ordem de
+// visita desde a reordenação do quiz (objetivo/sexo foram pra frente).
+// Atualizar aqui se a ordem do quiz mudar de novo.
+const VISIT_ORDER = [2, 4, 1, 5, 6, 7, 8, 9, 10, 11, 13, 12]
+
 const OFFER_LABELS: Record<string, string> = {
   PLAN_BASIC: 'Solo el plan · 7 días',
   PLAN_RECIPES: 'Plan + 28 Recetas Fitness',
@@ -180,7 +187,7 @@ export default async function QuizFunnelPage({
   }
 
   const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts } = data
-  const step1 = stepCounts[1] || 1
+  const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
   const adRefRows = Object.entries(adRefCounts).sort((a, b) => b[1] - a[1])
@@ -231,18 +238,18 @@ export default async function QuizFunnelPage({
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
-            {Array.from({ length: 13 }, (_, i) => i + 1).map((step) => {
+            {VISIT_ORDER.map((step, idx) => {
               const isHidden = HIDDEN_STEPS.has(step)
               const count = stepCounts[step] ?? 0
-              const prev = step === 1 ? step1 : (stepCounts[step - 1] ?? 0)
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const prev = idx === 0 ? firstStepCount : (stepCounts[VISIT_ORDER[idx - 1]] ?? 0)
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               const isHighDrop = !isHidden && dropPct >= 20
 
               return (
                 <tr key={step} className={['transition-colors', isHidden ? 'opacity-40' : 'hover:bg-muted/30'].join(' ')}>
                   <td className="px-4 py-3 font-mono text-xs text-muted-foreground">
-                    {step}
+                    {idx + 1}
                   </td>
                   <td className="px-4 py-3 font-medium">
                     {STEP_LABELS[step]}
@@ -264,7 +271,7 @@ export default async function QuizFunnelPage({
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right tabular-nums">
-                    {step === 1 || isHidden ? (
+                    {idx === 0 || isHidden ? (
                       <span className="text-muted-foreground">—</span>
                     ) : (
                       <span className={['text-xs font-medium', isHighDrop ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
@@ -279,7 +286,7 @@ export default async function QuizFunnelPage({
             {(() => {
               const count = previewViewed
               const prev = stepCounts[12] ?? 0
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (
                 <tr className="hover:bg-muted/30 transition-colors border-t-2 border-primary/20">
@@ -304,7 +311,7 @@ export default async function QuizFunnelPage({
             {(() => {
               const count = offerReached
               const prev = previewViewed
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (
                 <tr className="hover:bg-muted/30 transition-colors">
@@ -329,7 +336,7 @@ export default async function QuizFunnelPage({
             {(() => {
               const count = tiersReached
               const prev = offerReached
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (
                 <tr className="hover:bg-muted/30 transition-colors">
@@ -354,7 +361,7 @@ export default async function QuizFunnelPage({
             {(() => {
               const count = pageEnd
               const prev = tiersReached
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (
                 <tr className="hover:bg-muted/30 transition-colors">
@@ -379,7 +386,7 @@ export default async function QuizFunnelPage({
             {(() => {
               const count = ordersCount
               const prev = tiersReached
-              const pctStart = step1 > 0 ? Math.round((count / step1) * 100) : 0
+              const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (
                 <tr className="hover:bg-muted/30 transition-colors">
