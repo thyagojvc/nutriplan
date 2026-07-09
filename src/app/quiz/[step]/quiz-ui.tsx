@@ -415,14 +415,36 @@ export function QuizSlider({
 }) {
   const pct = ((value - min) / (max - min)) * 100
 
+  // Texto local do número editável — só reconcilia com o valor real (clampado
+  // entre min/max) no blur/Enter, pra não atrapalhar quem está digitando
+  // (ex: apagar "165" pra escrever "170" passaria por estados intermediários
+  // inválidos se clampássemos a cada tecla).
+  const [text, setText] = useState(String(value))
+  useEffect(() => setText(String(value)), [value])
+
+  function commit(raw: string) {
+    const n = Math.round(Number(raw))
+    if (Number.isFinite(n)) {
+      onChange(Math.min(max, Math.max(min, n)))
+    } else {
+      setText(String(value))
+    }
+  }
+
   return (
     <div className="space-y-2.5">
       <p className="text-center text-sm font-semibold text-gray-700">{label}</p>
 
       <div className="flex items-baseline justify-center gap-1.5">
-        <span className="font-display text-[2.75rem] font-black leading-none text-primary tabular-nums">
-          {value}
-        </span>
+        <input
+          type="number"
+          inputMode="numeric"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={(e) => commit(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
+          className="quiz-number-input w-24 bg-transparent text-center font-display text-[2.75rem] font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25 rounded-lg"
+        />
         <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
           {unit}
         </span>

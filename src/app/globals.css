@@ -139,6 +139,18 @@
   transform: scale(1.1);
 }
 
+/* Número editável do QuizSlider — remove as setinhas nativas de type=number,
+   já que arrastar o slider ou digitar direto já cobrem incremento/decremento. */
+.quiz-number-input::-webkit-outer-spin-button,
+.quiz-number-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.quiz-number-input {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 /* Fraunces — fonte display para headings hero */
 .font-display {
   font-family: var(--font-fraunces), serif;
