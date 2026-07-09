@@ -44,7 +44,11 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
   function handleSelect(id: string) {
     const level = LEVELS.find((l) => l.id === id)!
     setSelected(id)
-    sessionStorage.setItem('nutriplan_step_6', JSON.stringify({ activity_level: id, activity_factor: level.factor }))
+    // sessionStorage pode falhar (ex: navegador interno do Instagram/Facebook
+    // com armazenamento restrito) — não pode bloquear o avanço se isso acontecer.
+    try {
+      sessionStorage.setItem('nutriplan_step_6', JSON.stringify({ activity_level: id, activity_factor: level.factor }))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // Escolha única: avança direto, sem exigir o clique em Continuar
     submit(id)
   }
@@ -63,7 +67,9 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
       if (!res.ok) { setError(true); setSaving(false); return }
 
       const dbCountry = toDbCountry(detectedCountry)
-      sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
+      try {
+        sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
+      } catch { /* segue sem cache local; o save-step abaixo ainda persiste no banco */ }
       fetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

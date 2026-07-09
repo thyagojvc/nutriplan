@@ -126,7 +126,11 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
   function toggle(id: string) {
     setSelected((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-      sessionStorage.setItem('nutriplan_step_1', JSON.stringify({ likes: next }))
+      // sessionStorage pode falhar (ex: navegador interno do Instagram/Facebook
+      // com armazenamento restrito) — não pode impedir o toggle de aplicar.
+      try {
+        sessionStorage.setItem('nutriplan_step_1', JSON.stringify({ likes: next }))
+      } catch { /* segue sem cache local; o save-step no Continuar ainda persiste */ }
       return next
     })
   }

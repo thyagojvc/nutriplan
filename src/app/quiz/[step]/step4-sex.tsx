@@ -31,7 +31,11 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
 
   function handleSelect(id: string) {
     setSelected(id)
-    sessionStorage.setItem('nutriplan_step_4', JSON.stringify({ sex: id }))
+    // sessionStorage pode falhar (ex: navegador interno do Instagram/Facebook
+    // com armazenamento restrito) — não pode bloquear o avanço se isso acontecer.
+    try {
+      sessionStorage.setItem('nutriplan_step_4', JSON.stringify({ sex: id }))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // Escolha única: avança direto, sem exigir o clique em Continuar
     submit(id)
   }

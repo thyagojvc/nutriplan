@@ -74,7 +74,9 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
       next.frequency = null
     }
     setData(next)
-    sessionStorage.setItem('nutriplan_step_10', JSON.stringify(next))
+    try {
+      sessionStorage.setItem('nutriplan_step_10', JSON.stringify(next))
+    } catch { /* segue sem cache local; o save-step no Continuar ainda persiste */ }
   }
 
   function toggleLimitation(id: string) {
@@ -87,7 +89,9 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
     }
     const updated = { ...data, limitations: next }
     setData(updated)
-    sessionStorage.setItem('nutriplan_step_10', JSON.stringify(updated))
+    try {
+      sessionStorage.setItem('nutriplan_step_10', JSON.stringify(updated))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // "Sin limitaciones" avanza solo, pero solo si el resto del paso ya está completo
     const restValid = updated.experience === 'no_ejercicio'
       ? !!updated.experience

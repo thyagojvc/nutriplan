@@ -42,7 +42,9 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
       next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
     }
     setSelected(next)
-    sessionStorage.setItem('nutriplan_step_9', JSON.stringify({ health: next }))
+    try {
+      sessionStorage.setItem('nutriplan_step_9', JSON.stringify({ health: next }))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // Elegir la opción exclusiva "ninguna condición" avanza solo — menos fricción
     if (id === 'ninguna_condicion' && next.includes('ninguna_condicion')) submit(next)
   }

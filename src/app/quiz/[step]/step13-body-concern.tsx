@@ -72,14 +72,20 @@ export function Step13BodyConcern({ stepNumber, totalSteps }: Props) {
 
   function handleSelect(id: string) {
     setSelected(id)
-    sessionStorage.setItem('nutriplan_step_13', JSON.stringify({ concern: id, concern_detail: id === 'otro' ? otherText : null }))
+    // sessionStorage pode falhar (ex: navegador interno do Instagram/Facebook
+    // com armazenamento restrito) — não pode bloquear o avanço se isso acontecer.
+    try {
+      sessionStorage.setItem('nutriplan_step_13', JSON.stringify({ concern: id, concern_detail: id === 'otro' ? otherText : null }))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // Auto-avança nas opções predefinidas — só "otro" precisa do texto antes.
     if (id !== 'otro') submit(id, '')
   }
 
   function handleOtherChange(value: string) {
     setOtherText(value)
-    sessionStorage.setItem('nutriplan_step_13', JSON.stringify({ concern: 'otro', concern_detail: value }))
+    try {
+      sessionStorage.setItem('nutriplan_step_13', JSON.stringify({ concern: 'otro', concern_detail: value }))
+    } catch { /* segue sem cache local */ }
   }
 
   const progress = Math.round((stepNumber / totalSteps) * 100)

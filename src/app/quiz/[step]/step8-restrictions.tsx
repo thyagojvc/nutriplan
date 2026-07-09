@@ -44,7 +44,9 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
       next = without.includes(id) ? without.filter((x) => x !== id) : [...without, id]
     }
     setSelected(next)
-    sessionStorage.setItem('nutriplan_step_8', JSON.stringify({ restrictions: next }))
+    try {
+      sessionStorage.setItem('nutriplan_step_8', JSON.stringify({ restrictions: next }))
+    } catch { /* segue sem cache local; o save-step ainda persiste no banco */ }
     // Elegir la opción exclusiva "ninguna" avanza solo — menos fricción
     if (id === 'ninguna' && next.includes('ninguna')) submit(next)
   }

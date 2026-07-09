@@ -36,7 +36,9 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
   function toggle(id: string) {
     setSelected((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
-      sessionStorage.setItem('nutriplan_step_11', JSON.stringify({ obstacles: next }))
+      try {
+        sessionStorage.setItem('nutriplan_step_11', JSON.stringify({ obstacles: next }))
+      } catch { /* segue sem cache local; o save-step no Continuar ainda persiste */ }
       return next
     })
   }

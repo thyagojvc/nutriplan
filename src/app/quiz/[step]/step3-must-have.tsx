@@ -26,7 +26,9 @@ export function Step3MustHave({ stepNumber, totalSteps }: Props) {
 
   function handleChange(v: string) {
     setValue(v)
-    sessionStorage.setItem('nutriplan_step_3', JSON.stringify({ must_have: v }))
+    try {
+      sessionStorage.setItem('nutriplan_step_3', JSON.stringify({ must_have: v }))
+    } catch { /* segue sem cache local; o save-step no Continuar ainda persiste */ }
   }
 
   async function handleContinue(e: React.FormEvent) {

@@ -47,7 +47,9 @@ export function Step7CountrySelect({ detectedCountry }: Props) {
         return
       }
 
-      sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
+      try {
+        sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
+      } catch { /* segue sem cache local; o save-step acima ainda persiste no banco */ }
       router.replace('/quiz/8')
     } catch {
       setError(true)
