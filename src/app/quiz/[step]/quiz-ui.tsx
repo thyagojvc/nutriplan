@@ -128,6 +128,11 @@ export function QuizLayout({
 // Barra de progresso — segmentada por seções + badge %
 // ---------------------------------------------------------------------------
 
+// Curva de aceleração da barra: avança rápido no início e desacelera perto
+// do fim (efeito "barra de VSL"), pra passar sensação de rapidez sem mentir
+// o total de passos. displayed = 100 * (1 - (1 - linear)^EASE_K).
+const PROGRESS_EASE_K = 1.8
+
 export function QuizProgress({
   step,
   total,
@@ -138,6 +143,7 @@ export function QuizProgress({
   pct: number
 }) {
   const router = useRouter()
+  const easedPct = Math.round(100 * (1 - Math.pow(1 - pct / 100, PROGRESS_EASE_K)))
 
   // Mostra voltar só se acabou de avançar (flag gravada pelo QuizCta)
   const [canGoBack, setCanGoBack] = useState(false)
@@ -157,7 +163,7 @@ export function QuizProgress({
 
   return (
     <div className="space-y-2 quiz-enter">
-      <div className="grid grid-cols-3 items-center">
+      <div className="flex items-center justify-between">
         <div>
           {canGoBack && (
             <button
@@ -178,34 +184,16 @@ export function QuizProgress({
             </button>
           )}
         </div>
-        <span className="text-center text-xs font-semibold text-muted-foreground tracking-wide">
-          Paso {step} de {total}
+        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
+          {easedPct}%
         </span>
-        <div className="flex justify-end">
-          <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
-            {pct}%
-          </span>
-        </div>
       </div>
-      {/* Barra segmentada */}
-      <div className="flex gap-1">
-        {Array.from({ length: total }).map((_, i) => {
-          const filled = i < step
-          const active = i === step - 1
-          return (
-            <div
-              key={i}
-              className="h-1.5 flex-1 rounded-full transition-all duration-500"
-              style={{
-                background: filled
-                  ? 'hsl(148, 52%, 28%)'
-                  : 'hsl(148, 18%, 88%)',
-                opacity: active ? 1 : filled ? 0.75 : 0.4,
-                transform: active ? 'scaleY(1.3)' : 'scaleY(1)',
-              }}
-            />
-          )
-        })}
+      {/* Barra contínua, sem divisões — avanço acelerado no início */}
+      <div className="h-2 w-full overflow-hidden rounded-full bg-[hsl(148,18%,88%)]">
+        <div
+          className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
+          style={{ width: `${easedPct}%` }}
+        />
       </div>
     </div>
   )
