@@ -61,7 +61,7 @@ async function getFunnelData(sinceDate: string) {
 
   if (since) query = query.gte('created_at', since)
 
-  const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }] = await Promise.all([
+  const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }, { data: lastStartsRows }] = await Promise.all([
     query,
     supabase
       .from('orders')
@@ -78,6 +78,13 @@ async function getFunnelData(sinceDate: string) {
       .gte('created_at', since)
       .order('created_at', { ascending: false })
       .limit(20),
+    // Últimos acessos que começaram o quiz — sem filtro de "since", sempre os
+    // 3 mais recentes de verdade (é um "pulso" de monitoramento ao vivo).
+    supabase
+      .from('generation_sessions')
+      .select('id, created_at, draft_answers')
+      .order('created_at', { ascending: false })
+      .limit(3),
   ])
 
   if (error || !data) return null
@@ -163,7 +170,17 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts }
+  // Últimos acessos que começaram o quiz, com a hora exata (Brasília) da entrada.
+  const lastStarts = (lastStartsRows ?? []).map((r) => {
+    const draft = (r.draft_answers ?? {}) as Record<string, unknown>
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      adRef: (draft._ad_ref as string | undefined) ?? '—',
+    }
+  })
+
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, lastStarts }
 }
 
 export default async function QuizFunnelPage({
@@ -186,7 +203,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, lastStarts } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
@@ -224,6 +241,33 @@ export default async function QuizFunnelPage({
             </a>
           ))}
         </div>
+      </div>
+
+      {/* Últimos acessos — hora exata (Brasília) que as 3 sessões mais recentes
+          começaram o quiz, sem filtro de período (pulso de monitoramento ao vivo) */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Últimos acessos</p>
+          <p className="text-xs text-muted-foreground">Hora exata (Brasília) que as 3 sessões mais recentes começaram o quiz</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {lastStarts.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões registradas.</td></tr>
+            )}
+            {lastStarts.map((s) => (
+              <tr key={s.id} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 font-mono text-xs tabular-nums">
+                  {new Date(s.createdAt).toLocaleString('pt-BR', {
+                    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    timeZone: 'America/Sao_Paulo',
+                  })}
+                </td>
+                <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.adRef}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
       <div className="overflow-hidden rounded-xl border border-border">
