@@ -959,6 +959,13 @@ export default function PreviewPage() {
                 <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
+
+            {/* Refuerzo del ángulo ganador (antojos/sostenibilidad) en el punto de
+                decisión — congruencia con el anuncio que trae a la persona */}
+            <p className="text-center text-[13px] font-semibold text-gray-800">
+              Un plan pensado para tu vida real: incluye tus antojos y tu rutina, para que no lo abandones a los 3 días.
+            </p>
+
             <div>
               <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye</p>
               <ul className="space-y-2.5">
