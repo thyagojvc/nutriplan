@@ -22,7 +22,10 @@ export default function LoginHotmartPage() {
     setErrorMsg(null)
 
     const supabase = createClient()
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password: password.trim(),
+    })
 
     if (error) {
       setState('error')
