@@ -2,8 +2,18 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
-// Cria uma generation_session com country=NULL (migration 0013).
-// Chamado no carregamento do step 1, antes de qualquer resposta do usuário.
+// Apenas estes 4 têm preço em moeda local dedicado; todo o resto cai em 'OTHER'
+// (mesma regra de step7-country-select.tsx, duplicada aqui de propósito — sem
+// importar componente 'use client' num route handler).
+const PRICED_COUNTRIES = new Set(['MX', 'CO', 'CL', 'ES'])
+function toDbCountry(code: string | undefined): 'MX' | 'CO' | 'CL' | 'ES' | 'OTHER' {
+  return code && PRICED_COUNTRIES.has(code) ? (code as 'MX' | 'CO' | 'CL' | 'ES') : 'OTHER'
+}
+
+// Cria uma generation_session já com o país detectado por IP (Vercel), mesmo
+// antes de qualquer resposta do usuário — permite identificar a origem de
+// sessões que abandonam antes do step 7 (onde o país era capturado antes).
+// Chamado no carregamento do step 1.
 // Idempotente via cookie: se o cookie já existir, retorna a sessão existente.
 export async function POST(request: NextRequest) {
   // Se o cliente já tem uma session_id em cookie, reutilizar
@@ -22,13 +32,20 @@ export async function POST(request: NextRequest) {
   const parsed = z.object({ ad_ref: z.string().max(200).optional() }).safeParse(body)
   const adRef = parsed.success ? parsed.data.ad_ref : undefined
 
+  const detectedCountry = request.headers.get('x-vercel-ip-country') ?? undefined
+  const dbCountry = toDbCountry(detectedCountry)
+
+  const draftAnswers: Record<string, unknown> = {}
+  if (adRef) draftAnswers._ad_ref = adRef
+  if (detectedCountry) draftAnswers._detected_country = detectedCountry
+
   const supabase = createServiceClient()
 
   const { data, error } = await supabase
     .from('generation_sessions')
     .insert({
-      country: null,
-      ...(adRef ? { draft_answers: { _ad_ref: adRef } } : {}),
+      country: dbCountry,
+      ...(Object.keys(draftAnswers).length > 0 ? { draft_answers: draftAnswers } : {}),
     })
     .select('id')
     .single()

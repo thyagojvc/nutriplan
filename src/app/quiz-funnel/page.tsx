@@ -132,7 +132,7 @@ async function getFunnelData(sinceDate: string) {
   for (const r of data) {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
-    const country = s7.country_detail ?? s7.country ?? 'Sin dato'
+    const country = s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? 'Sin dato'
     countryCounts[country] = (countryCounts[country] ?? 0) + 1
 
     const adRef = (draft._ad_ref as string | undefined) ?? 'Sin dato'
@@ -163,7 +163,7 @@ async function getFunnelData(sinceDate: string) {
       currency: row.currency,
       createdAt: row.created_at,
       productCode: row.order_items?.[0]?.product_code ?? 'Sin ítem',
-      country: step7.country_detail ?? step7.country ?? '—',
+      country: step7.country_detail ?? step7.country ?? (draft._detected_country as string | undefined) ?? '—',
       adRef: (draft._ad_ref as string | undefined) ?? '—',
       buyerName: row.users?.name ?? null,
       buyerEmail: row.users?.email ?? null,
@@ -173,10 +173,12 @@ async function getFunnelData(sinceDate: string) {
   // Últimos acessos que começaram o quiz, com a hora exata (Brasília) da entrada.
   const lastStarts = (lastStartsRows ?? []).map((r) => {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
+    const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
     return {
       id: r.id,
       createdAt: r.created_at,
       adRef: (draft._ad_ref as string | undefined) ?? '—',
+      country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
     }
   })
 
@@ -264,6 +266,7 @@ export default async function QuizFunnelPage({
                   })}
                 </td>
                 <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.adRef}</td>
+                <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.country}</td>
               </tr>
             ))}
           </tbody>
