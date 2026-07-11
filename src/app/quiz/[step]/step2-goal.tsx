@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { trackPixelOnce } from '@/lib/fb-pixel'
 
 const GOALS = [
   { id: 'perder_peso',   label: 'Perder peso',          desc: 'Quiero reducir mi grasa corporal',                     emoji: '🔥' },
@@ -52,6 +53,10 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 2, answers: { goal } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
+      // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta). Junto com o
+      // QuizStart (dispara no landing), permite montar no Meta o público de
+      // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
+      trackPixelOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
       router.push('/quiz/2') // → dados físicos (URL 2 renderiza Step5Physical)
     } catch {
       setError(true)
