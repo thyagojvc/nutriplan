@@ -124,7 +124,7 @@ export function PlanView({
         <section className="space-y-3">
           <h2 className="text-base font-semibold">Tu perfil</h2>
           <div className="grid grid-cols-3 gap-2">
-            <ProfileCard icon="🧑" label="Edad" value={profile.age ? `${profile.age} años` : '—'} />
+            <ProfileCard icon="👩" label="Edad" value={profile.age ? `${profile.age} años` : '—'} />
             <ProfileCard icon="⚖️" label="Peso" value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
             <ProfileCard icon="📏" label="Altura" value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
             <ProfileCard icon="🧮" label="IMC" value={imc ? imc.toFixed(1) : '—'} highlight={!!imc} />
