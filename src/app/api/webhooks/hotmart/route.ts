@@ -391,7 +391,7 @@ async function sendMagicLinkEmail(email: string, name: string) {
   const { data: linkData } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
     email,
-    options: { redirectTo: appUrl + '/dashboard' },
+    options: { redirectTo: appUrl + '/auth/callback' },
   })
 
   const magicLink = linkData?.properties?.action_link
