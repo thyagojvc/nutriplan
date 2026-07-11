@@ -27,11 +27,11 @@ const HIDDEN_STEPS = new Set([7, 12])
 const VISIT_ORDER = [2, 4, 1, 5, 6, 7, 8, 9, 10, 11, 13, 12]
 
 const OFFER_LABELS: Record<string, string> = {
-  PLAN_BASIC: 'Solo el plan · 7 días',
-  PLAN_RECIPES: 'Plan + 28 Recetas Fitness',
-  PLAN_TRAINING: 'Plan + Recetas + Entrenamiento',
-  PLAN_STANDARD: 'Plan Standard (legado)',
-  TRAINING_BUMP: 'Bump Entrenamiento (legado)',
+  PLAN_BASIC: 'Só o plano · 7 dias',
+  PLAN_RECIPES: 'Plano + 28 Receitas Fitness',
+  PLAN_TRAINING: 'Plano + Receitas + Treino',
+  PLAN_STANDARD: 'Plano Standard (legado)',
+  TRAINING_BUMP: 'Bump Treino (legado)',
   PLAN_4WEEKS: 'Transformación 4 semanas (legado)',
 }
 
@@ -61,12 +61,19 @@ async function getFunnelData(sinceDate: string) {
 
   if (since) query = query.gte('created_at', since)
 
+  // Order fabricado pra criar a conta de teste usada na revisão externa da
+  // Hotmart (login-hotmart) — não é venda real, excluído das métricas do
+  // funil. Mantido no banco (não apagar) enquanto a Hotmart não aprovar,
+  // senão quebra o login dela.
+  const HOTMART_REVIEWER_ORDER_ID = 'f8e9178f-69ca-4768-95c1-e5c8b3e65259'
+
   const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }, { data: lastStartsRows }] = await Promise.all([
     query,
     supabase
       .from('orders')
       .select('session_id, status, order_items(product_code)')
-      .gte('created_at', since),
+      .gte('created_at', since)
+      .neq('id', HOTMART_REVIEWER_ORDER_ID),
     supabase
       .from('orders')
       .select(`
@@ -76,6 +83,7 @@ async function getFunnelData(sinceDate: string) {
         users(name, email)
       `)
       .gte('created_at', since)
+      .neq('id', HOTMART_REVIEWER_ORDER_ID)
       .order('created_at', { ascending: false })
       .limit(20),
     // Últimos acessos que começaram o quiz — sem filtro de "since", sempre os
