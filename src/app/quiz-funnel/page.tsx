@@ -17,7 +17,7 @@ const STEP_LABELS: Record<number, string> = {
 }
 
 // Steps ocultos (auto-save sem UI): excluídos da análise de abandono.
-const HIDDEN_STEPS = new Set([7])
+const HIDDEN_STEPS = new Set([7, 12])
 
 // Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
 // número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A

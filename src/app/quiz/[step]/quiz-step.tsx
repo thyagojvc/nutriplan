@@ -27,9 +27,12 @@ const Step11Obstacle   = dynamic(() => import('./step11-obstacle').then(m => ({ 
 const Step12Form       = dynamic(() => import('./step12-form').then(m => ({ default: m.Step12Form })), { ssr: false })
 const Step13BodyConcern = dynamic(() => import('./step13-body-concern').then(m => ({ default: m.Step13BodyConcern })), { ssr: false })
 
-function useEnsureSession() {
+function useEnsureSession(stepNumber: number) {
   const [error, setError] = useState(false)
   useEffect(() => {
+    // /quiz/5 é a porta de entrada (ver nota abaixo) — só cria sessão ali,
+    // igual o QuizStart. Visitas diretas a outras URLs não geram sessão.
+    if (stepNumber !== 5) return
     if (sessionStorage.getItem('nutriplan_session_init')) return
     // Captura o criativo/anúncio de origem (utm_content) da URL, se veio de
     // anúncio pago. Configurar no Meta Ads: URL parameters -> utm_content={{ad.name}}
@@ -41,12 +44,12 @@ function useEnsureSession() {
     })
       .then(() => sessionStorage.setItem('nutriplan_session_init', '1'))
       .catch(() => setError(true))
-  }, [])
+  }, [stepNumber])
   return { error }
 }
 
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
-  const { error: sessionError } = useEnsureSession()
+  const { error: sessionError } = useEnsureSession(stepNumber)
 
   // Início do quiz: dispara uma vez por sessão no passo de entrada (dados físicos).
   useEffect(() => {
