@@ -91,7 +91,7 @@ const s = StyleSheet.create({
 
   // Card de receita
   recipeCard: { borderWidth: 1, borderColor: c.border, borderRadius: 10, marginBottom: 14, overflow: 'hidden' },
-  cardPhoto: { width: '100%', height: 118, objectFit: 'cover' },
+  cardPhoto: { width: '100%', height: 230, objectFit: 'cover' },
   cardHeader: { backgroundColor: c.softBg, paddingVertical: 9, paddingHorizontal: 12, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   cardName: { fontSize: 12, fontFamily: 'Helvetica-Bold', color: c.ink, flex: 1, paddingRight: 8 },
   categoryBadge: { borderRadius: 20, paddingVertical: 3, paddingHorizontal: 8 },
