@@ -16,6 +16,7 @@ const VISIBLE_STEP_LABELS: Record<number, string> = {
   9: 'Obstáculos',
   10: 'Incômodo corporal',
   11: 'Ponte emocional',
+  12: 'Vendo o plano (preview)',
 }
 
 interface LiveData {

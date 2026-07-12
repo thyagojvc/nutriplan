@@ -350,6 +350,26 @@ export default function PreviewPage() {
     trackFunnelEvent('preview_viewed')
   }, [data])
 
+  // Heartbeat de presença "ao vivo": mesma lógica do quiz, mas pra preview.
+  // Sem isso, o painel "ao vivo agora" mostrava a pessoa sumindo assim que
+  // ela saía do quiz e chegava na preview (que não passa por quiz-step.tsx).
+  // Usa a etapa 12 (não usada como step visível do quiz) como marcador de
+  // "está vendo o plano/oferta agora".
+  useEffect(() => {
+    if (!data) return
+    const send = () => {
+      fetch('/api/quiz/presence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 12 }),
+        keepalive: true,
+      }).catch(() => {})
+    }
+    send()
+    const iv = setInterval(send, 8000)
+    return () => clearInterval(iv)
+  }, [data])
+
   // Profundidade de scroll: registra uma vez cada quando o bloco entra na tela.
   // 'offer_reached' = viu a oferta; 'tiers_reached' = chegou nos botões de tier.
   // Assim o funil mostra onde a lead para entre ver a preview e clicar.

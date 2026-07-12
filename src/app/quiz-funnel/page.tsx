@@ -180,14 +180,31 @@ async function getFunnelData(sinceDate: string) {
   })
 
   // Últimos acessos que começaram o quiz, com a hora exata (Brasília) da entrada.
+  // "lastStep" = até onde a pessoa avançou: primeiro checa se passou do quiz
+  // (chegou na preview/oferta), senão percorre VISIT_ORDER de trás pra frente
+  // achando o último step_N respondido.
   const lastStarts = (lastStartsRows ?? []).map((r) => {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
+
+    let lastStep = 'No inició'
+    if (hasEvent(r, '_ev_page_end')) lastStep = 'Vio toda la oferta'
+    else if (hasEvent(r, '_ev_tiers_reached')) lastStep = 'Vio los planes'
+    else if (hasEvent(r, '_ev_offer_reached')) lastStep = 'Vio la oferta'
+    else if (hasEvent(r, '_ev_preview_viewed')) lastStep = 'Entró en la preview'
+    else {
+      for (let i = VISIT_ORDER.length - 1; i >= 0; i--) {
+        const step = VISIT_ORDER[i]
+        if (`step_${step}` in draft) { lastStep = STEP_LABELS[step] ?? `Step ${step}`; break }
+      }
+    }
+
     return {
       id: r.id,
       createdAt: r.created_at,
       adRef: (draft._ad_ref as string | undefined) ?? '—',
       country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
+      lastStep,
     }
   })
 
@@ -266,6 +283,14 @@ export default async function QuizFunnelPage({
           <p className="text-xs text-muted-foreground">Hora exata (Brasília) que as 3 sessões mais recentes começaram o quiz</p>
         </div>
         <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border text-left text-[10px] uppercase text-muted-foreground">
+              <th className="px-4 py-1.5 font-medium">Hora</th>
+              <th className="px-4 py-1.5 font-medium">Criativo</th>
+              <th className="px-4 py-1.5 font-medium">País</th>
+              <th className="px-4 py-1.5 font-medium">Parou em</th>
+            </tr>
+          </thead>
           <tbody className="divide-y divide-border">
             {lastStarts.length === 0 && (
               <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões registradas.</td></tr>
@@ -280,6 +305,7 @@ export default async function QuizFunnelPage({
                 </td>
                 <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.adRef}</td>
                 <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.country}</td>
+                <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.lastStep}</td>
               </tr>
             ))}
           </tbody>
