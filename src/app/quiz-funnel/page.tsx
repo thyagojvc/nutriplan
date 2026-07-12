@@ -1,4 +1,5 @@
 import { createServiceClient } from '@/lib/supabase/service'
+import { LivePresence } from './live-presence'
 
 const STEP_LABELS: Record<number, string> = {
   1:  'Alimentos favoritos',
@@ -252,6 +253,10 @@ export default async function QuizFunnelPage({
           ))}
         </div>
       </div>
+
+      {/* Presença ao vivo — quantas pessoas estão no quiz AGORA, por etapa.
+          Client component com polling; some sozinho quando a pessoa sai. */}
+      <LivePresence />
 
       {/* Últimos acessos — hora exata (Brasília) que as 3 sessões mais recentes
           começaram o quiz, sem filtro de período (pulso de monitoramento ao vivo) */}

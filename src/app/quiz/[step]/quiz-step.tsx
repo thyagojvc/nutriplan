@@ -56,6 +56,25 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
     if (stepNumber === 5) trackPixelOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
   }, [stepNumber])
 
+  // Heartbeat de presença "ao vivo": informa a etapa visível atual a cada 8s.
+  // Alimenta o painel ao vivo do quiz-funnel. Para quando a aba fecha (o painel
+  // então deixa de contar esta sessão após a janela de expiração).
+  useEffect(() => {
+    if (displayStep < 1) return
+    const send = () => {
+      fetch('/api/quiz/presence', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: displayStep }),
+        keepalive: true,
+      }).catch(() => {})
+    }
+    // 1º beat com atraso curto: dá tempo do cookie de sessão (init-session) existir.
+    const first = setTimeout(send, 1500)
+    const iv = setInterval(send, 8000)
+    return () => { clearTimeout(first); clearInterval(iv) }
+  }, [displayStep])
+
   if (sessionError) {
     return (
       <div className="flex min-h-screen items-center justify-center p-4">

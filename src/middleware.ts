@@ -19,6 +19,8 @@ const PUBLIC_PATHS = [
   '/api/quiz/save-step',
   '/api/quiz/submit-step12',
   '/api/quiz/track-event',
+  '/api/quiz/presence',
+  '/api/quiz/live-presence',
   '/api/quiz/preview-data',
   '/api/quiz/recent-activity',
   '/api/fx',
