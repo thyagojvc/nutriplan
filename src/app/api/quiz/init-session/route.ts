@@ -15,11 +15,29 @@ function toDbCountry(code: string | undefined): 'MX' | 'CO' | 'CL' | 'ES' | 'OTH
 // sessões que abandonam antes do step 7 (onde o país era capturado antes).
 // Chamado no carregamento do step 1.
 // Idempotente via cookie: se o cookie já existir, retorna a sessão existente.
+
+// Robôs/crawlers que executam a página (rastreador do Facebook, scanners,
+// monitores de uptime, bots de datacenter US) criavam sessões-fantasma vazias
+// no funil. Filtramos pelo user-agent — regex simples em memória, sem chamada
+// externa e sem custo de latência. Só evita CRIAR sessão pra bot; não afeta
+// nenhuma pessoa real nem o carregamento da página.
+//
+// IMPORTANTE: lista conservadora, só com tokens que NUNCA aparecem em navegador
+// de pessoa real (nem no in-app do WhatsApp/Instagram/Facebook, comuns no LATAM).
+// Por isso evitamos termos ambíguos como "preview", "monitor", "scan", "whatsapp".
+const BOT_UA = /bot\b|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|phantomjs|puppeteer|playwright|python-requests|python-urllib|curl\/|wget|go-http-client|okhttp|axios\/|node-fetch|lighthouse|pingdom|uptimerobot|statuscake|semrushbot|ahrefsbot|mj12bot|dotbot|bingpreview|yandexbot|dataprovider/i
+
 export async function POST(request: NextRequest) {
   // Se o cliente já tem uma session_id em cookie, reutilizar
   const existingSessionId = request.cookies.get('nutriplan_session_id')?.value
   if (existingSessionId) {
     return NextResponse.json({ session_id: existingSessionId })
+  }
+
+  // Bot conhecido → responde ok sem criar sessão (não polui o funil).
+  const ua = request.headers.get('user-agent') ?? ''
+  if (!ua || BOT_UA.test(ua)) {
+    return NextResponse.json({ session_id: null, bot: true })
   }
 
   // ad_ref: nome do criativo/anúncio, vindo do parâmetro utm_content da URL
