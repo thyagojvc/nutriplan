@@ -20,6 +20,18 @@ const STEP_LABELS: Record<number, string> = {
 // Steps ocultos (auto-save sem UI): excluídos da análise de abandono.
 const HIDDEN_STEPS = new Set([7, 12])
 
+// Mesma janela/lógica do /api/quiz/live-presence: considera "ao vivo" quem
+// mandou um heartbeat _live_<step> nos últimos ~30s. Duplicado aqui (não
+// importar de dentro de app/api) só pra decidir o pontinho verde na tabela
+// de Últimos acessos.
+const LIVE_WINDOW_MS = 30_000
+function parseHeartbeatTs(v: string): number {
+  let s = v.replace(' ', 'T')
+  s = s.replace(/([+-]\d{2})$/, '$1:00')
+  const t = Date.parse(s)
+  return Number.isNaN(t) ? 0 : t
+}
+
 // Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
 // número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
 // numeração step_N é fixa por componente e não reflete mais a ordem de
@@ -187,16 +199,24 @@ async function getFunnelData(sinceDate: string) {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
 
-    let lastStep = 'No inició'
-    if (hasEvent(r, '_ev_page_end')) lastStep = 'Vio toda la oferta'
-    else if (hasEvent(r, '_ev_tiers_reached')) lastStep = 'Vio los planes'
-    else if (hasEvent(r, '_ev_offer_reached')) lastStep = 'Vio la oferta'
-    else if (hasEvent(r, '_ev_preview_viewed')) lastStep = 'Entró en la preview'
+    let lastStep = 'Não iniciou'
+    let stepNum: number | null = null
+    if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_tiers_reached')) { lastStep = 'Viu os planos'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_offer_reached')) { lastStep = 'Viu a oferta'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_preview_viewed')) { lastStep = 'Entrou na preview'; stepNum = VISIT_ORDER.length }
     else {
       for (let i = VISIT_ORDER.length - 1; i >= 0; i--) {
         const step = VISIT_ORDER[i]
-        if (`step_${step}` in draft) { lastStep = STEP_LABELS[step] ?? `Step ${step}`; break }
+        if (`step_${step}` in draft) { lastStep = STEP_LABELS[step] ?? `Step ${step}`; stepNum = i + 1; break }
       }
+    }
+
+    // "Ao vivo": mandou heartbeat _live_<step> dentro da janela de presença.
+    let isLive = false
+    for (const [k, v] of Object.entries(draft)) {
+      if (!k.startsWith('_live_')) continue
+      if (Date.now() - parseHeartbeatTs(String(v)) <= LIVE_WINDOW_MS) { isLive = true; break }
     }
 
     return {
@@ -205,6 +225,8 @@ async function getFunnelData(sinceDate: string) {
       adRef: (draft._ad_ref as string | undefined) ?? '—',
       country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
       lastStep,
+      stepNum,
+      isLive,
     }
   })
 
@@ -305,7 +327,20 @@ export default async function QuizFunnelPage({
                 </td>
                 <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.adRef}</td>
                 <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.country}</td>
-                <td className="px-4 py-2.5 text-xs text-muted-foreground">{s.lastStep}</td>
+                <td className="px-4 py-2.5 text-xs text-muted-foreground">
+                  <div className="flex items-center gap-1.5">
+                    {s.isLive && (
+                      <span className="flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700">
+                        <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+                        Ao vivo
+                      </span>
+                    )}
+                    <span>
+                      {s.stepNum !== null && <span className="mr-1 font-mono text-[10px] text-muted-foreground/70">{s.stepNum}·</span>}
+                      {s.lastStep}
+                    </span>
+                  </div>
+                </td>
               </tr>
             ))}
           </tbody>
