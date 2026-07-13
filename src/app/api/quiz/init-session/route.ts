@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
+import { deriveTrackingId } from '@/lib/fb-conversions-api'
 
 // Apenas estes 4 têm preço em moeda local dedicado; todo o resto cai em 'OTHER'
 // (mesma regra de step7-country-select.tsx, duplicada aqui de propósito — sem
@@ -31,7 +32,7 @@ export async function POST(request: NextRequest) {
   // Se o cliente já tem uma session_id em cookie, reutilizar
   const existingSessionId = request.cookies.get('nutriplan_session_id')?.value
   if (existingSessionId) {
-    return NextResponse.json({ session_id: existingSessionId })
+    return NextResponse.json({ session_id: existingSessionId, tracking_id: deriveTrackingId(existingSessionId) })
   }
 
   // Bot conhecido → responde ok sem criar sessão (não polui o funil).
@@ -73,7 +74,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'session_creation_failed' }, { status: 500 })
   }
 
-  const response = NextResponse.json({ session_id: data.id })
+  const response = NextResponse.json({ session_id: data.id, tracking_id: deriveTrackingId(data.id) })
 
   // Cookie HttpOnly: persiste o session_id no servidor, invisível ao JS do cliente
   response.cookies.set('nutriplan_session_id', data.id, {

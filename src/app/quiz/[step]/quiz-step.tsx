@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { trackDualOnce } from '@/lib/fb-pixel'
+import { trackDualOnce, setPixelExternalId } from '@/lib/fb-pixel'
 
 interface Props {
   stepNumber: number
@@ -42,7 +42,13 @@ function useEnsureSession(stepNumber: number) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ad_ref: adRef }),
     })
-      .then(() => sessionStorage.setItem('nutriplan_session_init', '1'))
+      .then(async (res) => {
+        sessionStorage.setItem('nutriplan_session_init', '1')
+        try {
+          const data = await res.json()
+          if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
+        } catch { /* resposta sem json — segue sem external_id, sem bloquear o quiz */ }
+      })
       .catch(() => setError(true))
   }, [stepNumber])
   return { error }

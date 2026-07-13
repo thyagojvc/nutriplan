@@ -55,6 +55,26 @@ export async function setPixelUserData(
 }
 
 /**
+ * Passa o id de rastreio da sessão (já assinado pelo servidor — ver
+ * deriveTrackingId em fb-conversions-api.ts) pro pixel via Advanced Matching,
+ * como external_id. Não é o UUID real da sessão: é um valor derivado que não
+ * dá pra reverter e que nenhuma rota do site aceita como credencial, então
+ * mandar ele pro pixel do navegador não expõe nada de sensível. Chamado logo
+ * no início do quiz, antes de termos email — é o que sobe o match quality das
+ * etapas iniciais (hoje só a preview manda dado de Advanced Matching).
+ */
+export async function setPixelExternalId(trackingId: string): Promise<void> {
+  if (typeof window === 'undefined' || typeof window.fbq !== 'function') return
+  try {
+    const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(trackingId))
+    const hashed = Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, '0')).join('')
+    window.fbq('init', '931028066102655', { external_id: hashed })
+  } catch {
+    // crypto.subtle indisponível (HTTP puro) ou fbq não carregado — sem-op seguro
+  }
+}
+
+/**
  * Dispara um evento só uma vez por sessão (dedupe via sessionStorage), evitando
  * dobrar a contagem em re-render, StrictMode ou navegação de volta.
  */

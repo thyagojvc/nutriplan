@@ -5,13 +5,25 @@
 // redirect cross-domain para a Hotmart).
 // =============================================================================
 
-import { createHash } from 'node:crypto'
+import { createHash, createHmac } from 'node:crypto'
 
 const PIXEL_ID = '931028066102655'
 const API_URL = `https://graph.facebook.com/v21.0/${PIXEL_ID}/events`
 
 function sha256(value: string): string {
   return createHash('sha256').update(value.toLowerCase().trim()).digest('hex')
+}
+
+// Deriva um id de rastreio a partir do UUID da sessão do quiz, assinado com uma
+// chave que só o servidor conhece. Não dá pra reverter pro UUID real sem a
+// chave, e nenhuma rota do site aceita esse valor como credencial (só o cookie
+// httpOnly nutriplan_session_id vale pra isso) — então mesmo se vazar
+// integralmente, não dá pra fazer nada com ele além de identidade de anúncio.
+// O mesmo valor é devolvido ao cliente (ver /api/quiz/init-session) pra ele
+// mandar pro pixel do navegador, garantindo que cliente e servidor mandem
+// exatamente a mesma identidade pro Meta casar entre si.
+export function deriveTrackingId(sessionId: string): string {
+  return createHmac('sha256', process.env.SUPABASE_SERVICE_ROLE_KEY ?? '').update(sessionId).digest('hex')
 }
 
 export interface FbPurchasePayload {
@@ -55,7 +67,7 @@ export async function sendFacebookInitiateCheckout(payload: FbInitiateCheckoutPa
   if (payload.fbp) userData.fbp = payload.fbp
   if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
   if (payload.clientUserAgent) userData.client_user_agent = payload.clientUserAgent
-  if (payload.sessionId) userData.external_id = [sha256(payload.sessionId)]
+  if (payload.sessionId) userData.external_id = [sha256(deriveTrackingId(payload.sessionId))]
 
   try {
     const res = await fetch(API_URL, {
@@ -111,7 +123,7 @@ export async function sendFacebookFunnelEvent(payload: FbFunnelEventPayload): Pr
   if (!token) return
 
   const userData: Record<string, string | string[]> = {}
-  if (payload.sessionId) userData.external_id = [sha256(payload.sessionId)]
+  if (payload.sessionId) userData.external_id = [sha256(deriveTrackingId(payload.sessionId))]
   if (payload.fbc) userData.fbc = payload.fbc
   if (payload.fbp) userData.fbp = payload.fbp
   if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
