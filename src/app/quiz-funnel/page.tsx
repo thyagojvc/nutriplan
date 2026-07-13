@@ -114,7 +114,8 @@ async function getFunnelData(sinceDate: string) {
   // Um order é criado por tier clicado (idempotency = sessionId-plan_type),
   // então a mesma pessoa comparando 2 tiers gera 2 orders. Deduplicar por
   // session_id reflete pessoas, não cliques repetidos.
-  const ordersCount = new Set((ordersRows ?? []).map((o) => o.session_id)).size
+  const sessionIdsWithOrder = new Set((ordersRows ?? []).map((o) => o.session_id))
+  const ordersCount = sessionIdsWithOrder.size
 
   // Quebra por oferta (tier) + status — responde "para qual oferta foi essa
   // finalização de compra". product_code vem de order_items (1 por order).
@@ -201,7 +202,11 @@ async function getFunnelData(sinceDate: string) {
 
     let lastStep = 'Não iniciou'
     let stepNum: number | null = null
-    if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
+    // Foi pra Hotmart tem prioridade sobre qualquer evento de visualização —
+    // é o sinal mais forte de todos (clicou pra pagar), mesmo que o evento
+    // de "viu toda a oferta" também tenha disparado.
+    if (sessionIdsWithOrder.has(r.id)) { lastStep = 'Foi pra Hotmart'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_tiers_reached')) { lastStep = 'Viu os planos'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_offer_reached')) { lastStep = 'Viu a oferta'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_preview_viewed')) { lastStep = 'Entrou na preview'; stepNum = VISIT_ORDER.length }
