@@ -548,6 +548,64 @@ export function QuizCta({
 }
 
 // ---------------------------------------------------------------------------
+// Modal de intenção de saída — usado só na primeira pregunta do quiz (maior
+// ponto de abandono: quem clica no anúncio e nem chega a responder nada).
+// Renderizar como irmão dos cards (nunca dentro de um com "quiz-enter": a
+// animação deixa um transform: translateY(0) residual no elemento parado,
+// e isso quebra position:fixed dos filhos, prendendo o overlay dentro do
+// card em vez da tela inteira).
+// ---------------------------------------------------------------------------
+
+export function ExitIntentModal({
+  onStay,
+  onLeave,
+}: {
+  onStay: () => void
+  onLeave: () => void
+}) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="w-full max-w-sm rounded-2xl bg-white p-6 text-center shadow-2xl">
+        <span
+          className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full"
+          style={{ backgroundColor: '#FBE7DF' }}
+        >
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path
+              d="M12 8v5M12 16.5h.01M10.29 3.86l-8.16 14.14A1.5 1.5 0 0 0 3.43 20.5h17.14a1.5 1.5 0 0 0 1.3-2.5L13.71 3.86a1.5 1.5 0 0 0-2.6 0Z"
+              stroke="#993C1D"
+              strokeWidth="1.6"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </span>
+        <h2 className="font-display text-lg font-black text-gray-900">¿Ya te vas?</h2>
+        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          Tu plan de alimentación y tu rutina de entrenamiento personalizados están a solo unas preguntas de distancia. Termina en menos de 60 segundos.
+        </p>
+        <div className="mt-5 space-y-2.5">
+          <button
+            type="button"
+            onClick={onStay}
+            className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_0_rgba(0,0,0,0.15)] transition-all duration-150 hover:brightness-[1.04] active:scale-[0.99]"
+          >
+            Continuar mi plan
+          </button>
+          <button
+            type="button"
+            onClick={onLeave}
+            className="w-full text-xs font-medium text-muted-foreground underline-offset-2 hover:underline"
+          >
+            Salir de todos modos
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Mensagem de erro inline
 // ---------------------------------------------------------------------------
 

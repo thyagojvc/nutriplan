@@ -109,7 +109,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
 
       <QuizCard>
         <QuizHeader
-          confirm={bmr ? `Con tu edad, peso y altura, tu metabolismo basal es de ${bmr} kcal/día. Ahora tu rutina diaria.` : undefined}
+          confirm={bmr ? `Tu Calibración Metabólica ya calculó tu metabolismo basal: ${bmr} kcal/día. Ahora tu rutina diaria.` : undefined}
           title="¿Cómo es tu rutina diaria, más allá del ejercicio?"
           subtitle="Esto determina cuántas calorías necesitas cada día. Sobre tu entrenamiento te preguntamos más adelante."
         />

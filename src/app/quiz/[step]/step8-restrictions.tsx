@@ -97,7 +97,7 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
-          confirm={tdee ? `Tu gasto calórico total es de ${tdee} kcal/día. Ahora, ¿alguna restricción alimentaria?` : undefined}
+          confirm={tdee ? `Tu Calibración Metabólica indica un gasto calórico total de ${tdee} kcal/día. Ahora, ¿alguna restricción alimentaria?` : undefined}
           title="¿Tienes restricciones alimentarias?"
           subtitle="Selecciona todas las que apliquen. Tu plan las respetará al 100%."
         />

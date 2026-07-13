@@ -1,9 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
 import { trackPixelOnce } from '@/lib/fb-pixel'
+
+const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
 const GOALS = [
   { id: 'perder_peso',   label: 'Perder peso',          desc: 'Quiero reducir mi grasa corporal',                     emoji: '🔥' },
@@ -30,6 +32,46 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
+  const [showExitModal, setShowExitModal] = useState(false)
+
+  // Ref pra o listener de popstate ler o estado mais recente sem cair em
+  // closure obsoleta (o listener é registrado uma única vez, no mount).
+  const stateRef = useRef({ selected, saving })
+  useEffect(() => { stateRef.current = { selected, saving } }, [selected, saving])
+
+  // Intercepta o botão "voltar" só nesta primeira pregunta, que é onde mais
+  // gente abandona sem sequer responder nada. Empilha uma entrada extra no
+  // histórico: o primeiro "voltar" fica retido aqui (mostra o modal), o
+  // segundo já deixa sair normal, pra não virar uma prisão de botão.
+  // guardPushedRef evita empilhar 2x: em dev o Strict Mode roda este efeito
+  // duas vezes (mount → cleanup → mount) só pra flagar efeitos colaterais
+  // não-idempotentes como este pushState.
+  const guardPushedRef = useRef(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (sessionStorage.getItem(EXIT_FLAG) === '1') return
+    if (stateRef.current.selected) return
+
+    if (!guardPushedRef.current) {
+      guardPushedRef.current = true
+      window.history.pushState(null, '', window.location.href)
+    }
+
+    function handlePopState() {
+      if (stateRef.current.selected || stateRef.current.saving) return
+      if (sessionStorage.getItem(EXIT_FLAG) === '1') return
+      sessionStorage.setItem(EXIT_FLAG, '1')
+      setShowExitModal(true)
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  function handleLeaveAnyway() {
+    setShowExitModal(false)
+    router.back()
+  }
 
   function handleSelect(id: string) {
     setSelected(id)
@@ -103,6 +145,10 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
       </QuizCard>
 
       <QuizCta onClick={handleContinue} disabled={!selected} loading={saving} />
+
+      {showExitModal && (
+        <ExitIntentModal onStay={() => setShowExitModal(false)} onLeave={handleLeaveAnyway} />
+      )}
     </QuizLayout>
   )
 }
