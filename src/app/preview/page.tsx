@@ -592,6 +592,10 @@ export default function PreviewPage() {
 
   return (
     <PageShell>
+      {/* Urgência fixa: fica visível durante toda a rolagem, colada embaixo do
+          header, pra não ser esquecida quando a pessoa chega no CTA lá embaixo. */}
+      <Countdown />
+
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
@@ -965,9 +969,6 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          {/* Urgência */}
-          <Countdown />
-
           <div className="p-5 space-y-4">
             {/* Mecanismo Único — destacado como THE product, não como feature */}
             <div className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-2.5">
@@ -1184,7 +1185,7 @@ function Countdown() {
   // a credibilidade). Trocamos por uma mensagem de escassez honesta e estável.
   if (secs === 0) {
     return (
-      <div className="flex items-center justify-center gap-2 bg-[#FBE7DF] py-2">
+      <div className="sticky top-14 z-10 flex items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
         <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
         <span className="text-xs font-semibold text-[#993C1D]">
           Tu precio especial está reservado solo por hoy
@@ -1197,7 +1198,7 @@ function Countdown() {
   const ss = String(secs % 60).padStart(2, '0')
 
   return (
-    <div className="flex items-center justify-center gap-2 bg-[#FBE7DF] py-2">
+    <div className="sticky top-14 z-10 flex items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
       <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
       <span className="text-xs font-semibold text-[#993C1D]">
         Tu precio especial expira en {mm}:{ss}
