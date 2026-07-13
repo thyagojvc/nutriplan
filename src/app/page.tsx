@@ -135,31 +135,6 @@ export default function HomePage() {
           <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
             <div className="flex gap-3 items-start">
               <Image
-                src="/testimonios/valeria.png"
-                alt="Valeria R."
-                width={44}
-                height={44}
-                className="h-11 w-11 shrink-0 rounded-full object-cover object-top"
-              />
-              <div>
-                <div className="flex gap-0.5 mb-1">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <svg key={i} width="11" height="11" viewBox="0 0 11 11" fill="#f59e0b">
-                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
-                    </svg>
-                  ))}
-                </div>
-                <p className="text-sm leading-relaxed text-gray-700">
-                  &ldquo;Entrenaba pero comía a ojo y no veía cambios. El plan me dio los números exactos para mi cuerpo. En 6 semanas bajé 4 kg y por fin se me nota el trabajo.&rdquo;
-                </p>
-                <p className="mt-1.5 text-xs font-bold text-primary">🇲🇽 Valeria R. — Ciudad de México</p>
-              </div>
-            </div>
-          </div>
-
-          <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
-            <div className="flex gap-3 items-start">
-              <Image
                 src="/testimonios/andrea.png"
                 alt="Andrea M."
                 width={44}
@@ -209,7 +184,6 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-2">
             <div className="flex -space-x-2">
               {[
-                '/testimonios/valeria.png',
                 '/testimonios/andrea.png',
                 '/testimonios/maria.png',
                 '/testimonios/ana.png',
