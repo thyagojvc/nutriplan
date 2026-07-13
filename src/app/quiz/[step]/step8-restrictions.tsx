@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError } from './quiz-ui'
+import { calcBMR } from '@/lib/nutrition/math'
 
 const OPTIONS = [
   { id: 'ninguna',       label: 'Ninguna restricción', emoji: '✅', exclusive: true },
@@ -34,6 +35,23 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
+
+  // Gasto calórico total (TDEE) = basal × fator de atividade, ambos já
+  // respondidos. Mesma matemática de src/lib/nutrition/math.ts.
+  const [tdee] = useState<number | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const sexCached = sessionStorage.getItem('nutriplan_step_4')
+      const sex = (sexCached ? (JSON.parse(sexCached) as { sex?: string }).sex : null)
+      const physCached = sessionStorage.getItem('nutriplan_step_5')
+      const phys = physCached ? (JSON.parse(physCached) as { age?: number; weight_kg?: number; height_cm?: number }) : {}
+      const actCached = sessionStorage.getItem('nutriplan_step_6')
+      const act = actCached ? (JSON.parse(actCached) as { activity_factor?: number }) : {}
+      if (!sex || !phys.age || !phys.weight_kg || !phys.height_cm || !act.activity_factor) return null
+      const bmr = calcBMR(sex === 'masculino' ? 'male' : 'female', phys.weight_kg, phys.height_cm, phys.age)
+      return Math.round(bmr * act.activity_factor)
+    } catch { return null }
+  })
 
   function toggle(id: string) {
     let next: string[]
@@ -79,6 +97,7 @@ export function Step8Restrictions({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={tdee ? `Tu gasto calórico total es de ${tdee} kcal/día. Ahora, ¿alguna restricción alimentaria?` : undefined}
           title="¿Tienes restricciones alimentarias?"
           subtitle="Selecciona todas las que apliquen. Tu plan las respetará al 100%."
         />

@@ -39,6 +39,16 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma quantos alimentos favoritos foram marcados no passo anterior.
+  const [likesCount] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_1')
+      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
+      return parsed.likes?.length ?? 0
+    } catch { return 0 }
+  })
+
   function handleChange(field: keyof PhysicalData, val: number) {
     const next = { ...data, [field]: val }
     setData(next)
@@ -51,6 +61,13 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
     setSaving(true)
     setError(false)
+    // Garante que o sessionStorage tenha os valores mesmo se a pessoa aceitar
+    // os padrões dos sliders sem arrastar nenhum (handleChange nunca dispara
+    // nesse caso). Sem isso, a confirmação do próximo passo (metabolismo
+    // basal) fica sem dado pra ler.
+    try {
+      sessionStorage.setItem('nutriplan_step_5', JSON.stringify(data))
+    } catch { /* segue sem cache local; o save-step abaixo ainda persiste no banco */ }
     try {
       const res = await fetch('/api/quiz/save-step', {
         method: 'POST',
@@ -75,6 +92,11 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
+            confirm={
+              likesCount > 0
+                ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora tus datos físicos.`
+                : 'Preferencias registradas. Ahora tus datos físicos.'
+            }
             title="Tus datos físicos"
             subtitle="Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
           />

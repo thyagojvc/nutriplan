@@ -123,6 +123,16 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma o sexo (respondido no passo anterior) antes da pergunta atual.
+  const [sex] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_4')
+      const parsed = cached ? (JSON.parse(cached) as { sex?: string }) : {}
+      return parsed.sex ?? null
+    } catch { return null }
+  })
+
   function toggle(id: string) {
     setSelected((prev) => {
       const next = prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]
@@ -164,6 +174,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
+            confirm={sex ? `Perfil ${sex === 'femenino' ? 'femenino' : 'masculino'} registrado. Ahora, lo que te gusta comer.` : undefined}
             title={
               <>
                 ¿Qué alimentos te <span className="text-primary">gusta</span> comer?

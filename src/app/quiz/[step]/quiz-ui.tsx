@@ -211,19 +211,33 @@ export function QuizCard({ children }: { children: React.ReactNode }) {
   )
 }
 
+// "confirm" = confirma a resposta anterior (ou um número já calculável com ela)
+// antes de fazer a próxima pergunta. Cria uma narrativa contínua ("isso que
+// você respondeu virou isso") em vez de perguntas soltas, o que segura mais
+// a pessoa no quiz.
 export function QuizHeader({
   title,
   subtitle,
+  confirm,
 }: {
   title: React.ReactNode
   subtitle?: React.ReactNode
+  confirm?: React.ReactNode
 }) {
   return (
-    <div className="space-y-1.5">
-      <h1 className="text-[1.15rem] font-bold leading-snug text-gray-900">{title}</h1>
-      {subtitle && (
-        <p className="text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
+    <div className="space-y-2">
+      {confirm && (
+        <p className="flex items-start gap-1.5 text-xs font-semibold leading-snug text-primary">
+          <span className="mt-0.5 shrink-0">✓</span>
+          {confirm}
+        </p>
       )}
+      <div className="space-y-1.5">
+        <h1 className="text-[1.15rem] font-bold leading-snug text-gray-900">{title}</h1>
+        {subtitle && (
+          <p className="text-sm leading-relaxed text-muted-foreground">{subtitle}</p>
+        )}
+      </div>
     </div>
   )
 }

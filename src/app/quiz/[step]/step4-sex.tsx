@@ -9,6 +9,12 @@ const OPTIONS = [
   { id: 'femenino',  label: 'Femenino',  emoji: '👩' },
 ]
 
+const GOAL_LABEL: Record<string, string> = {
+  perder_peso: 'perder peso',
+  mantener: 'mantener tu peso',
+  ganar_masa: 'ganar masa muscular',
+}
+
 interface Props {
   stepNumber: number
   totalSteps: number
@@ -28,6 +34,16 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
+
+  // Confirma o objetivo (respondido no passo anterior) antes da pergunta atual.
+  const [goal] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_2')
+      const parsed = cached ? (JSON.parse(cached) as { goal?: string }) : {}
+      return parsed.goal ?? null
+    } catch { return null }
+  })
 
   function handleSelect(id: string) {
     setSelected(id)
@@ -68,6 +84,7 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={goal ? `Objetivo registrado: ${GOAL_LABEL[goal] ?? goal}. Ahora tu sexo biológico.` : undefined}
           title="¿Cuál es tu sexo biológico?"
           subtitle="Lo necesitamos para calcular tu metabolismo basal con precisión."
         />

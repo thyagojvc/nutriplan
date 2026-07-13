@@ -13,6 +13,13 @@ const OPTIONS = [
   { id: 'antojos',           label: 'Antojos y tentaciones',   desc: 'Me cuesta resistir ciertos alimentos',        emoji: '🍰' },
 ]
 
+const EXPERIENCE_LABEL: Record<string, string> = {
+  no_ejercicio: 'Registramos que no haces ejercicio hoy.',
+  principiante: 'Nivel principiante registrado.',
+  intermedio: 'Nivel intermedio registrado.',
+  avanzado: 'Nivel avanzado registrado.',
+}
+
 interface Props {
   stepNumber: number
   totalSteps: number
@@ -32,6 +39,16 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
+
+  // Confirma a experiência de exercício respondida no passo anterior.
+  const [exerciseConfirm] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_10')
+      const parsed = cached ? (JSON.parse(cached) as { experience?: string }) : {}
+      return parsed.experience ? EXPERIENCE_LABEL[parsed.experience] ?? null : null
+    } catch { return null }
+  })
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -70,6 +87,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={exerciseConfirm ? `${exerciseConfirm} Un dato más antes de calcular tu plan.` : undefined}
           title="¿Cuáles son tus mayores obstáculos para mejorar tu alimentación?"
           subtitle="Selecciona todos los que apliquen — tu plan los tomará en cuenta."
         />

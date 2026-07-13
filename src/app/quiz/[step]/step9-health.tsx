@@ -33,6 +33,19 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma as restrições alimentares respondidas no passo anterior.
+  const [restrictionsConfirm] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_8')
+      const parsed = cached ? (JSON.parse(cached) as { restrictions?: string[] }) : {}
+      const r = parsed.restrictions ?? []
+      if (r.length === 0) return null
+      if (r.includes('ninguna')) return 'Sin restricciones alimentarias.'
+      return `${r.length} restricción${r.length !== 1 ? 'es' : ''} alimentaria${r.length !== 1 ? 's' : ''} registrada${r.length !== 1 ? 's' : ''}.`
+    } catch { return null }
+  })
+
   function toggle(id: string) {
     let next: string[]
     if (id === 'ninguna_condicion') {
@@ -77,6 +90,7 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={restrictionsConfirm ? `${restrictionsConfirm} Ahora, tu salud.` : undefined}
           title="¿Tienes alguna condición de salud?"
           subtitle="Tu plan incluirá ajustes específicos según tu situación. Todo se trata con discreción."
         />

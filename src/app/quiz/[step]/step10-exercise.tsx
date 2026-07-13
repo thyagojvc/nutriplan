@@ -67,6 +67,18 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma a condição de saúde respondida no passo anterior.
+  const [healthConfirm] = useState<string | null>(() => {
+    if (typeof window === 'undefined') return null
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_9')
+      const parsed = cached ? (JSON.parse(cached) as { health?: string[] }) : {}
+      const h = parsed.health ?? []
+      if (h.length === 0) return null
+      return h.includes('ninguna_condicion') ? 'Sin condiciones de salud.' : 'Condición de salud registrada, tu plan la considerará.'
+    } catch { return null }
+  })
+
   function setField<K extends keyof ExerciseData>(field: K, value: ExerciseData[K]) {
     const next = { ...data, [field]: value }
     if (field === 'experience' && value === 'no_ejercicio') {
@@ -134,7 +146,10 @@ export function Step10Exercise({ stepNumber, totalSteps }: Props) {
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
       <QuizCard>
-        <QuizHeader title="Cuéntanos sobre tu ejercicio" />
+        <QuizHeader
+          confirm={healthConfirm ? `${healthConfirm} Ahora, tu experiencia con el ejercicio.` : undefined}
+          title="Cuéntanos sobre tu ejercicio"
+        />
 
         {/* Experiencia */}
         <QuizSection title="Experiencia en entrenamiento">

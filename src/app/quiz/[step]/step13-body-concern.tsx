@@ -47,6 +47,16 @@ export function Step13BodyConcern({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma quantos obstáculos foram marcados no passo anterior.
+  const [obstacleCount] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_11')
+      const parsed = cached ? (JSON.parse(cached) as { obstacles?: string[] }) : {}
+      return parsed.obstacles?.length ?? 0
+    } catch { return 0 }
+  })
+
   async function submit(concern: string, detail: string) {
     if (saving) return
     if (concern === 'otro' && detail.trim().length === 0) return
@@ -97,6 +107,7 @@ export function Step13BodyConcern({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={obstacleCount > 0 ? `${obstacleCount} obstáculo${obstacleCount !== 1 ? 's' : ''} identificado${obstacleCount !== 1 ? 's' : ''}. Última pregunta antes de calcular tu plan.` : undefined}
           title="¿Qué es lo que más te incomoda hoy de tu cuerpo?"
           subtitle="Elige lo que más pese para ti — esto también forma parte de tu plan."
         />
