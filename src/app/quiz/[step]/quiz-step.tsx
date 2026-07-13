@@ -48,6 +48,12 @@ function useEnsureSession(stepNumber: number) {
           const data = await res.json()
           if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
         } catch { /* resposta sem json — segue sem external_id, sem bloquear o quiz */ }
+        // Dispara QuizStart só depois da resposta do init-session: garante que o
+        // cookie nutriplan_session_id já foi gravado pelo navegador antes do POST
+        // pro capi-event, senão o servidor não acha sessão pra mandar external_id
+        // (era uma corrida entre os dois fetches, por isso QuizStart tinha nota de
+        // match quality pior que os outros eventos do funil).
+        trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
       })
       .catch(() => setError(true))
   }, [stepNumber])
@@ -56,11 +62,6 @@ function useEnsureSession(stepNumber: number) {
 
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession(stepNumber)
-
-  // Início do quiz: dispara uma vez por sessão no passo de entrada (dados físicos).
-  useEffect(() => {
-    if (stepNumber === 5) trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
-  }, [stepNumber])
 
   // Heartbeat de presença "ao vivo": informa a etapa visível atual a cada 8s.
   // Alimenta o painel ao vivo do quiz-funnel. Para quando a aba fecha (o painel
