@@ -42,17 +42,20 @@ export interface FbInitiateCheckoutPayload {
   fbp?: string | null
   clientIpAddress?: string | null
   clientUserAgent?: string | null
+  /** UUID da sessão do quiz — vira external_id (hasheado) pra casar a jornada */
+  sessionId?: string | null
 }
 
 export async function sendFacebookInitiateCheckout(payload: FbInitiateCheckoutPayload): Promise<void> {
   const token = process.env.FB_CONVERSIONS_API_TOKEN
   if (!token) return
 
-  const userData: Record<string, string> = {}
+  const userData: Record<string, string | string[]> = {}
   if (payload.fbc) userData.fbc = payload.fbc
   if (payload.fbp) userData.fbp = payload.fbp
   if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
   if (payload.clientUserAgent) userData.client_user_agent = payload.clientUserAgent
+  if (payload.sessionId) userData.external_id = [sha256(payload.sessionId)]
 
   try {
     const res = await fetch(API_URL, {
@@ -83,6 +86,63 @@ export async function sendFacebookInitiateCheckout(payload: FbInitiateCheckoutPa
     }
   } catch (err) {
     console.error('[fb-capi] erro ao enviar InitiateCheckout:', err)
+  }
+}
+
+// Eventos de meio de funil (QuizStart, QuizFirstAnswer, ViewContent, QuizComplete)
+// espelhados server-side. O pixel do navegador já dispara os mesmos eventos com
+// o mesmo eventId; o Meta desduplica pelo par (event_name, event_id). O ganho
+// aqui é match quality: o servidor tem IP, user-agent, fbc/fbp e external_id
+// (UUID da sessão) confiáveis, coisas que o pixel perde com adblock/iOS.
+export interface FbFunnelEventPayload {
+  eventName: string
+  eventId: string
+  /** true = evento custom (QuizStart etc.); false = padrão (ViewContent) */
+  isCustom?: boolean
+  sessionId?: string | null
+  fbc?: string | null
+  fbp?: string | null
+  clientIpAddress?: string | null
+  clientUserAgent?: string | null
+}
+
+export async function sendFacebookFunnelEvent(payload: FbFunnelEventPayload): Promise<void> {
+  const token = process.env.FB_CONVERSIONS_API_TOKEN
+  if (!token) return
+
+  const userData: Record<string, string | string[]> = {}
+  if (payload.sessionId) userData.external_id = [sha256(payload.sessionId)]
+  if (payload.fbc) userData.fbc = payload.fbc
+  if (payload.fbp) userData.fbp = payload.fbp
+  if (payload.clientIpAddress) userData.client_ip_address = payload.clientIpAddress
+  if (payload.clientUserAgent) userData.client_user_agent = payload.clientUserAgent
+
+  // Sem nenhum identificador útil não vale a pena gastar a chamada.
+  if (Object.keys(userData).length === 0) return
+
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        data: [
+          {
+            event_name: payload.eventName,
+            event_time: Math.floor(Date.now() / 1000),
+            event_id: payload.eventId,
+            action_source: 'website',
+            user_data: userData,
+          },
+        ],
+        access_token: token,
+      }),
+    })
+    if (!res.ok) {
+      const text = await res.text()
+      console.error('[fb-capi] funnel event falhou', payload.eventName, res.status, text)
+    }
+  } catch (err) {
+    console.error('[fb-capi] erro ao enviar funnel event:', payload.eventName, err)
   }
 }
 

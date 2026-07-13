@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
-import { trackPixelOnce } from '@/lib/fb-pixel'
+import { trackDualOnce } from '@/lib/fb-pixel'
 
 const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
@@ -98,7 +98,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
       // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta). Junto com o
       // QuizStart (dispara no landing), permite montar no Meta o público de
       // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
-      trackPixelOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
+      trackDualOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
       router.push('/quiz/2') // → dados físicos (URL 2 renderiza Step5Physical)
     } catch {
       setError(true)

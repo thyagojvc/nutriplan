@@ -169,6 +169,7 @@ export async function POST(request: NextRequest) {
     fbp,
     clientIpAddress,
     clientUserAgent,
+    sessionId,
   })
 
   return NextResponse.json({

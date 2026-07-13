@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizCard, QuizCta } from './quiz-ui'
-import { trackPixel } from '@/lib/fb-pixel'
+import { trackDualOnce } from '@/lib/fb-pixel'
 
 // Passo 12 — NÃO é mais formulário de captura de e-mail.
 // Virou uma tela-ponte emocional antes da preview: espelha o obstáculo que a
@@ -87,7 +87,7 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
     if (going) return
     setGoing(true)
     // Mantém o sinal de quiz concluído para o Pixel (antes era no submit do form).
-    trackPixel('QuizComplete', undefined, { custom: true })
+    trackDualOnce('px_quiz_complete', 'QuizComplete', undefined, { custom: true })
     router.push('/calculando' as never)
   }
 

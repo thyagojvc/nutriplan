@@ -11,7 +11,7 @@ import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
-import { trackPixel, trackPixelOnce, setPixelUserData } from '@/lib/fb-pixel'
+import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 
@@ -346,7 +346,7 @@ export default function PreviewPage() {
   // Visualização da oferta: dispara quando a preview carrega com dados reais.
   useEffect(() => {
     if (!data) return
-    trackPixelOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
+    trackDualOnce('px_view_preview', 'ViewContent', { content_name: 'preview_plan' })
     trackFunnelEvent('preview_viewed')
   }, [data])
 

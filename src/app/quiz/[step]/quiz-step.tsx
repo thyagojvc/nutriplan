@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
-import { trackPixelOnce } from '@/lib/fb-pixel'
+import { trackDualOnce } from '@/lib/fb-pixel'
 
 interface Props {
   stepNumber: number
@@ -53,7 +53,7 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
 
   // Início do quiz: dispara uma vez por sessão no passo de entrada (dados físicos).
   useEffect(() => {
-    if (stepNumber === 5) trackPixelOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
+    if (stepNumber === 5) trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
   }, [stepNumber])
 
   // Heartbeat de presença "ao vivo": informa a etapa visível atual a cada 8s.

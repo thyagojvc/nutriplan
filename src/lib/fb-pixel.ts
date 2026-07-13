@@ -73,3 +73,63 @@ export function trackPixelOnce(
   }
   trackPixel(event, params, options)
 }
+
+const FBCLID_KEY = 'nutriplan_fbclid'
+
+/** Guarda o fbclid do clique do anúncio pra reusar em eventos posteriores (a
+ *  URL só o traz na landing). Server usa como fallback do _fbc se o cookie faltar. */
+function rememberFbclid(): string | undefined {
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get('fbclid')
+    if (fromUrl) {
+      sessionStorage.setItem(FBCLID_KEY, fromUrl)
+      return fromUrl
+    }
+    return sessionStorage.getItem(FBCLID_KEY) ?? undefined
+  } catch {
+    return undefined
+  }
+}
+
+/**
+ * Espelha um evento de funil no pixel (client) E na Conversions API (server) com
+ * o MESMO event_id, pra o Meta desduplicar e a nota de match quality subir (o
+ * servidor tem IP/user-agent/fbc/external_id confiáveis que o pixel perde).
+ * Fire-and-forget: o POST não bloqueia nada da navegação.
+ */
+export function trackDualOnce(
+  key: string,
+  event: string,
+  params?: Record<string, unknown>,
+  options?: { custom?: boolean },
+): void {
+  if (typeof window === 'undefined') return
+  try {
+    if (sessionStorage.getItem(key)) return
+    sessionStorage.setItem(key, '1')
+  } catch {
+    // sessionStorage indisponível — segue sem dedupe (aceita risco de dobrar)
+  }
+
+  const eventId =
+    typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${event}_${Date.now()}_${Math.random().toString(36).slice(2)}`
+
+  trackPixel(event, params, { custom: options?.custom, eventID: eventId })
+
+  const fbclid = rememberFbclid()
+  fetch('/api/quiz/capi-event', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event_name: event,
+      event_id: eventId,
+      is_custom: options?.custom ?? false,
+      ...(fbclid ? { fbclid } : {}),
+    }),
+    keepalive: true,
+  }).catch(() => {
+    // rede/adblock derrubou o POST — o pixel client-side já saiu, sem prejuízo
+  })
+}
