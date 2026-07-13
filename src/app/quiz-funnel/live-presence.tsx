@@ -19,9 +19,16 @@ const VISIBLE_STEP_LABELS: Record<number, string> = {
   12: 'Vendo o plano (preview)',
 }
 
+interface LiveSession {
+  step: number
+  country: string
+  adRef: string | null
+}
+
 interface LiveData {
   total: number
   counts: Record<string, number>
+  sessions: LiveSession[]
 }
 
 export function LivePresence() {
@@ -45,9 +52,7 @@ export function LivePresence() {
   }, [])
 
   const total = data?.total ?? 0
-  const rows = Object.entries(data?.counts ?? {})
-    .map(([step, n]) => ({ step: Number(step), n }))
-    .sort((a, b) => a.step - b.step)
+  const sessions = data?.sessions ?? []
 
   return (
     <div className="overflow-hidden rounded-xl border border-border">
@@ -76,14 +81,17 @@ export function LivePresence() {
               {total === 1 ? 'pessoa' : 'pessoas'} no quiz agora
             </p>
             <ul className="divide-y divide-border rounded-lg border border-border">
-              {rows.map(({ step, n }) => (
-                <li key={step} className="flex items-center justify-between px-3 py-2 text-sm">
+              {sessions.map((s, i) => (
+                <li key={i} className="flex items-center justify-between px-3 py-2 text-sm">
                   <span>
-                    <span className="mr-2 font-mono text-xs text-muted-foreground">{step}</span>
-                    {VISIBLE_STEP_LABELS[step] ?? `Etapa ${step}`}
+                    <span className="mr-2 font-mono text-xs text-muted-foreground">{s.step}</span>
+                    {VISIBLE_STEP_LABELS[s.step] ?? `Etapa ${s.step}`}
                   </span>
-                  <span className="rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold text-green-700">
-                    {n} {n === 1 ? 'pessoa' : 'pessoas'} aqui
+                  <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    {s.adRef && <span className="max-w-[120px] truncate" title={s.adRef}>{s.adRef}</span>}
+                    <span className="rounded-full bg-green-100 px-2 py-0.5 font-semibold text-green-700">
+                      {s.country}
+                    </span>
                   </span>
                 </li>
               ))}

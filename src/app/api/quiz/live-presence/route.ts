@@ -32,10 +32,11 @@ export async function GET() {
     .gte('updated_at', threshold)
     .limit(300)
 
-  if (error) return NextResponse.json({ total: 0, counts: {}, at: new Date().toISOString() })
+  if (error) return NextResponse.json({ total: 0, counts: {}, sessions: [], at: new Date().toISOString() })
 
   const now = Date.now()
   const counts: Record<number, number> = {}
+  const sessions: { step: number; country: string; adRef: string | null }[] = []
   let total = 0
 
   for (const s of data ?? []) {
@@ -51,7 +52,17 @@ export async function GET() {
     if (now - parseTs(bestVal) > LIVE_WINDOW_MS) continue // heartbeat velho: já saiu
     counts[bestStep] = (counts[bestStep] ?? 0) + 1
     total++
+
+    // Identifica CADA sessão individualmente (país, criativo) — sem isso, com
+    // 2+ pessoas ao mesmo tempo o painel só mostrava um número agregado por
+    // etapa, sem dar pra saber quem é quem.
+    const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
+    const country = s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—'
+    const adRef = (draft._ad_ref as string | undefined) ?? null
+    sessions.push({ step: bestStep, country, adRef })
   }
 
-  return NextResponse.json({ total, counts, at: new Date().toISOString() })
+  sessions.sort((a, b) => a.step - b.step)
+
+  return NextResponse.json({ total, counts, sessions, at: new Date().toISOString() })
 }
