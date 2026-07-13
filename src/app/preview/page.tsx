@@ -1185,7 +1185,7 @@ function Countdown() {
   // a credibilidade). Trocamos por uma mensagem de escassez honesta e estável.
   if (secs === 0) {
     return (
-      <div className="sticky top-14 z-10 flex items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
+      <div className="sticky top-14 z-10 flex w-full items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
         <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
         <span className="text-xs font-semibold text-[#993C1D]">
           Tu precio especial está reservado solo por hoy
@@ -1198,7 +1198,7 @@ function Countdown() {
   const ss = String(secs % 60).padStart(2, '0')
 
   return (
-    <div className="sticky top-14 z-10 flex items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
+    <div className="sticky top-14 z-10 flex w-full items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
       <Clock className="h-3.5 w-3.5 text-[#993C1D]" />
       <span className="text-xs font-semibold text-[#993C1D]">
         Tu precio especial expira en {mm}:{ss}
