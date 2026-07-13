@@ -1135,6 +1135,26 @@ const FAQ_ITEMS = [
     q: '¿Cómo y cuándo recibo mi plan?',
     a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras.',
   },
+  {
+    q: '¿Necesito mucho tiempo para cocinar o seguir el plan?',
+    a: 'No. Está pensado para tu rutina real, no para una vida ideal con horas libres en la cocina. Las comidas son simples y rápidas de preparar, y puedes adaptarlas a lo que tengas disponible ese día.',
+  },
+  {
+    q: 'Ya probé varias dietas y ninguna funcionó, ¿por qué esta sería diferente?',
+    a: 'Porque no es una dieta genérica. Se calcula con tu Calibración Metabólica a partir de tus datos reales (edad, peso, altura, actividad), no con una tabla que le dan a todo el mundo. Si las anteriores no funcionaron, es probable que el problema nunca hayas sido tú: era que no estaban hechas para tu cuerpo.',
+  },
+  {
+    q: '¿Necesito comprar alimentos caros o difíciles de conseguir?',
+    a: 'No. Tu plan se arma con los alimentos que marcaste que te gustan en el quiz, y las sustituciones siempre priorizan lo que consigues fácil en tu supermercado habitual.',
+  },
+  {
+    q: '¿Es seguro comprar aquí? ¿Qué pasa con mis datos?',
+    a: 'Sí. El pago se procesa por Hotmart, una plataforma usada por millones de personas en Latinoamérica, con las mismas protecciones que cualquier compra online segura. Tus datos solo se usan para generar y enviarte tu plan.',
+  },
+  {
+    q: '¿Qué pasa si tengo dudas después de recibir mi plan?',
+    a: 'Tu plan queda guardado en tu panel personal, disponible cuando quieras consultarlo, con las sustituciones y la lista de compras siempre a mano. No es un PDF que se pierde en tu correo.',
+  },
 ]
 
 function FaqSection() {
