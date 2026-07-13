@@ -592,10 +592,6 @@ export default function PreviewPage() {
 
   return (
     <PageShell>
-      {/* Urgência fixa: fica visível durante toda a rolagem, colada embaixo do
-          header, pra não ser esquecida quando a pessoa chega no CTA lá embaixo. */}
-      <Countdown />
-
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
@@ -958,9 +954,10 @@ export default function PreviewPage() {
         </div>
 
         {/* Oferta con ancla de valor */}
-        <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
-          {/* Header colorido */}
-          <div className="bg-primary px-5 py-3 text-center">
+        <div ref={offerRef} className="relative rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
+          {/* Header colorido — rounded-t explícito porque o pai perdeu o
+              overflow-hidden (ele quebrava o sticky do Countdown logo abaixo) */}
+          <div className="rounded-t-[calc(1rem-2px)] bg-primary px-5 py-3 text-center">
             <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu NutriPlan personalizado</p>
             <p className="text-base font-black text-white">
               {isLoss ? '¡Tu plan está listo. Empieza a adelgazar!'
@@ -968,6 +965,11 @@ export default function PreviewPage() {
                 : '¡Tu NutriPlan exacto está listo!'}
             </p>
           </div>
+
+          {/* Urgência: só gruda no topo a partir daqui (não assusta antes de
+              ver metabolismo, autoridad e provas sociais). Some da tela de
+              novo quando a oferta inteira passa, por estar contida neste card. */}
+          <Countdown />
 
           <div className="p-5 space-y-4">
             {/* Mecanismo Único — destacado como THE product, não como feature */}
