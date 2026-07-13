@@ -225,12 +225,22 @@ export function QuizHeader({
   confirm?: React.ReactNode
 }) {
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {confirm && (
-        <p className="flex items-start gap-1.5 text-xs font-semibold leading-snug text-primary">
-          <span className="mt-0.5 shrink-0">✓</span>
-          {confirm}
-        </p>
+        // bg-primary/8 (opacidade via Tailwind) não renderiza nesse projeto —
+        // bug pré-existente (border-primary/N funciona, bg-primary/N não).
+        // Usa hsl() explícito com alpha pra não depender disso.
+        <div
+          className="flex items-start gap-2.5 rounded-xl border px-3.5 py-2.5"
+          style={{ backgroundColor: 'hsl(148, 52%, 28%, 0.08)', borderColor: 'hsl(148, 52%, 28%, 0.22)' }}
+        >
+          <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary">
+            <svg width="8" height="6" viewBox="0 0 9 7" fill="none">
+              <path d="M1 3.5L3 5.5L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </span>
+          <p className="text-xs font-semibold leading-relaxed text-primary">{confirm}</p>
+        </div>
       )}
       <div className="space-y-1.5">
         <h1 className="text-[1.15rem] font-bold leading-snug text-gray-900">{title}</h1>
