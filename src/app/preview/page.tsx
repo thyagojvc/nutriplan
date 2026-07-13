@@ -103,7 +103,7 @@ const BODY_CONCERN_CTA_FALLBACK = 'Quiero sentirme bien conmigo misma otra vez'
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
-  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−12 kg en 5 meses', w: 414, h: 444 },
+  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−17 kg en 8 meses', w: 414, h: 444 },
   { photo: '/resultados/caso-2.png', name: 'Daniela',  country: '🇨🇴', age: 31, result: '−6 kg en 2 meses',  w: 410, h: 433 },
   { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses',  w: 402, h: 430 },
   { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
