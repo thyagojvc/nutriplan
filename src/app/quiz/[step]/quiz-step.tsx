@@ -95,16 +95,17 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   const props = { stepNumber: displayStep, totalSteps: displayTotal }
 
   // NOTA: a URL /quiz/5 é a porta de entrada dos anúncios e por isso renderiza o
-  // 1º passo do fluxo. Para reduzir abandono no início, a ordem visível começa
-  // por perguntas fáceis: 1º OBJETIVO, 2º SEXO, 3º alimentos, 4º dados físicos.
-  // Por isso o conteúdo das URLs está trocado em relação ao número: URL 5→objetivo,
-  // URL 2→sexo, URL 4→dados físicos. As chaves de dados continuam fixas por
+  // 1º passo do fluxo. REVERTIDO em 14/07: dado real (antes/depois) mostrou que
+  // comecar pelo objetivo caiu a taxa de quem sequer inicia o quiz, entao volta
+  // pra ordem original: 1º dados físicos, 2º objetivo, 3º alimentos, 4º sexo.
+  // Por isso o conteúdo das URLs segue trocado em relação ao número: URL 5→físico,
+  // URL 2→objetivo, URL 4→sexo. As chaves de dados continuam fixas por
   // componente (goal→step_2, sexo→step_4, físico→step_5), sem afetar geração.
   if (stepNumber === 1)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
-  if (stepNumber === 2)  return <Step4Sex {...props} />
+  if (stepNumber === 2)  return <Step2Goal {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
-  if (stepNumber === 4)  return <Step5Physical {...props} />
-  if (stepNumber === 5)  return <Step2Goal {...props} />
+  if (stepNumber === 4)  return <Step4Sex {...props} />
+  if (stepNumber === 5)  return <Step5Physical {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
