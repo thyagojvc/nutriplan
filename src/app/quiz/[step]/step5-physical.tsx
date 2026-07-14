@@ -75,7 +75,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 5, answers: data }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/6') // → nivel de actividad
+      router.push('/quiz/2') // → objetivo (URL 2 renderiza Step2Goal)
     } catch {
       setError(true)
     } finally {

@@ -67,7 +67,7 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 4, answers: { sex } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
-      router.push('/quiz/1') // → alimentos favoritos
+      router.push('/quiz/6') // → nivel de actividad
     } catch {
       setError(true)
       setSaving(false)

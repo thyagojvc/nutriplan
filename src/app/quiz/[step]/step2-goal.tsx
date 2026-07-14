@@ -99,7 +99,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
       // QuizStart (dispara no landing), permite montar no Meta o público de
       // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
       trackDualOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
-      router.push('/quiz/2') // → dados físicos (URL 2 renderiza Step5Physical)
+      router.push('/quiz/1') // → alimentos favoritos
     } catch {
       setError(true)
       setSaving(false)
