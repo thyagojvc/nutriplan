@@ -9,12 +9,6 @@ const OPTIONS = [
   { id: 'femenino',  label: 'Femenino',  emoji: '👩' },
 ]
 
-const GOAL_LABEL: Record<string, string> = {
-  perder_peso: 'perder peso',
-  mantener: 'mantener tu peso',
-  ganar_masa: 'ganar masa muscular',
-}
-
 interface Props {
   stepNumber: number
   totalSteps: number
@@ -35,14 +29,14 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Confirma o objetivo (respondido no passo anterior) antes da pergunta atual.
-  const [goal] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
+  // Confirma os alimentos favoritos (respondido no passo anterior) antes da pergunta atual.
+  const [likesCount] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0
     try {
-      const cached = sessionStorage.getItem('nutriplan_step_2')
-      const parsed = cached ? (JSON.parse(cached) as { goal?: string }) : {}
-      return parsed.goal ?? null
-    } catch { return null }
+      const cached = sessionStorage.getItem('nutriplan_step_1')
+      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
+      return parsed.likes?.length ?? 0
+    } catch { return 0 }
   })
 
   function handleSelect(id: string) {
@@ -84,7 +78,11 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
-          confirm={goal ? `Objetivo registrado: ${GOAL_LABEL[goal] ?? goal}. Ahora tu sexo biológico.` : undefined}
+          confirm={
+            likesCount > 0
+              ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora tu sexo biológico.`
+              : 'Preferencias registradas. Ahora tu sexo biológico.'
+          }
           title="¿Cuál es tu sexo biológico?"
           subtitle="Lo necesitamos para calcular tu metabolismo basal con precisión."
         />

@@ -7,6 +7,12 @@ import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, Quiz
 interface FoodItem { id: string; label: string; emoji: string }
 interface FoodGroup { title: string; items: FoodItem[] }
 
+const GOAL_LABEL: Record<string, string> = {
+  perder_peso: 'perder peso',
+  mantener: 'mantener tu peso',
+  ganar_masa: 'ganar masa muscular',
+}
+
 // Grupos base (ids batem com o catálogo em food-catalog.ts)
 const BASE_GROUPS: FoodGroup[] = [
   {
@@ -123,13 +129,13 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Confirma o sexo (respondido no passo anterior) antes da pergunta atual.
-  const [sex] = useState<string | null>(() => {
+  // Confirma o objetivo (respondido no passo anterior) antes da pergunta atual.
+  const [goal] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
     try {
-      const cached = sessionStorage.getItem('nutriplan_step_4')
-      const parsed = cached ? (JSON.parse(cached) as { sex?: string }) : {}
-      return parsed.sex ?? null
+      const cached = sessionStorage.getItem('nutriplan_step_2')
+      const parsed = cached ? (JSON.parse(cached) as { goal?: string }) : {}
+      return parsed.goal ?? null
     } catch { return null }
   })
 
@@ -174,7 +180,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
-            confirm={sex ? `Perfil ${sex === 'femenino' ? 'femenino' : 'masculino'} registrado. Ahora, lo que te gusta comer.` : undefined}
+            confirm={goal ? `Objetivo registrado: ${GOAL_LABEL[goal] ?? goal}. Ahora, lo que te gusta comer.` : undefined}
             title={
               <>
                 ¿Qué alimentos te <span className="text-primary">gusta</span> comer?

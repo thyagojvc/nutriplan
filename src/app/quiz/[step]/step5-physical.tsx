@@ -39,16 +39,6 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Confirma quantos alimentos favoritos foram marcados no passo anterior.
-  const [likesCount] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0
-    try {
-      const cached = sessionStorage.getItem('nutriplan_step_1')
-      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
-      return parsed.likes?.length ?? 0
-    } catch { return 0 }
-  })
-
   function handleChange(field: keyof PhysicalData, val: number) {
     const next = { ...data, [field]: val }
     setData(next)
@@ -92,11 +82,6 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
-            confirm={
-              likesCount > 0
-                ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora tus datos físicos.`
-                : 'Preferencias registradas. Ahora tus datos físicos.'
-            }
             title="Tus datos físicos"
             subtitle="Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
           />
