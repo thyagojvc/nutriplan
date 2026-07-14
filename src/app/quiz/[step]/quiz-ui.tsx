@@ -486,6 +486,96 @@ export function QuizSlider({
 }
 
 // ---------------------------------------------------------------------------
+// Campo numérico — número grande editável por toque + botões +/-, sem arrastar
+// nada (substitui o QuizSlider onde o trilho era mais trabalhoso que digitar).
+// ---------------------------------------------------------------------------
+
+export function QuizNumberField({
+  label,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  unit,
+  hint,
+}: {
+  label: string
+  value: number
+  onChange: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  unit: string
+  hint?: React.ReactNode
+}) {
+  // Mesmo padrão do QuizSlider: texto local só reconcilia no blur/Enter, pra
+  // não atrapalhar quem está apagando o número pra digitar outro.
+  const [text, setText] = useState(String(value))
+  useEffect(() => setText(String(value)), [value])
+
+  function clamp(n: number) {
+    return Math.min(max, Math.max(min, n))
+  }
+
+  function commit(raw: string) {
+    const n = Math.round(Number(raw))
+    if (Number.isFinite(n)) {
+      onChange(clamp(n))
+    } else {
+      setText(String(value))
+    }
+  }
+
+  function bump(delta: number) {
+    onChange(clamp(value + delta))
+  }
+
+  return (
+    <div className="space-y-2">
+      <p className="text-center text-sm font-semibold text-gray-700">{label}</p>
+
+      <div className="flex items-center justify-center gap-3">
+        <button
+          type="button"
+          onClick={() => bump(-step)}
+          aria-label={`Restar ${step} ${unit}`}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white text-xl font-bold text-primary shadow-sm transition-colors hover:bg-[#F5FAF2] active:scale-95"
+        >
+          −
+        </button>
+
+        <div className="flex min-w-[9rem] items-baseline justify-center gap-1.5 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-5 py-3">
+          <input
+            type="number"
+            inputMode="numeric"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onBlur={(e) => commit(e.target.value)}
+            onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
+            className="quiz-number-input w-16 bg-transparent text-center font-display text-[2.25rem] font-black leading-none text-primary tabular-nums focus:outline-none"
+          />
+          <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            {unit}
+          </span>
+        </div>
+
+        <button
+          type="button"
+          onClick={() => bump(step)}
+          aria-label={`Sumar ${step} ${unit}`}
+          className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white text-xl font-bold text-primary shadow-sm transition-colors hover:bg-[#F5FAF2] active:scale-95"
+        >
+          +
+        </button>
+      </div>
+
+      {hint && <p className="text-center text-xs text-muted-foreground">{hint}</p>}
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Botão CTA
 // ---------------------------------------------------------------------------
 

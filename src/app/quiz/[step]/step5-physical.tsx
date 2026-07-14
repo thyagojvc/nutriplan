@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizSlider, QuizCta, QuizError } from './quiz-ui'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizNumberField, QuizCta, QuizError } from './quiz-ui'
 
 interface PhysicalData {
   age: number
@@ -20,9 +20,9 @@ const DEFAULTS: PhysicalData = { age: 30, weight_kg: 70, height_cm: 165 }
 export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const router = useRouter()
 
-  // Sliders sempre têm um valor válido dentro do range; min de edad = 18 já
-  // exclui menores de idade estruturalmente, sem precisar de tela de bloqueio
-  // depois do envio (o que existia antes, quando o campo era texto livre).
+  // QuizNumberField sempre clampa entre min/max; min de edad = 18 já exclui
+  // menores de idade estruturalmente, sem precisar de tela de bloqueio depois
+  // do envio (o que existia antes, quando o campo era texto livre).
   const [data, setData] = useState<PhysicalData>(() => {
     if (typeof window === 'undefined') return DEFAULTS
     try {
@@ -52,9 +52,9 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     // Garante que o sessionStorage tenha os valores mesmo se a pessoa aceitar
-    // os padrões dos sliders sem arrastar nenhum (handleChange nunca dispara
-    // nesse caso). Sem isso, a confirmação do próximo passo (metabolismo
-    // basal) fica sem dado pra ler.
+    // os padrões sem editar nenhum campo (handleChange nunca dispara nesse
+    // caso). Sem isso, a confirmação do próximo passo (metabolismo basal)
+    // fica sem dado pra ler.
     try {
       sessionStorage.setItem('nutriplan_step_5', JSON.stringify(data))
     } catch { /* segue sem cache local; o save-step abaixo ainda persiste no banco */ }
@@ -87,7 +87,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
           />
 
           <div className="space-y-5">
-            <QuizSlider
+            <QuizNumberField
               label="¿Cuántos años tienes?"
               unit="años"
               min={18}
@@ -95,7 +95,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
               value={data.age}
               onChange={(v) => handleChange('age', v)}
             />
-            <QuizSlider
+            <QuizNumberField
               label="¿Cuál es tu peso hoy?"
               unit="kg"
               min={40}
@@ -104,7 +104,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
               onChange={(v) => handleChange('weight_kg', v)}
               hint="Sin juicios, es solo tu punto de partida."
             />
-            <QuizSlider
+            <QuizNumberField
               label="¿Cuál es tu altura?"
               unit="cm"
               min={130}
