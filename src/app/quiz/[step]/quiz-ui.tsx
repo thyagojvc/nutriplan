@@ -545,7 +545,7 @@ export function QuizNumberField({
           −
         </button>
 
-        <div className="flex min-w-[9rem] items-baseline justify-center gap-1.5 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-5 py-3">
+        <div className="flex min-w-[11.5rem] items-baseline justify-center gap-1.5 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-4">
           <input
             type="number"
             inputMode="numeric"
@@ -553,7 +553,7 @@ export function QuizNumberField({
             onChange={(e) => setText(e.target.value)}
             onBlur={(e) => commit(e.target.value)}
             onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
-            className="quiz-number-input w-16 bg-transparent text-center font-display text-[2.25rem] font-black leading-none text-primary tabular-nums focus:outline-none"
+            className="quiz-number-input w-[6.5rem] bg-transparent text-center font-display text-[2.25rem] font-black leading-[1.3] text-primary tabular-nums focus:outline-none"
           />
           <span className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
             {unit}
