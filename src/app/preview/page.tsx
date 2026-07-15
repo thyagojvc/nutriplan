@@ -385,8 +385,8 @@ export default function PreviewPage() {
         sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
       }
 
-      sessionStorage.setItem('nutriplan_purchase_value', '9.90')
-      trackPixel('InitiateCheckout', { value: 9.90, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
+      sessionStorage.setItem('nutriplan_purchase_value', '7.90')
+      trackPixel('InitiateCheckout', { value: 7.90, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {
@@ -1059,7 +1059,7 @@ export default function PreviewPage() {
                 Y ya gastaste más que esto en dietas y planes que nunca se adaptaron a ti.
               </p>
               <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
-              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
+              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(7.90)}</p>
               <p className="text-[13px] font-bold text-gray-700">Cuesta menos que los cafés de una semana.</p>
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
@@ -1103,7 +1103,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `Quiero mi plan ahora (${price(9.90)}) →`
+                  `Quiero mi plan ahora (${price(7.90)}) →`
                 )}
               </button>
               {fx.currency !== 'USD' && (
@@ -1203,7 +1203,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Quiero mi plan ahora (${price(9.90)}) →`
+              `Quiero mi plan ahora (${price(7.90)}) →`
             )}
           </button>
           <PaymentTrust />
