@@ -87,19 +87,6 @@ function buildHeroPromise(goal: string, obstacles: string[]): string {
   return `${base}, ${tails.join(' y ')}.`
 }
 
-// Texto do botão emocional intermediário, por incômodo corporal do step 13.
-// "otro" (texto livre, sem frase pronta pra basear) e ausência de dado caem
-// no fallback genérico abaixo.
-const BODY_CONCERN_CTA: Record<string, string> = {
-  ropa:      'Quiero volver a usar la ropa que ya no me queda',
-  playa:     'Quiero sentirme cómoda en la playa otra vez',
-  fotos:     'Quiero dejar de evitar las fotos',
-  espejo:    'Quiero volver a reconocerme frente al espejo',
-  eventos:   'Quiero sentirme segura en cada evento',
-  cansancio: 'Quiero dejar de cansarme tan rápido',
-}
-const BODY_CONCERN_CTA_FALLBACK = 'Quiero sentirme bien conmigo misma otra vez'
-
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
@@ -195,8 +182,6 @@ export default function PreviewPage() {
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
   const [heroObstacles, setHeroObstacles] = useState<string[]>([])
-  // Incômodo corporal do step 13 — alimenta o botão emocional intermediário.
-  const [bodyConcern, setBodyConcern] = useState<string | null>(null)
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
   // O pedido e o tracking continuam sempre em USD — ver handleCta.
   const [fx, setFx] = useState<{ currency: string; rate: number }>({ currency: 'USD', rate: 1 })
@@ -244,16 +229,6 @@ export default function PreviewPage() {
         setHeroObstacles(obstacles.slice(0, 2))
       }
     } catch { /* mantém default 'cetica' */ }
-  }, [])
-
-  useEffect(() => {
-    try {
-      const s13 = sessionStorage.getItem('nutriplan_step_13')
-      if (s13) {
-        const { concern } = JSON.parse(s13) as { concern?: string }
-        if (concern) setBodyConcern(concern)
-      }
-    } catch { /* mantém fallback genérico */ }
   }, [])
 
   useEffect(() => {
@@ -837,21 +812,6 @@ export default function PreviewPage() {
             )}
           </p>
         </div>
-
-        {/* CTA intermediário — quem já está convencido pula direto pra oferta */}
-        <button
-          onClick={() => offerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-          className={[
-            'flex w-full items-center justify-center gap-2 rounded-xl py-4 text-sm font-black text-white',
-            'bg-primary shadow-[0_4px_18px_rgba(15,110,86,0.28)] transition-all duration-150',
-            'hover:brightness-[1.05] hover:shadow-[0_6px_26px_rgba(15,110,86,0.38)] active:scale-[0.99]',
-          ].join(' ')}
-        >
-          {bodyConcern && BODY_CONCERN_CTA[bodyConcern] ? BODY_CONCERN_CTA[bodyConcern] : BODY_CONCERN_CTA_FALLBACK}
-          <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-            <path d="M3.5 7.5H11.5M11.5 7.5L7.5 3.5M11.5 7.5L7.5 11.5" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
 
         {/* Autoridade — responsável técnico */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
