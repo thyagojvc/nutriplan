@@ -107,17 +107,28 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   // Por isso o conteúdo das URLs segue trocado em relação ao número: URL 5→físico,
   // URL 2→objetivo, URL 4→sexo. As chaves de dados continuam fixas por
   // componente (goal→step_2, sexo→step_4, físico→step_5), sem afetar geração.
+  //
+  // 15/07: trocado de novo — URL 5 (entrada) agora renderiza OBSTÁCULO (Step11Obstacle)
+  // em vez de dados físicos. Motivo: abrir pedindo peso/idade (dado emocionalmente
+  // caro, digitado) juntava as duas piores fricções possíveis na 1ª tela. Obstáculo
+  // é toque único, valida a dor em vez de expor a pessoa, e alimenta a personalização
+  // do hero da preview. Dados físicos (Step5Physical) foi pro lugar que era do
+  // obstáculo (URL 11), depois de 8 perguntas de investimento.
+  // IMPORTANTE: as chaves de dados continuam fixas por COMPONENTE, não por URL —
+  // Step11Obstacle sempre salva em step_11 e Step5Physical em step_5, não importa
+  // qual URL os renderiza. Só o router.push de cada um foi trocado (ver dentro de
+  // cada arquivo) pra manter a sequência de navegação idêntica à anterior.
   if (stepNumber === 1)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 2)  return <Step2Goal {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
   if (stepNumber === 4)  return <Step4Sex {...props} />
-  if (stepNumber === 5)  return <Step5Physical {...props} />
+  if (stepNumber === 5)  return <Step11Obstacle {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
   if (stepNumber === 9)  return <Step9Health {...props} />
   if (stepNumber === 10) return <Step10Exercise {...props} />
-  if (stepNumber === 11) return <Step11Obstacle {...props} />
+  if (stepNumber === 11) return <Step5Physical {...props} />
   if (stepNumber === 13) return <Step13BodyConcern {...props} />
   return <Step12Form {...props} />
 }
