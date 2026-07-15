@@ -688,13 +688,15 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
-        {/* Prueba social — número real de compras recientes (ver /api/quiz/recent-activity) */}
-        {activity && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
-            +{activity.count} mujeres ya empezaron su plan {activity.label}
-          </div>
-        )}
+        {/* Prueba social — usa o número dinâmico real (recent-activity) só quando
+            houver volume forte (>=20); senão cai no acumulado já publicado na home,
+            pra nunca mostrar um número pequeno que enfraquece a prova. */}
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
+          {activity && activity.count >= 20
+            ? `+${activity.count} mujeres ya empezaron su plan ${activity.label}`
+            : '+1.800 mujeres ya calcularon su plan con NutriPlan'}
+        </div>
 
         {/* Perfil + IMC agrupados */}
         <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
@@ -992,26 +994,45 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye</p>
               <ul className="space-y-2.5">
                 {[
-                  'Tu plan personalizado con la Calibración Metabólica',
-                  'Lista de compras optimizada',
-                  'Guía de implementación',
-                  'Sustituciones para cada comida',
-                  'Bono: Guía Anti-Celulitis',
-                  'Acceso a tu panel personal + PDF',
-                ].map((item) => (
+                  { item: 'Tu plan personalizado con la Calibración Metabólica', value: 14 },
+                  { item: 'Lista de compras optimizada', value: 4 },
+                  { item: 'Guía de implementación', value: 3 },
+                  { item: 'Sustituciones para cada comida', value: 3 },
+                  { item: 'Bono: Guía Anti-Celulitis', value: 5 },
+                  { item: 'Acceso a tu panel personal + PDF', value: null },
+                ].map(({ item, value }) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
-                    {item}
+                    <span className="flex-1">{item}</span>
+                    {value != null && (
+                      <span className="shrink-0 text-[12px] font-semibold text-muted-foreground tabular-nums">{price(value)}</span>
+                    )}
                   </li>
                 ))}
               </ul>
             </div>
 
-            <p className="text-center text-[13px] text-gray-700 border-t border-[#EAF2E6] pt-3">
-              Todo esto en <span className="font-bold text-primary">un solo pago</span>, sin suscripción ni cobros cada mes.
+            {/* Pré-frame do order bump — semeia o que a pessoa poderá somar, pra
+                não chegar frio na Hotmart e subir o valor médio por compradora. */}
+            <p className="text-center text-[13px] text-gray-700">
+              Y si quieres, en el siguiente paso podrás sumarle tu <strong>plan de entrenamiento en casa</strong> y un <strong>recetario fitness</strong>.
             </p>
+
+            {/* Âncora de valor: iguala (consulta) → mostra valor somado riscado →
+                barateia com o preço real → tira o susto com o "por qué tan barato". */}
+            <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-1.5">
+              <p className="text-[13px] text-gray-700">
+                Una consulta con nutricionista cuesta <strong>{price(30)} o más</strong>, y solo te dan un plan. Aquí tienes más que eso, por una fracción.
+              </p>
+              <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
+              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(7.90)}</p>
+              <p className="text-[13px] font-bold text-gray-700">Cuesta menos que los cafés de una semana.</p>
+              <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
+                Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
+              </p>
+            </div>
 
             {/* Soporte por WhatsApp con el nutricionista — risco reverso no ponto da decisão */}
             <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
@@ -1054,7 +1075,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `Ver mi plan por ${price(7.90)} →`
+                  `Quiero mi plan ahora (${price(7.90)}) →`
                 )}
               </button>
               {fx.currency !== 'USD' && (
@@ -1064,10 +1085,16 @@ export default function PreviewPage() {
               )}
             </div>
 
+            {/* Pré-frame do que acontece após o clique — tira o susto da transição
+                pro checkout da Hotmart, onde hoje muita gente some. */}
+            <p className="text-center text-[12px] leading-relaxed text-muted-foreground">
+              Al continuar vas a una página de pago segura. Eliges cómo pagar y en minutos tienes tu plan en tu panel.
+            </p>
+
             {/* Inversão de risco: último pensamento antes do clique, colado nos botões */}
             <p className="flex items-center justify-center gap-1.5 text-center text-[12px] font-semibold text-gray-600">
               <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
-              Si no te sirve, no pagas: garantía de 7 días, sin preguntas.
+              Si no te sirve, no pagas: garantía de 7 días. Y el plan es tuyo igual.
             </p>
 
             <PaymentTrust />
@@ -1107,7 +1134,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Ver mi plan por ${price(7.90)} →`
+              `Quiero mi plan ahora (${price(7.90)}) →`
             )}
           </button>
           <PaymentTrust />
