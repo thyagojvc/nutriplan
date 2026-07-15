@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
   // Era o que travava quem abandonava e voltava (a segunda tentativa). Nesse caso,
   // seguimos o fluxo abaixo e criamos uma sessão nova (sobrescrevendo o cookie).
   const existingSessionId = request.cookies.get('nutriplan_session_id')?.value
+  let orphanedSessionId: string | undefined
   if (existingSessionId) {
     const { data: existing } = await supabase
       .from('generation_sessions')
@@ -48,7 +49,13 @@ export async function POST(request: NextRequest) {
     if (existing) {
       return NextResponse.json({ session_id: existingSessionId, tracking_id: deriveTrackingId(existingSessionId) })
     }
-    // cookie órfão → cai fora do if e cria sessão nova
+    // Cookie órfão → cai fora do if e cria sessão nova. Registramos (log +
+    // marca persistida em draft_answers) pra dar visibilidade real: logs do
+    // Vercel somem em 1-3 dias (retenção do plano), mas o banco fica pra sempre
+    // e dá pra contar quantas vezes isso aconteceu quando quiser, sem depender
+    // de log nenhum.
+    orphanedSessionId = existingSessionId
+    console.warn('[quiz/init-session] orphaned session cookie healed:', existingSessionId)
   }
 
   // Bot conhecido → responde ok sem criar sessão (não polui o funil).
@@ -73,6 +80,9 @@ export async function POST(request: NextRequest) {
   const draftAnswers: Record<string, unknown> = {}
   if (adRef) draftAnswers._ad_ref = adRef
   if (detectedCountry) draftAnswers._detected_country = detectedCountry
+  // Marca permanente (não expira com log): permite consultar no banco, a
+  // qualquer momento, quantas sessões nasceram de um cookie órfão.
+  if (orphanedSessionId) draftAnswers._healed_orphan_from = orphanedSessionId
 
   const { data, error } = await supabase
     .from('generation_sessions')
