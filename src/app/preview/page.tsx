@@ -1176,7 +1176,10 @@ export default function PreviewPage() {
             &ldquo;Ya probé de todo. Hago dieta, no baja, y siento que mi cuerpo es diferente al de todas.&rdquo;
           </p>
           <p className="text-sm leading-relaxed text-gray-700">
-            No fue falta de fuerza de voluntad, fue falta de un plan que se adaptara a tu rutina real.
+            ¿Cuántas veces ya empezaste &ldquo;de nuevo&rdquo;? Compraste el té detox. Bajaste la app que cuenta calorías. Tiraste las galletas del armario un lunes y las volviste a comprar un viernes. Y cada vez que no funcionó, una parte de ti empezó a creer que el problema eras tú.
+          </p>
+          <p className="text-sm leading-relaxed text-gray-700">
+            No eres tú. Es que seguiste el mismo plan genérico que le dan a todas, con tu cuerpo, tu rutina y tus antojos completamente ignorados. Eso no es falta de disciplina, es matemática mal hecha desde el principio.
           </p>
           <p className="text-sm leading-relaxed text-gray-700">
             Si cierras esta página y sigues igual, en diciembre vas a estar exactamente donde estás hoy: mismo peso, misma ropa guardada, la misma promesa para el próximo enero.
