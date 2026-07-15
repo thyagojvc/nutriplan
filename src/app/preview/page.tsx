@@ -972,14 +972,14 @@ export default function PreviewPage() {
             </ul>
           </div>
           <div className="border-t border-[#EAF2E6] pt-3">
-            <p className="mb-2 text-[13px] font-bold text-gray-400">No, si…</p>
+            <p className="mb-2 text-[13px] font-bold text-rose-500">No, si…</p>
             <ul className="space-y-2">
               {[
                 'Buscas una pastilla mágica o bajar 10 kilos en una semana',
                 'No estás dispuesta a seguir ningún plan, por más simple que sea',
               ].map((t) => (
-                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-400">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-600">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500">
                     <X className="h-3 w-3" strokeWidth={3} />
                   </span>
                   {t}
