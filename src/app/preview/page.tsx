@@ -688,15 +688,15 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
-        {/* Prueba social — usa o número dinâmico real (recent-activity) só quando
-            houver volume forte (>=20); senão cai no acumulado já publicado na home,
-            pra nunca mostrar um número pequeno que enfraquece a prova. */}
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
-          {activity && activity.count >= 20
-            ? `+${activity.count} mujeres ya empezaron su plan ${activity.label}`
-            : '+1.800 mujeres ya calcularon su plan con NutriPlan'}
-        </div>
+        {/* Prueba social — só mostra o número dinâmico real (recent-activity)
+            quando há volume forte (>=20). Sem fallback estático, pra não competir
+            com o "+2.000 mujeres atendidas" da bio nem exibir um número fraco. */}
+        {activity && activity.count >= 20 && (
+          <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
+            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
+            +{activity.count} mujeres ya empezaron su plan {activity.label}
+          </div>
+        )}
 
         {/* Perfil + IMC agrupados */}
         <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
