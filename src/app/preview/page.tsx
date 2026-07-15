@@ -732,6 +732,45 @@ export default function PreviewPage() {
           </div>
         </Card>
 
+        {/* Cómo se armó tu plan — dobra "cómo funciona", ligada aos números que ela
+            acabou de ver (metabolismo/meta), pra dar contexto de onde vieram. Visual
+            de timeline (não checklist) pra não repetir os cards brancos de mais abaixo. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5">
+          <p className="mb-4 text-center font-display text-[16px] font-bold text-gray-900">Así se armó tu NutriPlan</p>
+          <div>
+            {[
+              {
+                Icon: Flame,
+                title: 'Calculamos tu metabolismo real',
+                desc: inputCount ? `Con los ${inputCount} datos que diste en el quiz, no una fórmula genérica.` : 'Con tus datos reales, no una fórmula genérica.',
+              },
+              {
+                Icon: Target,
+                title: 'Calibramos tus números exactos',
+                desc: 'Cuántas calorías y macros necesitas para tu objetivo, sin adivinar.',
+              },
+              {
+                Icon: Utensils,
+                title: 'Armamos tu plan a tu medida',
+                desc: 'Comidas que te gustan, con tu lista de compras y tus sustituciones.',
+              },
+            ].map(({ Icon, title, desc }, i, arr) => (
+              <div key={title} className="flex gap-3">
+                <div className="flex flex-col items-center">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                  {i < arr.length - 1 && <span className="w-px flex-1 bg-[#D8E8D4]" />}
+                </div>
+                <div className={i < arr.length - 1 ? 'pb-4' : ''}>
+                  <p className="text-sm font-bold text-gray-900">{title}</p>
+                  <p className="text-[13px] leading-relaxed text-gray-600">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Macros */}
         <Card label="Distribución de macronutrientes" icon={<PieChart className="h-4 w-4 text-primary" />}>
           <div className="flex items-center gap-5">
@@ -896,24 +935,6 @@ export default function PreviewPage() {
 
           <p className="text-center text-[11px] leading-relaxed text-[#B7C3B2]">
             Resultados individuales. Varían según cada persona, su constancia y su punto de partida.
-          </p>
-        </div>
-
-        {/* Gancho de mitad de año — refuerzo motivacional antes de la oferta */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-5 space-y-2 text-center">
-          <p className="font-display text-[17px] font-black leading-snug text-gray-900">
-            Julio es tu segunda oportunidad de enero
-          </p>
-          <p className="text-sm italic leading-relaxed text-gray-500">
-            &ldquo;Ya probé de todo. Hago dieta, no baja, y siento que mi cuerpo es diferente al de todas.&rdquo;
-          </p>
-          <p className="text-sm leading-relaxed text-gray-700">
-            No importa cuántas dietas intentaste antes ni qué tan lejos sientas la meta que te
-            propusiste en enero. No fue falta de fuerza de voluntad, fue falta de un plan que se
-            adaptara a tu rutina real.
-          </p>
-          <p className="text-sm font-semibold text-gray-800">
-            Todavía te quedan 6 meses. La única pregunta es cómo quieres sentirte en ellos.
           </p>
         </div>
 
@@ -1098,10 +1119,6 @@ export default function PreviewPage() {
               </div>
             </div>
 
-            <p className="text-center text-[13px] font-semibold text-gray-600">
-              Ya pasó la mitad del año. Los próximos 6 meses van a pasar igual, quieras empezar hoy o no.
-            </p>
-
             {ctaState === 'error' && (
               <p className="text-center text-xs text-red-600">
                 Error al preparar el pedido. Recarga la página e intenta de nuevo.
@@ -1144,6 +1161,29 @@ export default function PreviewPage() {
 
             <PaymentTrust />
           </div>
+        </div>
+
+        {/* Costo de la inacción — dobra "conversa séria", depois do preço/CTA pra
+            dar um segundo empurrão a quem hesitou e rolou sem clicar. Mensagem
+            forte a pedido do dono. Absorve o que antes era uma linha solta
+            dentro do card ("Ya pasó la mitad del año...", removida por repetir
+            a mesma ideia perto demais). */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-5 space-y-2 text-center">
+          <p className="font-display text-[17px] font-black leading-snug text-gray-900">
+            Julio es tu segunda oportunidad de enero
+          </p>
+          <p className="text-sm italic leading-relaxed text-gray-500">
+            &ldquo;Ya probé de todo. Hago dieta, no baja, y siento que mi cuerpo es diferente al de todas.&rdquo;
+          </p>
+          <p className="text-sm leading-relaxed text-gray-700">
+            No fue falta de fuerza de voluntad, fue falta de un plan que se adaptara a tu rutina real.
+          </p>
+          <p className="text-sm leading-relaxed text-gray-700">
+            Si cierras esta página y sigues igual, en diciembre vas a estar exactamente donde estás hoy: mismo peso, misma ropa guardada, la misma promesa para el próximo enero.
+          </p>
+          <p className="text-sm font-semibold text-gray-800">
+            Todavía te quedan 6 meses. La diferencia la marca lo que decidas hacer con ellos.
+          </p>
         </div>
 
         {/* Después de comprar — tira o susto da transição pro checkout da Hotmart,
