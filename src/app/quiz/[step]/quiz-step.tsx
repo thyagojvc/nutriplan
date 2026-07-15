@@ -32,8 +32,15 @@ function useEnsureSession(stepNumber: number) {
   useEffect(() => {
     // /quiz/5 é a porta de entrada (ver nota abaixo) — só cria sessão ali,
     // igual o QuizStart. Visitas diretas a outras URLs não geram sessão.
+    //
+    // Chamamos init-session em TODA montagem do /quiz/5 (sem guard permanente de
+    // sessionStorage) de propósito: init-session é idempotente (revalida o cookie
+    // e reusa a sessão se ela ainda existe no banco) e, se o cookie estiver órfão
+    // — sessão apagada pela limpeza, mas cookie ainda vivo por 7 dias — cria uma
+    // sessão nova. Assim, quem abandona e volta pra tentar de novo não trava com
+    // "Error al guardar" no 1º passo. O QuizStart continua disparando 1x por
+    // sessão (dedupe do trackDualOnce), sem inflar a contagem.
     if (stepNumber !== 5) return
-    if (sessionStorage.getItem('nutriplan_session_init')) return
     // Captura o criativo/anúncio de origem (utm_content) da URL, se veio de
     // anúncio pago. Configurar no Meta Ads: URL parameters -> utm_content={{ad.name}}
     const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
@@ -43,7 +50,6 @@ function useEnsureSession(stepNumber: number) {
       body: JSON.stringify({ ad_ref: adRef }),
     })
       .then(async (res) => {
-        sessionStorage.setItem('nutriplan_session_init', '1')
         try {
           const data = await res.json()
           if (data?.tracking_id) void setPixelExternalId(data.tracking_id)

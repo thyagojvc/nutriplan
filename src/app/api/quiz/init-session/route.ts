@@ -29,10 +29,26 @@ function toDbCountry(code: string | undefined): 'MX' | 'CO' | 'CL' | 'ES' | 'OTH
 const BOT_UA = /bot\b|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|phantomjs|puppeteer|playwright|python-requests|python-urllib|curl\/|wget|go-http-client|okhttp|axios\/|node-fetch|lighthouse|pingdom|uptimerobot|statuscake|semrushbot|ahrefsbot|mj12bot|dotbot|bingpreview|yandexbot|dataprovider/i
 
 export async function POST(request: NextRequest) {
-  // Se o cliente já tem uma session_id em cookie, reutilizar
+  const supabase = createServiceClient()
+
+  // Se o cliente já tem uma session_id em cookie, reutilizar — MAS só se a linha
+  // ainda existir no banco. Um cookie órfão (a sessão foi apagada pela limpeza de
+  // sessões abandonadas `lead_id IS NULL`, por bots, etc., mas o cookie dura 7 dias)
+  // fazia o save-step chamar save_quiz_draft_step com um id inexistente, que
+  // RAISE EXCEPTION session_not_found → 500 → "Error al guardar" logo no 1º passo.
+  // Era o que travava quem abandonava e voltava (a segunda tentativa). Nesse caso,
+  // seguimos o fluxo abaixo e criamos uma sessão nova (sobrescrevendo o cookie).
   const existingSessionId = request.cookies.get('nutriplan_session_id')?.value
   if (existingSessionId) {
-    return NextResponse.json({ session_id: existingSessionId, tracking_id: deriveTrackingId(existingSessionId) })
+    const { data: existing } = await supabase
+      .from('generation_sessions')
+      .select('id')
+      .eq('id', existingSessionId)
+      .maybeSingle()
+    if (existing) {
+      return NextResponse.json({ session_id: existingSessionId, tracking_id: deriveTrackingId(existingSessionId) })
+    }
+    // cookie órfão → cai fora do if e cria sessão nova
   }
 
   // Bot conhecido → responde ok sem criar sessão (não polui o funil).
@@ -57,8 +73,6 @@ export async function POST(request: NextRequest) {
   const draftAnswers: Record<string, unknown> = {}
   if (adRef) draftAnswers._ad_ref = adRef
   if (detectedCountry) draftAnswers._detected_country = detectedCountry
-
-  const supabase = createServiceClient()
 
   const { data, error } = await supabase
     .from('generation_sessions')
