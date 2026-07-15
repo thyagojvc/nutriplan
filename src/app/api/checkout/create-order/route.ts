@@ -53,8 +53,8 @@ export async function POST(request: NextRequest) {
   }
 
   const FALLBACK_PRICES: Record<string, number> = {
-    PLAN_BASIC: 7.90,
-    PLAN_RECIPES: 9.90,
+    PLAN_BASIC: 9.90,
+    PLAN_RECIPES: 3.90,
     PLAN_TRAINING: 14.90,
   }
 
