@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw, X,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -904,6 +904,9 @@ export default function PreviewPage() {
           <p className="font-display text-[17px] font-black leading-snug text-gray-900">
             Julio es tu segunda oportunidad de enero
           </p>
+          <p className="text-sm italic leading-relaxed text-gray-500">
+            &ldquo;Ya probé de todo. Hago dieta, no baja, y siento que mi cuerpo es diferente al de todas.&rdquo;
+          </p>
           <p className="text-sm leading-relaxed text-gray-700">
             No importa cuántas dietas intentaste antes ni qué tan lejos sientas la meta que te
             propusiste en enero. No fue falta de fuerza de voluntad, fue falta de un plan que se
@@ -944,6 +947,65 @@ export default function PreviewPage() {
               <p className="text-xs font-bold text-primary">{country} {name}</p>
             </div>
           ))}
+        </div>
+
+        {/* Lo que NO necesitas — remove a autodesqualificação antes da oferta */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+          <p className="text-center font-display text-[16px] font-bold text-gray-900">Lo que NO necesitas para empezar</p>
+          <ul className="space-y-2.5">
+            {[
+              ['No necesitas horas para cocinar', 'El plan se resuelve rápido, pensado para tu rutina.'],
+              ['No necesitas alimentos caros ni raros', 'Comida normal de supermercado, ajustada a ti.'],
+              ['No necesitas ir al gym', 'Tu entrenamiento es en casa, si quieres sumarlo.'],
+              ['No necesitas fuerza de voluntad de hierro', 'Un plan que no te hace pasar hambre no se abandona a los 3 días.'],
+            ].map(([t, d]) => (
+              <li key={t} className="flex items-start gap-2.5 text-sm">
+                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  <Check className="h-3 w-3" strokeWidth={3} />
+                </span>
+                <span><strong className="text-gray-900">{t}.</strong> <span className="text-gray-600">{d}</span></span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        {/* ¿Es para ti? — qualificação (dobra "pra quem é"), coluna negativa suave */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
+          <p className="text-center font-display text-[16px] font-bold text-gray-900">¿Es este plan para ti?</p>
+          <div>
+            <p className="mb-2 text-[13px] font-bold text-primary">Sí, si…</p>
+            <ul className="space-y-2">
+              {[
+                'Ya intentaste dietas y ninguna se adaptó a ti',
+                'Quieres comer rico sin pasar hambre ni contar calorías a mano',
+                'Tienes poco tiempo y necesitas algo práctico',
+                'Quieres un plan hecho para tu cuerpo, no genérico de internet',
+              ].map((t) => (
+                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-700">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                    <Check className="h-3 w-3" strokeWidth={3} />
+                  </span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="border-t border-[#EAF2E6] pt-3">
+            <p className="mb-2 text-[13px] font-bold text-gray-400">No, si…</p>
+            <ul className="space-y-2">
+              {[
+                'Buscas una pastilla mágica o bajar 10 kilos en una semana',
+                'No estás dispuesta a seguir ningún plan, por más simple que sea',
+              ].map((t) => (
+                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-400">
+                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-gray-100 text-gray-400">
+                    <X className="h-3 w-3" strokeWidth={3} />
+                  </span>
+                  {t}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
 
         {/* Oferta con ancla de valor */}
@@ -1012,6 +1074,9 @@ export default function PreviewPage() {
               <p className="text-[13px] text-gray-700">
                 Una consulta con nutricionista cuesta <strong>{price(30)} o más</strong>, y solo te dan un plan. Aquí tienes más que eso, por una fracción.
               </p>
+              <p className="text-[13px] text-gray-700">
+                Y ya gastaste más que esto en dietas y planes que nunca se adaptaron a ti.
+              </p>
               <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
               <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(7.90)}</p>
               <p className="text-[13px] font-bold text-gray-700">Cuesta menos que los cafés de una semana.</p>
@@ -1071,12 +1136,6 @@ export default function PreviewPage() {
               )}
             </div>
 
-            {/* Pré-frame do que acontece após o clique — tira o susto da transição
-                pro checkout da Hotmart, onde hoje muita gente some. */}
-            <p className="text-center text-[12px] leading-relaxed text-muted-foreground">
-              Al continuar vas a una página de pago segura. Eliges cómo pagar y en minutos tienes tu plan en tu panel.
-            </p>
-
             {/* Inversão de risco: último pensamento antes do clique, colado nos botões */}
             <p className="flex items-center justify-center gap-1.5 text-center text-[12px] font-semibold text-gray-600">
               <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
@@ -1085,6 +1144,27 @@ export default function PreviewPage() {
 
             <PaymentTrust />
           </div>
+        </div>
+
+        {/* Después de comprar — tira o susto da transição pro checkout da Hotmart,
+            onde hoje muita gente some. Deixa explícito que o acesso é imediato. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+          <p className="text-center font-display text-[16px] font-bold text-gray-900">Después de comprar</p>
+          <ul className="space-y-3">
+            {[
+              ['1', 'Pagas seguro', 'Vas a una página de pago protegida y eliges cómo pagar.'],
+              ['2', 'Recibes acceso en minutos', 'Te llega el acceso a tu panel personal por correo, con tu plan y tu lista de compras.'],
+              ['3', 'Empiezas hoy', 'Abres tu plan y ya sabes qué comprar y qué comer, sin esperar.'],
+            ].map(([n, title, desc]) => (
+              <li key={n} className="flex items-start gap-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-black text-white">{n}</span>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{title}</p>
+                  <p className="text-[13px] leading-relaxed text-gray-600">{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
 
         {/* Garantía */}
