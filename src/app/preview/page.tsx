@@ -191,7 +191,6 @@ export default function PreviewPage() {
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
   const [inputCount, setInputCount] = useState<number | null>(null)
-  const [activity, setActivity] = useState<{ count: number; label: string } | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
@@ -314,16 +313,6 @@ export default function PreviewPage() {
 
       if (count > 0) setInputCount(count)
     } catch {}
-  }, [])
-
-  // Prueba social honesta — solo muestra si hay volumen real que la sustente.
-  useEffect(() => {
-    fetch('/api/quiz/recent-activity')
-      .then((r) => r.json())
-      .then((d: { count: number | null; label: string | null }) => {
-        if (d.count && d.label) setActivity({ count: d.count, label: d.label })
-      })
-      .catch(() => {})
   }, [])
 
   useEffect(() => {
@@ -688,15 +677,12 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
-        {/* Prueba social — só mostra o número dinâmico real (recent-activity)
-            quando há volume forte (>=20). Sem fallback estático, pra não competir
-            com o "+2.000 mujeres atendidas" da bio nem exibir um número fraco. */}
-        {activity && activity.count >= 20 && (
-          <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
-            <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
-            +{activity.count} mujeres ya empezaron su plan {activity.label}
-          </div>
-        )}
+        {/* Prueba social — mesmo número da bio (+2.000), repetido de propósito
+            no topo pra fixar a prova na cabeça da lead antes de ver a oferta. */}
+        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
+          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
+          +2.000 mujeres ya confían en el método de Tiago Vieira
+        </div>
 
         {/* Perfil + IMC agrupados */}
         <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
