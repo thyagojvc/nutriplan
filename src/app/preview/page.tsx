@@ -87,19 +87,6 @@ function buildHeroPromise(goal: string, obstacles: string[]): string {
   return `${base}, ${tails.join(' y ')}.`
 }
 
-// Muestra do calendário na sales page (não descrição, o objeto real). Dia 1
-// completo, día 2 con 1 comida perdida (mostra que ainda conta, reforça "no
-// es todo o nada"), día 3 é hoje em andamento, resto ainda não chegou.
-const SAMPLE_WEEK_CHECKS: boolean[][] = [
-  [true, true, true, true],
-  [true, false, true, true],
-  [true, false, false, false],
-  [false, false, false, false],
-  [false, false, false, false],
-  [false, false, false, false],
-  [false, false, false, false],
-]
-
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
@@ -1053,45 +1040,28 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Vista previa do calendário real (não descrição, o objeto em si).
-            Princípio de tangibilidade: mostrar o produto antes de vender.
-            Semana de amostra conta a história do "crédito parcial" sem texto. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <div className="text-center">
-            <p className="font-display text-[16px] font-bold text-gray-900">Así se ve tu calendario</p>
-            <p className="mt-1 text-[13px] text-muted-foreground">Lo vas llenando día a día, comida por comida.</p>
+        {/* Foto real do calendário em uso (dedo na tela / tangibilidade real,
+            substitui o mockup abstrato). Mostra o SEGUNDO componente da
+            transformação em ação, não só descreve. */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
+          <div className="relative aspect-[4/5] w-full">
+            <Image
+              src="/Foto_Preenchendo_Calendario/foto-preenchendo-calendario.png"
+              alt="Mujer marcando su Reto de 28 días en un calendario pegado en la heladera"
+              fill
+              sizes="(max-width: 640px) 100vw, 512px"
+              className="object-cover"
+            />
           </div>
-
-          <div className="rounded-xl border border-primary/20 bg-[#F5FAF2] p-3">
-            <p className="mb-2 text-[11px] font-bold uppercase tracking-wide text-primary">Semana 1</p>
-            <div className="grid grid-cols-7 gap-1">
-              {SAMPLE_WEEK_CHECKS.map((meals, dayIdx) => (
-                <div key={dayIdx} className="rounded-lg border border-primary/20 bg-white py-1.5 text-center">
-                  <p className="text-[11px] font-bold text-gray-800">{dayIdx + 1}</p>
-                  <div className="mt-1 flex flex-col items-center gap-0.5">
-                    {meals.map((checked, mi) => (
-                      <span
-                        key={mi}
-                        className={[
-                          'h-2 w-2 rounded-[2px] border',
-                          checked ? 'border-primary bg-primary' : 'border-primary/40 bg-white',
-                        ].join(' ')}
-                      />
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="mt-2.5 flex flex-wrap items-center justify-center gap-x-3 gap-y-1 rounded-lg bg-white/70 px-2 py-1.5 text-[10px] font-medium text-gray-600">
-              <span>☐ Menos hinchazón</span>
-              <span>☐ Más energía</span>
-              <span>☐ La ropa cae mejor</span>
-            </div>
+          <div className="space-y-1.5 p-5 text-center">
+            <p className="font-display text-[16px] font-bold text-gray-900">Así vas a vivir tu Reto</p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
+              Lo pegás en la heladera y marcás cada comida, cada día. No es todo o nada: si te falta una, las demás igual cuentan.
+            </p>
+            <p className="pt-1 text-[13px] font-semibold text-gray-800">
+              Este es el segundo componente de tu transformación: ver tu constancia crecer, semana a semana.
+            </p>
           </div>
-
-          <p className="text-center text-[12px] leading-relaxed text-muted-foreground">
-            ¿Ves el Día 2? Faltó una comida y las demás igual cuentan. No es todo o nada.
-          </p>
         </div>
 
         {/* Oferta con ancla de valor */}
