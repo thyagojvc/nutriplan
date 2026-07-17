@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw, X,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw, X, CalendarCheck,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -1005,15 +1005,54 @@ export default function PreviewPage() {
           </div>
         </div>
 
+        {/* Cómo funciona el Reto — mostra o SISTEMA em uso (não como foi montado),
+            o loop diário que produz a transformação. Era a peça que faltava:
+            liga o mecanismo (Calibración) ao comportamento (marcar) ao resultado. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
+          <div className="text-center">
+            <p className="font-display text-[16px] font-bold text-gray-900">Cómo funciona tu Reto de 28 días</p>
+            <p className="mt-1 text-[13px] text-muted-foreground">Un sistema, no una dieta más. Esto es lo que vas a hacer:</p>
+          </div>
+          <ol className="space-y-3">
+            {[
+              { icon: <Gauge className="h-4 w-4" />, t: 'Calibrás tu metabolismo', d: 'Con tus datos del quiz, calculamos exactamente lo que tu cuerpo necesita.' },
+              { icon: <ShoppingCart className="h-4 w-4" />, t: 'Seguís tu lista de compras', d: 'NutriPlan te arma la lista con lo justo, optimizada para tu súper.' },
+              { icon: <Utensils className="h-4 w-4" />, t: 'Comés tu plan, ya organizado', d: 'Cada día viene decidido: desayuno, almuerzo y cena con tus alimentos.' },
+              { icon: <CalendarCheck className="h-4 w-4" />, t: 'Marcás cada comida que seguís', d: 'Comida por comida, no todo o nada. Si fallás una, las demás siguen contando.' },
+              { icon: <Scale className="h-4 w-4" />, t: 'Al terminar la semana, anotás tu avance', d: 'Tu peso, tu cintura y cómo te sentís. Ves el progreso, semana a semana.' },
+            ].map(({ icon, t, d }, i) => (
+              <li key={t} className="flex items-start gap-3">
+                <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+                  {icon}
+                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white tabular-nums">{i + 1}</span>
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{t}</p>
+                  <p className="text-[13px] leading-snug text-muted-foreground">{d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <div className="rounded-xl bg-primary/8 px-4 py-3 text-center">
+            <p className="text-[13px] font-semibold text-gray-800">
+              Repetís el ciclo durante 28 días. Ese es tu reto, y al final tenés la prueba de tu constancia escrita por vos misma.
+            </p>
+          </div>
+        </div>
+
         {/* Oferta con ancla de valor */}
         <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
-            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu Kit de Calibración</p>
+            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">
+              {isLoss ? 'Tu Reto de 28 días para bajar de peso'
+                : isGain ? 'Tu Reto de 28 días para ganar músculo'
+                : 'Tu Reto de 28 días'}
+            </p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu calendario de 28 días para bajar de peso está listo!'
-                : isGain ? '¡Tu calendario de 28 días para ganar músculo está listo!'
-                : '¡Tu Kit de Calibración exacto está listo!'}
+              {isLoss ? '¡Tu reto está listo. Empieza hoy!'
+                : isGain ? '¡Tu reto está listo. Empieza hoy!'
+                : '¡Tu Reto de 28 días está listo!'}
             </p>
           </div>
 
@@ -1035,11 +1074,50 @@ export default function PreviewPage() {
               Un plan pensado para tu vida real: incluye tus antojos y tu rutina, para que no lo abandones a los 3 días.
             </p>
 
+            {/* Sistema de 2 peças — o plano (o meio) + o calendário (o
+                acompanhamento) = transformação. Eleva as duas peças-herói acima
+                da lista de valor, pra vender o Kit como sistema, não feature avulsa. */}
             <div>
-              <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye</p>
+              <p className="mb-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+                Tu Reto tiene dos partes que trabajan juntas
+              </p>
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl border border-primary/25 bg-white p-3.5">
+                  <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Utensils className="h-4 w-4" />
+                  </div>
+                  <p className="text-[13px] font-bold text-gray-900">El plan: qué comer</p>
+                  <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+                    Tus comidas de cada día, calculadas para tu cuerpo. Con tu lista de compras y tus sustituciones.
+                  </p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
+                </div>
+                <div className="rounded-xl border border-primary/25 bg-white p-3.5">
+                  <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <CalendarCheck className="h-4 w-4" />
+                  </div>
+                  <p className="text-[13px] font-bold text-gray-900">El calendario: tu avance</p>
+                  <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+                    Marcás cada día que completás y ves tu constancia crecer, semana a semana.
+                  </p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
+                </div>
+              </div>
+              <div className="mt-2.5 rounded-xl bg-primary px-4 py-3 text-center">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-white/70">Juntos =</p>
+                <p className="text-base font-black text-white">Tu transformación de 28 días</p>
+              </div>
+              <p className="mt-2.5 text-center text-[13px] leading-relaxed text-gray-700">
+                Un plan solo no alcanza, por eso las dietas se abandonan. El calendario es lo que te sostiene los 28 días y te muestra que está funcionando.
+              </p>
+            </div>
+
+            <div>
+              <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Reto</p>
               <ul className="space-y-2.5">
                 {[
-                  { item: 'Tu calendario de 28 días con la Calibración Metabólica', value: 14 },
+                  { item: 'Tu plan de comidas, calculado para tu cuerpo', value: 14 },
+                  { item: 'Tu calendario de 28 días para marcar tu avance', value: 9 },
                   { item: 'Lista de compras optimizada', value: 4 },
                   { item: 'Guía de implementación', value: 3 },
                   { item: 'Sustituciones para cada comida', value: 3 },
@@ -1259,7 +1337,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Qué pasa si tengo dudas después de recibir mi plan?',
-    a: 'Tu Kit queda guardado en tu panel personal: el calendario para marcar cada día, la lista de compras y tus comidas, siempre a mano. Y podés descargar tu calendario para pegarlo en la heladera. No es un PDF que se pierde en tu correo.',
+    a: 'Tu Reto queda guardado en tu panel personal: el calendario para marcar cada día, la lista de compras y tus comidas, siempre a mano. Y podés descargar tu calendario para pegarlo en la heladera. No es un PDF que se pierde en tu correo.',
   },
 ]
 
