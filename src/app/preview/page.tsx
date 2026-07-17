@@ -1043,12 +1043,6 @@ export default function PreviewPage() {
               </ul>
             </div>
 
-            {/* Pré-frame do order bump — semeia o que a pessoa poderá somar, pra
-                não chegar frio na Hotmart e subir o valor médio por compradora. */}
-            <p className="text-center text-[13px] text-gray-700">
-              Y si quieres, en el siguiente paso podrás sumarle tu <strong>plan de entrenamiento en casa</strong> y un <strong>recetario fitness</strong>.
-            </p>
-
             {/* Âncora de valor: iguala (consulta) → mostra valor somado riscado →
                 barateia com o preço real → tira o susto com o "por qué tan barato". */}
             <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-1.5">
