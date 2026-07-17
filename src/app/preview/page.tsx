@@ -640,7 +640,7 @@ export default function PreviewPage() {
           </>
         )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica</span>. Mira tu análisis completo abajo.
+          Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
           {painAngle === 'tiempo'
@@ -874,7 +874,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-            Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
+            Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
           </p>
         </div>
 
@@ -882,7 +882,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Resultados reales con la Calibración Metabólica
+              Resultados reales con la Calibración Metabólica™
             </p>
             <p className="font-display text-base font-black text-gray-900">
               Así les fue a ellas
@@ -1063,7 +1063,7 @@ export default function PreviewPage() {
                 <Check className="h-3.5 w-3.5" strokeWidth={3} />
               </span>
               <div>
-                <p className="text-sm font-bold text-gray-900">Calibración Metabólica validada por nutricionista</p>
+                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por nutricionista</p>
                 <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
@@ -1325,7 +1325,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Ya probé varias dietas y ninguna funcionó, ¿por qué esta sería diferente?',
-    a: 'Porque no es una dieta genérica. Se calcula con tu Calibración Metabólica a partir de tus datos reales (edad, peso, altura, actividad), no con una tabla que le dan a todo el mundo. Si las anteriores no funcionaron, es probable que el problema nunca hayas sido tú: era que no estaban hechas para tu cuerpo.',
+    a: 'Porque no es una dieta genérica. Se calcula con tu Calibración Metabólica™ a partir de tus datos reales (edad, peso, altura, actividad), no con una tabla que le dan a todo el mundo. Si las anteriores no funcionaron, es probable que el problema nunca hayas sido tú: era que no estaban hechas para tu cuerpo.',
   },
   {
     q: '¿Necesito comprar alimentos caros o difíciles de conseguir?',
