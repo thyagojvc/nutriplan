@@ -91,13 +91,13 @@ function buildHeroPromise(goal: string, obstacles: string[]): string {
 // completo, día 2 con 1 comida perdida (mostra que ainda conta, reforça "no
 // es todo o nada"), día 3 é hoje em andamento, resto ainda não chegou.
 const SAMPLE_WEEK_CHECKS: boolean[][] = [
-  [true, true, true],
-  [true, false, true],
-  [true, false, false],
-  [false, false, false],
-  [false, false, false],
-  [false, false, false],
-  [false, false, false],
+  [true, true, true, true],
+  [true, false, true, true],
+  [true, false, false, false],
+  [false, false, false, false],
+  [false, false, false, false],
+  [false, false, false, false],
+  [false, false, false, false],
 ]
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
