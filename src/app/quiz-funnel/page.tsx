@@ -35,9 +35,10 @@ function parseHeartbeatTs(v: string): number {
 // Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
 // número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
 // numeração step_N é fixa por componente e não reflete mais a ordem de
-// visita desde a reordenação do quiz (objetivo/sexo foram pra frente).
+// visita. Atualizada em 15/07 pra bater com o reorder obstáculo-primeiro
+// (URL 5=obstáculos vira 1º, URL 11=dados físicos vira 9º).
 // Atualizar aqui se a ordem do quiz mudar de novo.
-const VISIT_ORDER = [2, 4, 1, 5, 6, 7, 8, 9, 10, 11, 13, 12]
+const VISIT_ORDER = [11, 2, 1, 4, 6, 7, 8, 9, 10, 5, 13, 12]
 
 const OFFER_LABELS: Record<string, string> = {
   PLAN_BASIC: 'Só o plano · 7 dias',
