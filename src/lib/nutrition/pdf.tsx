@@ -78,6 +78,7 @@ const styles = StyleSheet.create({
   coverBadge: { width: 96, height: 96, borderRadius: 48, backgroundColor: c.white, alignItems: 'center', justifyContent: 'center', marginBottom: 22 },
   coverTitle: { fontSize: 30, fontFamily: 'Helvetica-Bold', color: c.white, textAlign: 'center', marginBottom: 6 },
   coverDivider: { width: 54, height: 3, backgroundColor: c.mint, borderRadius: 2, marginVertical: 12 },
+  coverGoal: { fontSize: 15, fontFamily: 'Helvetica-Bold', color: c.white, marginTop: 4 },
   coverName: { fontSize: 13, color: c.mint, marginBottom: 14 },
   goalPill: { borderWidth: 1, borderColor: c.mint, borderRadius: 20, paddingVertical: 5, paddingHorizontal: 16, marginBottom: 30 },
   goalPillText: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: c.white },
@@ -148,7 +149,40 @@ const styles = StyleSheet.create({
   // Footer
   footer: { position: 'absolute', bottom: 22, left: 40, right: 40, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: c.border, paddingTop: 6 },
   footerText: { fontSize: 7, color: c.muted },
+
+  // Calendario de 28 días
+  calWeekTag: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 2 },
+  calWeekCaption: { fontSize: 7.5, color: c.muted, marginBottom: 6, lineHeight: 1.3 },
+  calWeekRow: { flexDirection: 'row', gap: 6 },
+  calDayCell: { flex: 1, borderWidth: 1, borderColor: c.border, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 4, alignItems: 'center', backgroundColor: c.cream },
+  calDayNum: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 4 },
+  calMealRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 2, alignSelf: 'flex-start' },
+  calMealBox: { width: 7, height: 7, borderWidth: 1, borderColor: c.primary, borderRadius: 2 },
+  calMealLetter: { fontSize: 6.5, color: c.muted },
+  checkinRow: { flexDirection: 'row', gap: 12, marginTop: 6, backgroundColor: c.softBg, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 10 },
+  checkinItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
+  checkinBox: { width: 9, height: 9, borderWidth: 1.2, borderColor: c.primary, borderRadius: 2 },
+  checkinLabel: { fontSize: 7.5, color: c.text },
+  weekWeight: { fontSize: 7.5, color: c.text, marginTop: 4, marginLeft: 2 },
+  milestoneBox: { borderWidth: 1, borderColor: c.primary, borderRadius: 8, padding: 10, marginBottom: 12 },
+  milestoneLabel: { fontSize: 9, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 4 },
+  milestoneLine: { fontSize: 8.5, color: c.text, marginBottom: 3 },
 })
+
+const CAL_WEEK_CAPTIONS = [
+  'Tu cuerpo empieza a adaptarse. Es normal notar cambios pequeños todavía.',
+  'Acá es donde la mayoría abandona una dieta. Vos ya llevás 14 días marcados.',
+  'Empezás a notar la ropa distinta.',
+  'Mirá para atrás: 28 días marcados. Esa constancia es tuya.',
+]
+
+const CHECKIN_LABELS = ['Menos hinchazón', 'Más energía', 'La ropa cae mejor']
+
+// Iniciais das refeições pra marcação por comida no calendário (crédito
+// parcial: perder 1 refeição não zera o dia inteiro).
+const MEAL_INITIALS: Record<string, string> = {
+  Desayuno: 'D', Almuerzo: 'A', Cena: 'C', Snack: 'S', Merienda: 'M',
+}
 
 function SectionHead({ title }: { title: string }) {
   return (
@@ -178,12 +212,24 @@ function MacroChips({ p, ca, f }: { p: number; ca: number; f: number }) {
   )
 }
 
+// Objetivo do reto como META que ela busca (não promessa). Adapta ao goal dela.
+const RETO_GOAL: Record<string, string> = {
+  lose_fat: 'para bajar de peso',
+  perder_peso: 'para bajar de peso',
+  gain_muscle: 'para ganar músculo',
+  ganar_masa: 'para ganar músculo',
+  maintain: 'para mantener tu peso',
+  mantener: 'para mantener tu peso',
+  health_energy: 'para más energía',
+}
+
 function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: string }) {
   const { summary } = plan
   const goal = GOAL_LABEL[summary.goal] ?? summary.goal
+  const retoGoal = RETO_GOAL[summary.goal] ?? ''
 
   return (
-    <Document title="Tu Plan Nutricional — NutriPlan" author="NutriPlan">
+    <Document title="Tu Reto de 28 días — NutriPlan" author="NutriPlan">
       {/* ── Capa (card verde em página normal — padrão confiável) ── */}
       <Page size="A4" style={styles.page}>
         <View style={styles.heroCard}>
@@ -191,7 +237,8 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
             <Leaf size={56} leaf={c.greenDeep} vein={c.white} />
           </View>
           <Wordmark color={c.white} size={16} />
-          <Text style={[styles.coverTitle, { marginTop: 24 }]}>Tu Plan Nutricional</Text>
+          <Text style={[styles.coverTitle, { marginTop: 24 }]}>Tu Reto de 28 días</Text>
+          {!!retoGoal && <Text style={styles.coverGoal}>{retoGoal}</Text>}
           <View style={styles.coverDivider} />
           {!!name && <Text style={styles.coverName}>Preparado para {name}</Text>}
           <View style={styles.goalPill}>
@@ -224,8 +271,119 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
             </View>
           </View>
 
-          <Text style={styles.coverTagline}>Tu nutrición, a tu medida.</Text>
+          <Text style={styles.coverTagline}>28 días. Un paso a la vez.</Text>
         </View>
+      </Page>
+
+      {/* ── Página: manual de uso — orienta no 1º minuto e reduz reembolso ── */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Cómo usar tu Reto</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
+        <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
+          Leé esto primero. Te toma 2 minutos y te evita dudas. Tu Reto es un sistema simple que repetís durante 28 días.
+        </Text>
+
+        <SectionHead title="Los 5 pasos, cada semana" />
+        {[
+          ['Ya calibraste tu metabolismo', 'Tus números exactos están en la página de resumen. No tenés que calcular nada.'],
+          ['Revisá tu lista de compras', 'Comprá una vez por semana lo que aparece en tu lista. Ya está optimizada para tu súper.'],
+          ['Comé tu plan, ya decidido', 'Cada día tiene su desayuno, almuerzo y cena con tus alimentos. No tenés que pensar qué cocinar.'],
+          ['Marcá cada comida que seguís', 'En tu calendario, comida por comida. No es todo o nada: si fallás una, las demás siguen contando.'],
+          ['Al terminar la semana, anotá tu avance', 'Tu peso, tu cintura y cómo te sentís. Así ves el progreso real, no solo la balanza.'],
+        ].map(([t, d], i) => (
+          <View key={t} style={styles.stepRow}>
+            <Text style={styles.stepNum}>{i + 1}</Text>
+            <Text style={styles.stepText}>
+              <Text style={{ fontFamily: 'Helvetica-Bold', color: c.ink }}>{t}. </Text>{d}
+            </Text>
+          </View>
+        ))}
+
+        <SectionHead title="Qué hacer si…" />
+        <View style={styles.card}>
+          {[
+            ['No te gusta un alimento', 'Usá las sustituciones de tu plan. Siempre hay una opción equivalente.'],
+            ['Comés fuera un día', 'Elegí lo más parecido a tu plan y seguí. Un día no arruina el reto.'],
+            ['La balanza no se mueve una semana', 'Mirá tu cintura y cómo te sentís. El cuerpo cambia aunque el número tarde.'],
+          ].map(([t, d], i, arr) => (
+            <Text key={t} style={[styles.listItem, { marginBottom: i < arr.length - 1 ? 4 : 0 }]}>
+              <Text style={{ fontFamily: 'Helvetica-Bold', color: c.primary }}>{t}: </Text>{d}
+            </Text>
+          ))}
+        </View>
+
+        <View style={[styles.milestoneBox, { marginTop: 12 }]}>
+          <Text style={styles.milestoneLabel}>El objetivo del reto</Text>
+          <Text style={[styles.milestoneLine, { marginBottom: 0 }]}>
+            Llegar al día 28 con constancia. No buscamos perfección, buscamos que no lo abandones. Esa es la diferencia con las dietas de antes.
+          </Text>
+        </View>
+
+        <Footer subtitle="Cómo usar tu Reto · NutriPlan" />
+      </Page>
+
+      {/* ── Página: calendario de 28 días — el objeto tangible del Reto ── */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Tu Reto de 28 días</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
+        <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
+          Hoy es tu Día 1. Marca cada comida que sigas (no todo o nada: si fallas una, las demás siguen contando). Al terminar la semana, anota tu peso y cómo te sentís. En 28 días vas a tener la prueba de tu avance, hecha por vos misma.
+        </Text>
+
+        <View style={styles.milestoneBox}>
+          <Text style={styles.milestoneLabel}>Tu punto de partida (Día 1)</Text>
+          <Text style={styles.milestoneLine}>Mi peso hoy: __________ kg     ·     Mi cintura: __________ cm</Text>
+          <Text style={styles.milestoneLine}>Cómo me siento hoy: _____________________________________________</Text>
+        </View>
+
+        {Array.from({ length: summary.cycleWeeks }).map((_, weekIdx) => (
+          <View key={weekIdx} style={{ marginBottom: 10 }}>
+            <Text style={styles.calWeekTag}>Semana {weekIdx + 1}</Text>
+            <Text style={styles.calWeekCaption}>{CAL_WEEK_CAPTIONS[weekIdx]}</Text>
+            <View style={styles.calWeekRow}>
+              {plan.days.map((day, dayIdx) => (
+                <View key={dayIdx} style={styles.calDayCell}>
+                  <Text style={styles.calDayNum}>{weekIdx * summary.cycleDays + dayIdx + 1}</Text>
+                  {day.meals.map((meal, mi) => (
+                    <View key={mi} style={styles.calMealRow}>
+                      <View style={styles.calMealBox} />
+                      <Text style={styles.calMealLetter}>{MEAL_INITIALS[meal.name] ?? meal.name.charAt(0)}</Text>
+                    </View>
+                  ))}
+                </View>
+              ))}
+            </View>
+            <View style={styles.checkinRow}>
+              {CHECKIN_LABELS.map((label) => (
+                <View key={label} style={styles.checkinItem}>
+                  <View style={styles.checkinBox} />
+                  <Text style={styles.checkinLabel}>{label}</Text>
+                </View>
+              ))}
+            </View>
+            <Text style={styles.weekWeight}>Mi peso al terminar la semana: __________ kg     ·     Mi cintura: __________ cm</Text>
+          </View>
+        ))}
+
+        <View style={styles.milestoneBox}>
+          <Text style={styles.milestoneLabel}>Tu resultado (Día 28)</Text>
+          <Text style={styles.milestoneLine}>Mi peso ahora: __________ kg     ·     Mi cintura: __________ cm</Text>
+          <Text style={styles.milestoneLine}>Cómo me siento ahora: ____________________________________________</Text>
+        </View>
+
+        <Footer subtitle="Reto de 28 días · NutriPlan" />
       </Page>
 
       {/* ── Página: resumo + compras + guia ────────────────────── */}
