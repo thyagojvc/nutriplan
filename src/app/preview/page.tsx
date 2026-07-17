@@ -385,8 +385,8 @@ export default function PreviewPage() {
         sessionStorage.setItem('nutriplan_idempotency_key', d.idempotency_key)
       }
 
-      sessionStorage.setItem('nutriplan_purchase_value', '7.90')
-      trackPixel('InitiateCheckout', { value: 7.90, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
+      sessionStorage.setItem('nutriplan_purchase_value', '9.90')
+      trackPixel('InitiateCheckout', { value: 9.90, currency: 'USD', content_name: 'NutriPlan' }, { eventID: `initiate_checkout_${d.order_id}` })
 
       if (process.env.NODE_ENV !== 'production') {
         await fetch('/api/dev/simulate-payment', {
@@ -993,11 +993,11 @@ export default function PreviewPage() {
         <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
-            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu NutriPlan personalizado</p>
+            <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">Tu Kit de Calibración</p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu plan está listo. Empieza a adelgazar!'
-                : isGain ? '¡Tu plan está listo. Empieza a ganar músculo!'
-                : '¡Tu NutriPlan exacto está listo!'}
+              {isLoss ? '¡Tu calendario de 28 días para bajar de peso está listo!'
+                : isGain ? '¡Tu calendario de 28 días para ganar músculo está listo!'
+                : '¡Tu Kit de Calibración exacto está listo!'}
             </p>
           </div>
 
@@ -1023,12 +1023,12 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye</p>
               <ul className="space-y-2.5">
                 {[
-                  { item: 'Tu plan personalizado con la Calibración Metabólica', value: 14 },
+                  { item: 'Tu calendario de 28 días con la Calibración Metabólica', value: 14 },
                   { item: 'Lista de compras optimizada', value: 4 },
                   { item: 'Guía de implementación', value: 3 },
                   { item: 'Sustituciones para cada comida', value: 3 },
                   { item: 'Bono: Guía Anti-Celulitis', value: 5 },
-                  { item: 'Acceso a tu panel personal + PDF', value: null },
+                  { item: 'Acceso a tu panel personal + calendario descargable', value: null },
                 ].map(({ item, value }) => (
                   <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
                     <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
@@ -1059,7 +1059,7 @@ export default function PreviewPage() {
                 Y ya gastaste más que esto en dietas y planes que nunca se adaptaron a ti.
               </p>
               <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
-              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(7.90)}</p>
+              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
               <p className="text-[13px] font-bold text-gray-700">Cuesta menos que los cafés de una semana.</p>
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
@@ -1103,7 +1103,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `Quiero mi plan ahora (${price(7.90)}) →`
+                  `Quiero mi plan ahora (${price(9.90)}) →`
                 )}
               </button>
               {fx.currency !== 'USD' && (
@@ -1203,7 +1203,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Quiero mi plan ahora (${price(7.90)}) →`
+              `Quiero mi plan ahora (${price(9.90)}) →`
             )}
           </button>
           <PaymentTrust />
@@ -1249,7 +1249,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Qué pasa si tengo dudas después de recibir mi plan?',
-    a: 'Tu plan queda guardado en tu panel personal, disponible cuando quieras consultarlo, con las sustituciones y la lista de compras siempre a mano. No es un PDF que se pierde en tu correo.',
+    a: 'Tu Kit queda guardado en tu panel personal: el calendario para marcar cada día, la lista de compras y tus comidas, siempre a mano. Y podés descargar tu calendario para pegarlo en la heladera. No es un PDF que se pierde en tu correo.',
   },
 ]
 
