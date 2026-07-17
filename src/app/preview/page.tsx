@@ -566,7 +566,7 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          {firstName ? `${firstName}, tu NutriPlan está listo` : 'Tu NutriPlan está listo · solo para ti'}
+          {firstName ? `${firstName}, tu Reto de 28 días está listo` : 'Tu Reto de 28 días está listo · solo para ti'}
         </div>
 
         {/* Promessa central — message match com o anúncio ("exactamente") + obstáculo dela */}
