@@ -652,6 +652,22 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-3">
 
+        {/* Rumiación — nombra la sensación física diaria que ella ya vive,
+            antes de cualquier prueba o mecanismo. Es la "alça pronta": no hay
+            que crear el deseo, solo reconocer lo que ya siente todos los días. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+          <p className="text-center font-display text-[16px] font-bold text-gray-900">¿Te reconocés en esto?</p>
+          <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
+            <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
+            <li>En una foto grupal, buscás quedar atrás o te tapás con el brazo.</li>
+            <li>En el camino a casa notás otra vez esa hinchazón, como un recordatorio que no se va.</li>
+            <li>Al ducharte, ves lo mismo que viste esta mañana, y sentís que hoy tampoco cambió nada.</li>
+          </ul>
+          <p className="pt-1 text-center text-[13px] font-semibold text-gray-800">
+            No es que te falte fuerza de voluntad. Es que nadie calibró un plan para lo que tu cuerpo necesita hoy.
+          </p>
+        </div>
+
         {/* Prueba social — mesmo número da bio (+2.000), repetido de propósito
             no topo pra fixar a prova na cabeça da lead antes de ver a oferta. */}
         <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
