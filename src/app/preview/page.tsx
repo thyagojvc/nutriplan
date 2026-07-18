@@ -660,6 +660,7 @@ export default function PreviewPage() {
           <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
             <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
             <li>En una foto grupal, buscás quedar atrás o te tapás con el brazo.</li>
+            <li>Ya pensaste en decir que no vas a esa reunión, con tal de no aparecer en las fotos.</li>
             <li>En el camino a casa notás otra vez esa hinchazón, como un recordatorio que no se va.</li>
             <li>Al ducharte, ves lo mismo que viste esta mañana, y sentís que hoy tampoco cambió nada.</li>
           </ul>
