@@ -150,39 +150,36 @@ const styles = StyleSheet.create({
   footer: { position: 'absolute', bottom: 22, left: 40, right: 40, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: c.border, paddingTop: 6 },
   footerText: { fontSize: 7, color: c.muted },
 
-  // Calendario de 28 días
-  calWeekTag: { fontSize: 8, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 2 },
-  calWeekCaption: { fontSize: 7.5, color: c.muted, marginBottom: 6, lineHeight: 1.3 },
-  calWeekRow: { flexDirection: 'row', gap: 6 },
-  calDayCell: { flex: 1, borderWidth: 1, borderColor: c.border, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 4, alignItems: 'center', backgroundColor: c.cream },
-  calDayNum: { fontSize: 11, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 4 },
-  calMealRow: { flexDirection: 'row', alignItems: 'center', gap: 3, marginBottom: 2, alignSelf: 'flex-start' },
-  calMealBox: { width: 7, height: 7, borderWidth: 1, borderColor: c.primary, borderRadius: 2 },
-  calMealLetter: { fontSize: 6.5, color: c.muted },
-  checkinRow: { flexDirection: 'row', gap: 12, marginTop: 6, backgroundColor: c.softBg, borderRadius: 8, paddingVertical: 6, paddingHorizontal: 10 },
-  checkinItem: { flexDirection: 'row', alignItems: 'center', gap: 4 },
-  checkinBox: { width: 9, height: 9, borderWidth: 1.2, borderColor: c.primary, borderRadius: 2 },
-  checkinLabel: { fontSize: 7.5, color: c.text },
-  weekWeight: { fontSize: 7.5, color: c.text, marginTop: 4, marginLeft: 2 },
-  milestoneBox: { borderWidth: 1, borderColor: c.primary, borderRadius: 8, padding: 10, marginBottom: 12 },
-  milestoneLabel: { fontSize: 9, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 4 },
-  milestoneLine: { fontSize: 8.5, color: c.text, marginBottom: 3 },
+  // Calendario de 28 días — layout compacto pra caber numa única página
+  // paisagem (pedido explícito: precisa ser impresso numa folha só).
+  calWeekTag: { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 3 },
+  calWeekRow: { flexDirection: 'row', gap: 5 },
+  calDayCell: { flex: 1, borderWidth: 1, borderColor: c.border, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 2, alignItems: 'center', backgroundColor: c.cream },
+  calDayNum: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 3 },
+  calMealBoxRow: { flexDirection: 'row', gap: 2.5 },
+  calMealBox: { width: 6, height: 6, borderWidth: 1, borderColor: c.primary, borderRadius: 1.5 },
+  weekFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5, backgroundColor: c.softBg, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 8 },
+  weekWeightText: { fontSize: 7.5, color: c.text },
+  checkinInlineRow: { flexDirection: 'row', gap: 9 },
+  checkinItem: { flexDirection: 'row', alignItems: 'center', gap: 3 },
+  checkinBox: { width: 7, height: 7, borderWidth: 1, borderColor: c.primary, borderRadius: 1.5 },
+  checkinLabel: { fontSize: 7, color: c.text },
+  milestoneBox: { borderWidth: 1, borderColor: c.primary, borderRadius: 6, paddingVertical: 5, paddingHorizontal: 9, marginBottom: 7 },
+  milestoneLabel: { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 2 },
+  milestoneLine: { fontSize: 8, color: c.text },
 })
 
+// Frase curta por semana (cabe na mesma linha da tag "Semana N"). Mantém o
+// arco narrativo (adaptação → ponto de abandono → ropa → constância) sem
+// gastar uma linha inteira por semana como na versão retrato anterior.
 const CAL_WEEK_CAPTIONS = [
-  'Tu cuerpo empieza a adaptarse. Es normal notar cambios pequeños todavía.',
-  'Acá es donde la mayoría abandona una dieta. Vos ya llevás 14 días marcados.',
-  'Empezás a notar la ropa distinta.',
-  'Mirá para atrás: 28 días marcados. Esa constancia es tuya.',
+  'tu cuerpo empieza a adaptarse',
+  'acá abandona la mayoría, vos seguís',
+  'ya notás la ropa distinta',
+  '28 días marcados, es tuyo',
 ]
 
 const CHECKIN_LABELS = ['Menos hinchazón', 'Más energía', 'La ropa cae mejor']
-
-// Iniciais das refeições pra marcação por comida no calendário (crédito
-// parcial: perder 1 refeição não zera o dia inteiro).
-const MEAL_INITIALS: Record<string, string> = {
-  Desayuno: 'D', Almuerzo: 'A', Cena: 'C', Snack: 'S', Merienda: 'M',
-}
 
 function SectionHead({ title }: { title: string }) {
   return (
@@ -328,8 +325,12 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         <Footer subtitle="Cómo usar tu Reto · NutriPlan" />
       </Page>
 
-      {/* ── Página: calendario de 28 días — el objeto tangible del Reto ── */}
-      <Page size="A4" style={styles.page}>
+      {/* ── Página: calendario de 28 días — el objeto tangible del Reto ──
+          Paisagem numa única página (pedido explícito, pra imprimir numa
+          folha só). Cada dia tem 4 casillas em ordem fixa: Desayuno,
+          Almuerzo, Cena, Snack — explicado uma vez na intro, sem repetir
+          letra por dia (é isso que garante caber tudo numa folha). */}
+      <Page size="A4" orientation="landscape" style={[styles.page, { paddingBottom: 30 }]}>
         <View style={styles.pageHead}>
           <View style={styles.pageHeadLeft}>
             <Leaf size={20} leaf={c.primary} vein={c.white} />
@@ -338,49 +339,47 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
           <Wordmark color={c.primary} size={11} />
         </View>
 
-        <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
-          Hoy es tu Día 1. Marca cada comida que sigas (no todo o nada: si fallas una, las demás siguen contando). Al terminar la semana, anota tu peso y cómo te sentís. En 28 días vas a tener la prueba de tu avance, hecha por vos misma.
+        <Text style={{ fontSize: 8.5, color: c.text, marginBottom: 8, lineHeight: 1.3 }}>
+          Hoy es tu Día 1. En cada día marcá las 4 casillas en orden (Desayuno, Almuerzo, Cena, Snack). No todo o nada: si falta una, las demás igual cuentan.
         </Text>
 
         <View style={styles.milestoneBox}>
           <Text style={styles.milestoneLabel}>Tu punto de partida (Día 1)</Text>
-          <Text style={styles.milestoneLine}>Mi peso hoy: __________ kg     ·     Mi cintura: __________ cm</Text>
-          <Text style={styles.milestoneLine}>Cómo me siento hoy: _____________________________________________</Text>
+          <Text style={styles.milestoneLine}>Peso: __________ kg     ·     Cintura: __________ cm     ·     Cómo me siento hoy: ________________________</Text>
         </View>
 
         {Array.from({ length: summary.cycleWeeks }).map((_, weekIdx) => (
-          <View key={weekIdx} style={{ marginBottom: 10 }}>
-            <Text style={styles.calWeekTag}>Semana {weekIdx + 1}</Text>
-            <Text style={styles.calWeekCaption}>{CAL_WEEK_CAPTIONS[weekIdx]}</Text>
+          <View key={weekIdx} style={{ marginBottom: 7 }}>
+            <Text style={styles.calWeekTag}>Semana {weekIdx + 1} · {CAL_WEEK_CAPTIONS[weekIdx]}</Text>
             <View style={styles.calWeekRow}>
               {plan.days.map((day, dayIdx) => (
                 <View key={dayIdx} style={styles.calDayCell}>
                   <Text style={styles.calDayNum}>{weekIdx * summary.cycleDays + dayIdx + 1}</Text>
-                  {day.meals.map((meal, mi) => (
-                    <View key={mi} style={styles.calMealRow}>
-                      <View style={styles.calMealBox} />
-                      <Text style={styles.calMealLetter}>{MEAL_INITIALS[meal.name] ?? meal.name.charAt(0)}</Text>
-                    </View>
-                  ))}
+                  <View style={styles.calMealBoxRow}>
+                    {day.meals.map((_, mi) => (
+                      <View key={mi} style={styles.calMealBox} />
+                    ))}
+                  </View>
                 </View>
               ))}
             </View>
-            <View style={styles.checkinRow}>
-              {CHECKIN_LABELS.map((label) => (
-                <View key={label} style={styles.checkinItem}>
-                  <View style={styles.checkinBox} />
-                  <Text style={styles.checkinLabel}>{label}</Text>
-                </View>
-              ))}
+            <View style={styles.weekFooter}>
+              <Text style={styles.weekWeightText}>Fin de semana: peso ____ kg · cintura ____ cm</Text>
+              <View style={styles.checkinInlineRow}>
+                {CHECKIN_LABELS.map((label) => (
+                  <View key={label} style={styles.checkinItem}>
+                    <View style={styles.checkinBox} />
+                    <Text style={styles.checkinLabel}>{label}</Text>
+                  </View>
+                ))}
+              </View>
             </View>
-            <Text style={styles.weekWeight}>Mi peso al terminar la semana: __________ kg     ·     Mi cintura: __________ cm</Text>
           </View>
         ))}
 
         <View style={styles.milestoneBox}>
           <Text style={styles.milestoneLabel}>Tu resultado (Día 28)</Text>
-          <Text style={styles.milestoneLine}>Mi peso ahora: __________ kg     ·     Mi cintura: __________ cm</Text>
-          <Text style={styles.milestoneLine}>Cómo me siento ahora: ____________________________________________</Text>
+          <Text style={styles.milestoneLine}>Peso: __________ kg     ·     Cintura: __________ cm     ·     Cómo me siento ahora: ________________________</Text>
         </View>
 
         <Footer subtitle="Reto de 28 días · NutriPlan" />
