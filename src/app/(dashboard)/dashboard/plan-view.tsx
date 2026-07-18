@@ -48,6 +48,27 @@ const MEAL_EMOJI: Record<string, string> = {
   Snack: '🍎',
 }
 
+// Mesma paleta suave de macros usada na /preview e no PDF de entrega, pra o
+// painel real, a página de vendas e o documento falarem a mesma língua visual
+// (em vez do vermelho/amarelo/azul genéricos de Tailwind).
+const MACRO = {
+  protein: { solid: '#C25E6B', chipBg: '#F6E6E9', chipText: '#A2434F' },
+  carb:    { solid: '#C8952F', chipBg: '#F5EAD4', chipText: '#8A6416' },
+  fat:     { solid: '#5286B0', chipBg: '#E5EEF5', chipText: '#3C6588' },
+} as const
+
+// Título de seção do painel: barra de acento à esquerda (idioma visual do
+// próprio PDF de entrega), não o tick centralizado da página de vendas — aqui
+// é uma ferramenta que se opera, não um argumento que se lê de cima a baixo.
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="flex items-center gap-2 font-display text-[17px] font-bold text-foreground">
+      <span className="h-4 w-1 shrink-0 rounded-full bg-primary" aria-hidden />
+      {children}
+    </h2>
+  )
+}
+
 interface Profile {
   age: number | null
   weightKg: number | null
@@ -86,9 +107,10 @@ export function PlanView({
     <div className="mx-auto w-full max-w-2xl space-y-6 p-4 pb-16">
 
       {/* Header */}
-      <header className="space-y-1 text-center">
-        <h1 className="text-2xl font-bold">Tu plan personalizado</h1>
-        <p className="text-sm text-muted-foreground">
+      <header className="space-y-1.5 text-center">
+        <h1 className="font-display text-[26px] font-black leading-tight text-foreground [text-wrap:balance]">Tu plan personalizado</h1>
+        <span aria-hidden className="mx-auto block h-[3px] w-8 rounded-full bg-primary/60" />
+        <p className="pt-0.5 text-sm text-muted-foreground">
           Preparado especialmente para{' '}
           <span className="font-semibold text-primary">{name || 'ti'}</span>
         </p>
@@ -122,7 +144,7 @@ export function PlanView({
       {/* Cards de perfil */}
       {profile && (
         <section className="space-y-3">
-          <h2 className="text-base font-semibold">Tu perfil</h2>
+          <SectionTitle>Tu perfil</SectionTitle>
           <div className="grid grid-cols-3 gap-2">
             <ProfileCard icon="👩" label="Edad" value={profile.age ? `${profile.age} años` : '—'} />
             <ProfileCard icon="⚖️" label="Peso" value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
@@ -138,7 +160,7 @@ export function PlanView({
       {imc && (
         <section className="space-y-3">
           <div className="flex items-center justify-between">
-            <h2 className="text-base font-semibold">Tu IMC</h2>
+            <SectionTitle>Tu IMC</SectionTitle>
             <ImcBadge imc={imc} />
           </div>
           <ImcScale imc={imc} />
@@ -153,7 +175,7 @@ export function PlanView({
 
       {/* Metabolismo */}
       <section className="space-y-3">
-        <h2 className="text-base font-semibold">Tu metabolismo</h2>
+        <SectionTitle>Tu metabolismo</SectionTitle>
         <div className="grid grid-cols-3 gap-3">
           <Metric label="TMB (reposo)" value={`${summary.bmr}`} unit="kcal"
             tooltip="Calorías que tu cuerpo necesita en reposo absoluto" />
@@ -167,17 +189,17 @@ export function PlanView({
 
       {/* Donut de macros */}
       <section className="space-y-3">
-        <h2 className="text-base font-semibold">Distribución de macros</h2>
+        <SectionTitle>Distribución de macros</SectionTitle>
         <div className="flex items-center gap-6">
           <MacroDonut macros={summary.macros} />
           <div className="space-y-2 flex-1">
-            <MacroLegend color="bg-rose-400" label="Proteína"
+            <MacroLegend color={MACRO.protein.solid} label="Proteína"
               value={`${summary.macros.proteinG}g`}
               pct={Math.round((summary.macros.proteinG * 4 / (summary.macros.proteinG * 4 + summary.macros.carbsG * 4 + summary.macros.fatG * 9)) * 100)} />
-            <MacroLegend color="bg-amber-400" label="Carbohidratos"
+            <MacroLegend color={MACRO.carb.solid} label="Carbohidratos"
               value={`${summary.macros.carbsG}g`}
               pct={Math.round((summary.macros.carbsG * 4 / (summary.macros.proteinG * 4 + summary.macros.carbsG * 4 + summary.macros.fatG * 9)) * 100)} />
-            <MacroLegend color="bg-blue-400" label="Grasas"
+            <MacroLegend color={MACRO.fat.solid} label="Grasas"
               value={`${summary.macros.fatG}g`}
               pct={Math.round((summary.macros.fatG * 9 / (summary.macros.proteinG * 4 + summary.macros.carbsG * 4 + summary.macros.fatG * 9)) * 100)} />
           </div>
@@ -193,9 +215,7 @@ export function PlanView({
 
       {/* Seletor de dias */}
       <section className="space-y-3">
-        <h2 className="text-lg font-semibold">
-          {is4Week ? 'Tu plan de 4 semanas' : 'Tu plan semanal'}
-        </h2>
+        <SectionTitle>{is4Week ? 'Tu plan de 4 semanas' : 'Tu plan semanal'}</SectionTitle>
 
         {is4Week ? (
           <div className="space-y-2">
@@ -274,13 +294,13 @@ export function PlanView({
                 {meal.items.map((item, j) => {
                   const imgUrl = getFoodImageUrl(item.food)
                   return (
-                  <div key={j} className="flex items-center gap-3 px-3 py-2">
+                  <div key={j} className="flex items-center gap-3 px-3 py-2.5">
                     {imgUrl && (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img
                         src={imgUrl}
                         alt={item.food}
-                        className="w-12 h-12 rounded-lg object-cover shrink-0"
+                        className="h-14 w-14 shrink-0 rounded-xl border border-border object-cover shadow-sm"
                         loading="lazy"
                         onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
                       />
@@ -290,9 +310,9 @@ export function PlanView({
                       <p className="text-xs text-muted-foreground">{item.quantity}</p>
                     </div>
                     <div className="flex shrink-0 gap-1">
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-rose-100 text-rose-700">{item.proteinG}P</span>
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-amber-100 text-amber-700">{item.carbsG}C</span>
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold bg-blue-100 text-blue-700">{item.fatG}G</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.protein.chipBg, color: MACRO.protein.chipText }}>{item.proteinG}P</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.carb.chipBg, color: MACRO.carb.chipText }}>{item.carbsG}C</span>
+                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.fat.chipBg, color: MACRO.fat.chipText }}>{item.fatG}G</span>
                     </div>
                   </div>
                   )
@@ -413,13 +433,13 @@ function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fa
     <svg className="-rotate-90 shrink-0" width="110" height="110" viewBox="0 0 110 110">
       <circle cx="55" cy="55" r={r} fill="none" stroke="hsl(var(--muted))" strokeWidth="12" />
       {/* Proteína */}
-      <circle cx="55" cy="55" r={r} fill="none" stroke="#fb7185" strokeWidth="12"
+      <circle cx="55" cy="55" r={r} fill="none" stroke={MACRO.protein.solid} strokeWidth="12"
         strokeDasharray={`${pLen} ${circ}`} strokeDashoffset={circ} strokeLinecap="butt" />
       {/* Carbos */}
-      <circle cx="55" cy="55" r={r} fill="none" stroke="#fbbf24" strokeWidth="12"
+      <circle cx="55" cy="55" r={r} fill="none" stroke={MACRO.carb.solid} strokeWidth="12"
         strokeDasharray={`${cLen} ${circ}`} strokeDashoffset={circ - pLen} strokeLinecap="butt" />
       {/* Grasas */}
-      <circle cx="55" cy="55" r={r} fill="none" stroke="#60a5fa" strokeWidth="12"
+      <circle cx="55" cy="55" r={r} fill="none" stroke={MACRO.fat.solid} strokeWidth="12"
         strokeDasharray={`${fLen} ${circ}`} strokeDashoffset={circ - pLen - cLen} strokeLinecap="butt" />
     </svg>
   )
@@ -428,7 +448,7 @@ function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fa
 function MacroLegend({ color, label, value, pct }: { color: string; label: string; value: string; pct: number }) {
   return (
     <div className="flex items-center gap-2 text-sm">
-      <div className={`h-3 w-3 rounded-full shrink-0 ${color}`} />
+      <div className="h-3 w-3 shrink-0 rounded-full" style={{ backgroundColor: color }} />
       <span className="text-muted-foreground flex-1">{label}</span>
       <span className="font-medium">{value}</span>
       <span className="text-xs text-muted-foreground w-8 text-right">({pct}%)</span>
@@ -476,7 +496,7 @@ function MetabolismExplain({ goal, tdee, target }: { goal: string; tdee: number;
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="space-y-2">
-      <h2 className="text-lg font-semibold">{title}</h2>
+      <SectionTitle>{title}</SectionTitle>
       {children}
     </section>
   )
