@@ -119,6 +119,38 @@ const MEAL_EMOJI: Record<string, string> = {
   Desayuno: '☀️', Almuerzo: '🍽️', Cena: '🌙', Snack: '🍎',
 }
 
+// Paleta única de macros — tons suaves alinhados ao PDF de entrega (em vez de
+// vermelho/verde/amarelo genéricos de Tailwind), pra web e produto falarem a
+// mesma língua visual.
+const MACRO = {
+  protein: { solid: '#C25E6B', chipBg: '#F6E6E9', chipText: '#A2434F' },
+  carb:    { solid: '#C8952F', chipBg: '#F5EAD4', chipText: '#8A6416' },
+  fat:     { solid: '#5286B0', chipBg: '#E5EEF5', chipText: '#3C6588' },
+} as const
+
+// Título de seção editorial. O "tick" curto sob o título ecoa uma marca de
+// régua/medição — assinatura visual ligada ao mecanismo "Calibración". Cards de
+// dados (componente Card) usam header próprio, mantendo a hierarquia distinta.
+function SectionHeading({
+  title,
+  subtitle,
+  className,
+}: {
+  title: React.ReactNode
+  subtitle?: React.ReactNode
+  className?: string
+}) {
+  return (
+    <div className={['text-center', className].filter(Boolean).join(' ')}>
+      <h2 className="font-display text-[20px] font-black leading-tight text-gray-900 [text-wrap:balance]">{title}</h2>
+      <span aria-hidden className="mx-auto mt-2 block h-[3px] w-8 rounded-full bg-primary/60" />
+      {subtitle ? (
+        <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-muted-foreground">{subtitle}</p>
+      ) : null}
+    </div>
+  )
+}
+
 // Uma refeição do teaser — amostra real do Día 1, montada com as likes do usuário.
 function TeaserMeal({ meal }: { meal: SampleMeal }) {
   const totals = meal.items.reduce(
@@ -154,9 +186,9 @@ function TeaserMeal({ meal }: { meal: SampleMeal }) {
                 <p className="text-[13px] text-muted-foreground">{it.qty}</p>
               </div>
               <div className="flex shrink-0 gap-1">
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-rose-100 text-rose-700">{it.proteinG}P</span>
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-amber-100 text-amber-700">{it.carbsG}C</span>
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold bg-blue-100 text-blue-700">{it.fatG}G</span>
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.protein.chipBg, color: MACRO.protein.chipText }}>{it.proteinG}P</span>
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.carb.chipBg, color: MACRO.carb.chipText }}>{it.carbsG}C</span>
+                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.fat.chipBg, color: MACRO.fat.chipText }}>{it.fatG}G</span>
               </div>
             </div>
           )
@@ -650,13 +682,13 @@ export default function PreviewPage() {
       </div>
 
       {/* ── Contenido ─────────────────────────────────────────── */}
-      <div className="w-full max-w-lg px-4 pb-24 space-y-3">
+      <div className="w-full max-w-lg px-4 pb-24 space-y-5">
 
         {/* Rumiación — nombra la sensación física diaria que ella ya vive,
             antes de cualquier prueba o mecanismo. Es la "alça pronta": no hay
             que crear el deseo, solo reconocer lo que ya siente todos los días. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center font-display text-[16px] font-bold text-gray-900">¿Te reconocés en esto?</p>
+          <SectionHeading title="¿Te reconocés en esto?" />
           <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
             <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
             <li>En una foto grupal, buscás quedar atrás o te tapás con el brazo.</li>
@@ -728,7 +760,7 @@ export default function PreviewPage() {
             acabou de ver (metabolismo/meta), pra dar contexto de onde vieram. Visual
             de timeline (não checklist) pra não repetir os cards brancos de mais abaixo. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5">
-          <p className="mb-4 text-center font-display text-[16px] font-bold text-gray-900">Así se armó tu NutriPlan</p>
+          <SectionHeading title="Así se armó tu plan" className="mb-4" />
           <div>
             {[
               {
@@ -768,9 +800,9 @@ export default function PreviewPage() {
           <div className="flex items-center gap-5">
             <MacroDonut macros={targets.macros} />
             <div className="flex-1 space-y-2.5">
-              <MacroRow color="#EF4444" label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
-              <MacroRow color="#22C55E" label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
-              <MacroRow color="#FACC15" label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
+              <MacroRow color={MACRO.protein.solid} label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
+              <MacroRow color={MACRO.carb.solid}    label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
+              <MacroRow color={MACRO.fat.solid}     label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
             </div>
           </div>
           {training?.frequency && (
@@ -917,9 +949,7 @@ export default function PreviewPage() {
 
         {/* Social proof */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center font-display text-[16px] font-bold text-gray-900">
-            Lo que dicen quienes ya lo tienen
-          </p>
+          <SectionHeading title="Lo que dicen quienes ya lo tienen" />
           {[
             { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 7 kilos en 3 meses y empecé a marcar, y lo que no me esperaba es que fue sin pasar hambre.' },
             { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 2 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.' },
@@ -949,7 +979,7 @@ export default function PreviewPage() {
 
         {/* Lo que NO necesitas — remove a autodesqualificação antes da oferta */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center font-display text-[16px] font-bold text-gray-900">Lo que NO necesitas para empezar</p>
+          <SectionHeading title="Lo que NO necesitas para empezar" />
           <ul className="space-y-2.5">
             {[
               ['No necesitas horas para cocinar', 'El plan se resuelve rápido, pensado para tu rutina.'],
@@ -969,7 +999,7 @@ export default function PreviewPage() {
 
         {/* ¿Es para ti? — qualificação (dobra "pra quem é"), coluna negativa suave */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <p className="text-center font-display text-[16px] font-bold text-gray-900">¿Es este plan para ti?</p>
+          <SectionHeading title="¿Es este plan para ti?" />
           <div>
             <p className="mb-2 text-[13px] font-bold text-primary">Sí, si…</p>
             <ul className="space-y-2">
@@ -1010,10 +1040,10 @@ export default function PreviewPage() {
             o loop diário que produz a transformação. Era a peça que faltava:
             liga o mecanismo (Calibración) ao comportamento (marcar) ao resultado. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <div className="text-center">
-            <p className="font-display text-[16px] font-bold text-gray-900">Cómo funciona tu Reto de 28 días</p>
-            <p className="mt-1 text-[13px] text-muted-foreground">Un sistema, no una dieta más. Esto es lo que vas a hacer:</p>
-          </div>
+          <SectionHeading
+            title="Cómo funciona tu Reto de 28 días"
+            subtitle="Un sistema, no una dieta más. Esto es lo que vas a hacer:"
+          />
           <ol className="space-y-3">
             {[
               { icon: <Gauge className="h-4 w-4" />, t: 'Calibrás tu metabolismo', d: 'Con tus datos del quiz, calculamos exactamente lo que tu cuerpo necesita.' },
@@ -1055,7 +1085,7 @@ export default function PreviewPage() {
             />
           </div>
           <div className="space-y-1.5 p-5 text-center">
-            <p className="font-display text-[16px] font-bold text-gray-900">Así vas a vivir tu Reto</p>
+            <SectionHeading title="Así vas a vivir tu Reto" />
             <p className="text-[13px] leading-relaxed text-muted-foreground">
               Recibís tu plan de comidas y este calendario de 28 días juntos, el sistema completo, no una pieza suelta.
             </p>
@@ -1268,7 +1298,7 @@ export default function PreviewPage() {
         {/* Después de comprar — tira o susto da transição pro checkout da Hotmart,
             onde hoje muita gente some. Deixa explícito que o acesso é imediato. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <p className="text-center font-display text-[16px] font-bold text-gray-900">Después de comprar</p>
+          <SectionHeading title="Después de comprar" />
           <ul className="space-y-3">
             {[
               ['1', 'Pagas seguro', 'Vas a una página de pago protegida y eliges cómo pagar.'],
@@ -1606,9 +1636,9 @@ function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fa
   const pK = macros.proteinG * 4, cK = macros.carbsG * 4, fK = macros.fatG * 9
   const total = pK + cK + fK || 1
   const segs = [
-    { color: '#EF4444', len: (pK / total) * circ }, // Proteína
-    { color: '#22C55E', len: (cK / total) * circ }, // Carbohidratos
-    { color: '#FACC15', len: (fK / total) * circ }, // Grasas
+    { color: MACRO.protein.solid, len: (pK / total) * circ }, // Proteína
+    { color: MACRO.carb.solid,    len: (cK / total) * circ }, // Carbohidratos
+    { color: MACRO.fat.solid,     len: (fK / total) * circ }, // Grasas
   ]
   let acc = 0
   const arcs = segs.map((s) => {

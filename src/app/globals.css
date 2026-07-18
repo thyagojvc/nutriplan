@@ -65,6 +65,13 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+  /* Foco visível por teclado (piso de acessibilidade) — só no foco por teclado,
+     não no clique, pra não poluir a navegação por mouse. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--primary));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* Animação de entrada dos cards do quiz */
