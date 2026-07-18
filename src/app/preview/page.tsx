@@ -1056,10 +1056,13 @@ export default function PreviewPage() {
           <div className="space-y-1.5 p-5 text-center">
             <p className="font-display text-[16px] font-bold text-gray-900">Así vas a vivir tu Reto</p>
             <p className="text-[13px] leading-relaxed text-muted-foreground">
+              Recibís tu plan de comidas y este calendario de 28 días juntos, el sistema completo, no una pieza suelta.
+            </p>
+            <p className="text-[13px] leading-relaxed text-muted-foreground">
               Lo pegás en la heladera y marcás cada comida, cada día. No es todo o nada: si te falta una, las demás igual cuentan.
             </p>
             <p className="pt-1 text-[13px] font-semibold text-gray-800">
-              Este es el segundo componente de tu transformación: ver tu constancia crecer, semana a semana.
+              El plan te dice qué comer. El calendario te muestra que está funcionando.
             </p>
           </div>
         </div>
