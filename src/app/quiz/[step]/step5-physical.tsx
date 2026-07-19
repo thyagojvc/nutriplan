@@ -161,6 +161,13 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         </p>
       </div>
 
+      {/* Linha de motivação pra iniciar — reforça a promessa em número concreto
+          antes de pedir o primeiro dado digitado (ver histórico de abandono
+          na entrada em quiz-step.tsx). */}
+      <p className="text-center text-[13px] leading-relaxed text-gray-700 px-1">
+        En menos de 60 segundos vas a tener un número exacto: cuántas calorías tu cuerpo necesita hoy para bajar de peso, sin dietas genéricas de internet.
+      </p>
+
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
