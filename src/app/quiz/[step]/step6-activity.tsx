@@ -3,7 +3,12 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
-import { calcBMR } from '@/lib/nutrition/math'
+
+const GOAL_LABEL: Record<string, string> = {
+  perder_peso: 'perder peso',
+  mantener: 'mantener tu peso',
+  ganar_masa: 'ganar masa muscular',
+}
 
 const PRICED_COUNTRIES = new Set(['MX', 'CO', 'CL', 'ES'])
 
@@ -42,18 +47,13 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Calcula o metabolismo basal com os dados dos passos anteriores (sexo +
-  // dados físicos) e mostra o número real antes da próxima pergunta — mesma
-  // matemática determinística do restante do produto (src/lib/nutrition/math.ts).
-  const [bmr] = useState<number | null>(() => {
+  // Confirma o objetivo (respondido no passo anterior) antes da pergunta atual.
+  const [goal] = useState<string | null>(() => {
     if (typeof window === 'undefined') return null
     try {
-      const sexCached = sessionStorage.getItem('nutriplan_step_4')
-      const sex = (sexCached ? (JSON.parse(sexCached) as { sex?: string }).sex : null)
-      const physCached = sessionStorage.getItem('nutriplan_step_5')
-      const phys = physCached ? (JSON.parse(physCached) as { age?: number; weight_kg?: number; height_cm?: number }) : {}
-      if (!sex || !phys.age || !phys.weight_kg || !phys.height_cm) return null
-      return Math.round(calcBMR(sex === 'masculino' ? 'male' : 'female', phys.weight_kg, phys.height_cm, phys.age))
+      const cached = sessionStorage.getItem('nutriplan_step_2')
+      const parsed = cached ? (JSON.parse(cached) as { goal?: string }) : {}
+      return parsed.goal ?? null
     } catch { return null }
   })
 
@@ -92,7 +92,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
         body: JSON.stringify({ step: 7, answers: { country: dbCountry, country_detail: detectedCountry ?? null }, country: dbCountry }),
       }).catch(() => {})
 
-      router.push('/quiz/8')
+      router.push('/quiz/4') // → sexo biológico
     } catch {
       setError(true)
       setSaving(false)
@@ -109,7 +109,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
 
       <QuizCard>
         <QuizHeader
-          confirm={bmr ? `Tu Calibración Metabólica ya calculó tu metabolismo basal: ${bmr} kcal/día. Ahora tu rutina diaria.` : undefined}
+          confirm={goal ? `Objetivo registrado: ${GOAL_LABEL[goal] ?? goal}. Ahora, tu rutina diaria.` : undefined}
           title="¿Cómo es tu rutina diaria, más allá del ejercicio?"
           subtitle="Esto determina cuántas calorías necesitas cada día. Sobre tu entrenamiento te preguntamos más adelante."
         />

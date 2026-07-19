@@ -30,6 +30,16 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
+  // Confirma os alimentos favoritos (respondido no passo anterior) antes da pergunta atual.
+  const [likesCount] = useState<number>(() => {
+    if (typeof window === 'undefined') return 0
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_1')
+      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
+      return parsed.likes?.length ?? 0
+    } catch { return 0 }
+  })
+
   function handleSelect(id: string) {
     setSelected(id)
     // sessionStorage pode falhar (ex: navegador interno do Instagram/Facebook
@@ -52,7 +62,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 2, answers: { goal } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
-      router.push('/quiz/1') // → alimentos favoritos
+      router.push('/quiz/6') // → nivel de actividad
     } catch {
       setError(true)
       setSaving(false)
@@ -69,6 +79,11 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
+          confirm={
+            likesCount > 0
+              ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora, tu objetivo.`
+              : 'Preferencias registradas. Ahora, tu objetivo.'
+          }
           title="¿Cuál es tu objetivo principal?"
           subtitle="Tu plan será completamente diferente según lo que elijas."
         />

@@ -29,14 +29,14 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Confirma os alimentos favoritos (respondido no passo anterior) antes da pergunta atual.
-  const [likesCount] = useState<number>(() => {
-    if (typeof window === 'undefined') return 0
+  // Confirma a rutina diaria (respondida no passo anterior) antes da pergunta atual.
+  const [activityDone] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
     try {
-      const cached = sessionStorage.getItem('nutriplan_step_1')
-      const parsed = cached ? (JSON.parse(cached) as { likes?: string[] }) : {}
-      return parsed.likes?.length ?? 0
-    } catch { return 0 }
+      const cached = sessionStorage.getItem('nutriplan_step_6')
+      const parsed = cached ? (JSON.parse(cached) as { activity_level?: string }) : {}
+      return !!parsed.activity_level
+    } catch { return false }
   })
 
   function handleSelect(id: string) {
@@ -61,7 +61,7 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 4, answers: { sex } }),
       })
       if (!res.ok) { setError(true); setSaving(false); return }
-      router.push('/quiz/6') // → nivel de actividad
+      router.push('/quiz/8') // → restricciones alimentarias
     } catch {
       setError(true)
       setSaving(false)
@@ -78,11 +78,7 @@ export function Step4Sex({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <QuizHeader
-          confirm={
-            likesCount > 0
-              ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora tu sexo biológico.`
-              : 'Preferencias registradas. Ahora tu sexo biológico.'
-          }
+          confirm={activityDone ? 'Rutina registrada. Ahora, tu sexo biológico.' : undefined}
           title="¿Cuál es tu sexo biológico?"
           subtitle="Lo necesitamos para calcular tu metabolismo basal con precisión."
         />

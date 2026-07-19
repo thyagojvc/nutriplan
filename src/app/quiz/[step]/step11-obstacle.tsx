@@ -1,11 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
-import { trackDualOnce } from '@/lib/fb-pixel'
-
-const EXIT_FLAG = 'nutriplan_exit_intent_shown'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
 
 const OPTIONS = [
   { id: 'falta_tiempo',      label: 'Falta de tiempo',         desc: 'Mi agenda está siempre llena',                emoji: '⏰' },
@@ -35,46 +32,16 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
 
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
-  const [showExitModal, setShowExitModal] = useState(false)
 
-  // Ref pra o listener de popstate ler o estado mais recente sem cair em
-  // closure obsoleta (o listener é registrado uma única vez, no mount).
-  const stateRef = useRef({ selected, saving })
-  useEffect(() => { stateRef.current = { selected, saving } }, [selected, saving])
-
-  // Intercepta o botão "voltar" só nesta primeira pregunta (URL de entrada dos
-  // anúncios, ver nota em quiz-step.tsx), que é onde mais gente abandona sem
-  // sequer responder nada. Empilha uma entrada extra no histórico: o primeiro
-  // "voltar" fica retido aqui (mostra o modal), o segundo já deixa sair normal,
-  // pra não virar uma prisão de botão. guardPushedRef evita empilhar 2x: em dev
-  // o Strict Mode roda este efeito duas vezes (mount → cleanup → mount) só pra
-  // flagar efeitos colaterais não-idempotentes como este pushState.
-  const guardPushedRef = useRef(false)
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    if (sessionStorage.getItem(EXIT_FLAG) === '1') return
-    if (stateRef.current.selected.length > 0) return
-
-    if (!guardPushedRef.current) {
-      guardPushedRef.current = true
-      window.history.pushState(null, '', window.location.href)
-    }
-
-    function handlePopState() {
-      if (stateRef.current.selected.length > 0 || stateRef.current.saving) return
-      if (sessionStorage.getItem(EXIT_FLAG) === '1') return
-      sessionStorage.setItem(EXIT_FLAG, '1')
-      setShowExitModal(true)
-    }
-
-    window.addEventListener('popstate', handlePopState)
-    return () => window.removeEventListener('popstate', handlePopState)
-  }, [])
-
-  function handleLeaveAnyway() {
-    setShowExitModal(false)
-    router.back()
-  }
+  // Confirma que o exercício (passo anterior) foi registrado antes da pergunta atual.
+  const [exerciseDone] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_10')
+      const parsed = cached ? (JSON.parse(cached) as { experience?: string }) : {}
+      return !!parsed.experience
+    } catch { return false }
+  })
 
   function toggle(id: string) {
     setSelected((prev) => {
@@ -97,12 +64,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 11, answers: { obstacles: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta, agora esta).
-      // Junto com o QuizStart (dispara no landing), permite montar no Meta o
-      // público de exclusão "clicou no link mas não iniciou" = QuizStart
-      // EXCLUDE QuizFirstAnswer.
-      trackDualOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
-      router.push('/quiz/2') // → objetivo
+      router.push('/quiz/13') // → incómodo corporal
     } catch {
       setError(true)
     } finally {
@@ -116,16 +78,9 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-      {/* Promessa de entrada — só aparece neste passo, que é o início do quiz */}
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
-        <span className="text-base">⏱️</span>
-        <p className="text-[13px] font-bold leading-snug text-primary">
-          Responde este quiz de 60 segundos y recibe tu plan y tu entrenamiento personalizados
-        </p>
-      </div>
-
       <QuizCard>
         <QuizHeader
+          confirm={exerciseDone ? 'Ejercicio registrado. Ahora, tus obstáculos.' : undefined}
           title="¿Cuáles son tus mayores obstáculos para mejorar tu alimentación?"
           subtitle="Selecciona todos los que apliquen — tu plan los tomará en cuenta."
         />
@@ -155,10 +110,6 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
       <QuizCta onClick={handleContinue} disabled={selected.length === 0} loading={saving}>
         Continuar
       </QuizCta>
-
-      {showExitModal && (
-        <ExitIntentModal onStay={() => setShowExitModal(false)} onLeave={handleLeaveAnyway} />
-      )}
     </QuizLayout>
   )
 }

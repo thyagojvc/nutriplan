@@ -101,34 +101,31 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   const props = { stepNumber: displayStep, totalSteps: displayTotal }
 
   // NOTA: a URL /quiz/5 é a porta de entrada dos anúncios e por isso renderiza o
-  // 1º passo do fluxo. REVERTIDO em 14/07: dado real (antes/depois) mostrou que
-  // comecar pelo objetivo caiu a taxa de quem sequer inicia o quiz, entao volta
-  // pra ordem original: 1º dados físicos, 2º objetivo, 3º alimentos, 4º sexo.
-  // Por isso o conteúdo das URLs segue trocado em relação ao número: URL 5→físico,
-  // URL 2→objetivo, URL 4→sexo. As chaves de dados continuam fixas por
-  // componente (goal→step_2, sexo→step_4, físico→step_5), sem afetar geração.
+  // 1º passo do fluxo.
   //
-  // 15/07: trocado de novo — URL 5 (entrada) agora renderiza OBSTÁCULO (Step11Obstacle)
-  // em vez de dados físicos. Motivo: abrir pedindo peso/idade (dado emocionalmente
-  // caro, digitado) juntava as duas piores fricções possíveis na 1ª tela. Obstáculo
-  // é toque único, valida a dor em vez de expor a pessoa, e alimenta a personalização
-  // do hero da preview. Dados físicos (Step5Physical) foi pro lugar que era do
-  // obstáculo (URL 11), depois de 8 perguntas de investimento.
+  // 19/07: reordenado pra bater com o anúncio (promete "plano + treino
+  // personalizados em 60s"). A entrada (URL 5) agora renderiza DADOS FÍSICOS
+  // (Step5Physical): idade/peso/altura. Depois alimentos (1), objetivo (2),
+  // atividade (6), e o resto. Com isso o mapeamento URL→componente voltou a ser
+  // NATURAL (URL N = StepN), sem os swaps 5↔11 anteriores.
+  // As features de "página de entrada" (banner dos 60s, exit-intent no botão
+  // voltar, evento QuizFirstAnswer) migraram do obstáculo pra Step5Physical, que
+  // é a nova 1ª tela.
   // IMPORTANTE: as chaves de dados continuam fixas por COMPONENTE, não por URL —
-  // Step11Obstacle sempre salva em step_11 e Step5Physical em step_5, não importa
-  // qual URL os renderiza. Só o router.push de cada um foi trocado (ver dentro de
-  // cada arquivo) pra manter a sequência de navegação idêntica à anterior.
+  // cada Step sempre salva na sua chave (físico→step_5, obstáculo→step_11 etc.),
+  // então a preview e o cálculo não são afetados pela reordenação. Só o
+  // router.push de cada passo muda pra formar a nova sequência (ver cada arquivo).
   if (stepNumber === 1)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 2)  return <Step2Goal {...props} />
   if (stepNumber === 3)  return <Step3MustHave {...props} />
   if (stepNumber === 4)  return <Step4Sex {...props} />
-  if (stepNumber === 5)  return <Step11Obstacle {...props} />
+  if (stepNumber === 5)  return <Step5Physical {...props} />
   if (stepNumber === 6)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
   if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
   if (stepNumber === 8)  return <Step8Restrictions {...props} />
   if (stepNumber === 9)  return <Step9Health {...props} />
   if (stepNumber === 10) return <Step10Exercise {...props} />
-  if (stepNumber === 11) return <Step5Physical {...props} />
+  if (stepNumber === 11) return <Step11Obstacle {...props} />
   if (stepNumber === 13) return <Step13BodyConcern {...props} />
   return <Step12Form {...props} />
 }

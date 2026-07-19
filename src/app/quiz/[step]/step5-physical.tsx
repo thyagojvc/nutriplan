@@ -1,15 +1,11 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizInput, QuizCta, QuizError } from './quiz-ui'
+import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizInput, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
+import { trackDualOnce } from '@/lib/fb-pixel'
 
-const EXPERIENCE_LABEL: Record<string, string> = {
-  no_ejercicio: 'Registramos que no haces ejercicio hoy.',
-  principiante: 'Nivel principiante registrado.',
-  intermedio: 'Nivel intermedio registrado.',
-  avanzado: 'Nivel avanzado registrado.',
-}
+const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
 interface PhysicalData {
   age: string
@@ -22,6 +18,11 @@ interface Props {
   totalSteps: number
 }
 
+// 19/07: Step5Physical é a PORTA DE ENTRADA do quiz (URL /quiz/5, pra onde os
+// anúncios apontam). Por isso concentra as features de 1ª tela: banner da
+// promessa dos 60s, exit-intent no botão voltar (maior ponto de abandono é quem
+// clica no anúncio e nem responde nada) e o evento QuizFirstAnswer ao concluir a
+// 1ª pergunta. Antes essas features viviam no obstáculo, que era a entrada.
 export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const router = useRouter()
 
@@ -41,16 +42,47 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   const [ageBlocked, setAgeBlocked] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
+  const [showExitModal, setShowExitModal] = useState(false)
 
-  // Confirma a experiência de exercício respondida no passo anterior (URL 10).
-  const [exerciseConfirm] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
-    try {
-      const cached = sessionStorage.getItem('nutriplan_step_10')
-      const parsed = cached ? (JSON.parse(cached) as { experience?: string }) : {}
-      return parsed.experience ? EXPERIENCE_LABEL[parsed.experience] ?? null : null
-    } catch { return null }
-  })
+  const isEmpty = !data.age && !data.weight_kg && !data.height_cm
+
+  // Ref pra o listener de popstate ler o estado mais recente sem cair em
+  // closure obsoleta (o listener é registrado uma única vez, no mount).
+  const stateRef = useRef({ isEmpty, saving })
+  useEffect(() => { stateRef.current = { isEmpty, saving } }, [isEmpty, saving])
+
+  // Intercepta o botão "voltar" só nesta primeira pregunta (URL de entrada dos
+  // anúncios), que é onde mais gente abandona sem sequer responder nada. Empilha
+  // uma entrada extra no histórico: o primeiro "voltar" fica retido aqui (mostra
+  // o modal), o segundo já deixa sair normal, pra não virar uma prisão de botão.
+  // guardPushedRef evita empilhar 2x: em dev o Strict Mode roda este efeito duas
+  // vezes (mount → cleanup → mount) só pra flagar efeitos colaterais não-idempotentes.
+  const guardPushedRef = useRef(false)
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    if (sessionStorage.getItem(EXIT_FLAG) === '1') return
+    if (!stateRef.current.isEmpty) return
+
+    if (!guardPushedRef.current) {
+      guardPushedRef.current = true
+      window.history.pushState(null, '', window.location.href)
+    }
+
+    function handlePopState() {
+      if (!stateRef.current.isEmpty || stateRef.current.saving) return
+      if (sessionStorage.getItem(EXIT_FLAG) === '1') return
+      sessionStorage.setItem(EXIT_FLAG, '1')
+      setShowExitModal(true)
+    }
+
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  function handleLeaveAnyway() {
+    setShowExitModal(false)
+    router.back()
+  }
 
   function handleChange(field: keyof PhysicalData, val: string) {
     const next = { ...data, [field]: val }
@@ -86,7 +118,11 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         body: JSON.stringify({ step: 5, answers: { age, weight_kg: weight, height_cm: height } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/13') // → incómodo corporal
+      // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta). Junto com o
+      // QuizStart (dispara no landing), permite montar no Meta o público de
+      // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
+      trackDualOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
+      router.push('/quiz/1') // → alimentos favoritos
     } catch {
       setError(true)
     } finally {
@@ -117,11 +153,18 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
+      {/* Promessa de entrada — só aparece neste passo, que é o início do quiz */}
+      <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
+        <span className="text-base">⏱️</span>
+        <p className="text-[13px] font-bold leading-snug text-primary">
+          Responde este quiz de 60 segundos y recibe tu plan y tu entrenamiento personalizados
+        </p>
+      </div>
+
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
-            confirm={exerciseConfirm ? `${exerciseConfirm} Ahora tus datos físicos.` : undefined}
-            title="Tus datos físicos"
+            title="Empecemos con tus datos físicos"
             subtitle="Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
           />
 
@@ -172,6 +215,10 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
         <QuizCta type="submit" disabled={!isValid} loading={saving} />
       </form>
+
+      {showExitModal && (
+        <ExitIntentModal onStay={() => setShowExitModal(false)} onLeave={handleLeaveAnyway} />
+      )}
     </QuizLayout>
   )
 }

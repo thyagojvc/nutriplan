@@ -7,12 +7,6 @@ import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, Quiz
 interface FoodItem { id: string; label: string; emoji: string }
 interface FoodGroup { title: string; items: FoodItem[] }
 
-const GOAL_LABEL: Record<string, string> = {
-  perder_peso: 'perder peso',
-  mantener: 'mantener tu peso',
-  ganar_masa: 'ganar masa muscular',
-}
-
 // Grupos base (ids batem com o catálogo em food-catalog.ts)
 const BASE_GROUPS: FoodGroup[] = [
   {
@@ -129,14 +123,15 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState(false)
 
-  // Confirma o objetivo (respondido no passo anterior) antes da pergunta atual.
-  const [goal] = useState<string | null>(() => {
-    if (typeof window === 'undefined') return null
+  // Confirma que os dados físicos (passo anterior) foram registrados antes da
+  // pergunta atual.
+  const [physicalDone] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return false
     try {
-      const cached = sessionStorage.getItem('nutriplan_step_2')
-      const parsed = cached ? (JSON.parse(cached) as { goal?: string }) : {}
-      return parsed.goal ?? null
-    } catch { return null }
+      const cached = sessionStorage.getItem('nutriplan_step_5')
+      const parsed = cached ? (JSON.parse(cached) as { age?: number }) : {}
+      return !!parsed.age
+    } catch { return false }
   })
 
   function toggle(id: string) {
@@ -163,7 +158,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
         body: JSON.stringify({ step: 1, answers: { likes: selected } }),
       })
       if (!res.ok) { setError(true); return }
-      router.push('/quiz/4') // → sexo
+      router.push('/quiz/2') // → objetivo
     } catch {
       setError(true)
     } finally {
@@ -180,7 +175,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
           <QuizHeader
-            confirm={goal ? `Objetivo registrado: ${GOAL_LABEL[goal] ?? goal}. Ahora, lo que te gusta comer.` : undefined}
+            confirm={physicalDone ? 'Datos registrados. Ahora, lo que te gusta comer.' : undefined}
             title={
               <>
                 ¿Qué alimentos te <span className="text-primary">gusta</span> comer?
