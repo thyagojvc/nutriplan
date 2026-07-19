@@ -3,8 +3,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  User, Gauge, Flame, PieChart, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Coffee, Check, Lock, RotateCcw, X, CalendarCheck,
+  User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Check, Lock, RotateCcw, X, CalendarCheck, BadgeCheck,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -43,18 +43,6 @@ const ACTIVITY_LABEL: Record<string, string> = {
   muy_activo: 'Muy activo',
 }
 
-const TRAINING_LOCATION_LABEL: Record<string, string> = {
-  casa: 'en casa',
-  gimnasio: 'en el gimnasio',
-  aire_libre: 'al aire libre',
-}
-
-const TRAINING_FREQUENCY_LABEL: Record<string, string> = {
-  '1_2': '1-2 días por semana',
-  '3_4': '3-4 días por semana',
-  '5_mas': '5+ días por semana',
-}
-
 // Cada obstáculo do step 11 reformulado como benefício (não repete a palavra
 // literal da opção do quiz). Usado no hero para conectar com o objetivo dela.
 const OBSTACLE_HERO_PHRASE: Record<string, string> = {
@@ -90,10 +78,14 @@ function buildHeroPromise(goal: string, obstacles: string[]): string {
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
 const RESULTS = [
-  { photo: '/resultados/caso-1.png', name: 'Camila',   country: '🇲🇽', age: 38, result: '−17 kg en 8 meses', w: 414, h: 444 },
-  { photo: '/resultados/caso-2.png', name: 'Daniela',  country: '🇨🇴', age: 31, result: '−6 kg en 2 meses',  w: 410, h: 433 },
-  { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses',  w: 402, h: 430 },
-  { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
+  {
+    photo: '/resultados/caso-1.png', name: 'Camila', country: '🇲🇽', age: 38, result: '−17 kg en 8 meses', w: 414, h: 444,
+    quote: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 3 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.',
+  },
+  {
+    photo: '/resultados/caso-2.png', name: 'Daniela', country: '🇨🇴', age: 31, result: '−6 kg en 2 meses', w: 410, h: 433,
+    quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 6 kilos en 2 meses, y lo que no me esperaba es que fue sin pasar hambre.',
+  },
 ]
 
 interface PreviewData {
@@ -119,15 +111,6 @@ const MEAL_EMOJI: Record<string, string> = {
   Desayuno: '☀️', Almuerzo: '🍽️', Cena: '🌙', Snack: '🍎',
 }
 
-// Paleta única de macros — tons suaves alinhados ao PDF de entrega (em vez de
-// vermelho/verde/amarelo genéricos de Tailwind), pra web e produto falarem a
-// mesma língua visual.
-const MACRO = {
-  protein: { solid: '#C25E6B', chipBg: '#F6E6E9', chipText: '#A2434F' },
-  carb:    { solid: '#C8952F', chipBg: '#F5EAD4', chipText: '#8A6416' },
-  fat:     { solid: '#5286B0', chipBg: '#E5EEF5', chipText: '#3C6588' },
-} as const
-
 // Título de seção editorial. O "tick" curto sob o título ecoa uma marca de
 // régua/medição — assinatura visual ligada ao mecanismo "Calibración". Cards de
 // dados (componente Card) usam header próprio, mantendo a hierarquia distinta.
@@ -142,21 +125,29 @@ function SectionHeading({
 }) {
   return (
     <div className={['text-center', className].filter(Boolean).join(' ')}>
-      <h2 className="font-display text-[20px] font-black leading-tight text-gray-900 [text-wrap:balance]">{title}</h2>
-      <span aria-hidden className="mx-auto mt-2 block h-[3px] w-8 rounded-full bg-primary/60" />
+      <h2 className="font-display text-[25px] font-black leading-[1.18] text-gray-900 [text-wrap:balance]">{title}</h2>
+      <span aria-hidden className="mx-auto mt-2.5 block h-[3px] w-9 rounded-full bg-primary/60" />
       {subtitle ? (
-        <p className="mx-auto mt-2 max-w-sm text-[13px] leading-relaxed text-muted-foreground">{subtitle}</p>
+        <p className="mx-auto mt-2.5 max-w-sm text-[13px] leading-relaxed text-muted-foreground">{subtitle}</p>
       ) : null}
     </div>
   )
 }
 
-// Uma refeição do teaser — amostra real do Día 1, montada com as likes do usuário.
-function TeaserMeal({ meal }: { meal: SampleMeal }) {
-  const totals = meal.items.reduce(
-    (t, it) => ({ p: t.p + it.proteinG, c: t.c + it.carbsG, f: t.f + it.fatG }),
-    { p: 0, c: 0, f: 0 },
+// Ênfase de cor dentro do título — parte do texto ganha a cor da marca (verde)
+// ou coral, no meio de uma frase preta. Efeito "olho pousa aqui" sem precisar
+// de outra caixa/badge. Usar com moderação: 1 destaque por título, no máximo.
+function Hl({ children, tone = 'primary' }: { children: React.ReactNode; tone?: 'primary' | 'coral' }) {
+  return (
+    <span className={tone === 'coral' ? 'text-[#D85A30]' : 'text-primary'}>{children}</span>
   )
+}
+
+// Uma refeição do teaser enxuto — só o 1º alimento (real, dos favoritos dela)
+// aparece nítido; o resto vem com a foto real só que desfocada, deixando claro
+// que TODO o prato é feito com os favoritos, não só o primeiro item.
+function TeaserMealBlurred({ meal }: { meal: SampleMeal }) {
+  const [first, ...rest] = meal.items
   return (
     <div className="overflow-hidden rounded-xl border border-[#D8E8D4] shadow-sm">
       <div className="flex items-center justify-between bg-primary px-3.5 py-2.5">
@@ -164,40 +155,51 @@ function TeaserMeal({ meal }: { meal: SampleMeal }) {
         <span className="rounded-full bg-white/20 px-2.5 py-0.5 text-[13px] font-semibold text-white">{meal.kcal} kcal</span>
       </div>
       <div className="divide-y divide-[#EAF2E6]">
-        {meal.items.map((it) => {
-          const imgUrl = getFoodImageUrl(it.food)
-          return (
-            <div key={it.food} className="flex items-center gap-3 px-3.5 py-2.5">
-              {imgUrl && (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
-                  src={imgUrl}
-                  alt={it.food}
-                  width={40}
-                  height={40}
-                  className="w-10 h-10 rounded-lg object-cover shrink-0"
-                  loading="lazy"
-                  decoding="async"
-                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                />
-              )}
-              <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-gray-800">{it.food}</p>
-                <p className="text-[13px] text-muted-foreground">{it.qty}</p>
-              </div>
-              <div className="flex shrink-0 gap-1">
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.protein.chipBg, color: MACRO.protein.chipText }}>{it.proteinG}P</span>
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.carb.chipBg, color: MACRO.carb.chipText }}>{it.carbsG}C</span>
-                <span className="rounded px-1.5 py-0.5 text-[11px] font-semibold" style={{ backgroundColor: MACRO.fat.chipBg, color: MACRO.fat.chipText }}>{it.fatG}G</span>
-              </div>
+        {first && (
+          <div className="flex items-center gap-3 bg-primary/5 px-3.5 py-2.5">
+            <TeaserThumb food={first.food} />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-800">{first.food}</p>
+              <p className="text-[13px] text-muted-foreground">{first.qty}</p>
             </div>
-          )
-        })}
+            <span className="shrink-0 rounded-full border border-[#D8E8D4] bg-white px-2 py-0.5 text-[10px] font-bold text-primary">Ej: tu favorito</span>
+          </div>
+        )}
+        {rest.map((it) => (
+          <div key={it.food} className="flex items-center gap-3 px-3.5 py-2.5">
+            <TeaserThumb food={it.food} blurred />
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-medium text-gray-400 blur-[4px] select-none">{it.food}</p>
+              <p className="text-[13px] text-muted-foreground blur-[3px] select-none">{it.qty}</p>
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="bg-[#F5FAF2] px-3.5 py-1.5 text-right text-[11px] text-muted-foreground">
-        {totals.p}g prot · {totals.c}g carb · {totals.f}g gras
+      <div className="flex items-center gap-1.5 bg-[#F5FAF2] px-3.5 py-2 text-[11px] font-semibold text-primary">
+        <Lock className="h-3 w-3 shrink-0" />
+        Los otros {rest.length} también son tuyos, elegidos por ti. Se revelan completos en tu panel.
       </div>
     </div>
+  )
+}
+
+function TeaserThumb({ food, blurred }: { food: string; blurred?: boolean }) {
+  const imgUrl = getFoodImageUrl(food)
+  if (!imgUrl) {
+    return <span className="h-10 w-10 shrink-0 rounded-lg bg-[#EAF2E6]" />
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imgUrl}
+      alt=""
+      width={40}
+      height={40}
+      className={['h-10 w-10 shrink-0 rounded-lg object-cover', blurred ? 'blur-[3px]' : ''].join(' ')}
+      loading="lazy"
+      decoding="async"
+      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+    />
   )
 }
 
@@ -577,7 +579,6 @@ export default function PreviewPage() {
     ? profile.weightKg / Math.pow(profile.heightCm / 100, 2)
     : null
   const delta = Math.abs(targets.tdee - targets.targetCalories)
-  const totalKcal = targets.macros.proteinG * 4 + targets.macros.carbsG * 4 + targets.macros.fatG * 9 || 1
   const sample = data.sample?.meals ?? []
   const personalized = data.sample?.personalized ?? false
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
@@ -687,7 +688,7 @@ export default function PreviewPage() {
         {/* Rumiación — nombra la sensación física diaria que ella ya vive,
             antes de cualquier prueba o mecanismo. Es la "alça pronta": no hay
             que crear el deseo, solo reconocer lo que ya siente todos los días. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading title="¿Te reconocés en esto?" />
           <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
             <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
@@ -701,22 +702,19 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Prueba social — mesmo número da bio (+2.000), repetido de propósito
-            no topo pra fixar a prova na cabeça da lead antes de ver a oferta. */}
-        <div className="flex items-center justify-center gap-2 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-2.5 text-[13px] font-semibold text-gray-700">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary animate-pulse" />
-          +2.000 mujeres ya confían en el método de Tiago Vieira
-        </div>
-
-        {/* Perfil + IMC agrupados */}
-        <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />} badge={imc ? <ImcBadge imc={imc} /> : undefined}>
-          <div className="grid grid-cols-3 gap-2">
+        {/* Tu perfil — consolidado: dados físicos + IMC + objetivo + actividad +
+            gasto calórico num único card. Corta a duplicação com o card
+            "Tu metabolismo" e a timeline "Así se armó tu plan" (explicavam o
+            processo, não ajudavam a decidir a compra). */}
+        <Card label="Tu perfil" icon={<User className="h-4 w-4 text-primary" />}>
+          <div className="grid grid-cols-4 gap-2">
             <StatCard icon={<Cake className="h-4 w-4" />}  label="Edad"      value={profile.age ? `${profile.age} años` : '—'} />
             <StatCard icon={<Scale className="h-4 w-4" />} label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
             <StatCard icon={<Ruler className="h-4 w-4" />} label="Altura"    value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
             <StatCard icon={<Gauge className="h-4 w-4" />} label="IMC"       value={imc ? imc.toFixed(1) : '—'} accent />
             <StatCard icon={<Target className="h-4 w-4" />} label="Objetivo" value={GOAL_LABEL[targets.goal] ?? targets.goal} />
             <StatCard icon={<Zap className="h-4 w-4" />}   label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
+            <StatCard icon={<Flame className="h-4 w-4" />} label="Gasto calórico" value={`${targets.tdee} kcal`} />
           </div>
 
           {imc && (
@@ -729,186 +727,113 @@ export default function PreviewPage() {
           )}
         </Card>
 
-        {/* Metabolismo */}
-        <Card label="Tu metabolismo" icon={<Flame className="h-4 w-4 text-primary" />}>
-          <div className="grid grid-cols-3 gap-2">
-            <MetricCard label="TMB"  sub="en reposo"    value={targets.bmr}            />
-            <MetricCard label="TDEE" sub="gasto diario" value={targets.tdee}           />
-            <MetricCard label="Meta" sub="kcal/día"     value={targets.targetCalories} accent />
-          </div>
-
-          <div className={[
-            'rounded-xl border px-4 py-3 text-sm leading-relaxed',
-            isLoss ? 'border-blue-100 bg-blue-50 text-blue-900'
-            : isGain ? 'border-green-100 bg-green-50 text-green-900'
-            : 'border-[#D4E8D0] bg-[#EBF6E4] text-[#1e4d2e]',
-          ].join(' ')}>
-            {isLoss && (
-              <>Tu plan tiene un <strong>déficit de {delta} kcal/día</strong>, equivale a ~{(delta * 7 / 7700).toFixed(1)} kg menos por semana.</>
-
-            )}
-            {isGain && (
-              <>Tu plan tiene un <strong>superávit de {delta} kcal/día</strong> sobre tu gasto diario para construir músculo.</>
-            )}
-            {!isLoss && !isGain && (
-              <>Tu meta calórica está alineada con tu gasto para <strong>mantener tu peso</strong> de forma saludable.</>
-            )}
-          </div>
-        </Card>
-
-        {/* Cómo se armó tu plan — dobra "cómo funciona", ligada aos números que ela
-            acabou de ver (metabolismo/meta), pra dar contexto de onde vieram. Visual
-            de timeline (não checklist) pra não repetir os cards brancos de mais abaixo. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5">
-          <SectionHeading title="Así se armó tu plan" className="mb-4" />
-          <div>
-            {[
-              {
-                Icon: Flame,
-                title: 'Calculamos tu metabolismo real',
-                desc: inputCount ? `Con los ${inputCount} datos que diste en el quiz, no una fórmula genérica.` : 'Con tus datos reales, no una fórmula genérica.',
-              },
-              {
-                Icon: Target,
-                title: 'Calibramos tus números exactos',
-                desc: 'Cuántas calorías y macros necesitas para tu objetivo, sin adivinar.',
-              },
-              {
-                Icon: Utensils,
-                title: 'Armamos tu plan a tu medida',
-                desc: 'Comidas que te gustan, con tu lista de compras y tus sustituciones.',
-              },
-            ].map(({ Icon, title, desc }, i, arr) => (
-              <div key={title} className="flex gap-3">
-                <div className="flex flex-col items-center">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                    <Icon className="h-4 w-4" />
-                  </span>
-                  {i < arr.length - 1 && <span className="w-px flex-1 bg-[#D8E8D4]" />}
-                </div>
-                <div className={i < arr.length - 1 ? 'pb-4' : ''}>
-                  <p className="text-sm font-bold text-gray-900">{title}</p>
-                  <p className="text-[13px] leading-relaxed text-gray-600">{desc}</p>
-                </div>
-              </div>
+        {/* Así es tu plan — teaser de 2 comidas (no las 4). Solo el primer
+            alimento de cada una aparece nítido (con foto real), el resto
+            aparece con foto real mas desenfocada: deixa claro que TODO o
+            plano é feito com os favoritos dela, não só o primeiro item. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>Así es <Hl>tu</Hl> plan</>} />
+          <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
+            Cada comida se arma con los alimentos que marcaste como favoritos en tu quiz. Te mostramos el primero de cada una:
+          </p>
+          <div className="space-y-3">
+            {sample.slice(0, 2).map((meal) => (
+              <TeaserMealBlurred key={meal.name} meal={meal} />
             ))}
           </div>
-        </div>
 
-        {/* Macros */}
-        <Card label="Distribución de macronutrientes" icon={<PieChart className="h-4 w-4 text-primary" />}>
-          <div className="flex items-center gap-5">
-            <MacroDonut macros={targets.macros} />
-            <div className="flex-1 space-y-2.5">
-              <MacroRow color={MACRO.protein.solid} label="Proteína"      g={targets.macros.proteinG} kcalPerG={4} total={totalKcal} />
-              <MacroRow color={MACRO.carb.solid}    label="Carbohidratos" g={targets.macros.carbsG}   kcalPerG={4} total={totalKcal} />
-              <MacroRow color={MACRO.fat.solid}     label="Grasas"        g={targets.macros.fatG}     kcalPerG={9} total={totalKcal} />
-            </div>
-          </div>
-          {training?.frequency && (
-            <p className="border-t border-[#EAF2E6] pt-3 text-[13px] leading-relaxed text-muted-foreground">
-              <span className="font-semibold text-gray-700">{targets.macros.proteinG}g de proteína</span> — el nivel que tu cuerpo necesita entrenando {TRAINING_FREQUENCY_LABEL[training.frequency] ?? ''}
-              {training.location ? ` ${TRAINING_LOCATION_LABEL[training.location] ?? ''}` : ''}.
-            </p>
-          )}
-        </Card>
-
-        {/* Vista previa real del plan */}
-        <div className="space-y-2">
-          <div className="flex items-end justify-between px-1">
-            <div>
-              <p className="text-sm font-black text-gray-900">Tu NutriPlan en acción</p>
-              <p className="text-[13px] text-muted-foreground">Día 1 · {targets.targetCalories} kcal · para tu cuerpo</p>
-            </div>
-            <span className="rounded-full bg-primary/8 px-2.5 py-1 text-xs font-bold text-primary">7 días</span>
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border-2 border-dashed border-primary/25 bg-white p-3">
-            <div className="space-y-2.5">
-              {/* Refeições reais do Día 1, montadas com os alimentos que ela escolheu */}
-              {sample.map((meal) => (
-                <TeaserMeal key={meal.name} meal={meal} />
+          {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
+          <div className="flex flex-col items-center gap-2.5 rounded-xl border border-primary/15 bg-[#F5FAF2] px-4 py-3.5 text-center">
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {[
+                { Icon: Sunrise,      label: 'Desayunos' },
+                { Icon: Utensils,     label: 'Almuerzos' },
+                { Icon: Moon,         label: 'Cenas' },
+                { Icon: Apple,        label: 'Snacks' },
+                { Icon: ShoppingCart, label: 'Lista de compras' },
+              ].map(({ Icon, label }) => (
+                <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[13px] font-semibold text-primary">
+                  <Icon className="h-3 w-3" /> {label}
+                </span>
               ))}
             </div>
-
-            {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
-            <div className="mt-3 flex flex-col items-center gap-2.5 rounded-xl border border-primary/15 bg-[#F5FAF2] px-4 py-3.5 text-center">
-              <div className="flex flex-wrap justify-center gap-1.5">
-                {[
-                  { Icon: Sunrise,      label: 'Desayunos' },
-                  { Icon: Utensils,     label: 'Almuerzos' },
-                  { Icon: Moon,         label: 'Cenas' },
-                  { Icon: Apple,        label: 'Snacks' },
-                  { Icon: ShoppingCart, label: 'Lista de compras' },
-                ].map(({ Icon, label }) => (
-                  <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[13px] font-semibold text-primary">
-                    <Icon className="h-3 w-3" /> {label}
-                  </span>
-                ))}
-              </div>
-              <p className="flex items-center justify-center gap-1.5 text-xs font-bold text-gray-800">
-                <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear tu plan
-              </p>
-            </div>
+            <p className="flex items-center justify-center gap-1.5 text-xs font-bold text-gray-800">
+              <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear tu plan
+            </p>
           </div>
-
-          {/* Loop: reforça personalização (ou comida confiável) + variedade dos 7 días */}
-          <p className="px-1 text-center text-[13px] leading-relaxed text-muted-foreground">
-            {personalized ? (
-              <>Armado con los alimentos que <span className="font-semibold text-gray-600">tú elegiste</span>. Los 7 días varían para que no te aburras.</>
-            ) : (
-              <>Comida común del día a día, ajustada a <span className="font-semibold text-gray-600">tu meta</span>. Los 7 días varían para que no te aburras.</>
-            )}
-          </p>
         </div>
 
-        {/* Autoridade — responsável técnico */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <div className="text-center space-y-1">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Quién está detrás de tu plan</p>
-            <p className="font-display text-[16px] font-black text-gray-900">Creado por el nutricionista Tiago Vieira</p>
-          </div>
-          <div className="flex items-center gap-4 border-t border-[#D8E8D4] pt-4">
+        {/* Autoridade — responsável técnico, foto grande na frente */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
+          <div className="relative w-full aspect-[2/3]">
             <Image
-              src="/FotoNutri.jpg"
+              src="/FotoNutri-full.png"
               alt="Tiago Vieira, Nutricionista"
-              width={72}
-              height={72}
-              className="h-[72px] w-[72px] shrink-0 rounded-full object-cover object-top border-2 border-[#D8E8D4]"
+              fill
+              className="object-cover object-top"
+              sizes="(max-width: 520px) 100vw, 520px"
             />
-            <div className="space-y-1.5">
-              <p className="text-sm font-black text-gray-900">Tiago Vieira</p>
-              <p className="text-[13px] font-semibold text-primary">Nutricionista · Responsable técnico</p>
-              <div className="flex flex-wrap gap-1.5">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                  <ShieldCheck className="h-3 w-3" />
-                  Reg. 26101842
-                </span>
-                <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                  Hipertrofia femenina
-                </span>
-                <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                  Pérdida de grasa en mujeres
-                </span>
+            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
+            <div className="absolute bottom-4 right-4">
+              <Image
+                src="/FotoNutri.jpg"
+                alt="Tiago Vieira, primer plano"
+                width={64}
+                height={64}
+                className="h-16 w-16 rounded-full object-cover object-top border-[3px] border-white shadow-lg"
+              />
+              <BadgeCheck className="absolute -bottom-0.5 -right-0.5 h-6 w-6 rounded-full text-[#3897F0] bg-white shadow" strokeWidth={2.2} fill="#3897F0" stroke="white" />
+            </div>
+            <div className="absolute inset-x-0 bottom-0 p-4 pr-20">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Quién está detrás de tu plan</p>
+              <p className="font-display text-[19px] font-black text-white">Tiago Vieira</p>
+              <p className="text-[13px] font-semibold text-white/90">Nutricionista · Responsable técnico</p>
+            </div>
+          </div>
+
+          <div className="p-5 space-y-4">
+            <div className="flex flex-wrap gap-1.5">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                <ShieldCheck className="h-3 w-3" />
+                Reg. 26101842
+              </span>
+              <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                Hipertrofia femenina
+              </span>
+              <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
+                Pérdida de grasa en mujeres
+              </span>
+            </div>
+
+            {/* Números reais da trajetória clínica — distinto do "+1.800 planes" do app */}
+            <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
+              <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+                <p className="text-2xl font-black text-primary">6 años</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">de trayectoria clínica</p>
+              </div>
+              <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+                <p className="text-2xl font-black text-primary">+2.000</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres atendidas con su metodología</p>
+              </div>
+            </div>
+
+            <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
+              Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
+            </p>
+
+            {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta */}
+            <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] shadow-[0_2px_8px_rgba(37,211,102,0.35)]">
+                <svg viewBox="0 0 24 24" fill="#fff" className="h-6 w-6">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+                </svg>
+              </span>
+              <div>
+                <p className="text-sm font-bold text-gray-900">Soporte directo por WhatsApp</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. Tiago responde tus dudas por WhatsApp. Recibes su contacto al comprar.</p>
               </div>
             </div>
           </div>
-
-          {/* Números reais da trajetória clínica — distinto do "+1.800 planes" do app */}
-          <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
-              <p className="text-2xl font-black text-primary">6 años</p>
-              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">de trayectoria clínica</p>
-            </div>
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
-              <p className="text-2xl font-black text-primary">+2.000</p>
-              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres atendidas con su metodología</p>
-            </div>
-          </div>
-
-          <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-            Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
-          </p>
         </div>
 
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
@@ -923,7 +848,7 @@ export default function PreviewPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5">
-            {RESULTS.map(({ photo, name, country, age, result, w, h }) => (
+            {RESULTS.map(({ photo, name, country, age, result, w, h, quote }) => (
               <div key={name} className="overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]">
                 <Image
                   src={photo}
@@ -932,11 +857,12 @@ export default function PreviewPage() {
                   height={h}
                   className="h-auto w-full"
                 />
-                <div className="space-y-1 p-2.5">
+                <div className="space-y-1.5 p-2.5">
                   <span className="inline-block rounded-full bg-primary px-2 py-0.5 text-[13px] font-black text-white">
                     {result}
                   </span>
                   <p className="text-xs font-bold text-gray-800">{country} {name}, {age}</p>
+                  <p className="text-[11px] italic leading-snug text-gray-600">&ldquo;{quote}&rdquo;</p>
                 </div>
               </div>
             ))}
@@ -947,155 +873,113 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Social proof */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <SectionHeading title="Lo que dicen quienes ya lo tienen" />
-          {[
-            { photo: '/testimonios/maria.png',  name: 'María G.',  country: '🇲🇽', text: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 7 kilos en 3 meses y empecé a marcar, y lo que no me esperaba es que fue sin pasar hambre.' },
-            { photo: '/testimonios/andrea.png', name: 'Lucía M.',  country: '🇨🇴', text: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 2 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.' },
-          ].map(({ photo, name, country, text }) => (
-            <div key={name} className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3.5 space-y-2">
-              <div className="flex items-center gap-2">
-                <Image
-                  src={photo}
-                  alt={name}
-                  width={36}
-                  height={36}
-                  className="h-9 w-9 shrink-0 rounded-full object-cover object-top"
-                />
-                <div className="flex gap-0.5">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <svg key={i} width="10" height="10" viewBox="0 0 11 11" fill="#f59e0b">
-                      <path d="M5.5 1l1.1 3.3H10L7.2 6.4l1 3.1L5.5 7.7 2.8 9.5l1-3.1L1 4.3h3.4z" />
-                    </svg>
-                  ))}
-                </div>
+        {/* Sin vs Con — contraste de experiência (não de qualificação), padrão
+            das páginas de low ticket. Esquerda cinza (a vida de hoje), direita
+            verde (a vida com o Reto). Empurra pra decisão logo antes do "cómo". */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>Con el Reto, <Hl>cambia todo</Hl></>} />
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="rounded-xl border border-[#E5E0DC] bg-[#F7F5F3] p-3.5">
+              <div className="mb-3 flex flex-col items-center gap-1.5 border-b border-dashed border-black/10 pb-3 text-center">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-gray-500">
+                  <X className="h-4 w-4" strokeWidth={3} />
+                </span>
+                <p className="text-[13px] font-bold text-gray-500">Sin el Reto</p>
               </div>
-              <p className="text-sm leading-relaxed text-gray-800">{text}</p>
-              <p className="text-xs font-bold text-primary">{country} {name}</p>
+              <ul className="space-y-2.5">
+                {[
+                  'Dietas genéricas que le dan a todas',
+                  'Culpa cada vez que comés algo rico',
+                  'Bajás y en un mes lo volvés a subir',
+                  'Contar calorías a mano, o rendirte a los 3 días',
+                  'No saber si de verdad está funcionando',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-[13px] leading-snug text-gray-500">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gray-200 text-gray-400">
+                      <X className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </div>
-          ))}
-        </div>
-
-        {/* Lo que NO necesitas — remove a autodesqualificação antes da oferta */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <SectionHeading title="Lo que NO necesitas para empezar" />
-          <ul className="space-y-2.5">
-            {[
-              ['No necesitas horas para cocinar', 'El plan se resuelve rápido, pensado para tu rutina.'],
-              ['No necesitas alimentos caros ni raros', 'Comida normal de supermercado, ajustada a ti.'],
-              ['No necesitas ir al gym', 'Tu entrenamiento es en casa, si quieres sumarlo.'],
-              ['No necesitas fuerza de voluntad de hierro', 'Un plan que no te hace pasar hambre no se abandona a los 3 días.'],
-            ].map(([t, d]) => (
-              <li key={t} className="flex items-start gap-2.5 text-sm">
-                <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                  <Check className="h-3 w-3" strokeWidth={3} />
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-3.5">
+              <div className="mb-3 flex flex-col items-center gap-1.5 border-b border-dashed border-primary/20 pb-3 text-center">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white shadow-[0_3px_10px_rgba(34,109,69,0.3)]">
+                  <Check className="h-4 w-4" strokeWidth={3} />
                 </span>
-                <span><strong className="text-gray-900">{t}.</strong> <span className="text-gray-600">{d}</span></span>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* ¿Es para ti? — qualificação (dobra "pra quem é"), coluna negativa suave */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <SectionHeading title="¿Es este plan para ti?" />
-          <div>
-            <p className="mb-2 text-[13px] font-bold text-primary">Sí, si…</p>
-            <ul className="space-y-2">
-              {[
-                'Ya intentaste dietas y ninguna se adaptó a ti',
-                'Quieres comer rico sin pasar hambre ni contar calorías a mano',
-                'Tienes poco tiempo y necesitas algo práctico',
-                'Quieres un plan hecho para tu cuerpo, no genérico de internet',
-              ].map((t) => (
-                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-700">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
-                    <Check className="h-3 w-3" strokeWidth={3} />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="border-t border-[#EAF2E6] pt-3">
-            <p className="mb-2 text-[13px] font-bold text-rose-500">No, si…</p>
-            <ul className="space-y-2">
-              {[
-                'Buscas una pastilla mágica o bajar 10 kilos en una semana',
-                'No estás dispuesta a seguir ningún plan, por más simple que sea',
-              ].map((t) => (
-                <li key={t} className="flex items-start gap-2.5 text-sm text-gray-600">
-                  <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-rose-50 text-rose-500">
-                    <X className="h-3 w-3" strokeWidth={3} />
-                  </span>
-                  {t}
-                </li>
-              ))}
-            </ul>
+                <p className="text-[13px] font-bold text-primary">Con el Reto</p>
+              </div>
+              <ul className="space-y-2.5">
+                {[
+                  'Un plan calibrado para tu cuerpo',
+                  'Comés rico, con tus antojos incluidos',
+                  'Bajás de forma sostenible, hasta 1 kg por semana',
+                  'Todo decidido: qué comprar y qué comer',
+                  'El calendario te muestra tu avance real',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-[13px] leading-snug text-gray-800">
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                      <Check className="h-2.5 w-2.5" strokeWidth={3} />
+                    </span>
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Cómo funciona el Reto — mostra o SISTEMA em uso (não como foi montado),
-            o loop diário que produz a transformação. Era a peça que faltava:
-            liga o mecanismo (Calibración) ao comportamento (marcar) ao resultado. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <SectionHeading
-            title="Cómo funciona tu Reto de 28 días"
-            subtitle="Un sistema, no una dieta más. Esto es lo que vas a hacer:"
-          />
-          <ol className="space-y-3">
-            {[
-              { icon: <Gauge className="h-4 w-4" />, t: 'Calibrás tu metabolismo', d: 'Con tus datos del quiz, calculamos exactamente lo que tu cuerpo necesita.' },
-              { icon: <ShoppingCart className="h-4 w-4" />, t: 'Seguís tu lista de compras', d: 'NutriPlan te arma la lista con lo justo, optimizada para tu súper.' },
-              { icon: <Utensils className="h-4 w-4" />, t: 'Comés tu plan, ya organizado', d: 'Cada día viene decidido: desayuno, almuerzo y cena con tus alimentos.' },
-              { icon: <CalendarCheck className="h-4 w-4" />, t: 'Marcás cada comida que seguís', d: 'Comida por comida, no todo o nada. Si fallás una, las demás siguen contando.' },
-              { icon: <Scale className="h-4 w-4" />, t: 'Al terminar la semana, anotás tu avance', d: 'Tu peso, tu cintura y cómo te sentís. Ves el progreso, semana a semana.' },
-            ].map(({ icon, t, d }, i) => (
-              <li key={t} className="flex items-start gap-3">
-                <span className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  {icon}
-                  <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-white tabular-nums">{i + 1}</span>
-                </span>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{t}</p>
-                  <p className="text-[13px] leading-snug text-muted-foreground">{d}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-          <div className="rounded-xl bg-primary/8 px-4 py-3 text-center">
-            <p className="text-[13px] font-semibold text-gray-800">
-              Repetís el ciclo durante 28 días. Ese es tu reto, y al final tenés la prueba de tu constancia escrita por vos misma.
-            </p>
+        {/* Fotos de uso real do Reto (ferramenta em ação): cozinhando com o
+            NutriPlan aberto no celular + marcando a evolução no calendário.
+            Substitui a foto única do calendário e o passo-a-passo textual. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>Así vas a <Hl>usar</Hl> tu Reto</>} />
+          <div className="grid grid-cols-2 gap-2.5">
+            <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
+              <Image
+                src="/Foto_Preenchendo_Calendario/Foto cozinhando com nutriplan.png"
+                alt="Mujer cocinando siguiendo su NutriPlan en el celular"
+                fill
+                sizes="(max-width: 640px) 50vw, 256px"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
+                <p className="text-[11.5px] font-bold leading-tight text-white">Cocinás siguiendo tu plan</p>
+              </div>
+            </div>
+            <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
+              <Image
+                src="/Foto_Preenchendo_Calendario/Preenchendo calendário.png"
+                alt="Mujer marcando su avance en el calendario del Reto de 28 días"
+                fill
+                sizes="(max-width: 640px) 50vw, 256px"
+                className="object-cover"
+              />
+              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
+                <p className="text-[11.5px] font-bold leading-tight text-white">Marcás tu avance, semana a semana</p>
+              </div>
+            </div>
           </div>
+          <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
+            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. El plan te dice qué comer, el calendario te muestra que está funcionando.
+          </p>
         </div>
 
-        {/* Foto real do calendário em uso (dedo na tela / tangibilidade real,
-            substitui o mockup abstrato). Mostra o SEGUNDO componente da
-            transformação em ação, não só descreve. */}
-        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
-          <div className="relative aspect-[4/5] w-full">
-            <Image
-              src="/Foto_Preenchendo_Calendario/foto-preenchendo-calendario.png"
-              alt="Mujer marcando su Reto de 28 días en un calendario pegado en la heladera"
-              fill
-              sizes="(max-width: 640px) 100vw, 512px"
-              className="object-cover"
-            />
-          </div>
-          <div className="space-y-1.5 p-5 text-center">
-            <SectionHeading title="Así vas a vivir tu Reto" />
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Recibís tu plan de comidas y este calendario de 28 días juntos, el sistema completo, no una pieza suelta.
-            </p>
-            <p className="text-[13px] leading-relaxed text-muted-foreground">
-              Lo pegás en la heladera y marcás cada comida, cada día. No es todo o nada: si te falta una, las demás igual cuentan.
-            </p>
-            <p className="pt-1 text-[13px] font-semibold text-gray-800">
-              El plan te dice qué comer. El calendario te muestra que está funcionando.
-            </p>
-          </div>
+        {/* Claim realista + ângulo anti-Ozempic. "Hasta 1 kg/semana" é ritmo
+            sustentável e defensável (não promete X kg), e o "sin Mounjaro ni
+            Ozempic" pega a onda cultural atual como diferencial. Sem garantia. */}
+        <div className="overflow-hidden rounded-2xl border border-primary/30 bg-primary/5 p-5 text-center space-y-2">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Sin inyecciones ni pastillas</p>
+          <p className="font-display text-[19px] font-black leading-snug text-gray-900">
+            Bajá hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
+          </p>
+          <p className="text-sm leading-relaxed text-gray-700">
+            No necesitás inyecciones ni pastillas para adelgazar. Con la Calibración Metabólica™ y comida real, tu cuerpo baja de forma sostenible, al ritmo que un nutricionista considera saludable.
+          </p>
+          <p className="text-[11px] leading-relaxed text-[#B7C3B2]">
+            Ritmo estimado y sostenible. Los resultados varían según cada persona, su constancia y su punto de partida.
+          </p>
         </div>
 
         {/* Oferta con ancla de valor */}
@@ -1174,25 +1058,34 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Reto</p>
               <ul className="space-y-2.5">
                 {[
-                  { item: 'Tu plan de comidas, calculado para tu cuerpo', value: 14 },
-                  { item: 'Tu calendario de 28 días para marcar tu avance', value: 9 },
-                  { item: 'Lista de compras optimizada', value: 4 },
-                  { item: 'Guía de implementación', value: 3 },
-                  { item: 'Sustituciones para cada comida', value: 3 },
-                  { item: 'Bono: Guía Anti-Celulitis', value: 5 },
-                  { item: 'Acceso a tu panel personal + calendario descargable', value: null },
-                ].map(({ item, value }) => (
-                  <li key={item} className="flex items-center gap-2 text-sm text-gray-700">
-                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
+                  { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado', value: 14 },
+                  { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2', value: 9 },
+                  { item: 'Lista de compras optimizada', note: 'sin dar vueltas en el súper pensando qué llevar', value: 4 },
+                  { item: 'Guía de implementación', note: 'para empezar hoy sin dudas', value: 3 },
+                  { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias', value: 3 },
+                  { item: 'Bono: Guía Anti-Celulitis', note: null, value: 5 },
+                  { item: 'Acceso a tu panel personal + calendario descargable', note: null, value: null },
+                ].map(({ item, note, value }) => (
+                  <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
+                    <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-3 w-3" strokeWidth={3} />
                     </span>
-                    <span className="flex-1">{item}</span>
+                    <span className="flex-1">
+                      {item}
+                      {note && <span className="block text-[12px] leading-snug text-muted-foreground">{note}</span>}
+                    </span>
                     {value != null && (
                       <span className="shrink-0 text-[12px] font-semibold text-muted-foreground tabular-nums">{price(value)}</span>
                     )}
                   </li>
                 ))}
               </ul>
+              {/* Total somado riscado → padrão de empilhamento de valor (Ricardo):
+                  soma real dos componentes, sem inflar, riscada contra o preço de hoje. */}
+              <div className="mt-3 flex items-center justify-between border-t border-dashed border-[#D8E8D4] pt-3">
+                <span className="text-[13px] font-bold text-gray-800">Todo esto sumado vale</span>
+                <span className="text-base font-bold text-gray-400 line-through tabular-nums">{price(38)}</span>
+              </div>
             </div>
 
             {/* Âncora de valor: iguala (consulta) → mostra valor somado riscado →
@@ -1210,19 +1103,6 @@ export default function PreviewPage() {
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
               </p>
-            </div>
-
-            {/* Soporte por WhatsApp con el nutricionista — risco reverso no ponto da decisão */}
-            <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] shadow-[0_2px_8px_rgba(37,211,102,0.35)]">
-                <svg viewBox="0 0 24 24" fill="#fff" className="h-6 w-6">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-                </svg>
-              </span>
-              <div>
-                <p className="text-sm font-bold text-gray-900">Soporte directo por WhatsApp</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. El nutricionista <strong className="font-semibold text-gray-700">Tiago Vieira</strong> responde tus dudas por WhatsApp. Recibes su contacto al comprar.</p>
-              </div>
             </div>
 
             {ctaState === 'error' && (
@@ -1249,7 +1129,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `Quiero mi plan ahora (${price(9.90)}) →`
+                  `QUIERO MI RETO ahora (${price(9.90)}) →`
                 )}
               </button>
               {fx.currency !== 'USD' && (
@@ -1267,53 +1147,6 @@ export default function PreviewPage() {
 
             <PaymentTrust />
           </div>
-        </div>
-
-        {/* Costo de la inacción — dobra "conversa séria", depois do preço/CTA pra
-            dar um segundo empurrão a quem hesitou e rolou sem clicar. Mensagem
-            forte a pedido do dono. Absorve o que antes era uma linha solta
-            dentro do card ("Ya pasó la mitad del año...", removida por repetir
-            a mesma ideia perto demais). */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-5 space-y-2 text-center">
-          <p className="font-display text-[17px] font-black leading-snug text-gray-900">
-            Julio es tu segunda oportunidad de enero
-          </p>
-          <p className="text-sm italic leading-relaxed text-gray-500">
-            &ldquo;Ya probé de todo. Hago dieta, no baja, y siento que mi cuerpo es diferente al de todas.&rdquo;
-          </p>
-          <p className="text-sm leading-relaxed text-gray-700">
-            ¿Cuántas veces ya empezaste &ldquo;de nuevo&rdquo;? Compraste el té detox. Bajaste la app que cuenta calorías. Tiraste las galletas del armario un lunes y las volviste a comprar un viernes. Y cada vez que no funcionó, una parte de ti empezó a creer que el problema eras tú.
-          </p>
-          <p className="text-sm leading-relaxed text-gray-700">
-            No eres tú. Es que seguiste el mismo plan genérico que le dan a todas, con tu cuerpo, tu rutina y tus antojos completamente ignorados. Eso no es falta de disciplina, es matemática mal hecha desde el principio.
-          </p>
-          <p className="text-sm leading-relaxed text-gray-700">
-            Si cierras esta página y sigues igual, en diciembre vas a estar exactamente donde estás hoy: mismo peso, misma ropa guardada, la misma promesa para el próximo enero.
-          </p>
-          <p className="text-sm font-semibold text-gray-800">
-            Todavía te quedan 6 meses. La diferencia la marca lo que decidas hacer con ellos.
-          </p>
-        </div>
-
-        {/* Después de comprar — tira o susto da transição pro checkout da Hotmart,
-            onde hoje muita gente some. Deixa explícito que o acesso é imediato. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3">
-          <SectionHeading title="Después de comprar" />
-          <ul className="space-y-3">
-            {[
-              ['1', 'Pagas seguro', 'Vas a una página de pago protegida y eliges cómo pagar.'],
-              ['2', 'Recibes acceso en minutos', 'Te llega el acceso a tu panel personal por correo, con tu plan y tu lista de compras.'],
-              ['3', 'Empiezas hoy', 'Abres tu plan y ya sabes qué comprar y qué comer, sin esperar.'],
-            ].map(([n, title, desc]) => (
-              <li key={n} className="flex items-start gap-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[13px] font-black text-white">{n}</span>
-                <div>
-                  <p className="text-sm font-bold text-gray-900">{title}</p>
-                  <p className="text-[13px] leading-relaxed text-gray-600">{desc}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
         </div>
 
         {/* Garantía */}
@@ -1349,7 +1182,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Quiero mi plan ahora (${price(9.90)}) →`
+              `QUIERO MI RETO ahora (${price(9.90)}) →`
             )}
           </button>
           <PaymentTrust />
@@ -1378,24 +1211,8 @@ const FAQ_ITEMS = [
     a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras.',
   },
   {
-    q: '¿Necesito mucho tiempo para cocinar o seguir el plan?',
-    a: 'No. Está pensado para tu rutina real, no para una vida ideal con horas libres en la cocina. Las comidas son simples y rápidas de preparar, y puedes adaptarlas a lo que tengas disponible ese día.',
-  },
-  {
-    q: 'Ya probé varias dietas y ninguna funcionó, ¿por qué esta sería diferente?',
-    a: 'Porque no es una dieta genérica. Se calcula con tu Calibración Metabólica™ a partir de tus datos reales (edad, peso, altura, actividad), no con una tabla que le dan a todo el mundo. Si las anteriores no funcionaron, es probable que el problema nunca hayas sido tú: era que no estaban hechas para tu cuerpo.',
-  },
-  {
-    q: '¿Necesito comprar alimentos caros o difíciles de conseguir?',
-    a: 'No. Tu plan se arma con los alimentos que marcaste que te gustan en el quiz, y las sustituciones siempre priorizan lo que consigues fácil en tu supermercado habitual.',
-  },
-  {
     q: '¿Es seguro comprar aquí? ¿Qué pasa con mis datos?',
     a: 'Sí. El pago se procesa por Hotmart, una plataforma usada por millones de personas en Latinoamérica, con las mismas protecciones que cualquier compra online segura. Tus datos solo se usan para generar y enviarte tu plan.',
-  },
-  {
-    q: '¿Qué pasa si tengo dudas después de recibir mi plan?',
-    a: 'Tu Reto queda guardado en tu panel personal: el calendario para marcar cada día, la lista de compras y tus comidas, siempre a mano. Y podés descargar tu calendario para pegarlo en la heladera. No es un PDF que se pierde en tu correo.',
   },
 ]
 
@@ -1521,7 +1338,7 @@ function PaymentTrust() {
 function PageShell({ children }: { children: React.ReactNode }) {
   return (
     <div
-      className="min-h-screen"
+      className="min-h-screen font-poppins"
       style={{
         background:
           'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(120,24%,95%) 110px, hsl(40,32%,97%) 320px)',
@@ -1581,19 +1398,6 @@ function StatCard({ icon, label, value, accent }: { icon: React.ReactNode; label
   )
 }
 
-function ImcBadge({ imc }: { imc: number }) {
-  const { label, cls } =
-    imc < 18.5 ? { label: 'Bajo peso', cls: 'border-blue-100 bg-blue-50 text-blue-700' }
-    : imc < 25  ? { label: 'Normal',    cls: 'border-green-100 bg-green-50 text-green-700' }
-    : imc < 30  ? { label: 'Sobrepeso', cls: 'border-yellow-100 bg-yellow-50 text-yellow-700' }
-    :              { label: 'Obesidad',  cls: 'border-red-100 bg-red-50 text-red-700' }
-  return (
-    <span className={`rounded-full border px-2.5 py-0.5 text-[13px] font-bold ${cls}`}>
-      {imc.toFixed(1)} · {label}
-    </span>
-  )
-}
-
 function ImcScale({ imc }: { imc: number }) {
   const pct = Math.max(2, Math.min(96, ((imc - 10) / 30) * 100))
   return (
@@ -1610,72 +1414,3 @@ function ImcScale({ imc }: { imc: number }) {
   )
 }
 
-function MetricCard({ label, sub, value, accent }: { label: string; sub: string; value: number; accent?: boolean }) {
-  if (accent) {
-    return (
-      <div className="rounded-xl bg-primary p-3 text-center shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
-        <p className="text-xs font-black text-white">{label}</p>
-        <p className="text-[11px] text-white/75 mb-1">{sub}</p>
-        <p className="text-xl font-black text-white">{value}</p>
-        <p className="text-[11px] text-white/75">kcal</p>
-      </div>
-    )
-  }
-  return (
-    <div className="rounded-xl border border-[#E0EDD9] bg-[#FAFCF8] p-3 text-center">
-      <p className="text-xs font-black text-gray-700">{label}</p>
-      <p className="text-[11px] text-muted-foreground mb-1">{sub}</p>
-      <p className="text-xl font-black text-gray-900">{value}</p>
-      <p className="text-[11px] text-muted-foreground">kcal</p>
-    </div>
-  )
-}
-
-function MacroDonut({ macros }: { macros: { proteinG: number; carbsG: number; fatG: number } }) {
-  const r = 44, circ = 2 * Math.PI * r
-  const pK = macros.proteinG * 4, cK = macros.carbsG * 4, fK = macros.fatG * 9
-  const total = pK + cK + fK || 1
-  const segs = [
-    { color: MACRO.protein.solid, len: (pK / total) * circ }, // Proteína
-    { color: MACRO.carb.solid,    len: (cK / total) * circ }, // Carbohidratos
-    { color: MACRO.fat.solid,     len: (fK / total) * circ }, // Grasas
-  ]
-  let acc = 0
-  const arcs = segs.map((s) => {
-    const off = acc
-    acc += s.len
-    return { ...s, off }
-  })
-  return (
-    <svg className="-rotate-90 shrink-0" width="108" height="108" viewBox="0 0 108 108">
-      <circle cx="54" cy="54" r={r} fill="none" stroke="#E0EDD9" strokeWidth="14" />
-      {arcs.map((a, i) => (
-        <circle
-          key={i}
-          cx="54" cy="54" r={r} fill="none" stroke={a.color} strokeWidth="14"
-          strokeDasharray={`${a.len} ${circ - a.len}`}
-          strokeDashoffset={-a.off}
-        />
-      ))}
-    </svg>
-  )
-}
-
-function MacroRow({ color, label, g, kcalPerG, total }: {
-  color: string; label: string; g: number; kcalPerG: number; total: number
-}) {
-  const pct = Math.round((g * kcalPerG) / total * 100)
-  return (
-    <div className="space-y-1">
-      <div className="flex items-center gap-2">
-        <div className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: color }} />
-        <span className="flex-1 text-xs text-muted-foreground">{label}</span>
-        <span className="text-xs font-bold text-gray-800">{g}g</span>
-        <span className="w-8 text-right text-[11px] text-muted-foreground">({pct}%)</span>
-      </div>
-      <div className="h-1 w-full rounded-full bg-border ml-4">
-        <div className="h-full rounded-full" style={{ width: `${pct}%`, background: color }} />
-      </div>
-    </div>
-  )
-}

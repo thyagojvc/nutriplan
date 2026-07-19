@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from 'next'
-import { Geist, Geist_Mono, Fraunces } from 'next/font/google'
+import { Geist, Geist_Mono, Fraunces, Poppins } from 'next/font/google'
 import Script from 'next/script'
 import { AuthListener } from './auth-listener'
 import './globals.css'
@@ -18,6 +18,14 @@ const fraunces = Fraunces({
   variable: '--font-fraunces',
   subsets: ['latin'],
   weight: ['700', '900'],
+})
+
+// Teste local: mesma fonte usada nas páginas de venda do Ricardo Maxxima
+// (confirmado via DevTools). Escopado só na /preview via classe font-poppins.
+const poppins = Poppins({
+  variable: '--font-poppins',
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 })
 
 export const metadata: Metadata = {
@@ -60,7 +68,7 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${poppins.variable} antialiased`}
       >
         <AuthListener />
         {children}

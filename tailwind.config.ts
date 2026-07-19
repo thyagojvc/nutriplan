@@ -12,6 +12,7 @@ const config: Config = {
     extend: {
       fontFamily: {
         display: ['var(--font-fraunces)', 'serif'],
+        poppins: ['var(--font-poppins)', 'sans-serif'],
       },
       colors: {
         background: 'hsl(var(--background))',
