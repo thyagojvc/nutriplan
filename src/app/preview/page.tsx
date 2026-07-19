@@ -694,7 +694,6 @@ export default function PreviewPage() {
             <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
             <li>En una foto grupal, buscás quedar atrás o te tapás con el brazo.</li>
             <li>Ya pensaste en decir que no vas a esa reunión, con tal de no aparecer en las fotos.</li>
-            <li>En el camino a casa notás otra vez esa hinchazón, como un recordatorio que no se va.</li>
             <li>Al ducharte, ves lo mismo que viste esta mañana, y sentís que hoy tampoco cambió nada.</li>
           </ul>
           <p className="pt-1 text-center text-[13px] font-semibold text-gray-800">
@@ -712,6 +711,8 @@ export default function PreviewPage() {
             <StatCard icon={<Scale className="h-4 w-4" />} label="Peso"      value={profile.weightKg ? `${profile.weightKg} kg` : '—'} />
             <StatCard icon={<Ruler className="h-4 w-4" />} label="Altura"    value={profile.heightCm ? `${profile.heightCm} cm` : '—'} />
             <StatCard icon={<Gauge className="h-4 w-4" />} label="IMC"       value={imc ? imc.toFixed(1) : '—'} accent />
+          </div>
+          <div className="grid grid-cols-3 gap-2">
             <StatCard icon={<Target className="h-4 w-4" />} label="Objetivo" value={GOAL_LABEL[targets.goal] ?? targets.goal} />
             <StatCard icon={<Zap className="h-4 w-4" />}   label="Actividad" value={ACTIVITY_LABEL[profile.activityLevel] ?? (profile.activityLevel || '—')} />
             <StatCard icon={<Flame className="h-4 w-4" />} label="Gasto calórico" value={`${targets.tdee} kcal`} />
@@ -975,7 +976,7 @@ export default function PreviewPage() {
             Bajá hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
           </p>
           <p className="text-sm leading-relaxed text-gray-700">
-            No necesitás inyecciones ni pastillas para adelgazar. Con la Calibración Metabólica™ y comida real, tu cuerpo baja de forma sostenible, al ritmo que un nutricionista considera saludable.
+            No necesitás inyecciones ni pastillas para adelgazar. Con la Calibración Metabólica™ y comida real, tu cuerpo baja de forma sostenible, al ritmo que tu cuerpo considera saludable.
           </p>
           <p className="text-[11px] leading-relaxed text-[#B7C3B2]">
             Ritmo estimado y sostenible. Los resultados varían según cada persona, su constancia y su punto de partida.
@@ -1005,7 +1006,7 @@ export default function PreviewPage() {
                 <Check className="h-3.5 w-3.5" strokeWidth={3} />
               </span>
               <div>
-                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por nutricionista</p>
+                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por Tiago Vieira</p>
                 <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
