@@ -83,8 +83,8 @@ const RESULTS = [
     quote: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 3 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.',
   },
   {
-    photo: '/resultados/caso-2.png', name: 'Daniela', country: '🇨🇴', age: 31, result: '−6 kg en 2 meses', w: 410, h: 433,
-    quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 6 kilos en 2 meses, y lo que no me esperaba es que fue sin pasar hambre.',
+    photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
+    quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 8 kilos en 3 meses, y lo que no me esperaba es que fue sin pasar hambre.',
   },
 ]
 
