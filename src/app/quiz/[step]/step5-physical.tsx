@@ -184,8 +184,15 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         <QuizCard>
           <QuizHeader
             title="Empecemos con tus datos físicos"
-            subtitle="Ajusta cada número al tuyo. Los usaremos para calcular tus calorías y macros exactos. Nadie más los verá."
+            subtitle="Ajusta cada número al tuyo. Los usaremos para calcular tus calorías y macros exactos."
           />
+
+          {/* Selo de privacidad — dado sensível (peso) logo na 1ª pregunta pede
+              reforço visual próprio, não só uma frase solta no subtitle. */}
+          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-xs font-bold text-primary">
+            <span className="text-sm">🔒</span>
+            Nadie más los verá. 100% privado y confidencial.
+          </div>
 
           <div className="space-y-2.5">
             <QuizStepperRow
