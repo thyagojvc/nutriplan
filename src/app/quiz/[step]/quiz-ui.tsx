@@ -576,6 +576,85 @@ export function QuizNumberField({
 }
 
 // ---------------------------------------------------------------------------
+// Stepper compacto em linha — versão horizontal do QuizNumberField para telas
+// com vários campos numéricos (ex: entrada do quiz: edad + peso + altura).
+// Vem pré-preenchido com um valor plausível: corrigir um número visível é mais
+// leve que preencher um campo vazio, e o 1º toque vira um tap no −/+ em vez de
+// digitação (teclado só abre se a pessoa tocar no número).
+// ---------------------------------------------------------------------------
+
+export function QuizStepperRow({
+  label,
+  emoji,
+  value,
+  onChange,
+  min,
+  max,
+  step = 1,
+  unit,
+}: {
+  label: string
+  emoji: string
+  value: number
+  onChange: (v: number) => void
+  min: number
+  max: number
+  step?: number
+  unit: string
+}) {
+  // Texto local reconcilia só no blur/Enter (mesmo padrão do QuizNumberField),
+  // pra não clampar estados intermediários enquanto a pessoa digita.
+  const [text, setText] = useState(String(value))
+  useEffect(() => setText(String(value)), [value])
+
+  function clamp(n: number) {
+    return Math.min(max, Math.max(min, n))
+  }
+
+  function commit(raw: string) {
+    const n = Math.round(Number(raw))
+    if (Number.isFinite(n)) {
+      onChange(clamp(n))
+    } else {
+      setText(String(value))
+    }
+  }
+
+  const btnCls =
+    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white text-lg font-bold text-primary shadow-sm transition-all hover:bg-[#F5FAF2] active:scale-90'
+
+  return (
+    <div className="flex items-center justify-between gap-3 rounded-xl border border-[#D8E8D4] bg-white px-3.5 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)]">
+      <div className="flex min-w-0 items-center gap-2.5">
+        <span className="text-xl leading-none">{emoji}</span>
+        <div className="min-w-0">
+          <p className="text-sm font-semibold leading-tight text-gray-800">{label}</p>
+          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{unit}</p>
+        </div>
+      </div>
+
+      <div className="flex shrink-0 items-center gap-1.5">
+        <button type="button" onClick={() => onChange(clamp(value - step))} aria-label={`Restar ${label}`} className={btnCls}>
+          −
+        </button>
+        <input
+          type="number"
+          inputMode="numeric"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          onBlur={(e) => commit(e.target.value)}
+          onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
+          className="quiz-number-input w-16 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25"
+        />
+        <button type="button" onClick={() => onChange(clamp(value + step))} aria-label={`Sumar ${label}`} className={btnCls}>
+          +
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// ---------------------------------------------------------------------------
 // Botão CTA
 // ---------------------------------------------------------------------------
 
