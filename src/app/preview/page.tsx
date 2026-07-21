@@ -658,10 +658,6 @@ export default function PreviewPage() {
                 ? <>Es tu número exacto, el que empieza a <span className="text-primary">bajar de peso</span> sin pasar hambre.</>
                 : <>Es tu número exacto, el que empieza a <span className="text-primary">construir músculo</span> comiendo bien.</>}
             </p>
-            <p className="text-sm font-medium text-muted-foreground">
-              {isLoss ? 'Nada de contar calorías, pesar comida ni armar menús. Eso ya lo hicimos por ti.'
-                : 'Nada de comer de más a ciegas esperando que sea músculo.'}
-            </p>
           </>
         ) : (
           <>
@@ -684,21 +680,6 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-5">
 
-        {/* Rumiación — nombra la sensación física diaria que ella ya vive,
-            antes de cualquier prueba o mecanismo. Es la "alça pronta": no hay
-            que crear el deseo, solo reconocer lo que ya siente todos los días. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-          <SectionHeading title="¿Te reconocés en esto?" />
-          <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
-            <li>Te vestís de mañana y la ropa no cae como te gustaría.</li>
-            <li>En una foto grupal, buscás quedar atrás o te tapás con el brazo.</li>
-            <li>Ya pensaste en decir que no vas a esa reunión, con tal de no aparecer en las fotos.</li>
-            <li>Al ducharte, ves lo mismo que viste esta mañana, y sentís que hoy tampoco cambió nada.</li>
-          </ul>
-          <p className="pt-1 text-center text-[13px] font-semibold text-gray-800">
-            No es que te falte fuerza de voluntad. Es que nadie calibró un plan para lo que tu cuerpo necesita hoy.
-          </p>
-        </div>
 
         {/* Tu perfil — consolidado: dados físicos + IMC + objetivo + actividad +
             gasto calórico num único card. Corta a duplicação com o card
