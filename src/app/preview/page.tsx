@@ -213,7 +213,6 @@ export default function PreviewPage() {
   const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
   const [inputCount, setInputCount] = useState<number | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
-  const [painAngle, setPainAngle] = useState<'tiempo' | 'cetica'>('cetica')
   // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
   const [heroObstacles, setHeroObstacles] = useState<string[]>([])
   // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
@@ -258,7 +257,6 @@ export default function PreviewPage() {
       const s11 = sessionStorage.getItem('nutriplan_step_11')
       if (s11) {
         const { obstacles = [] } = JSON.parse(s11) as { obstacles?: string[] }
-        if (obstacles.includes('falta_tiempo')) setPainAngle('tiempo')
         // Guarda no máximo 2 (ordem do quiz) para não sobrecarregar o hero.
         setHeroObstacles(obstacles.slice(0, 2))
       }
@@ -599,7 +597,10 @@ export default function PreviewPage() {
         {/* Badge de conclusão */}
         <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          {firstName ? `${firstName}, tu Reto de 28 días está listo` : 'Tu Reto de 28 días está listo · solo para ti'}
+          {/* firstName nunca vem preenchido hoje (step12 parou de capturar nome,
+              ver comentário em step12-form.tsx) — mantido pronto pra quando
+              essa captura voltar, sem usar aqui pra não quebrar o texto. */}
+          Tu Reto de 28 días ya está hecho · solo para ti
         </div>
 
         {/* Promessa central — message match com o anúncio ("exactamente") + obstáculo dela */}
@@ -658,7 +659,7 @@ export default function PreviewPage() {
                 : <>Es tu número exacto, el que empieza a <span className="text-primary">construir músculo</span> comiendo bien.</>}
             </p>
             <p className="text-sm font-medium text-muted-foreground">
-              {isLoss ? 'Nada de dietas de moda ni de contar cada caloría a mano.'
+              {isLoss ? 'Nada de contar calorías, pesar comida ni armar menús. Eso ya lo hicimos por ti.'
                 : 'Nada de comer de más a ciegas esperando que sea músculo.'}
             </p>
           </>
@@ -676,9 +677,7 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          {painAngle === 'tiempo'
-            ? 'Ya tienes tu número. Abajo está tu plan de comidas, listo y decidido, para que tu rutina no te sabotee. Y puedes sumarle tu entrenamiento.'
-            : 'Ya tienes tu número. Abajo está tu plan de comidas para tu cuerpo, y puedes sumarle tu entrenamiento. Todo listo para empezar hoy.'}
+          Ya está todo armado por ti. No tienes que calcular ni decidir nada: abres el plan, sigues el Reto y listo.
         </p>
       </div>
 
