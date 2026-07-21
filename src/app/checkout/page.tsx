@@ -186,7 +186,7 @@ export default function CheckoutPage() {
           </button>
 
           <p className="text-center text-xs text-muted-foreground">
-            🔒 Pago seguro por Hotmart · Acceso inmediato · Garantía de 30 días
+            🔒 Pago seguro por Hotmart · Acceso inmediato · Garantía de 14 días
           </p>
 
         </div>

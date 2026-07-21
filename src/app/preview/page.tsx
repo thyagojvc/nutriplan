@@ -962,7 +962,7 @@ export default function PreviewPage() {
             </div>
           </div>
           <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. El plan te dice qué comer, el calendario te muestra que está funcionando.
+            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. Marcás cada comida y tu progreso directo desde tu celular, o imprimís el calendario si preferís tenerlo a la vista, como más te sirva. El plan te dice qué comer, el calendario te muestra que está funcionando.
           </p>
         </div>
 
@@ -1055,7 +1055,8 @@ export default function PreviewPage() {
             </div>
 
             <div>
-              <p className="mb-2.5 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Reto</p>
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Reto</p>
+              <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevás, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
                   { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado', value: 14 },
@@ -1090,10 +1091,23 @@ export default function PreviewPage() {
 
             {/* Âncora de valor: iguala (consulta) → mostra valor somado riscado →
                 barateia com o preço real → tira o susto com o "por qué tan barato". */}
-            <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-1.5">
-              <p className="text-[13px] text-gray-700">
-                Una consulta con nutricionista cuesta <strong>{price(30)} o más</strong>, y solo te dan un plan. Aquí tienes más que eso, por una fracción.
-              </p>
+            <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-2.5">
+              <div className="space-y-1.5 text-left">
+                <div className="flex items-center justify-between gap-2 rounded-lg border border-[#E8DED5] bg-white px-3.5 py-2.5">
+                  <span className="text-[12.5px] leading-snug text-gray-700">
+                    Consulta con nutricionista
+                    <span className="block text-[11px] text-gray-400">y solo te dan el plan</span>
+                  </span>
+                  <span className="shrink-0 text-sm font-bold text-gray-400 line-through tabular-nums">{price(30)}+</span>
+                </div>
+                <div className="flex items-center justify-between gap-2 rounded-lg bg-primary/12 px-3.5 py-2.5">
+                  <span className="text-[12.5px] font-bold leading-snug text-primary">
+                    Tu Reto completo
+                    <span className="block text-[11px] font-medium text-primary/70">plan + calendario + todo lo demás</span>
+                  </span>
+                  <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} />
+                </div>
+              </div>
               <p className="text-[13px] text-gray-700">
                 Y ya gastaste más que esto en dietas y planes que nunca se adaptaron a ti.
               </p>
@@ -1142,7 +1156,7 @@ export default function PreviewPage() {
             {/* Inversão de risco: último pensamento antes do clique, colado nos botões */}
             <p className="flex items-center justify-center gap-1.5 text-center text-[12px] font-semibold text-gray-600">
               <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-primary" />
-              Si no te sirve, no pagas: garantía de 7 días. Y el plan es tuyo igual.
+              Si no te sirve, no pagas: garantía de 14 días, sin preguntas. Y el plan es tuyo igual.
             </p>
 
             <PaymentTrust />
@@ -1155,9 +1169,9 @@ export default function PreviewPage() {
             <ShieldCheck className="h-6 w-6 text-primary" />
           </div>
           <div>
-            <p className="text-sm font-bold text-gray-900">Garantía total de 7 días</p>
+            <p className="text-sm font-bold text-gray-900">Nuestra promesa: cero riesgo para ti</p>
             <p className="text-xs text-muted-foreground leading-relaxed">
-              Sigue tu plan 7 días. Si no notas ningún cambio, te devolvemos el 100% y el plan es tuyo igual.
+              Seguí tu Reto 14 días. Si no notás ningún cambio, te devolvemos el 100%, sin preguntas, y el plan sigue siendo tuyo.
             </p>
           </div>
         </div>
@@ -1324,7 +1338,7 @@ function PaymentTrust() {
         <span className="h-3 w-px bg-border" />
         <span className="flex items-center gap-1"><Zap className="h-3 w-3" /> Acceso inmediato</span>
         <span className="h-3 w-px bg-border" />
-        <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 7 días</span>
+        <span className="flex items-center gap-1"><RotateCcw className="h-3 w-3" /> Garantía 14 días</span>
       </div>
     </div>
   )
