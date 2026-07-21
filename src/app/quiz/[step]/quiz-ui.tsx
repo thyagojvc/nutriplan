@@ -751,7 +751,7 @@ export function ExitIntentModal({
         </span>
         <h2 className="font-display text-lg font-black text-gray-900">¿Ya te vas?</h2>
         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-          Tu plan de alimentación y tu rutina de entrenamiento personalizados están a solo unas preguntas de distancia. Termina en menos de 60 segundos.
+          Tu Reto de 28 días, personalizado para ti, está a solo unas preguntas de distancia. Termina en menos de 60 segundos.
         </p>
         <div className="mt-5 space-y-2.5">
           <button
