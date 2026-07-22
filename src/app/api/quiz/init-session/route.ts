@@ -28,6 +28,29 @@ function toDbCountry(code: string | undefined): 'MX' | 'CO' | 'CL' | 'ES' | 'OTH
 // Por isso evitamos termos ambíguos como "preview", "monitor", "scan", "whatsapp".
 const BOT_UA = /bot\b|crawl|spider|slurp|facebookexternalhit|meta-externalagent|headless|phantomjs|puppeteer|playwright|python-requests|python-urllib|curl\/|wget|go-http-client|okhttp|axios\/|node-fetch|lighthouse|pingdom|uptimerobot|statuscake|semrushbot|ahrefsbot|mj12bot|dotbot|bingpreview|yandexbot|dataprovider/i
 
+// Classificação simples de dispositivo a partir do user-agent, só pra análise
+// no /quiz-funnel (ex: "todo mundo entra pelo celular, otimizar pro mobile").
+// Tablet antes de Mobile: iPad moderno não tem "iPad" na UA, mas tem "Macintosh"
+// + Safari; heurística boa o bastante pro painel, não precisa ser perfeita.
+function detectDevice(ua: string): 'mobile' | 'tablet' | 'desktop' {
+  if (/iPad|Tablet/i.test(ua)) return 'tablet'
+  if (/Mobile|iPhone|Android/i.test(ua)) return 'mobile'
+  return 'desktop'
+}
+
+// Sistema operacional: o dado que o Thyago mais quer ver (iPhone vs Android),
+// pra decidir prioridade de teste/otimização por plataforma. Checa iOS antes
+// de Mac: iPad moderno se identifica como "Macintosh" na UA (Safari desktop-like),
+// então sem o check de touch (que só existe no client, não no header aqui) um
+// iPad pode cair em "Mac" — aceitável, é uma fatia pequena do tráfego.
+function detectPlatform(ua: string): 'iOS' | 'Android' | 'Windows' | 'Mac' | 'Other' {
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS'
+  if (/Android/i.test(ua)) return 'Android'
+  if (/Windows/i.test(ua)) return 'Windows'
+  if (/Macintosh/i.test(ua)) return 'Mac'
+  return 'Other'
+}
+
 export async function POST(request: NextRequest) {
   const supabase = createServiceClient()
 
@@ -80,6 +103,8 @@ export async function POST(request: NextRequest) {
   const draftAnswers: Record<string, unknown> = {}
   if (adRef) draftAnswers._ad_ref = adRef
   if (detectedCountry) draftAnswers._detected_country = detectedCountry
+  draftAnswers._device = detectDevice(ua)
+  draftAnswers._platform = detectPlatform(ua)
   // Marca permanente (não expira com log): permite consultar no banco, a
   // qualquer momento, quantas sessões nasceram de um cookie órfão.
   if (orphanedSessionId) draftAnswers._healed_orphan_from = orphanedSessionId

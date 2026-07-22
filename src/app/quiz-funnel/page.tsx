@@ -35,10 +35,12 @@ function parseHeartbeatTs(v: string): number {
 // Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
 // número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
 // numeração step_N é fixa por componente e não reflete mais a ordem de
-// visita. Atualizada em 15/07 pra bater com o reorder obstáculo-primeiro
-// (URL 5=obstáculos vira 1º, URL 11=dados físicos vira 9º).
+// visita. Atualizada em 22/07 pra bater com o reorder que tornou o Step5Physical
+// (dados físicos) a entrada do quiz: URL 5 vira 1º, URL 11 (obstáculos) vira 9º.
+// step_7 (país, oculto) é salvo junto do step 6 (atividade), por isso entra logo
+// depois dele aqui, mesmo não fazendo parte do VISIBLE_ORDER (não tem URL própria).
 // Atualizar aqui se a ordem do quiz mudar de novo.
-const VISIT_ORDER = [11, 2, 1, 4, 6, 7, 8, 9, 10, 5, 13, 12]
+const VISIT_ORDER = [5, 1, 2, 6, 7, 4, 8, 9, 10, 11, 13, 12]
 
 const OFFER_LABELS: Record<string, string> = {
   PLAN_BASIC: 'Só o plano · 7 dias',
@@ -152,6 +154,10 @@ async function getFunnelData(sinceDate: string) {
   // Criativo/anúncio de origem (_ad_ref, capturado do utm_content na entrada
   // do quiz). Sessões de antes dessa captura existir caem em "Sin dato".
   const adRefCounts: Record<string, number> = {}
+  // Dispositivo e plataforma (_device/_platform, capturados do user-agent no
+  // init-session). Sessões de antes dessa captura existir (22/07) caem em "Sin dato".
+  const deviceCounts: Record<string, number> = {}
+  const platformCounts: Record<string, number> = {}
   for (const r of data) {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
@@ -160,6 +166,12 @@ async function getFunnelData(sinceDate: string) {
 
     const adRef = (draft._ad_ref as string | undefined) ?? 'Sin dato'
     adRefCounts[adRef] = (adRefCounts[adRef] ?? 0) + 1
+
+    const device = (draft._device as string | undefined) ?? 'Sin dato'
+    deviceCounts[device] = (deviceCounts[device] ?? 0) + 1
+
+    const platform = (draft._platform as string | undefined) ?? 'Sin dato'
+    platformCounts[platform] = (platformCounts[platform] ?? 0) + 1
   }
 
   // Vendas recentes: nome/email só existem depois do webhook criar o user
@@ -236,7 +248,7 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, lastStarts }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, lastStarts }
 }
 
 export default async function QuizFunnelPage({
@@ -259,11 +271,15 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, lastStarts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, lastStarts } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
   const adRefRows = Object.entries(adRefCounts).sort((a, b) => b[1] - a[1])
+  const deviceLabels: Record<string, string> = { mobile: 'Celular', tablet: 'Tablet', desktop: 'Computador' }
+  const deviceRows = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])
+  const platformLabels: Record<string, string> = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Otro' }
+  const platformRows = Object.entries(platformCounts).sort((a, b) => b[1] - a[1])
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
@@ -656,6 +672,57 @@ export default async function QuizFunnelPage({
             {countryRows.map(([country, count]) => (
               <tr key={country} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-2.5 font-mono text-xs">{country}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Dispositivos — user-agent classificado no init-session (_device).
+          Sessões antes de 22/07 não têm essa chave, caem em "Sin dato". */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Dispositivos</p>
+          <p className="text-xs text-muted-foreground">Classificado pelo user-agent na entrada do quiz (celular, tablet ou computador)</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {deviceRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões no período.</td></tr>
+            )}
+            {deviceRows.map(([device, count]) => (
+              <tr key={device} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs">{deviceLabels[device] ?? device}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Sistema — iOS vs Android vs desktop, classificado pelo user-agent
+          (_platform). É o dado que mais interessa pra decidir prioridade de
+          teste/otimização por plataforma. */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Sistema</p>
+          <p className="text-xs text-muted-foreground">iPhone/iPad vs Android vs computador, classificado pelo user-agent</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {platformRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões no período.</td></tr>
+            )}
+            {platformRows.map(([platform, count]) => (
+              <tr key={platform} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs">{platformLabels[platform] ?? platform}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {total > 0 ? Math.round((count / total) * 100) : 0}%
