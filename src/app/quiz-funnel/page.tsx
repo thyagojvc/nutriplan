@@ -297,8 +297,8 @@ async function getFunnelData(sinceDate: string) {
   })
 
   // Pedido mais recente de cada sessão (allOrdersRows já vem ordenado desc,
-  // então a 1ª ocorrência por session_id é a mais nova). Traz o que
-  // generation_sessions não tem: IP e user-agent reais do checkout.
+  // então a 1ª ocorrência por session_id é a mais nova). O IP do checkout serve
+  // de fallback pras sessões antigas, de antes do _ip ser capturado na entrada.
   const orderBySession = new Map<string, {
     status: string
     totalAmount: number
@@ -307,8 +307,6 @@ async function getFunnelData(sinceDate: string) {
     buyerName: string | null
     buyerEmail: string | null
     checkoutIp: string | null
-    checkoutDevice: 'mobile' | 'tablet' | 'desktop' | null
-    checkoutPlatform: 'iOS' | 'Android' | 'Windows' | 'Mac' | 'Other' | null
   }>()
   for (const o of allOrdersRows ?? []) {
     const row = o as unknown as {
@@ -316,13 +314,11 @@ async function getFunnelData(sinceDate: string) {
       status: string
       total_amount: number
       currency: string
-      client_user_agent: string | null
       client_ip_address: string | null
       order_items?: { product_code: string }[]
       users?: { name: string | null; email: string } | null
     }
     if (!row.session_id || orderBySession.has(row.session_id)) continue
-    const ua = row.client_user_agent ?? ''
     orderBySession.set(row.session_id, {
       status: row.status,
       totalAmount: row.total_amount,
@@ -331,14 +327,12 @@ async function getFunnelData(sinceDate: string) {
       buyerName: row.users?.name ?? null,
       buyerEmail: row.users?.email ?? null,
       checkoutIp: row.client_ip_address ?? null,
-      checkoutDevice: ua ? detectDeviceFromUA(ua) : null,
-      checkoutPlatform: ua ? detectPlatformFromUA(ua) : null,
     })
   }
 
   // Todos os indivíduos do período (não só os 3/20 mais recentes) — uma linha
-  // por sessão, com tudo que temos: dispositivo/sistema da entrada no quiz,
-  // até onde avançou, e (se chegou a pedir) status/comprador/IP do checkout.
+  // por sessão, com tudo que temos: IP/dispositivo/sistema da entrada no quiz,
+  // até onde avançou, e (se chegou a pedir) status/comprador/valor.
   const allIndividuals = data.map((r) => {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
@@ -373,6 +367,9 @@ async function getFunnelData(sinceDate: string) {
       country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
       device: (draft._device as string | undefined) ?? null,
       platform: (draft._platform as string | undefined) ?? null,
+      // IP da entrada no quiz (toda sessão tem, a partir de 22/07). Sessões
+      // antigas caem no IP do checkout, que só existe se criaram pedido.
+      ip: (draft._ip as string | undefined) ?? order?.checkoutIp ?? null,
       lastStep,
       stepNum,
       orderStatus: order?.status ?? null,
@@ -381,9 +378,6 @@ async function getFunnelData(sinceDate: string) {
       buyerEmail: order?.buyerEmail ?? null,
       totalAmount: order?.totalAmount ?? null,
       currency: order?.currency ?? null,
-      checkoutIp: order?.checkoutIp ?? null,
-      checkoutDevice: order?.checkoutDevice ?? null,
-      checkoutPlatform: order?.checkoutPlatform ?? null,
     }
   })
 
@@ -950,14 +944,13 @@ export default async function QuizFunnelPage({
               <th className="px-4 py-2 font-medium">Pedido</th>
               <th className="px-4 py-2 font-medium">Producto</th>
               <th className="px-4 py-2 font-medium">Comprador</th>
-              <th className="px-4 py-2 font-medium">IP checkout</th>
-              <th className="px-4 py-2 font-medium">Disp. checkout</th>
+              <th className="px-4 py-2 font-medium">IP</th>
               <th className="px-4 py-2 text-right font-medium">Valor</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {allIndividuals.length === 0 && (
-              <tr><td colSpan={14} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
+              <tr><td colSpan={13} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
             )}
             {allIndividuals.map((ind) => (
               <tr key={ind.id} className="hover:bg-muted/30 transition-colors">
@@ -996,10 +989,7 @@ export default async function QuizFunnelPage({
                     </>
                   ) : '—'}
                 </td>
-                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{ind.checkoutIp ?? '—'}</td>
-                <td className="px-4 py-2.5 text-xs">
-                  {ind.checkoutPlatform ? (platformLabels[ind.checkoutPlatform] ?? ind.checkoutPlatform) : (ind.checkoutDevice ? (deviceLabels[ind.checkoutDevice] ?? ind.checkoutDevice) : '—')}
-                </td>
+                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{ind.ip ?? '—'}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold whitespace-nowrap">
                   {ind.totalAmount !== null ? `${ind.currency} ${ind.totalAmount}` : '—'}
                 </td>

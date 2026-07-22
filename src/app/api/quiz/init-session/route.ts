@@ -105,9 +105,17 @@ export async function POST(request: NextRequest) {
   const detectedCountry = request.headers.get('x-vercel-ip-country') ?? undefined
   const dbCountry = toDbCountry(detectedCountry)
 
+  // IP já na entrada do quiz: antes só existia em orders.client_ip_address, ou
+  // seja, só pra quem chegava a criar pedido. Capturando aqui, toda sessão tem
+  // IP, mesmo quem abandona no meio do quiz. x-forwarded-for pode vir com uma
+  // cadeia de proxies ("cliente, proxy1, proxy2") — o primeiro é o cliente real.
+  const forwardedFor = request.headers.get('x-forwarded-for')
+  const clientIp = forwardedFor?.split(',')[0]?.trim() || request.headers.get('x-real-ip') || undefined
+
   const draftAnswers: Record<string, unknown> = {}
   if (adRef) draftAnswers._ad_ref = adRef
   if (detectedCountry) draftAnswers._detected_country = detectedCountry
+  if (clientIp) draftAnswers._ip = clientIp
   draftAnswers._device = detectDevice(ua)
   draftAnswers._platform = detectPlatform(ua)
   // Marca permanente (não expira com log): permite consultar no banco, a
