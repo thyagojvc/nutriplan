@@ -32,6 +32,24 @@ function parseHeartbeatTs(v: string): number {
   return Number.isNaN(t) ? 0 : t
 }
 
+// Mesma classificação do /api/quiz/init-session.ts (duplicada aqui pelo mesmo
+// motivo do parseHeartbeatTs acima). Aplicada em cima de orders.client_user_agent,
+// que já existia antes do rastreamento por sessão — cobre só quem chegou a criar
+// um pedido (fatia menor que todo mundo que faz o quiz, mas cobre o histórico
+// inteiro, não só daqui pra frente).
+function detectDeviceFromUA(ua: string): 'mobile' | 'tablet' | 'desktop' {
+  if (/iPad|Tablet/i.test(ua)) return 'tablet'
+  if (/Mobile|iPhone|Android/i.test(ua)) return 'mobile'
+  return 'desktop'
+}
+function detectPlatformFromUA(ua: string): 'iOS' | 'Android' | 'Windows' | 'Mac' | 'Other' {
+  if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS'
+  if (/Android/i.test(ua)) return 'Android'
+  if (/Windows/i.test(ua)) return 'Windows'
+  if (/Macintosh/i.test(ua)) return 'Mac'
+  return 'Other'
+}
+
 // Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
 // número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
 // numeração step_N é fixa por componente e não reflete mais a ordem de
@@ -93,7 +111,7 @@ async function getFunnelData(sinceDate: string) {
     supabase
       .from('orders')
       .select(`
-        id, status, total_amount, currency, created_at, paid_at,
+        id, status, total_amount, currency, created_at, paid_at, client_user_agent,
         order_items(product_code),
         generation_sessions(draft_answers),
         users(name, email)
@@ -185,12 +203,14 @@ async function getFunnelData(sinceDate: string) {
       currency: string
       created_at: string
       paid_at: string | null
+      client_user_agent: string | null
       order_items?: { product_code: string }[]
       generation_sessions?: { draft_answers?: Record<string, unknown> } | null
       users?: { name: string | null; email: string } | null
     }
     const draft = row.generation_sessions?.draft_answers ?? {}
     const step7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
+    const ua = row.client_user_agent ?? ''
     return {
       id: row.id,
       status: row.status,
@@ -202,8 +222,23 @@ async function getFunnelData(sinceDate: string) {
       adRef: (draft._ad_ref as string | undefined) ?? '—',
       buyerName: row.users?.name ?? null,
       buyerEmail: row.users?.email ?? null,
+      device: ua ? detectDeviceFromUA(ua) : null,
+      platform: ua ? detectPlatformFromUA(ua) : null,
     }
   })
+
+  // Dispositivo/sistema de quem chegou no checkout, via orders.client_user_agent
+  // (já existia antes de hoje, ao contrário do _device/_platform por sessão de
+  // quiz). Cobre só os pedidos listados acima (mesmo limite/período da tabela
+  // "Vendas recentes"), não o funil inteiro.
+  const checkoutDeviceCounts: Record<string, number> = {}
+  const checkoutPlatformCounts: Record<string, number> = {}
+  for (const sale of recentSales) {
+    const device = sale.device ?? 'Sin dato'
+    checkoutDeviceCounts[device] = (checkoutDeviceCounts[device] ?? 0) + 1
+    const platform = sale.platform ?? 'Sin dato'
+    checkoutPlatformCounts[platform] = (checkoutPlatformCounts[platform] ?? 0) + 1
+  }
 
   // Últimos acessos que começaram o quiz, com a hora exata (Brasília) da entrada.
   // "lastStep" = até onde a pessoa avançou: primeiro checa se passou do quiz
@@ -248,7 +283,7 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, lastStarts }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts }
 }
 
 export default async function QuizFunnelPage({
@@ -271,7 +306,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, lastStarts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
@@ -280,6 +315,8 @@ export default async function QuizFunnelPage({
   const deviceRows = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])
   const platformLabels: Record<string, string> = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Otro' }
   const platformRows = Object.entries(platformCounts).sort((a, b) => b[1] - a[1])
+  const checkoutDeviceRows = Object.entries(checkoutDeviceCounts).sort((a, b) => b[1] - a[1])
+  const checkoutPlatformRows = Object.entries(checkoutPlatformCounts).sort((a, b) => b[1] - a[1])
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 p-6 pb-20">
@@ -572,13 +609,14 @@ export default async function QuizFunnelPage({
               <th className="px-4 py-2 font-medium">País</th>
               <th className="px-4 py-2 font-medium">Anuncio</th>
               <th className="px-4 py-2 font-medium">Producto</th>
+              <th className="px-4 py-2 font-medium">Dispositivo</th>
               <th className="px-4 py-2 font-medium">Estado</th>
               <th className="px-4 py-2 text-right font-medium">Valor</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {recentSales.length === 0 && (
-              <tr><td colSpan={7} className="px-4 py-3 text-muted-foreground">Sin ventas en el período.</td></tr>
+              <tr><td colSpan={8} className="px-4 py-3 text-muted-foreground">Sin ventas en el período.</td></tr>
             )}
             {recentSales.map((s) => (
               <tr key={s.id} className="hover:bg-muted/30 transition-colors">
@@ -595,6 +633,9 @@ export default async function QuizFunnelPage({
                 <td className="px-4 py-2.5 font-mono text-xs">{s.country}</td>
                 <td className="px-4 py-2.5 text-xs">{s.adRef}</td>
                 <td className="px-4 py-2.5 text-xs">{OFFER_LABELS[s.productCode] ?? s.productCode}</td>
+                <td className="px-4 py-2.5 text-xs">
+                  {s.platform ? (platformLabels[s.platform] ?? s.platform) : (s.device ? (deviceLabels[s.device] ?? s.device) : '—')}
+                </td>
                 <td className="px-4 py-2.5 text-xs">{STATUS_LABELS[s.status] ?? s.status}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold">
                   {s.currency} {s.totalAmount}
@@ -726,6 +767,55 @@ export default async function QuizFunnelPage({
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Checkout — dispositivo/sistema de quem chegou a criar um pedido, via
+          orders.client_user_agent (existia antes de hoje, cobre o histórico
+          inteiro, mas só essa fatia final do funil — ver comentário na query). */}
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Checkout — dispositivo</p>
+          <p className="text-xs text-muted-foreground">Solo de quien llegó a crear un pedido (últimas 20 ventas), no de todo el quiz</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {checkoutDeviceRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sin pedidos en el período.</td></tr>
+            )}
+            {checkoutDeviceRows.map(([device, count]) => (
+              <tr key={device} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs">{deviceLabels[device] ?? device}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {recentSales.length > 0 ? Math.round((count / recentSales.length) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Checkout — sistema</p>
+          <p className="text-xs text-muted-foreground">iPhone/iPad vs Android vs computador, solo de quien llegó a crear un pedido</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {checkoutPlatformRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sin pedidos en el período.</td></tr>
+            )}
+            {checkoutPlatformRows.map(([platform, count]) => (
+              <tr key={platform} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 text-xs">{platformLabels[platform] ?? platform}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
+                  {recentSales.length > 0 ? Math.round((count / recentSales.length) * 100) : 0}%
                 </td>
               </tr>
             ))}
