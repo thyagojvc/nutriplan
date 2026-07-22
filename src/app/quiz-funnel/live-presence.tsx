@@ -3,20 +3,23 @@
 import { useEffect, useState } from 'react'
 
 // Rótulos por ETAPA VISÍVEL (posição no fluxo que a pessoa realmente vê),
-// alinhados ao VISIBLE_ORDER do quiz (src/app/quiz/[step]/page.tsx).
-// Atualizado em 15/07 pra bater com o reorder obstáculo-primeiro.
+// alinhados ao VISIBLE_ORDER do quiz (src/app/quiz/[step]/page.tsx):
+// [5, 1, 2, 6, 4, 8, 9, 10, 11, 13, 12]. Posição 12 é fixa, enviada pela
+// preview/page.tsx (step: 12 hardcoded), não faz parte do VISIBLE_ORDER.
+// Atualizado em 22/07 pra bater com o reorder que tornou Dados físicos a
+// entrada do quiz (era Obstáculos antes).
 const VISIBLE_STEP_LABELS: Record<number, string> = {
-  1: 'Obstáculos',
-  2: 'Objetivo',
-  3: 'Alimentos favoritos',
-  4: 'Sexo',
-  5: 'Nível de atividade',
-  6: 'Restrições',
-  7: 'Saúde',
+  1: 'Dados físicos',
+  2: 'Alimentos favoritos',
+  3: 'Objetivo',
+  4: 'Nível de atividade',
+  5: 'Sexo',
+  6: 'Restrições alimentares',
+  7: 'Condições de saúde',
   8: 'Exercício',
-  9: 'Dados físicos',
+  9: 'Obstáculos',
   10: 'Incômodo corporal',
-  11: 'Ponte emocional',
+  11: 'Ponte emocional (CTA)',
   12: 'Vendo o plano (preview)',
 }
 
