@@ -95,7 +95,12 @@ export async function POST(request: NextRequest) {
   let body: unknown
   try { body = await request.json() } catch { body = {} }
   const parsed = z.object({ ad_ref: z.string().max(200).optional() }).safeParse(body)
-  const adRef = parsed.success ? parsed.data.ad_ref : undefined
+  let adRef = parsed.success ? parsed.data.ad_ref : undefined
+  // Meta só substitui {{ad.name}} pelo nome real quando o clique vem do feed
+  // de verdade. Cliques de "Visualizar" no Gerenciador (ou URL testada direto)
+  // chegam com o macro cru, tipo literal "{{ad.name}}" — descarta pra não
+  // poluir o painel com esse texto sem sentido.
+  if (adRef && /^\{\{.*\}\}$/.test(adRef)) adRef = undefined
 
   const detectedCountry = request.headers.get('x-vercel-ip-country') ?? undefined
   const dbCountry = toDbCountry(detectedCountry)
