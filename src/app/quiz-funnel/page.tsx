@@ -90,7 +90,7 @@ async function getFunnelData(sinceDate: string) {
 
   let query = supabase
     .from('generation_sessions')
-    .select('draft_answers, created_at')
+    .select('id, draft_answers, created_at')
     .order('created_at', { ascending: false })
 
   if (since) query = query.gte('created_at', since)
@@ -101,7 +101,7 @@ async function getFunnelData(sinceDate: string) {
   // senão quebra o login dela.
   const HOTMART_REVIEWER_ORDER_ID = 'f8e9178f-69ca-4768-95c1-e5c8b3e65259'
 
-  const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }, { data: lastStartsRows }] = await Promise.all([
+  const [{ data, error }, { data: ordersRows }, { data: recentSalesRows }, { data: lastStartsRows }, { data: allOrdersRows }] = await Promise.all([
     query,
     supabase
       .from('orders')
@@ -127,6 +127,19 @@ async function getFunnelData(sinceDate: string) {
       .select('id, created_at, draft_answers')
       .order('created_at', { ascending: false })
       .limit(3),
+    // Todos os pedidos do período, pra cruzar com CADA sessão na tabela "Todos
+    // los individuos" (não só as últimas 20 como em recentSales). Traz IP e
+    // user-agent do checkout, que não existem em generation_sessions.
+    supabase
+      .from('orders')
+      .select(`
+        session_id, status, total_amount, currency, created_at, client_user_agent, client_ip_address,
+        order_items(product_code),
+        users(name, email)
+      `)
+      .gte('created_at', since)
+      .neq('id', HOTMART_REVIEWER_ORDER_ID)
+      .order('created_at', { ascending: false }),
   ])
 
   if (error || !data) return null
@@ -283,7 +296,98 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts }
+  // Pedido mais recente de cada sessão (allOrdersRows já vem ordenado desc,
+  // então a 1ª ocorrência por session_id é a mais nova). Traz o que
+  // generation_sessions não tem: IP e user-agent reais do checkout.
+  const orderBySession = new Map<string, {
+    status: string
+    totalAmount: number
+    currency: string
+    productCode: string
+    buyerName: string | null
+    buyerEmail: string | null
+    checkoutIp: string | null
+    checkoutDevice: 'mobile' | 'tablet' | 'desktop' | null
+    checkoutPlatform: 'iOS' | 'Android' | 'Windows' | 'Mac' | 'Other' | null
+  }>()
+  for (const o of allOrdersRows ?? []) {
+    const row = o as unknown as {
+      session_id: string | null
+      status: string
+      total_amount: number
+      currency: string
+      client_user_agent: string | null
+      client_ip_address: string | null
+      order_items?: { product_code: string }[]
+      users?: { name: string | null; email: string } | null
+    }
+    if (!row.session_id || orderBySession.has(row.session_id)) continue
+    const ua = row.client_user_agent ?? ''
+    orderBySession.set(row.session_id, {
+      status: row.status,
+      totalAmount: row.total_amount,
+      currency: row.currency,
+      productCode: row.order_items?.[0]?.product_code ?? 'Sin ítem',
+      buyerName: row.users?.name ?? null,
+      buyerEmail: row.users?.email ?? null,
+      checkoutIp: row.client_ip_address ?? null,
+      checkoutDevice: ua ? detectDeviceFromUA(ua) : null,
+      checkoutPlatform: ua ? detectPlatformFromUA(ua) : null,
+    })
+  }
+
+  // Todos os indivíduos do período (não só os 3/20 mais recentes) — uma linha
+  // por sessão, com tudo que temos: dispositivo/sistema da entrada no quiz,
+  // até onde avançou, e (se chegou a pedir) status/comprador/IP do checkout.
+  const allIndividuals = data.map((r) => {
+    const draft = (r.draft_answers ?? {}) as Record<string, unknown>
+    const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
+
+    let lastStep = 'Não iniciou'
+    let stepNum: number | null = null
+    if (sessionIdsWithOrder.has(r.id)) { lastStep = 'Foi pra Hotmart'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_tiers_reached')) { lastStep = 'Viu os planos'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_offer_reached')) { lastStep = 'Viu a oferta'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_preview_viewed')) { lastStep = 'Entrou na preview'; stepNum = VISIT_ORDER.length }
+    else {
+      for (let i = VISIT_ORDER.length - 1; i >= 0; i--) {
+        const step = VISIT_ORDER[i]
+        if (`step_${step}` in draft) { lastStep = STEP_LABELS[step] ?? `Step ${step}`; stepNum = i + 1; break }
+      }
+    }
+
+    let isLive = false
+    for (const [k, v] of Object.entries(draft)) {
+      if (!k.startsWith('_live_')) continue
+      if (Date.now() - parseHeartbeatTs(String(v)) <= LIVE_WINDOW_MS) { isLive = true; break }
+    }
+
+    const order = orderBySession.get(r.id) ?? null
+
+    return {
+      id: r.id,
+      createdAt: r.created_at,
+      isLive,
+      adRef: (draft._ad_ref as string | undefined) ?? '—',
+      country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
+      device: (draft._device as string | undefined) ?? null,
+      platform: (draft._platform as string | undefined) ?? null,
+      lastStep,
+      stepNum,
+      orderStatus: order?.status ?? null,
+      productCode: order?.productCode ?? null,
+      buyerName: order?.buyerName ?? null,
+      buyerEmail: order?.buyerEmail ?? null,
+      totalAmount: order?.totalAmount ?? null,
+      currency: order?.currency ?? null,
+      checkoutIp: order?.checkoutIp ?? null,
+      checkoutDevice: order?.checkoutDevice ?? null,
+      checkoutPlatform: order?.checkoutPlatform ?? null,
+    }
+  })
+
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals }
 }
 
 export default async function QuizFunnelPage({
@@ -306,7 +410,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
@@ -816,6 +920,88 @@ export default async function QuizFunnelPage({
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {recentSales.length > 0 ? Math.round((count / recentSales.length) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Todos os indivíduos — uma linha por sessão do período (sem limite de
+          20/3 como as tabelas acima), com tudo que temos: ID completo, entrada
+          no quiz (dispositivo/sistema/país/anúncio), até onde avançou, e (se
+          chegou a pedir) status/comprador/IP do checkout. */}
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Todos los individuos</p>
+          <p className="text-xs text-muted-foreground">Una fila por sesión del período · {allIndividuals.length} en total</p>
+        </div>
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-muted/30 text-left text-[10px] uppercase text-muted-foreground">
+              <th className="px-4 py-2 font-medium">ID</th>
+              <th className="px-4 py-2 font-medium">Fecha</th>
+              <th className="px-4 py-2 font-medium">Vivo</th>
+              <th className="px-4 py-2 font-medium">Anuncio</th>
+              <th className="px-4 py-2 font-medium">País</th>
+              <th className="px-4 py-2 font-medium">Dispositivo</th>
+              <th className="px-4 py-2 font-medium">Sistema</th>
+              <th className="px-4 py-2 font-medium">Último paso</th>
+              <th className="px-4 py-2 font-medium">Pedido</th>
+              <th className="px-4 py-2 font-medium">Producto</th>
+              <th className="px-4 py-2 font-medium">Comprador</th>
+              <th className="px-4 py-2 font-medium">IP checkout</th>
+              <th className="px-4 py-2 font-medium">Disp. checkout</th>
+              <th className="px-4 py-2 text-right font-medium">Valor</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-border">
+            {allIndividuals.length === 0 && (
+              <tr><td colSpan={14} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
+            )}
+            {allIndividuals.map((ind) => (
+              <tr key={ind.id} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground" title={ind.id}>
+                  {ind.id.slice(0, 8)}
+                </td>
+                <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
+                  {new Date(ind.createdAt).toLocaleString('pt-BR', {
+                    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
+                    timeZone: 'America/Sao_Paulo',
+                  })}
+                </td>
+                <td className="px-4 py-2.5">
+                  {ind.isLive && (
+                    <span className="flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 whitespace-nowrap">
+                      <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
+                      Vivo
+                    </span>
+                  )}
+                </td>
+                <td className="px-4 py-2.5 text-xs">{ind.adRef}</td>
+                <td className="px-4 py-2.5 font-mono text-xs">{ind.country}</td>
+                <td className="px-4 py-2.5 text-xs">{ind.device ? (deviceLabels[ind.device] ?? ind.device) : '—'}</td>
+                <td className="px-4 py-2.5 text-xs">{ind.platform ? (platformLabels[ind.platform] ?? ind.platform) : '—'}</td>
+                <td className="px-4 py-2.5 text-xs whitespace-nowrap">
+                  {ind.stepNum !== null && <span className="mr-1 font-mono text-[10px] text-muted-foreground/70">{ind.stepNum}·</span>}
+                  {ind.lastStep}
+                </td>
+                <td className="px-4 py-2.5 text-xs">{ind.orderStatus ? (STATUS_LABELS[ind.orderStatus] ?? ind.orderStatus) : '—'}</td>
+                <td className="px-4 py-2.5 text-xs">{ind.productCode ? (OFFER_LABELS[ind.productCode] ?? ind.productCode) : '—'}</td>
+                <td className="px-4 py-2.5 text-xs">
+                  {ind.buyerEmail ? (
+                    <>
+                      <p className="font-medium">{ind.buyerName?.trim() || 'Cliente'}</p>
+                      <p className="text-[10px] text-muted-foreground">{ind.buyerEmail}</p>
+                    </>
+                  ) : '—'}
+                </td>
+                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{ind.checkoutIp ?? '—'}</td>
+                <td className="px-4 py-2.5 text-xs">
+                  {ind.checkoutPlatform ? (platformLabels[ind.checkoutPlatform] ?? ind.checkoutPlatform) : (ind.checkoutDevice ? (deviceLabels[ind.checkoutDevice] ?? ind.checkoutDevice) : '—')}
+                </td>
+                <td className="px-4 py-2.5 text-right tabular-nums font-semibold whitespace-nowrap">
+                  {ind.totalAmount !== null ? `${ind.currency} ${ind.totalAmount}` : '—'}
                 </td>
               </tr>
             ))}
