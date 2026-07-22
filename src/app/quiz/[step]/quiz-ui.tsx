@@ -602,13 +602,24 @@ export function QuizStepperRow({
   step?: number
   unit: string
 }) {
-  // Texto local reconcilia só no blur/Enter (mesmo padrão do QuizNumberField),
-  // pra não clampar estados intermediários enquanto a pessoa digita.
+  // Texto local pra permitir digitação livre (campo vazio, número parcial),
+  // mas propaga pro pai a CADA tecla que já forma um número válido — sem
+  // clamp/round aqui, só no blur. Isso existe porque só confirmar no blur
+  // deixava o valor digitado se perder quando a pessoa tocava direto no botão
+  // "Continuar" sem antes tirar o foco do campo (comum no navegador do
+  // Instagram): o blur não disparava a tempo e ia pro submit o valor antigo.
   const [text, setText] = useState(String(value))
   useEffect(() => setText(String(value)), [value])
 
   function clamp(n: number) {
     return Math.min(max, Math.max(min, n))
+  }
+
+  function handleTextChange(raw: string) {
+    setText(raw)
+    if (raw.trim() === '') return
+    const n = Number(raw)
+    if (Number.isFinite(n)) onChange(n)
   }
 
   function commit(raw: string) {
@@ -641,7 +652,7 @@ export function QuizStepperRow({
           type="number"
           inputMode="numeric"
           value={text}
-          onChange={(e) => setText(e.target.value)}
+          onChange={(e) => handleTextChange(e.target.value)}
           onBlur={(e) => commit(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
           className="quiz-number-input w-16 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25"
