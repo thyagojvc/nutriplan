@@ -358,7 +358,7 @@ export default async function QuizFunnelPage({
 
       {/* Últimos acessos — hora exata (Brasília) que as 3 sessões mais recentes
           começaram o quiz, sem filtro de período (pulso de monitoramento ao vivo) */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Últimos acessos</p>
           <p className="text-xs text-muted-foreground">Hora exata (Brasília) que as 3 sessões mais recentes começaram o quiz</p>
@@ -406,7 +406,7 @@ export default async function QuizFunnelPage({
         </table>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50 text-left text-xs text-muted-foreground">
@@ -596,7 +596,7 @@ export default async function QuizFunnelPage({
       </p>
 
       {/* Vendas recentes — identifica cada pedido: comprador (se já pago), país real, produto e status */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Ventas recientes</p>
           <p className="text-xs text-muted-foreground">Últimas 20 · comprador solo aparece después del webhook (pending aún no tiene datos)</p>
@@ -647,7 +647,7 @@ export default async function QuizFunnelPage({
       </div>
 
       {/* Ofertas — para qual tier foi cada finalização de compra, com status real */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Ofertas</p>
           <p className="text-xs text-muted-foreground">Checkouts iniciados por tier. &quot;Pendiente&quot; = iniciou o pagamento mas ainda não confirmado na Hotmart.</p>
@@ -676,7 +676,7 @@ export default async function QuizFunnelPage({
 
       {/* Criativos — utm_content capturado na entrada do quiz. Sessões antes dessa
           captura existir (ou tráfego sem utm) caem em "Sin dato". */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Criativos</p>
           <p className="text-xs text-muted-foreground">Configura utm_content={'{{ad.name}}'} nos parâmetros de URL do anúncio no Meta Ads pra aparecer aqui</p>
@@ -700,7 +700,7 @@ export default async function QuizFunnelPage({
       </div>
 
       {/* Países — país real detectado no step 7 (country_detail), não o tier de preço */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Países</p>
           <p className="text-xs text-muted-foreground">País detectado por sessão (mesma pessoa em aparelhos diferentes conta mais de uma vez)</p>
@@ -725,7 +725,7 @@ export default async function QuizFunnelPage({
 
       {/* Dispositivos — user-agent classificado no init-session (_device).
           Sessões antes de 22/07 não têm essa chave, caem em "Sin dato". */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Dispositivos</p>
           <p className="text-xs text-muted-foreground">Classificado pelo user-agent na entrada do quiz (celular, tablet ou computador)</p>
@@ -751,7 +751,7 @@ export default async function QuizFunnelPage({
       {/* Sistema — iOS vs Android vs desktop, classificado pelo user-agent
           (_platform). É o dado que mais interessa pra decidir prioridade de
           teste/otimização por plataforma. */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Sistema</p>
           <p className="text-xs text-muted-foreground">iPhone/iPad vs Android vs computador, classificado pelo user-agent</p>
@@ -777,7 +777,7 @@ export default async function QuizFunnelPage({
       {/* Checkout — dispositivo/sistema de quem chegou a criar um pedido, via
           orders.client_user_agent (existia antes de hoje, cobre o histórico
           inteiro, mas só essa fatia final do funil — ver comentário na query). */}
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Checkout — dispositivo</p>
           <p className="text-xs text-muted-foreground">Solo de quien llegó a crear un pedido (últimas 20 ventas), no de todo el quiz</p>
@@ -800,7 +800,7 @@ export default async function QuizFunnelPage({
         </table>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-border">
+      <div className="overflow-x-auto rounded-xl border border-border">
         <div className="border-b border-border bg-muted/50 px-4 py-3">
           <p className="text-sm font-semibold">Checkout — sistema</p>
           <p className="text-xs text-muted-foreground">iPhone/iPad vs Android vs computador, solo de quien llegó a crear un pedido</p>
