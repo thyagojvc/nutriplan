@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Check, Lock, RotateCcw, X, CalendarCheck, BadgeCheck,
+  Mail, MessageCircle,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -1140,6 +1141,34 @@ export default function PreviewPage() {
               Si no te sirve, no pagas: garantía de 14 días, sin preguntas. Y el plan es tuyo igual.
             </p>
 
+            {/* "Qué pasa apenas pagas": mata a objeção nº1 de ticket baixo no
+                LatAm no exato momento do preço, "e se eu pagar e não receber
+                nada / for golpe?". No dado, 167 pessoas viram o preço e saíram;
+                a maioria não sai por preço ($9.90 já é baixo), sai por
+                desconfiança. Aqui a entrega vira concreta e verificável, com
+                pessoa real por trás, sem esconder na FAQ (que fica fechada). */}
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-3.5 space-y-2.5">
+              <p className="text-center text-[11px] font-bold uppercase tracking-widest text-primary">Apenas pagas, esto pasa</p>
+              <div className="flex items-start gap-2.5">
+                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <p className="text-[13px] leading-snug text-gray-700">
+                  Recibís un correo <strong>en minutos</strong> con acceso a tu panel. Tu plan ya está generado, no esperás nada.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <p className="text-[13px] leading-snug text-gray-700">
+                  Recibís el <strong>WhatsApp de María Fernanda</strong> por si tenés cualquier duda. Hay una persona real detrás.
+                </p>
+              </div>
+              <div className="flex items-start gap-2.5">
+                <RotateCcw className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
+                <p className="text-[13px] leading-snug text-gray-700">
+                  Si en 14 días no notás cambios, te devolvemos el <strong>100%</strong>. El riesgo es nuestro, no tuyo.
+                </p>
+              </div>
+            </div>
+
             <PaymentTrust />
           </div>
         </div>
@@ -1194,20 +1223,32 @@ export default function PreviewPage() {
 
 const FAQ_ITEMS = [
   {
+    q: '¿Es seguro comprar aquí? ¿Qué pasa con mis datos?',
+    a: 'Sí. El pago se procesa por Hotmart, una plataforma usada por millones de personas en Latinoamérica, con las mismas protecciones que cualquier compra online segura. Tus datos solo se usan para generar y enviarte tu plan.',
+  },
+  {
+    q: '¿Cómo y cuándo recibo mi plan?',
+    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras. Si no lo ves, revisa la carpeta de spam o escríbenos por WhatsApp y te lo reenviamos.',
+  },
+  {
+    q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
+    a: 'Porque las dietas genéricas te dan el mismo plan que a todas, sin mirar tu cuerpo ni tu rutina, y por eso se abandonan. Tu Reto se calcula a partir de tus datos e incluye tus comidas favoritas, así que no dependes de la fuerza de voluntad para sostenerlo. El calendario de 28 días es justo lo que te ayuda a no abandonarlo en la semana 2.',
+  },
+  {
+    q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
+    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, tienes tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. La idea es que comas bien sin pasar horas en la cocina.',
+  },
+  {
     q: '¿Hay suscripción o cobros recurrentes?',
     a: 'No. Es un pago único, sin suscripción y sin cobros automáticos. Pagas una vez y el acceso a tu plan es tuyo para siempre.',
   },
   {
+    q: '¿Con qué puedo pagar?',
+    a: 'Con tarjeta de crédito o débito, y con los medios de pago locales disponibles en tu país a través de Hotmart. En el checkout ves todas las opciones antes de confirmar.',
+  },
+  {
     q: '¿Funciona si tengo restricciones alimentarias o tiroides?',
     a: 'Sí. Durante el quiz indicaste tus preferencias y condiciones. El plan se arma con eso, y las sustituciones te permiten adaptar cualquier comida a lo que tienes disponible.',
-  },
-  {
-    q: '¿Cómo y cuándo recibo mi plan?',
-    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras.',
-  },
-  {
-    q: '¿Es seguro comprar aquí? ¿Qué pasa con mis datos?',
-    a: 'Sí. El pago se procesa por Hotmart, una plataforma usada por millones de personas en Latinoamérica, con las mismas protecciones que cualquier compra online segura. Tus datos solo se usan para generar y enviarte tu plan.',
   },
 ]
 
