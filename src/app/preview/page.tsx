@@ -1090,12 +1090,20 @@ export default function PreviewPage() {
                   <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} />
                 </div>
               </div>
+              {/* Âncora emocional principal: o dinheiro já desperdiçado em dietas
+                  que não funcionaram. É o frame que mais casa com o comprador real
+                  (marca "presupuesto" e já tentou de tudo, por dado do banco). */}
               <p className="text-[13px] text-gray-700">
-                Y ya gastaste más que esto en dietas y planes que nunca se adaptaron a ti.
+                Pensá en todo lo que ya gastaste en dietas, apps y planes que no miraban tu cuerpo ni tu rutina. Esto cuesta menos que una sola de esas veces, y esta vez está hecho para vos.
+              </p>
+              {/* Mostrar, não afirmar: amarra o preço ao plano concreto que ela já
+                  viu no teaser acima, pra virar "comprar aquilo", não "apostar numa promessa". */}
+              <p className="text-[13px] text-gray-700">
+                No estás pagando por una promesa. El plan que viste arriba, con tus comidas, es lo que recibís hoy.
               </p>
               <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
               <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
-              <p className="text-[13px] font-bold text-gray-700">Cuesta menos que los cafés de una semana.</p>
+              <p className="text-[13px] font-bold text-gray-700">Cuesta menos que un delivery del fin de semana.</p>
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
               </p>
