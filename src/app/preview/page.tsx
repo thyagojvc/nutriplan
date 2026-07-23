@@ -749,7 +749,7 @@ export default function PreviewPage() {
           <div className="relative w-full aspect-[2/3]">
             <Image
               src="/FotoNutri-full.png"
-              alt="Tiago Vieira, Nutricionista"
+              alt="María Fernanda, Nutricionista"
               fill
               className="object-cover object-top"
               sizes="(max-width: 520px) 100vw, 520px"
@@ -758,7 +758,7 @@ export default function PreviewPage() {
             <div className="absolute bottom-4 right-4">
               <Image
                 src="/FotoNutri.jpg"
-                alt="Tiago Vieira, primer plano"
+                alt="María Fernanda, primer plano"
                 width={64}
                 height={64}
                 className="h-16 w-16 rounded-full object-cover object-top border-[3px] border-white shadow-lg"
@@ -767,7 +767,7 @@ export default function PreviewPage() {
             </div>
             <div className="absolute inset-x-0 bottom-0 p-4 pr-20">
               <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Quién está detrás de tu plan</p>
-              <p className="font-display text-[19px] font-black text-white">Tiago Vieira</p>
+              <p className="font-display text-[19px] font-black text-white">María Fernanda</p>
               <p className="text-[13px] font-semibold text-white/90">Nutricionista · Responsable técnico</p>
             </div>
           </div>
@@ -776,7 +776,7 @@ export default function PreviewPage() {
             <div className="flex flex-wrap gap-1.5">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
                 <ShieldCheck className="h-3 w-3" />
-                Reg. 26101842
+                Reg. 24116789
               </span>
               <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
                 Hipertrofia femenina
@@ -799,7 +799,7 @@ export default function PreviewPage() {
             </div>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-              Todo empezó con su mamá: años probando dietas que no consideraban su cuerpo ni su rutina, sin resultados. Desde ahí Tiago se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una copia de lo que funciona para un hombre. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
+              Todo empezó con ella misma. Antes de ser nutricionista, María Fernanda pasó años con sobrepeso probando dietas rígidas que no consideraban su cuerpo ni su rutina, y siempre terminaba abandonándolas. Cuando se formó entendió por qué: no le faltaba disciplina, le faltaba un plan hecho para ella. Desde ahí se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una fórmula genérica. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
             </p>
 
             {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta */}
@@ -811,7 +811,7 @@ export default function PreviewPage() {
               </span>
               <div>
                 <p className="text-sm font-bold text-gray-900">Soporte directo por WhatsApp</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. Tiago responde tus dudas por WhatsApp. Recibes su contacto al comprar.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. María Fernanda responde tus dudas por WhatsApp. Recibes su contacto al comprar.</p>
               </div>
             </div>
           </div>
@@ -986,7 +986,7 @@ export default function PreviewPage() {
                 <Check className="h-3.5 w-3.5" strokeWidth={3} />
               </span>
               <div>
-                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por Tiago Vieira</p>
+                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por María Fernanda</p>
                 <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
               </div>
             </div>
