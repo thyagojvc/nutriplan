@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Clock, Check, Lock, RotateCcw, X, CalendarCheck, BadgeCheck,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, CalendarCheck, BadgeCheck,
   Mail, MessageCircle,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -588,11 +588,6 @@ export default function PreviewPage() {
 
   return (
     <PageShell>
-      {/* Urgência fixa: visível durante toda a rolagem, colada embaixo do
-          header. Fala do PLANO se guardar (não de preço), pra criar urgência
-          sem assustar com dinheiro antes de ver metabolismo/autoridade/provas. */}
-      <Countdown />
-
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
         {/* Badge de conclusão */}
@@ -853,63 +848,6 @@ export default function PreviewPage() {
           <p className="text-center text-[11px] leading-relaxed text-[#B7C3B2]">
             Resultados individuales. Varían según cada persona, su constancia y su punto de partida.
           </p>
-        </div>
-
-        {/* Sin vs Con — contraste de experiência (não de qualificação), padrão
-            das páginas de low ticket. Esquerda cinza (a vida de hoje), direita
-            verde (a vida com o Reto). Empurra pra decisão logo antes do "cómo". */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-          <SectionHeading title={<>Con el Reto, <Hl>cambia todo</Hl></>} />
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="rounded-xl border border-[#E5E0DC] bg-[#F7F5F3] p-3.5">
-              <div className="mb-3 flex flex-col items-center gap-1.5 border-b border-dashed border-black/10 pb-3 text-center">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-gray-200 text-gray-500">
-                  <X className="h-4 w-4" strokeWidth={3} />
-                </span>
-                <p className="text-[13px] font-bold text-gray-500">Sin el Reto</p>
-              </div>
-              <ul className="space-y-2.5">
-                {[
-                  'Dietas genéricas que le dan a todas',
-                  'Culpa cada vez que comés algo rico',
-                  'Bajás y en un mes lo volvés a subir',
-                  'Contar calorías a mano, o rendirte a los 3 días',
-                  'No saber si de verdad está funcionando',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-[13px] leading-snug text-gray-500">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-gray-200 text-gray-400">
-                      <X className="h-2.5 w-2.5" strokeWidth={3} />
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="rounded-xl border border-primary/30 bg-primary/5 p-3.5">
-              <div className="mb-3 flex flex-col items-center gap-1.5 border-b border-dashed border-primary/20 pb-3 text-center">
-                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-white shadow-[0_3px_10px_rgba(34,109,69,0.3)]">
-                  <Check className="h-4 w-4" strokeWidth={3} />
-                </span>
-                <p className="text-[13px] font-bold text-primary">Con el Reto</p>
-              </div>
-              <ul className="space-y-2.5">
-                {[
-                  'Un plan calibrado para tu cuerpo',
-                  'Comés rico, con tus antojos incluidos',
-                  'Bajás de forma sostenible, hasta 1 kg por semana',
-                  'Todo decidido: qué comprar y qué comer',
-                  'El calendario te muestra tu avance real',
-                ].map((t) => (
-                  <li key={t} className="flex items-start gap-2 text-[13px] leading-snug text-gray-800">
-                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
-                      <Check className="h-2.5 w-2.5" strokeWidth={3} />
-                    </span>
-                    {t}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
         </div>
 
         {/* Fotos de uso real do Reto (ferramenta em ação): cozinhando com o
@@ -1279,54 +1217,6 @@ function FaqSection() {
           </details>
         ))}
       </div>
-    </div>
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Contador de urgência — preço especial expira (persiste na sessão)
-// ---------------------------------------------------------------------------
-
-function Countdown() {
-  const [secs, setSecs] = useState<number | null>(null)
-
-  useEffect(() => {
-    const KEY = 'nutriplan_offer_deadline'
-    let deadline = Number(sessionStorage.getItem(KEY))
-    if (!deadline || deadline < Date.now()) {
-      deadline = Date.now() + 10 * 60 * 1000 // 10 minutos
-      sessionStorage.setItem(KEY, String(deadline))
-    }
-    const tick = () => setSecs(Math.max(0, Math.round((deadline - Date.now()) / 1000)))
-    tick()
-    const id = setInterval(tick, 1000)
-    return () => clearInterval(id)
-  }, [])
-
-  if (secs === null) return null
-
-  // Quando o contador zera, não congelamos em "00:00" (parece fake e quebra
-  // a credibilidade). Trocamos por uma mensagem de escassez honesta e estável.
-  if (secs === 0) {
-    return (
-      <div className="sticky top-14 z-10 flex w-full items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
-        <Clock className="h-4 w-4 shrink-0 text-[#993C1D]" />
-        <span className="text-sm font-semibold text-[#993C1D]">
-          Tu plan personalizado sigue reservado por hoy
-        </span>
-      </div>
-    )
-  }
-
-  const mm = String(Math.floor(secs / 60)).padStart(2, '0')
-  const ss = String(secs % 60).padStart(2, '0')
-
-  return (
-    <div className="sticky top-14 z-10 flex w-full items-center justify-center gap-2 border-b border-[#F3D2C3] bg-[#FBE7DF] py-1.5 shadow-sm">
-      <Clock className="h-4 w-4 shrink-0 text-[#993C1D]" />
-      <span className="text-sm font-semibold text-[#993C1D]">
-        Tu plan personalizado se guarda por {mm}:{ss}
-      </span>
     </div>
   )
 }
