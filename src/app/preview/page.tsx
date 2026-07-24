@@ -1133,7 +1133,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `QUIERO MI RETO ahora (${price(9.90)}) →`
+                  `Ver mi plan por ${price(9.90)} →`
                 )}
               </button>
               {fx.currency !== 'USD' && (
@@ -1214,7 +1214,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `QUIERO MI RETO ahora (${price(9.90)}) →`
+              `Ver mi plan por ${price(9.90)} →`
             )}
           </button>
           <PaymentTrust />
