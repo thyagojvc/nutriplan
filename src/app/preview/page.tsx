@@ -79,7 +79,13 @@ function buildHeroSubheadline(goal: string, obstacles: string[]): string {
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
-const RESULTS = [
+// `quote` é opcional de propósito: Fernanda e Carolina voltaram pra lista com
+// foto/nome/resultado (o dado que sempre existiu no repo), mas sem depoimento.
+// Escrever fala na boca de paciente real com foto seria prova social fabricada.
+const RESULTS: {
+  photo: string; name: string; country: string; age: number
+  result: string; w: number; h: number; quote?: string
+}[] = [
   {
     photo: '/resultados/caso-1.png', name: 'Camila', country: '🇲🇽', age: 38, result: '−17 kg en 8 meses', w: 414, h: 444,
     quote: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 3 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.',
@@ -88,6 +94,8 @@ const RESULTS = [
     photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
     quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 8 kilos en 3 meses, y lo que no me esperaba es que fue sin pasar hambre.',
   },
+  { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses', w: 402, h: 430 },
+  { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
 ]
 
 interface PreviewData {
@@ -179,7 +187,7 @@ function TeaserMealBlurred({ meal }: { meal: SampleMeal }) {
       </div>
       <div className="flex items-center gap-1.5 bg-[#F5FAF2] px-3.5 py-2 text-[11px] font-semibold text-primary">
         <Lock className="h-3 w-3 shrink-0" />
-        Los otros {rest.length} también son tuyos, elegidos por ti. Se revelan completos en tu panel.
+        Los otros {rest.length} también son tuyos, elegidos por ti. Se revelan completos en tu app.
       </div>
     </div>
   )
@@ -615,7 +623,7 @@ export default function PreviewPage() {
         <div className="flex flex-wrap items-center justify-center gap-1.5">
           <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-bold text-primary">
             <Smartphone className="h-3 w-3" strokeWidth={2.5} />
-            Se instala en tu celular, como una app
+            La app se instala en tu celular
           </span>
           {(inputCount || training) && (
             <>
@@ -828,11 +836,22 @@ export default function PreviewPage() {
             <p className="font-display text-base font-black text-gray-900">
               Así les fue a ellas
             </p>
+            <p className="text-[11px] font-semibold text-muted-foreground">
+              Desliza para ver más →
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5">
+          {/* Carrossel horizontal em vez de grade: com 4 casos a grade dobraria
+              a altura da página pra quem nem quer ler os depoimentos. O card
+              cortado na borda direita é a affordance de que tem mais.
+              -mx-5/px-5 anula o padding do container pra o corte encostar na
+              borda do bloco, senão o peek parece bug de layout. */}
+          <div className="-mx-5 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {RESULTS.map(({ photo, name, country, age, result, w, h, quote }) => (
-              <div key={name} className="overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]">
+              <div
+                key={name}
+                className="flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]"
+              >
                 <Image
                   src={photo}
                   alt={`Antes y después de ${name}`}
@@ -845,7 +864,9 @@ export default function PreviewPage() {
                     {result}
                   </span>
                   <p className="text-xs font-bold text-gray-800">{country} {name}, {age}</p>
-                  <p className="text-[11px] italic leading-snug text-gray-600">&ldquo;{quote}&rdquo;</p>
+                  {quote && (
+                    <p className="text-[11px] italic leading-snug text-gray-600">&ldquo;{quote}&rdquo;</p>
+                  )}
                 </div>
               </div>
             ))}
@@ -871,7 +892,7 @@ export default function PreviewPage() {
                 className="object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
-                <p className="text-[11.5px] font-bold leading-tight text-white">Cocinás siguiendo tu plan</p>
+                <p className="text-[11.5px] font-bold leading-tight text-white">Cocinas siguiendo tu plan</p>
               </div>
             </div>
             <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
@@ -883,12 +904,12 @@ export default function PreviewPage() {
                 className="object-cover"
               />
               <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
-                <p className="text-[11.5px] font-bold leading-tight text-white">Marcás tu avance, semana a semana</p>
+                <p className="text-[11.5px] font-bold leading-tight text-white">Marcas tu avance, semana a semana</p>
               </div>
             </div>
           </div>
           <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. Podés imprimir el calendario si preferís tenerlo a la vista, o marcarlo a medida que avanzás. El plan te dice qué comer, el calendario te muestra que está funcionando.
+            Recibes todo dentro de tu app: el plan de comidas y el calendario de 28 días juntos, el sistema completo. El calendario lo marcas desde el celular, o lo imprimes si prefieres tenerlo a la vista. El plan te dice qué comer, el calendario te muestra que está funcionando.
           </p>
         </div>
 
@@ -898,7 +919,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
             title={<>Tu Reto, ahora en <Hl>una app</Hl></>}
-            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está tu plan cada vez que abrís la heladera."
+            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está tu plan cada vez que abres la nevera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
@@ -1121,7 +1142,7 @@ export default function PreviewPage() {
               <div className="flex items-start gap-2.5">
                 <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <p className="text-[13px] leading-snug text-gray-700">
-                  Recibís un correo <strong>en minutos</strong> con acceso a tu panel. Tu plan ya está generado, no esperás nada.
+                  Recibes un correo <strong>en minutos</strong> con el enlace para instalar tu app. Tu plan ya está generado adentro, no esperas nada.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
