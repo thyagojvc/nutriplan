@@ -883,6 +883,25 @@ export default function PreviewPage() {
           </p>
         </div>
 
+        {/* App instalable — prueba en video de que no es un PDF suelto, es un
+            panel que vive en el celular (mismo ángulo "desde tu celular" del
+            párrafo de arriba, ahora mostrado, no solo dicho). */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading
+            title={<>Tu Reto, ahora en <Hl>una app</Hl></>}
+            subtitle="La instalás en tu celular como cualquier otra app. Tu plan, tu calendario y tu progreso, siempre a un toque."
+          />
+          <div className="mx-auto w-full max-w-[240px] overflow-hidden rounded-2xl border border-[#D8E8D4] bg-black shadow-[0_8px_28px_rgba(0,0,0,0.18)]">
+            <video
+              src="/Apresentação APP - NutriPlan.mp4"
+              controls
+              playsInline
+              preload="metadata"
+              className="block aspect-[9/16] w-full"
+            />
+          </div>
+        </div>
+
         {/* Claim realista + ângulo anti-Ozempic. "Hasta 1 kg/semana" é ritmo
             sustentável e defensável (não promete X kg), e o "sin Mounjaro ni
             Ozempic" pega a onda cultural atual como diferencial. Sem garantia. */}
