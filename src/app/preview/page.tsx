@@ -79,9 +79,10 @@ function buildHeroSubheadline(goal: string, obstacles: string[]): string {
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
 // Nombres hispanos para generar identificación en los mercados meta (MX/CO/CL/ES).
-// `quote` é opcional de propósito: Fernanda e Carolina voltaram pra lista com
-// foto/nome/resultado (o dado que sempre existiu no repo), mas sem depoimento.
-// Escrever fala na boca de paciente real com foto seria prova social fabricada.
+// Ordem escolhida: Camila abre com o maior número, Fernanda vem em segundo
+// porque a fala dela é a única que prova sozinha o argumento do app (a dieta
+// no celular sustentando a constância), e o card 2 é o que aparece cortado
+// na borda sem precisar rolar.
 const RESULTS: {
   photo: string; name: string; country: string; age: number
   result: string; w: number; h: number; quote?: string
@@ -91,11 +92,17 @@ const RESULTS: {
     quote: 'Pagar un nutricionista y un entrenador por separado no me alcanzaba. Aquí tuve las dos cosas juntas y hechas para mí. En el primer mes ya había bajado 3 kilos, y lo mejor fue dejar de sentirme culpable cada vez que comía algo.',
   },
   {
+    photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses', w: 402, h: 430,
+    quote: 'Es maravilloso tener toda mi dieta en el celular, eso ayuda muchísimo a mantener la constancia y a no abandonar. Fue la primera vez que logré seguir el paso a paso, y bajé de peso sin dificultades.',
+  },
+  {
+    photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436,
+    quote: 'Lo que más me gustó de la Calibración Metabólica fue que la dieta está basada en cosas que me gustan y que ya compro en el día a día. No tuve que buscar alimentos ni suplementos difíciles de conseguir, y me sentí mucho más joven.',
+  },
+  {
     photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
     quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 8 kilos en 3 meses, y lo que no me esperaba es que fue sin pasar hambre.',
   },
-  { photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses', w: 402, h: 430 },
-  { photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436 },
 ]
 
 interface PreviewData {
@@ -950,7 +957,7 @@ export default function PreviewPage() {
         <div className="overflow-hidden rounded-2xl border border-primary/30 bg-primary/5 p-5 text-center space-y-2">
           <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Sin inyecciones ni pastillas</p>
           <p className="font-display text-[19px] font-black leading-snug text-gray-900">
-            Bajá hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
+            Baja hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
           </p>
           <p className="text-sm leading-relaxed text-gray-700">
             No necesitás inyecciones ni pastillas para adelgazar. Con la Calibración Metabólica™ y comida real, tu cuerpo baja de forma sostenible, al ritmo que tu cuerpo considera saludable.
@@ -1018,7 +1025,7 @@ export default function PreviewPage() {
                   </div>
                   <p className="text-[13px] font-bold text-gray-900">El calendario: tu avance</p>
                   <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                    Marcás cada día que completás y ves tu constancia crecer, semana a semana.
+                    Marcas cada día que completas y ves tu constancia crecer, semana a semana.
                   </p>
                   <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
                 </div>
@@ -1070,7 +1077,7 @@ export default function PreviewPage() {
                   que não funcionaram. É o frame que mais casa com o comprador real
                   (marca "presupuesto" e já tentou de tudo, por dado do banco). */}
               <p className="text-[13px] text-gray-700">
-                Pensá en todo lo que ya gastaste en dietas, apps y planes que no miraban tu cuerpo ni tu rutina. Esto cuesta menos que una sola de esas veces, y esta vez está hecho para vos.
+                Piensa en todo lo que ya gastaste en dietas, apps y planes que no miraban tu cuerpo ni tu rutina. Esto cuesta menos que una sola de esas veces, y esta vez está hecho para ti.
               </p>
               {/* Mostrar, não afirmar: amarra o preço ao plano concreto que ela já
                   viu no teaser acima, pra virar "comprar aquilo", não "apostar numa promessa". */}
@@ -1084,7 +1091,7 @@ export default function PreviewPage() {
                   apps de dieta (cobram todo mês e ela ainda monta o plano
                   sozinha) de ameaça em argumento, sem citar marca. */}
               <p className="text-[13px] text-gray-700">
-                Las apps de dieta te cobran todos los meses y encima el plan lo armás vos. Acá ya viene hecho, y pagás una sola vez.
+                Las apps de dieta te cobran todos los meses y encima el plan lo armas tú. Aquí ya viene hecho, y pagas una sola vez.
               </p>
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
@@ -1148,7 +1155,7 @@ export default function PreviewPage() {
               <div className="flex items-start gap-2.5">
                 <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <p className="text-[13px] leading-snug text-gray-700">
-                  Recibís el <strong>WhatsApp de María Fernanda</strong> por si tenés cualquier duda. Hay una persona real detrás.
+                  Recibes el <strong>WhatsApp de María Fernanda</strong> por si tienes cualquier duda. Hay una persona real detrás.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
