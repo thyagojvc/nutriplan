@@ -901,8 +901,6 @@ export default function PreviewPage() {
             <div className="absolute -right-[2px] top-[96px] h-12 w-[3px] rounded-r-sm bg-[#2a2a2c]" />
 
             <div className="relative overflow-hidden rounded-[1.7rem] bg-black">
-              {/* Dynamic island */}
-              <div className="absolute left-1/2 top-2 z-10 h-[16px] w-[72px] -translate-x-1/2 rounded-full bg-[#0a0a0b]" />
               <video
                 src="/Apresentação APP - NutriPlan.mp4"
                 controls
