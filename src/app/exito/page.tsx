@@ -1,6 +1,14 @@
 import { Suspense } from 'react'
+import type { Metadata } from 'next'
 import { SuccessPoller } from './success-poller'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+
+// Mesmo motivo do (dashboard)/layout: ícone quadrado em vez da wordmark.
+export const metadata: Metadata = {
+  icons: {
+    apple: '/logo-perfil.png',
+  },
+}
 
 export default function ExitoPage() {
   return (

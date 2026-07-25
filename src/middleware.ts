@@ -34,6 +34,11 @@ const PUBLIC_PATHS = [
   '/admin',
   '/quiz-funnel',
   '/dev', // páginas de preview dev-only (retornam 404 em produção)
+  '/demo', // painel de demonstração com dado de exemplo, instalável, sem login
+  '/api/demo',
+  '/manifest.webmanifest',
+  '/manifest-demo.webmanifest',
+  '/sw.js',
 ]
 
 function isPublic(pathname: string): boolean {

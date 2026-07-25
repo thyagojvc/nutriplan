@@ -9,7 +9,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: 'Tu NutriPlan: cuánto comer exacto para tu cuerpo y tu objetivo.',
     start_url: '/dashboard',
     display: 'standalone',
-    background_color: '#ffffff',
+    background_color: '#F8F7F1',
     theme_color: '#226c45',
     icons: [
       { src: '/logo-perfil.png', sizes: '192x192', type: 'image/png' },

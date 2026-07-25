@@ -1,17 +1,22 @@
-import { notFound } from 'next/navigation'
+import type { Metadata } from 'next'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 import { generateNutritionPlan, generateTrainingPlan } from '@/lib/nutrition/generate'
 import { DashboardShell } from '@/app/(dashboard)/dashboard/dashboard-shell'
 
 // =============================================================================
-// DEV-ONLY: visualiza o painel que o cliente recebe (gerador stub, sem IA).
-// Acesse http://localhost:3000/dev/plan-preview
-// Acesse com ?training=1 para ver a aba Entrenamiento já desbloqueada
-// (sem o parâmetro, mostra a tela de upsell do bump).
-// Edite SAMPLE_DRAFT para testar perfis diferentes (objetivo, sexo, restrições).
-// Não existe em produção (retorna 404).
+// Painel de demonstração — dados de exemplo, sem login, disponível em produção.
+// Existe para poder "Añadir a pantalla de inicio" e reabrir depois como um app
+// de verdade, pra gravação de vídeo/marketing (usa o manifest próprio abaixo,
+// com start_url apontando pra cá — não pra /dashboard, que exige sessão real).
+// Acesse: /demo?training=1&recipes=1 (assim já abre com tudo desbloqueado)
 // =============================================================================
+
+export const metadata: Metadata = {
+  manifest: '/manifest-demo.webmanifest',
+  icons: { apple: '/logo-perfil.png' },
+  robots: { index: false, follow: false },
+}
 
 const SAMPLE_DRAFT = {
   step_1: { likes: ['pollo', 'huevo', 'arroz', 'avena', 'frutas', 'verduras'] },
@@ -25,13 +30,11 @@ const SAMPLE_DRAFT = {
   step_10: { limitations: ['ninguna'], experience: 'principiante', location: 'casa', frequency: '3_4' },
 }
 
-export default async function DevPlanPreviewPage({
+export default async function DemoPage({
   searchParams,
 }: {
   searchParams: Promise<{ training?: string; recipes?: string }>
 }) {
-  if (process.env.NODE_ENV === 'production') notFound()
-
   const { training, recipes } = await searchParams
   const hasTraining = training === '1'
   const hasRecipes = recipes === '1'
@@ -56,10 +59,10 @@ export default async function DevPlanPreviewPage({
       plan={plan}
       name="Valentina García"
       docKinds={docKinds}
-      devPdfHref="/dev/plan-pdf"
+      docUrls={Object.fromEntries(docKinds.map((k) => [k, `/api/demo/documents/${k}`]))}
       profile={profile}
       trainingPlan={trainingPlan}
-      orderId="dev-preview-order"
+      orderId="demo-order"
       trainingCheckoutUrl={process.env.NEXT_PUBLIC_HOTMART_TRAINING_CHECKOUT_URL}
     />
   )

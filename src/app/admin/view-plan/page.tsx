@@ -1,7 +1,8 @@
 import { notFound } from 'next/navigation'
 import { createServiceClient } from '@/lib/supabase/service'
-import { PlanView } from '@/app/(dashboard)/dashboard/plan-view'
+import { DashboardShell } from '@/app/(dashboard)/dashboard/dashboard-shell'
 import type { NutritionPlanJson } from '@/lib/nutrition/types'
+import type { TrainingPlanJson } from '@/lib/nutrition/generate'
 
 // Página admin: visualiza o plano de qualquer cliente.
 // Acesso: /admin/view-plan?email=xxx@yyy.com&secret=SUA_ADMIN_SECRET
@@ -64,6 +65,13 @@ export default async function AdminViewPlanPage({
     .eq('order_id', order.id)
   const docKinds = (docs ?? []).map((d) => d.kind as string)
 
+  const { data: trainingRow } = await svc
+    .from('training_plans')
+    .select('plan_json')
+    .eq('order_id', order.id)
+    .maybeSingle()
+  const trainingPlan = (trainingRow?.plan_json as unknown as TrainingPlanJson) ?? null
+
   // Gera URLs assinadas no servidor para contornar o check de sessão da API pública
   const docUrls: Record<string, string> = {}
   for (const doc of docs ?? []) {
@@ -105,12 +113,15 @@ export default async function AdminViewPlanPage({
       <div className="bg-amber-50 border-b border-amber-200 px-4 py-2 text-xs text-amber-800 text-center">
         Visualização admin — plano de <strong>{user.name}</strong> ({user.email}) · order {order.status}
       </div>
-      <PlanView
+      <DashboardShell
         plan={plan.plan_json as NutritionPlanJson}
         name={user.name ?? ''}
         docKinds={docKinds}
         docUrls={docUrls}
         profile={profile}
+        trainingPlan={trainingPlan}
+        orderId={order.id}
+        trainingCheckoutUrl={process.env.NEXT_PUBLIC_HOTMART_TRAINING_CHECKOUT_URL}
       />
     </div>
   )

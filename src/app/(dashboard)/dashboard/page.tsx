@@ -1,7 +1,8 @@
 import { createClient } from '@/lib/supabase/server'
 import { createServiceClient } from '@/lib/supabase/service'
 import type { NutritionPlanJson } from '@/lib/nutrition/types'
-import { PlanView } from './plan-view'
+import type { TrainingPlanJson } from '@/lib/nutrition/generate'
+import { DashboardShell } from './dashboard-shell'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -81,6 +82,14 @@ export default async function DashboardPage() {
     .eq('order_id', order.id)
   const docKinds = (docs ?? []).map((d) => d.kind as string)
 
+  // Plano de treino (bump comprado no checkout ou depois, direto do painel)
+  const { data: trainingRow } = await svc
+    .from('training_plans')
+    .select('plan_json')
+    .eq('order_id', order.id)
+    .maybeSingle()
+  const trainingPlan = (trainingRow?.plan_json as unknown as TrainingPlanJson) ?? null
+
   // Perfil físico do usuário (draft_answers da sessão)
   let profile = { age: null as number | null, weightKg: null as number | null, heightCm: null as number | null, sex: '', activityLevel: '' }
   const sessionId = (plan as unknown as { session_id?: string }).session_id
@@ -104,11 +113,14 @@ export default async function DashboardPage() {
   }
 
   return (
-    <PlanView
+    <DashboardShell
       plan={plan.plan_json as NutritionPlanJson}
       name={publicUser.name ?? ''}
       docKinds={docKinds}
       profile={profile}
+      trainingPlan={trainingPlan}
+      orderId={order.id}
+      trainingCheckoutUrl={process.env.NEXT_PUBLIC_HOTMART_TRAINING_CHECKOUT_URL}
     />
   )
 }
