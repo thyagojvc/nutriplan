@@ -902,7 +902,7 @@ export default function PreviewPage() {
 
             <div className="relative overflow-hidden rounded-[1.7rem] bg-black">
               <video
-                src="/Apresentação APP - NutriPlan.mp4"
+                src="/app-nutriplan-demo.mp4"
                 controls
                 playsInline
                 preload="metadata"
