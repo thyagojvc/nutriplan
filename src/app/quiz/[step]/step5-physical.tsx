@@ -7,6 +7,13 @@ import { trackDualOnce } from '@/lib/fb-pixel'
 
 const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
+// Mesma detecção usada em install-app-banner.tsx. Serve pra pular o intercept
+// de histórico do exit-intent só no iOS (ver comentário no useEffect abaixo).
+function isIOS(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /iPhone|iPad|iPod/.test(navigator.userAgent)
+}
+
 interface PhysicalData {
   age: number
   weight_kg: number
@@ -75,9 +82,19 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   // o modal), o segundo já deixa sair normal, pra não virar uma prisão de botão.
   // guardPushedRef evita empilhar 2x: em dev o Strict Mode roda este efeito duas
   // vezes (mount → cleanup → mount) só pra flagar efeitos colaterais não-idempotentes.
+  //
+  // 25/07: desligado no iOS. O abandono na 1ª pregunta é ~2x maior em iOS que
+  // Android em TODOS os criativos (dado do /quiz-funnel), e o suspeito nº 1 é
+  // este pushState/popstate — Safari e principalmente o WebView do Instagram/
+  // Facebook (de onde vem a maioria dos cliques) lidam com histórico de forma
+  // menos previsível que Chrome/Android. Sem iPhone pra testar ao vivo, a
+  // correção é desligar a feature pra esse público em vez de arriscar deixar
+  // um bug ativo sem conseguir confirmar. Se o abandono não cair, o suspeito
+  // era outro e isso pode voltar.
   const guardPushedRef = useRef(false)
   useEffect(() => {
     if (typeof window === 'undefined') return
+    if (isIOS()) return
     if (sessionStorage.getItem(EXIT_FLAG) === '1') return
     if (stateRef.current.touched) return
 
