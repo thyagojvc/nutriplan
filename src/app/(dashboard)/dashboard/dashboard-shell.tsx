@@ -59,10 +59,10 @@ export function DashboardShell({
       </header>
 
       <div className="p-4 pb-24">
-        {tab === 'plan' && <PlanTab plan={plan} profile={profile} />}
-        {tab === 'lista' && (
-          <ListTab plan={plan} nutritionPdfHref={docHref('nutrition_plan')} />
+        {tab === 'plan' && (
+          <PlanTab plan={plan} profile={profile} nutritionPdfHref={docHref('nutrition_plan')} />
         )}
+        {tab === 'lista' && <ListTab plan={plan} />}
         {tab === 'bonos' && (
           <BonusTab
             antiCelulitisHref={docHref('anti_celulitis')}

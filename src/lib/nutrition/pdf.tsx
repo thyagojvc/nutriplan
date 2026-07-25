@@ -348,13 +348,22 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
           <Text style={styles.milestoneLine}>Peso: __________ kg     ·     Cintura: __________ cm     ·     Cómo me siento hoy: ________________________</Text>
         </View>
 
-        {Array.from({ length: summary.cycleWeeks }).map((_, weekIdx) => (
+        {Array.from({ length: summary.cycleWeeks }).map((_, weekIdx) => {
+          // plan.days tem 7 dias (ciclo semanal repetido, tier padrão) ou 28
+          // dias únicos (plano de 4 semanas real). No primeiro caso, cada
+          // semana reusa os mesmos 7 dias; no segundo, cada semana pega sua
+          // própria fatia de 7. Sempre 7 casillas por linha — nunca os 28.
+          const DAYS_PER_WEEK = 7
+          const weekDays = summary.cycleDays > DAYS_PER_WEEK
+            ? plan.days.slice(weekIdx * DAYS_PER_WEEK, weekIdx * DAYS_PER_WEEK + DAYS_PER_WEEK)
+            : plan.days
+          return (
           <View key={weekIdx} style={{ marginBottom: 7 }}>
             <Text style={styles.calWeekTag}>Semana {weekIdx + 1} · {CAL_WEEK_CAPTIONS[weekIdx]}</Text>
             <View style={styles.calWeekRow}>
-              {plan.days.map((day, dayIdx) => (
+              {weekDays.map((day, dayIdx) => (
                 <View key={dayIdx} style={styles.calDayCell}>
-                  <Text style={styles.calDayNum}>{weekIdx * summary.cycleDays + dayIdx + 1}</Text>
+                  <Text style={styles.calDayNum}>{weekIdx * DAYS_PER_WEEK + dayIdx + 1}</Text>
                   <View style={styles.calMealBoxRow}>
                     {day.meals.map((_, mi) => (
                       <View key={mi} style={styles.calMealBox} />
@@ -375,7 +384,8 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
               </View>
             </View>
           </View>
-        ))}
+          )
+        })}
 
         <View style={styles.milestoneBox}>
           <Text style={styles.milestoneLabel}>Tu resultado (Día 28)</Text>
