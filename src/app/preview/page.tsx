@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, CalendarCheck, BadgeCheck,
-  Mail, MessageCircle, Smartphone,
+  Mail, MessageCircle, Smartphone, Dumbbell,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -1097,6 +1097,18 @@ export default function PreviewPage() {
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
               </p>
             </div>
+
+            {/* Menção única ao bump de treino, só pra quem respondeu que treina
+                no quiz (step 10) — exatamente quem chega pelo criativo que
+                promete dieta + treino. O bump em si é configurado no painel
+                da Hotmart (checkoutMode=10 acima), aqui só avisamos que existe
+                pra não sumir a expectativa criada pelo anúncio. */}
+            {training && (
+              <p className="flex items-center justify-center gap-1.5 text-[12px] font-semibold text-gray-600">
+                <Dumbbell className="h-3.5 w-3.5 text-primary" />
+                ¿Entrenas? En el siguiente paso podrás sumar tu plan de entrenamiento.
+              </p>
+            )}
 
             {ctaState === 'error' && (
               <p className="text-center text-xs text-red-600">
