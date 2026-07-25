@@ -55,24 +55,25 @@ const OBSTACLE_HERO_PHRASE: Record<string, string> = {
   antojos:          'sin pelearte con los antojos',
 }
 
-// Monta a promessa central do hero: "Come exactamente lo que tu cuerpo necesita
-// para [objetivo]" + até 2 obstáculos reformulados. Sem obstáculo, fecha com o
-// remate da promessa ("ni más, ni menos").
-function buildHeroPromise(goal: string, obstacles: string[]): string {
-  const verbByGoal: Record<string, string> = {
-    lose_fat:    'para bajar de peso',
-    perder_peso: 'para bajar de peso',
-    gain_muscle: 'para ganar músculo',
-    ganar_masa:  'para ganar músculo',
+// Sub-headline del hero: dice el objetivo específico de ella + hasta 2
+// obstáculos reformulados. La headline ya nombra el producto tangible (el
+// plan); esta línea dice el objetivo y para quién es, no vende una promesa
+// genérica de transformación.
+function buildHeroSubheadline(goal: string, obstacles: string[]): string {
+  const objectiveByGoal: Record<string, string> = {
+    lose_fat:    'Para bajar de peso sin pasar hambre',
+    perder_peso: 'Para bajar de peso sin pasar hambre',
+    gain_muscle: 'Para ganar músculo comiendo bien',
+    ganar_masa:  'Para ganar músculo comiendo bien',
   }
-  const base = `Come exactamente lo que tu cuerpo necesita ${verbByGoal[goal] ?? 'para llegar a tu meta'}`
+  const base = objectiveByGoal[goal] ?? 'Para llegar a tu meta, sin dietas genéricas'
 
   const tails = obstacles
     .map((o) => OBSTACLE_HERO_PHRASE[o])
     .filter(Boolean)
     .slice(0, 2)
 
-  if (tails.length === 0) return `${base}. Ni más, ni menos.`
+  if (tails.length === 0) return `${base}.`
   return `${base}, ${tails.join(' y ')}.`
 }
 
@@ -583,8 +584,8 @@ export default function PreviewPage() {
   const isLoss = targets.goal === 'lose_fat' || targets.goal === 'perder_peso'
   const isGain = targets.goal === 'gain_muscle' || targets.goal === 'ganar_masa'
   const firstName = leadInfo.name?.trim().split(' ')[0]
-  // Promessa central do hero, personalizada pelo objetivo + obstáculos dela.
-  const heroPromise = buildHeroPromise(targets.goal, heroObstacles)
+  // Sub-headline do hero, personalizada pelo objetivo + obstáculos dela.
+  const heroSubheadline = buildHeroSubheadline(targets.goal, heroObstacles)
 
   return (
     <PageShell>
@@ -599,13 +600,13 @@ export default function PreviewPage() {
           Tu Reto de 28 días ya está hecho · solo para ti
         </div>
 
-        {/* Promessa central — message match com o anúncio ("exactamente") + obstáculo dela */}
-        {(isLoss || isGain) && (
-          <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
-            Come <span className="text-primary">exactamente</span>
-            {heroPromise.replace(/^Come exactamente/, '')}
-          </h1>
-        )}
+        {/* Headline tangibiliza el producto (el plan calculado); la sub-headline
+            dice el objetivo/para quién es. No vendemos una transformación
+            genérica, vendemos el plan concreto que ya está armado. */}
+        <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
+          Tu <span className="text-primary">plan de comidas de 28 días</span>, calculado para tu cuerpo
+        </h1>
+        <p className="text-sm font-semibold text-gray-700">{heroSubheadline}</p>
 
         {/* Selos de personalización — refuerzan que no es una plantilla genérica */}
         {(inputCount || training) && (
@@ -649,11 +650,7 @@ export default function PreviewPage() {
               </div>
             </div>
             <p className="text-[13px] text-muted-foreground">kcal/día</p>
-            <p className="text-base font-bold text-gray-800">
-              {isLoss
-                ? <>Es tu número exacto, el que empieza a <span className="text-primary">bajar de peso</span> sin pasar hambre.</>
-                : <>Es tu número exacto, el que empieza a <span className="text-primary">construir músculo</span> comiendo bien.</>}
-            </p>
+            <p className="text-base font-bold text-gray-800">Este es tu número exacto.</p>
           </>
         ) : (
           <>
@@ -979,14 +976,14 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevás, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
-                  { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado', value: 14 },
-                  { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2', value: 9 },
-                  { item: 'Lista de compras optimizada', note: 'sin dar vueltas en el súper pensando qué llevar', value: 4 },
-                  { item: 'Guía de implementación', note: 'para empezar hoy sin dudas', value: 3 },
-                  { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias', value: 3 },
-                  { item: 'Bono: Guía Anti-Celulitis', note: null, value: 5 },
-                  { item: 'Acceso a tu panel personal + calendario descargable', note: null, value: null },
-                ].map(({ item, note, value }) => (
+                  { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
+                  { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
+                  { item: 'Lista de compras optimizada', note: 'sin dar vueltas en el súper pensando qué llevar' },
+                  { item: 'Guía de implementación', note: 'para empezar hoy sin dudas' },
+                  { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
+                  { item: 'Bono: Guía Anti-Celulitis', note: null },
+                  { item: 'Acceso a tu panel personal + calendario descargable', note: null },
+                ].map(({ item, note }) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
                       <Check className="h-3 w-3" strokeWidth={3} />
@@ -995,39 +992,15 @@ export default function PreviewPage() {
                       {item}
                       {note && <span className="block text-[12px] leading-snug text-muted-foreground">{note}</span>}
                     </span>
-                    {value != null && (
-                      <span className="shrink-0 text-[12px] font-semibold text-muted-foreground tabular-nums">{price(value)}</span>
-                    )}
                   </li>
                 ))}
               </ul>
-              {/* Total somado riscado → padrão de empilhamento de valor (Ricardo):
-                  soma real dos componentes, sem inflar, riscada contra o preço de hoje. */}
-              <div className="mt-3 flex items-center justify-between border-t border-dashed border-[#D8E8D4] pt-3">
-                <span className="text-[13px] font-bold text-gray-800">Todo esto sumado vale</span>
-                <span className="text-base font-bold text-gray-400 line-through tabular-nums">{price(38)}</span>
-              </div>
             </div>
 
-            {/* Âncora de valor: iguala (consulta) → mostra valor somado riscado →
-                barateia com o preço real → tira o susto com o "por qué tan barato". */}
+            {/* Precio directo: sin empilhamento de valor ni ancla vs. consulta —
+                eso es lógica de página de high ticket, no de low ticket. Aquí
+                solo tangibilizamos lo que ya viste arriba y mostramos el precio. */}
             <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-2.5">
-              <div className="space-y-1.5 text-left">
-                <div className="flex items-center justify-between gap-2 rounded-lg border border-[#E8DED5] bg-white px-3.5 py-2.5">
-                  <span className="text-[12.5px] leading-snug text-gray-700">
-                    Consulta con nutricionista
-                    <span className="block text-[11px] text-gray-400">y solo te dan el plan</span>
-                  </span>
-                  <span className="shrink-0 text-sm font-bold text-gray-400 line-through tabular-nums">{price(30)}+</span>
-                </div>
-                <div className="flex items-center justify-between gap-2 rounded-lg bg-primary/12 px-3.5 py-2.5">
-                  <span className="text-[12.5px] font-bold leading-snug text-primary">
-                    Tu Reto completo
-                    <span className="block text-[11px] font-medium text-primary/70">plan + calendario + todo lo demás</span>
-                  </span>
-                  <Check className="h-4 w-4 shrink-0 text-primary" strokeWidth={3} />
-                </div>
-              </div>
               {/* Âncora emocional principal: o dinheiro já desperdiçado em dietas
                   que não funcionaram. É o frame que mais casa com o comprador real
                   (marca "presupuesto" e já tentou de tudo, por dado do banco). */}
@@ -1119,19 +1092,6 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Garantía */}
-        <div className="flex items-center gap-3 rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] p-4">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#D8E8D4] bg-white">
-            <ShieldCheck className="h-6 w-6 text-primary" />
-          </div>
-          <div>
-            <p className="text-sm font-bold text-gray-900">Nuestra promesa: cero riesgo para ti</p>
-            <p className="text-xs text-muted-foreground leading-relaxed">
-              Seguí tu Reto 14 días. Si no notás ningún cambio, te devolvemos el 100%, sin preguntas, y el plan sigue siendo tuyo.
-            </p>
-          </div>
-        </div>
-
         <FaqSection />
 
         {/* CTA final — após perguntas frequentes */}
@@ -1174,7 +1134,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Cómo y cuándo recibo mi plan?',
-    a: 'En minutos después de tu compra recibes un correo con acceso a tu panel personal, donde puedes ver tu plan completo, descargarlo en PDF y consultarlo cuando quieras. Si no lo ves, revisa la carpeta de spam o escríbenos por WhatsApp y te lo reenviamos.',
+    a: 'Al instante. Apenas se confirma tu pago recibes un correo con el link para descargar la app de NutriPlan, con tu plan ya generado adentro. La descargas desde el celular y la tienes a mano cada vez que vas a comer o a hacer las compras. Si no ves el correo, revisa spam o escríbenos por WhatsApp y te lo reenviamos.',
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
