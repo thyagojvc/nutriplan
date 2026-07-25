@@ -228,6 +228,9 @@ export default function PreviewPage() {
   const [errorKind, setErrorKind] = useState<ErrorKind | null>(null)
   const [leadInfo, setLeadInfo] = useState<{ email?: string; name?: string }>({})
   const [training, setTraining] = useState<{ experience?: string; location?: string; frequency?: string } | null>(null)
+  // true só quando ela respondeu explicitamente que não treina (step 10) —
+  // diferente de não ter passado pelo step, onde não sabemos nada dela.
+  const [noTraining, setNoTraining] = useState(false)
   const [inputCount, setInputCount] = useState<number | null>(null)
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
@@ -286,6 +289,7 @@ export default function PreviewPage() {
       if (s10) {
         const parsed = JSON.parse(s10) as { experience?: string; location?: string; frequency?: string }
         if (parsed.experience && parsed.experience !== 'no_ejercicio') setTraining(parsed)
+        else if (parsed.experience === 'no_ejercicio') setNoTraining(true)
       }
     } catch {}
   }, [])
@@ -1098,15 +1102,19 @@ export default function PreviewPage() {
               </p>
             </div>
 
-            {/* Menção única ao bump de treino, só pra quem respondeu que treina
-                no quiz (step 10) — exatamente quem chega pelo criativo que
-                promete dieta + treino. O bump em si é configurado no painel
-                da Hotmart (checkoutMode=10 acima), aqui só avisamos que existe
-                pra não sumir a expectativa criada pelo anúncio. */}
-            {training && (
+            {/* Menção única ao bump de treino, condicionada à resposta do step 10.
+                Pra quem treina: confirma a expectativa de quem chegou pelo
+                criativo "dieta + treino". Pra quem respondeu que não treina:
+                vira menção de personalização (sabemos que ela não vai à
+                academia) em vez de empurrar o bump, mencionando a opção de
+                treinar em casa sem forçar a venda. O bump em si é configurado
+                no painel da Hotmart (checkoutMode=10 acima). */}
+            {(training || noTraining) && (
               <p className="flex items-center justify-center gap-1.5 text-[12px] font-semibold text-gray-600">
                 <Dumbbell className="h-3.5 w-3.5 text-primary" />
-                ¿Entrenas? En el siguiente paso podrás sumar tu plan de entrenamiento.
+                {training
+                  ? '¿Entrenas? En el siguiente paso podrás sumar tu plan de entrenamiento.'
+                  : 'Aunque no vayas al gimnasio, si quieres puedes sumar rutinas para entrenar en casa en el siguiente paso.'}
               </p>
             )}
 
