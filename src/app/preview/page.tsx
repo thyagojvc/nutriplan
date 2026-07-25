@@ -891,14 +891,28 @@ export default function PreviewPage() {
             title={<>Tu Reto, ahora en <Hl>una app</Hl></>}
             subtitle="La instalás en tu celular como cualquier otra app. Tu plan, tu calendario y tu progreso, siempre a un toque."
           />
-          <div className="mx-auto w-full max-w-[240px] overflow-hidden rounded-2xl border border-[#D8E8D4] bg-black shadow-[0_8px_28px_rgba(0,0,0,0.18)]">
-            <video
-              src="/Apresentação APP - NutriPlan.mp4"
-              controls
-              playsInline
-              preload="metadata"
-              className="block aspect-[9/16] w-full"
-            />
+          {/* Moldura de celular: o video em si é uma tela recortada, sem
+              proporção fixa de aparelho, então "object-contain" + bezel
+              escura disfarça sobra/corte como se fosse a moldura mesmo. */}
+          <div className="relative mx-auto w-full max-w-[230px] rounded-[2.2rem] bg-[#141416] p-2 shadow-[0_16px_38px_rgba(0,0,0,0.28)]">
+            {/* Botões laterais (decorativos) */}
+            <div className="absolute -left-[2px] top-[76px] h-9 w-[3px] rounded-l-sm bg-[#2a2a2c]" />
+            <div className="absolute -left-[2px] top-[120px] h-9 w-[3px] rounded-l-sm bg-[#2a2a2c]" />
+            <div className="absolute -right-[2px] top-[96px] h-12 w-[3px] rounded-r-sm bg-[#2a2a2c]" />
+
+            <div className="relative overflow-hidden rounded-[1.7rem] bg-black">
+              {/* Dynamic island */}
+              <div className="absolute left-1/2 top-2 z-10 h-[16px] w-[72px] -translate-x-1/2 rounded-full bg-[#0a0a0b]" />
+              <video
+                src="/Apresentação APP - NutriPlan.mp4"
+                controls
+                playsInline
+                preload="metadata"
+                className="block aspect-[9/19.5] w-full bg-black object-contain"
+              />
+              {/* Home indicator */}
+              <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-10 h-1 w-16 -translate-x-1/2 rounded-full bg-white/60" />
+            </div>
           </div>
         </div>
 
