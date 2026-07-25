@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, CalendarCheck, BadgeCheck,
-  Mail, MessageCircle,
+  Mail, MessageCircle, Smartphone,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -608,9 +608,17 @@ export default function PreviewPage() {
         </h1>
         <p className="text-sm font-semibold text-gray-700">{heroSubheadline}</p>
 
-        {/* Selos de personalización — refuerzan que no es una plantilla genérica */}
-        {(inputCount || training) && (
-          <div className="flex flex-wrap items-center justify-center gap-1.5">
+        {/* Selos de personalización — refuerzan que no es una plantilla genérica.
+            O selo de app vem primeiro e é incondicional: sem ele a headline
+            ("plan de comidas") deixa a leitora assumir PDF, e a prova em video
+            só aparece ~900px abaixo. */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-bold text-primary">
+            <Smartphone className="h-3 w-3" strokeWidth={2.5} />
+            Se instala en tu celular, como una app
+          </span>
+          {(inputCount || training) && (
+            <>
             {inputCount !== null && inputCount > 0 && (
               <span className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-1 text-[11px] font-bold text-primary">
                 <Check className="h-3 w-3" strokeWidth={3} />
@@ -625,8 +633,9 @@ export default function PreviewPage() {
                   : 'Hecho para quien entrena y quiere ganar músculo'}
               </span>
             )}
-          </div>
-        )}
+            </>
+          )}
+        </div>
 
         {isLoss || isGain ? (
           <>
@@ -879,7 +888,7 @@ export default function PreviewPage() {
             </div>
           </div>
           <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. Marcás cada comida y tu progreso directo desde tu celular, o imprimís el calendario si preferís tenerlo a la vista, como más te sirva. El plan te dice qué comer, el calendario te muestra que está funcionando.
+            Recibís tu plan de comidas y tu calendario de 28 días juntos, el sistema completo. Podés imprimir el calendario si preferís tenerlo a la vista, o marcarlo a medida que avanzás. El plan te dice qué comer, el calendario te muestra que está funcionando.
           </p>
         </div>
 
@@ -889,7 +898,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
             title={<>Tu Reto, ahora en <Hl>una app</Hl></>}
-            subtitle="La instalás en tu celular como cualquier otra app. Tu plan, tu calendario y tu progreso, siempre a un toque."
+            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está tu plan cada vez que abrís la heladera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
@@ -1007,13 +1016,17 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevás, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
+                  // O app abre a lista: é o item que ancora o valor de todos os
+                  // outros (não é um pacote de PDFs soltos). "Panel" era palavra
+                  // nossa, não dela.
+                  { item: 'Tu app de NutriPlan instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
                   { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
                   { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
                   { item: 'Lista de compras optimizada', note: 'sin dar vueltas en el súper pensando qué llevar' },
                   { item: 'Guía de implementación', note: 'para empezar hoy sin dudas' },
                   { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
                   { item: 'Bono: Guía Anti-Celulitis', note: null },
-                  { item: 'Acceso a tu panel personal + calendario descargable', note: null },
+                  { item: 'Calendario descargable para imprimir', note: null },
                 ].map(({ item, note }) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
@@ -1046,6 +1059,12 @@ export default function PreviewPage() {
               <p className="text-sm text-gray-800 pt-1">Hoy, en un solo pago:</p>
               <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
               <p className="text-[13px] font-bold text-gray-700">Cuesta menos que un delivery del fin de semana.</p>
+              {/* Agora que a entrega é um app, dá pra virar a comparação com as
+                  apps de dieta (cobram todo mês e ela ainda monta o plano
+                  sozinha) de ameaça em argumento, sem citar marca. */}
+              <p className="text-[13px] text-gray-700">
+                Las apps de dieta te cobran todos los meses y encima el plan lo armás vos. Acá ya viene hecho, y pagás una sola vez.
+              </p>
               <p className="text-[12px] leading-relaxed text-muted-foreground pt-1">
                 Lo hago digital y accesible a propósito, para que el precio no sea la excusa que te frene otra vez. Un solo pago, sin suscripción ni cobros cada mes.
               </p>
