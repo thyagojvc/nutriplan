@@ -778,7 +778,7 @@ export default function PreviewPage() {
             <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
             <div className="absolute bottom-4 right-4">
               <Image
-                src="/FotoNutri.jpg"
+                src="/FotoNutri.png"
                 alt="María Fernanda, primer plano"
                 width={64}
                 height={64}
