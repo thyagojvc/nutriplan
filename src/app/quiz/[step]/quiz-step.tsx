@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { trackDualOnce, setPixelExternalId } from '@/lib/fb-pixel'
-import { rememberSessionId } from '@/lib/quiz-session-client'
 
 interface Props {
   stepNumber: number
@@ -53,10 +52,6 @@ function useEnsureSession(stepNumber: number) {
       .then(async (res) => {
         try {
           const data = await res.json()
-          // Fallback pra iOS/in-app browsers que não persistem o cookie HttpOnly
-          // (ver src/lib/quiz-session-client.ts): sem isso, save-step dava 401 e
-          // a pessoa travava na 1ª pergunta com "Error al guardar".
-          if (data?.session_id) rememberSessionId(data.session_id)
           if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
         } catch { /* resposta sem json — segue sem external_id, sem bloquear o quiz */ }
         // Dispara QuizStart só depois da resposta do init-session: garante que o

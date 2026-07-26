@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Fraunces, Poppins } from 'next/font/google'
 import Script from 'next/script'
 import { AuthListener } from './auth-listener'
-import { QuizSessionPatch } from './quiz-session-patch'
 import './globals.css'
 
 const geistSans = Geist({
@@ -67,23 +66,11 @@ export default function RootLayout({
         <link rel="dns-prefetch" href="https://spoonacular.com" />
         <link rel="dns-prefetch" href="https://images.pexels.com" />
         <link rel="dns-prefetch" href="https://connect.facebook.net" />
-        {/* Captador de erro JS instalado ANTES do React: se a página crashar na
-            hidratação (suspeita central do abandono iOS — sessão criada mas a
-            pessoa nem toca em Continuar), nenhum useEffect roda, então só um
-            script inline pega. Reporta 1x por página via track-event
-            (_ev_js_error__<msg>); sid fallback vai no header pro caso de
-            cookie bloqueado (mesmo esquema do quiz-session-client). */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var sent=false;function rep(m){if(sent)return;sent=true;try{var h={'Content-Type':'application/json'};try{var s=sessionStorage.getItem('nutriplan_sid_fallback')||localStorage.getItem('nutriplan_sid_fallback');if(s)h['x-quiz-session']=s}catch(e){}fetch('/api/quiz/track-event',{method:'POST',headers:h,body:JSON.stringify({event:'js_error',detail:String(m).slice(0,200)})}).catch(function(){})}catch(e){}}window.addEventListener('error',function(e){rep((e.message||'err')+' @'+(e.filename||'').split('/').pop()+':'+(e.lineno||0))});window.addEventListener('unhandledrejection',function(e){var r=e.reason;rep('promise: '+(r&&r.message?r.message:String(r)))});})();`,
-          }}
-        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${poppins.variable} antialiased`}
       >
         <AuthListener />
-        <QuizSessionPatch />
         {children}
         {process.env.NODE_ENV === 'production' ? (
           <Script id="facebook-pixel" strategy="afterInteractive">{`

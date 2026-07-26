@@ -122,16 +122,6 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   function handleChange(field: keyof PhysicalData, val: number) {
     const next = { ...data, [field]: val }
     setData(next)
-    if (!touched) {
-      // Diagnóstico iOS: marca que a pessoa INTERAGIU com a 1ª pergunta.
-      // Sessão sem step_5 mas com este evento = mexeu e não conseguiu concluir;
-      // sem ele = nem tocou na tela. Fire-and-forget, 1x por montagem.
-      void fetch('/api/quiz/track-event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event: 'q1_interacted' }),
-      }).catch(() => {})
-    }
     setTouched(true)
     setAgeBlocked(false)
     try {
@@ -156,18 +146,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 5, answers: { age: data.age, weight_kg: data.weight_kg, height_cm: data.height_cm } }),
       })
-      if (!res.ok) {
-        setError(true)
-        // Diagnóstico do abandono iOS: marca na sessão que a pessoa TENTOU
-        // salvar e falhou (o init-session criou a linha, então o track-event
-        // acha a sessão via cookie ou header fallback). Fire-and-forget.
-        void fetch('/api/quiz/track-event', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ event: 'save_step_failed' }),
-        }).catch(() => {})
-        return
-      }
+      if (!res.ok) { setError(true); return }
       // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta). Junto com o
       // QuizStart (dispara no landing), permite montar no Meta o público de
       // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
@@ -175,11 +154,6 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
       router.push('/quiz/1') // → alimentos favoritos
     } catch {
       setError(true)
-      void fetch('/api/quiz/track-event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event: 'save_step_error' }),
-      }).catch(() => {})
     } finally {
       setSaving(false)
     }
