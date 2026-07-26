@@ -48,6 +48,18 @@ function isPublic(pathname: string): boolean {
 }
 
 export async function middleware(request: NextRequest) {
+  // Fallback de sessão do quiz sem cookie (iOS/in-app browsers bloqueiam o
+  // cookie HttpOnly; ver src/lib/quiz-session-client.ts). O client manda o
+  // session_id no header x-quiz-session; aqui ele vira cookie na request
+  // encaminhada, então as rotas de quiz/checkout seguem lendo
+  // request.cookies sem nenhuma mudança. Cookie real, quando existe, prevalece.
+  if (!request.cookies.get('nutriplan_session_id')?.value) {
+    const headerSid = request.headers.get('x-quiz-session')
+    if (headerSid && /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(headerSid)) {
+      request.cookies.set('nutriplan_session_id', headerSid)
+    }
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(

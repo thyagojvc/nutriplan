@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from 'next'
 import { Geist, Geist_Mono, Fraunces, Poppins } from 'next/font/google'
 import Script from 'next/script'
 import { AuthListener } from './auth-listener'
+import { QuizSessionPatch } from './quiz-session-patch'
 import './globals.css'
 
 const geistSans = Geist({
@@ -71,6 +72,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${poppins.variable} antialiased`}
       >
         <AuthListener />
+        <QuizSessionPatch />
         {children}
         {process.env.NODE_ENV === 'production' ? (
           <Script id="facebook-pixel" strategy="afterInteractive">{`
