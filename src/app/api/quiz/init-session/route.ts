@@ -94,8 +94,12 @@ export async function POST(request: NextRequest) {
   // condition como o antigo /api/quiz/track-event tinha (ver migration 0020).
   let body: unknown
   try { body = await request.json() } catch { body = {} }
-  const parsed = z.object({ ad_ref: z.string().max(200).optional() }).safeParse(body)
+  const parsed = z.object({ ad_ref: z.string().max(200).optional(), hidden: z.boolean().optional() }).safeParse(body)
   let adRef = parsed.success ? parsed.data.ad_ref : undefined
+  // Página nasceu em segundo plano (preload do in-app browser do IG/FB).
+  // O funil filtra por esta marca; a promoção pra visita real chega depois
+  // via track-event page_visible. Ver comentário em quiz-step.tsx.
+  const hiddenLoad = parsed.success ? parsed.data.hidden === true : false
   // Meta só substitui {{ad.name}} pelo nome real quando o clique vem do feed
   // de verdade. Cliques de "Visualizar" no Gerenciador (ou URL testada direto)
   // chegam com o macro cru, tipo literal "{{ad.name}}" — descarta pra não
@@ -114,6 +118,7 @@ export async function POST(request: NextRequest) {
 
   const draftAnswers: Record<string, unknown> = {}
   if (adRef) draftAnswers._ad_ref = adRef
+  if (hiddenLoad) draftAnswers._hidden_load = true
   if (detectedCountry) draftAnswers._detected_country = detectedCountry
   if (clientIp) draftAnswers._ip = clientIp
   draftAnswers._device = detectDevice(ua)

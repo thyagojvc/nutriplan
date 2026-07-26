@@ -42,65 +42,66 @@ function useEnsureSession(stepNumber: number) {
     // sessão (dedupe do trackDualOnce), sem inflar a contagem.
     if (stepNumber !== 5) return
 
-    function initSession() {
-      // Captura o criativo/anúncio de origem (utm_content) da URL, se veio de
-      // anúncio pago. Configurar no Meta Ads: URL parameters -> utm_content={{ad.name}}
-      const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
-      fetch('/api/quiz/init-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ad_ref: adRef }),
+    // 26/07 noite: a sessão é criada SEMPRE e imediatamente (comportamento
+    // original), mas carrega a marca `hidden` quando a página nasceu em
+    // segundo plano — o in-app browser do Instagram/Facebook pré-carrega a
+    // landing antes do clique (connect rate >100% provou), e esses preloads
+    // enchiam o funil de "Não iniciou" fantasma. A 1ª versão do filtro
+    // (4c5e0ed) BLOQUEAVA a criação até a página ficar visível, mas se algum
+    // WebView mentir no visibilityState perderíamos gente real — bloquear é
+    // irrecuperável, marcar não é. O funil filtra pela marca; quando o preload
+    // vira visita real (visível/interação), a sessão é promovida via
+    // track-event page_visible e o QuizStart dispara só então, mantendo o
+    // pixel limpo de fantasmas.
+    const wasHidden = document.visibilityState !== 'visible'
+    const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
+    const ready = fetch('/api/quiz/init-session', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ad_ref: adRef, hidden: wasHidden }),
+    })
+      .then(async (res) => {
+        try {
+          const data = await res.json()
+          if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
+        } catch { /* resposta sem json — segue sem external_id, sem bloquear o quiz */ }
       })
-        .then(async (res) => {
-          try {
-            const data = await res.json()
-            if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
-          } catch { /* resposta sem json — segue sem external_id, sem bloquear o quiz */ }
-          // Dispara QuizStart só depois da resposta do init-session: garante que o
-          // cookie nutriplan_session_id já foi gravado pelo navegador antes do POST
-          // pro capi-event, senão o servidor não acha sessão pra mandar external_id
-          // (era uma corrida entre os dois fetches, por isso QuizStart tinha nota de
-          // match quality pior que os outros eventos do funil).
-          trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
-        })
-        .catch(() => setError(true))
-    }
+      .catch(() => setError(true))
 
-    // 26/07: só cria a sessão quando a página fica VISÍVEL. O in-app browser do
-    // Instagram/Facebook PRÉ-CARREGA a landing page em segundo plano antes do
-    // clique (connect rate >100% no Gerenciador foi a prova: mais PageViews que
-    // cliques). Esses preloads rodavam o init-session e enchiam o funil de
-    // sessões fantasma "Não iniciou" — pessoas que nunca clicaram no anúncio.
-    // Página escondida espera o 1º visibilitychange→visible; preload que nunca
-    // é aberto morre sem criar sessão.
-    if (document.visibilityState === 'visible') {
-      initSession()
+    if (!wasHidden) {
+      // QuizStart só depois da resposta do init-session: garante o cookie
+      // gravado antes do POST pro capi-event (senão o servidor não acha a
+      // sessão pra mandar external_id e o match quality cai).
+      void ready.then(() => trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true }))
       return
     }
+
+    // Nasceu escondida (provável preload): promove a visita quando ficar
+    // visível ou ao 1º sinal de interação humana (rede de segurança pra
+    // WebView que reporta visibilityState errado).
     let done = false
     const cleanup = () => {
-      document.removeEventListener('visibilitychange', onVisible)
-      document.removeEventListener('pointerdown', onInteract)
-      document.removeEventListener('keydown', onInteract)
+      document.removeEventListener('visibilitychange', onPromote)
+      document.removeEventListener('pointerdown', onPromote)
+      document.removeEventListener('keydown', onPromote)
     }
-    const onVisible = () => {
-      if (done || document.visibilityState !== 'visible') return
-      done = true
-      cleanup()
-      initSession()
-    }
-    // Rede de segurança: interação humana prova que a página está visível,
-    // mesmo se algum WebView reportar visibilityState errado — sem isso a
-    // pessoa travaria com "Error al guardar" sem sessão.
-    const onInteract = () => {
+    const onPromote = (e: Event) => {
       if (done) return
+      if (e.type === 'visibilitychange' && document.visibilityState !== 'visible') return
       done = true
       cleanup()
-      initSession()
+      void ready.then(() => {
+        void fetch('/api/quiz/track-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'page_visible' }),
+        }).catch(() => {})
+        trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
+      })
     }
-    document.addEventListener('visibilitychange', onVisible)
-    document.addEventListener('pointerdown', onInteract)
-    document.addEventListener('keydown', onInteract)
+    document.addEventListener('visibilitychange', onPromote)
+    document.addEventListener('pointerdown', onPromote)
+    document.addEventListener('keydown', onPromote)
     return cleanup
   }, [stepNumber])
   return { error }

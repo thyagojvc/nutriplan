@@ -7,7 +7,7 @@ const bodySchema = z.object({
   // save_step_error = fetch nem completou (rede/CORS). Diagnóstico do abandono
   // iOS na 1ª pergunta: sessão sem steps COM esse evento = pessoa tentou e o
   // save falhou; sem o evento = nem tocou em Continuar (problema de UI).
-  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted']),
+  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted', 'page_visible']),
   // Só para js_error: mensagem resumida do erro, vira sufixo do valor gravado.
   detail: z.string().max(200).optional(),
 })
