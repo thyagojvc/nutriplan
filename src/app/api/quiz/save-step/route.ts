@@ -15,6 +15,12 @@ const bodySchema = z.object({
 export async function POST(request: NextRequest) {
   const sessionId = request.cookies.get('nutriplan_session_id')?.value
   if (!sessionId) {
+    // Diagnóstico do abandono iOS (ver logs da Vercel): registra se o header
+    // fallback chegou (se sim e ainda caiu aqui, o middleware não injetou).
+    console.error('[quiz/save-step] 401 sem sessão', {
+      hasFallbackHeader: !!request.headers.get('x-quiz-session'),
+      ua: request.headers.get('user-agent')?.slice(0, 120) ?? null,
+    })
     return NextResponse.json({ error: 'session_not_found' }, { status: 401 })
   }
 

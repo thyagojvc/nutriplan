@@ -3,7 +3,11 @@ import { z } from 'zod'
 import { createServiceClient } from '@/lib/supabase/service'
 
 const bodySchema = z.object({
-  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end']),
+  // save_step_failed = save-step respondeu erro (ex: 401 sem sessão);
+  // save_step_error = fetch nem completou (rede/CORS). Diagnóstico do abandono
+  // iOS na 1ª pergunta: sessão sem steps COM esse evento = pessoa tentou e o
+  // save falhou; sem o evento = nem tocou em Continuar (problema de UI).
+  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error']),
 })
 
 // Registra eventos de funil pós-quiz em draft_answers como chaves extras
