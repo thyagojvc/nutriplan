@@ -141,7 +141,12 @@ export async function POST(request: NextRequest) {
   // Cookie HttpOnly: persiste o session_id no servidor, invisível ao JS do cliente
   response.cookies.set('nutriplan_session_id', data.id, {
     httpOnly: true,
-    sameSite: 'lax',
+    // 26/07: era 'lax'. O WebView do Instagram/Facebook no iOS trata a navegação
+    // vinda do app como cross-site e descarta cookies Lax — suspeito central do
+    // abandono iOS ~2x maior na 1ª pergunta ("Error al guardar" por 401 no
+    // save-step). SameSite=None exige Secure, então só em produção (https);
+    // em dev http mantém lax pra não ser rejeitado pelo navegador.
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
     path: '/',
     maxAge: 60 * 60 * 24 * 7, // 7 dias
     secure: process.env.NODE_ENV === 'production',
