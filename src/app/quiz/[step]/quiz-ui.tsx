@@ -6,6 +6,11 @@ import { useRouter } from 'next/navigation'
 
 const BACK_FLAG = 'nutriplan_can_go_back'
 
+function isIOS(): boolean {
+  if (typeof navigator === 'undefined') return false
+  return /iPhone|iPad|iPod/.test(navigator.userAgent)
+}
+
 // ---------------------------------------------------------------------------
 // NutriPlan — sistema de UI compartilhado do quiz
 // Logo SVG, Header, Progress, Cards, Options, Inputs, CTA
@@ -602,6 +607,12 @@ export function QuizStepperRow({
   step?: number
   unit: string
 }) {
+  // No iOS o teclado numérico cobre o botão "Continuar" no WebView do
+  // Instagram/Facebook, principal origem de tráfego. Com readOnly o teclado
+  // não abre e o usuário usa só os botões +/−, que já bastam pois os valores
+  // vêm pré-preenchidos.
+  const [iosReadOnly] = useState(() => isIOS())
+
   // Texto local pra permitir digitação livre (campo vazio, número parcial),
   // mas propaga pro pai a CADA tecla que já forma um número válido — sem
   // clamp/round aqui, só no blur. Isso existe porque só confirmar no blur
@@ -652,10 +663,11 @@ export function QuizStepperRow({
           type="number"
           inputMode="numeric"
           value={text}
+          readOnly={iosReadOnly}
           onChange={(e) => handleTextChange(e.target.value)}
           onBlur={(e) => commit(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
-          className="quiz-number-input w-16 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25"
+          className={`quiz-number-input w-16 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25${iosReadOnly ? ' pointer-events-none select-none' : ''}`}
         />
         <button type="button" onClick={() => onChange(clamp(value + step))} aria-label={`Sumar ${label}`} className={btnCls}>
           +

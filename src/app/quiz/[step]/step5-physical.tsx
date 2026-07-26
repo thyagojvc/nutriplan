@@ -246,7 +246,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
           )}
 
           <p className="text-center text-xs text-muted-foreground">
-            Toca el número para escribirlo, o ajusta con − y +. Cuanto más exactos, más preciso será tu plan 🎯
+            Ajusta con − y +. Cuanto más exactos, más preciso será tu plan 🎯
           </p>
 
           {error && <QuizError message="Error al guardar. Intenta de nuevo." />}
