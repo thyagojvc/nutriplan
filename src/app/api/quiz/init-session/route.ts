@@ -118,6 +118,16 @@ export async function POST(request: NextRequest) {
   if (clientIp) draftAnswers._ip = clientIp
   draftAnswers._device = detectDevice(ua)
   draftAnswers._platform = detectPlatform(ua)
+  // Ambiente do navegador: peça-chave do diagnóstico iOS. WebView do
+  // Instagram/Facebook se identifica no UA; Chrome no iOS usa CriOS.
+  // Hipótese em teste: quem avança no iPhone é quem abriu fora do in-app.
+  draftAnswers._browser_env = /Instagram/i.test(ua) ? 'instagram'
+    : /FBAN|FBAV|FB_IAB/i.test(ua) ? 'facebook'
+    : /CriOS/i.test(ua) ? 'chrome-ios'
+    : /wv\)/.test(ua) ? 'android-webview'
+    : 'browser'
+  // UA completo: barato e elimina adivinhação em qualquer investigação futura.
+  draftAnswers._ua = ua.slice(0, 250)
   // Marca permanente (não expira com log): permite consultar no banco, a
   // qualquer momento, quantas sessões nasceram de um cookie órfão.
   if (orphanedSessionId) draftAnswers._healed_orphan_from = orphanedSessionId

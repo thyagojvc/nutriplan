@@ -122,6 +122,16 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   function handleChange(field: keyof PhysicalData, val: number) {
     const next = { ...data, [field]: val }
     setData(next)
+    if (!touched) {
+      // Diagnóstico iOS: marca que a pessoa INTERAGIU com a 1ª pergunta.
+      // Sessão sem step_5 mas com este evento = mexeu e não conseguiu concluir;
+      // sem ele = nem tocou na tela. Fire-and-forget, 1x por montagem.
+      void fetch('/api/quiz/track-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'q1_interacted' }),
+      }).catch(() => {})
+    }
     setTouched(true)
     setAgeBlocked(false)
     try {
