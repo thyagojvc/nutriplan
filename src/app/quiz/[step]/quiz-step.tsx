@@ -78,14 +78,30 @@ function useEnsureSession(stepNumber: number) {
       return
     }
     let done = false
+    const cleanup = () => {
+      document.removeEventListener('visibilitychange', onVisible)
+      document.removeEventListener('pointerdown', onInteract)
+      document.removeEventListener('keydown', onInteract)
+    }
     const onVisible = () => {
       if (done || document.visibilityState !== 'visible') return
       done = true
-      document.removeEventListener('visibilitychange', onVisible)
+      cleanup()
+      initSession()
+    }
+    // Rede de segurança: interação humana prova que a página está visível,
+    // mesmo se algum WebView reportar visibilityState errado — sem isso a
+    // pessoa travaria com "Error al guardar" sem sessão.
+    const onInteract = () => {
+      if (done) return
+      done = true
+      cleanup()
       initSession()
     }
     document.addEventListener('visibilitychange', onVisible)
-    return () => document.removeEventListener('visibilitychange', onVisible)
+    document.addEventListener('pointerdown', onInteract)
+    document.addEventListener('keydown', onInteract)
+    return cleanup
   }, [stepNumber])
   return { error }
 }
