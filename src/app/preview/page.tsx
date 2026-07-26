@@ -93,7 +93,7 @@ const RESULTS: {
   },
   {
     photo: '/resultados/caso-3.png', name: 'Fernanda', country: '🇨🇱', age: 29, result: '−7 kg en 3 meses', w: 402, h: 430,
-    quote: 'Es maravilloso tener toda mi dieta en el celular, eso ayuda muchísimo a mantener la constancia y a no abandonar. Fue la primera vez que logré seguir el paso a paso, y bajé de peso sin dificultades.',
+    quote: 'Lo pensé mucho antes de comprar porque creía que tal vez no iba a funcionar para mí. Pero cuando empecé a usarlo descubrí que no hacía falta ningún milagro para bajar de peso, solo seguir una dieta armada especialmente para mi rutina y para mi cuerpo. Cuando entendí eso, el resultado llegó rápido y de forma natural.',
   },
   {
     photo: '/resultados/caso-4.png', name: 'Carolina', country: '🇪🇸', age: 42, result: '−10 kg en 4 meses', w: 407, h: 436,
@@ -101,7 +101,7 @@ const RESULTS: {
   },
   {
     photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
-    quote: 'La verdad iba al gym casi todos los días pero comía a ojo y la balanza no se movía. Cuando vi mis números exactos me di cuenta de que comía de más sin notarlo. Bajé 8 kilos en 3 meses, y lo que no me esperaba es que fue sin pasar hambre.',
+    quote: 'Es maravilloso tener toda mi dieta en el celular, eso ayuda muchísimo a mantener la constancia y a no abandonar. Fue la primera vez que logré seguir el paso a paso, y bajé de peso sin dificultades.',
   },
 ]
 
