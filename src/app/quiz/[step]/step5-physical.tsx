@@ -186,7 +186,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
       <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
         <span className="text-base">⏱️</span>
         <p className="text-[13px] font-bold leading-snug text-primary">
-          Responde este quiz de 60 segundos y recibe tu Reto de 28 días, personalizado para ti
+          Responde este quiz de 60 segundos y recibe tu Calibración Metabólica, personalizada para ti
         </p>
       </div>
 

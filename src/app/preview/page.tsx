@@ -616,7 +616,7 @@ export default function PreviewPage() {
           {/* firstName nunca vem preenchido hoje (step12 parou de capturar nome,
               ver comentário em step12-form.tsx) — mantido pronto pra quando
               essa captura voltar, sem usar aqui pra não quebrar o texto. */}
-          Tu Reto de 28 días ya está hecho · solo para ti
+          Tu Calibración Metabólica ya está hecha · solo para ti
         </div>
 
         {/* Headline tangibiliza el producto (el plan calculado); la sub-headline
@@ -694,7 +694,7 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Ya está todo armado por ti. No tienes que calcular ni decidir nada: abres el plan, sigues el Reto y listo.
+          Ya está todo armado por ti. No tienes que calcular ni decidir nada: la Calibración Metabólica ya hizo el trabajo, solo abres tu plan y lo sigues.
         </p>
       </div>
 
@@ -815,11 +815,11 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Fotos de uso real do Reto (ferramenta em ação): cozinhando com o
+        {/* Fotos de uso real do plano (ferramenta em ação): cozinhando com o
             NutriPlan aberto no celular + marcando a evolução no calendário.
             Substitui a foto única do calendário e o passo-a-passo textual. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-          <SectionHeading title={<>Así vas a <Hl>usar</Hl> tu Reto</>} />
+          <SectionHeading title={<>Así vas a <Hl>usar</Hl> tu plan</>} />
           <div className="grid grid-cols-2 gap-2.5">
             <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
               <Image
@@ -836,7 +836,7 @@ export default function PreviewPage() {
             <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
               <Image
                 src="/Foto_Preenchendo_Calendario/Preenchendo calendário.png"
-                alt="Mujer marcando su avance en el calendario del Reto de 28 días"
+                alt="Mujer marcando su avance en el calendario de 28 días"
                 fill
                 sizes="(max-width: 640px) 50vw, 256px"
                 className="object-cover"
@@ -856,7 +856,7 @@ export default function PreviewPage() {
             párrafo de arriba, ahora mostrado, no solo dicho). */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
-            title={<>Tu Reto, ahora en <Hl>una app</Hl></>}
+            title={<>Tu Calibración Metabólica, ahora en <Hl>una app</Hl></>}
             subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está tu plan cada vez que abres la nevera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
@@ -956,14 +956,12 @@ export default function PreviewPage() {
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">
-              {isLoss ? 'Tu Reto de 28 días para bajar de peso'
-                : isGain ? 'Tu Reto de 28 días para ganar músculo'
-                : 'Tu Reto de 28 días'}
+              {isLoss ? 'Tu Calibración Metabólica para bajar de peso'
+                : isGain ? 'Tu Calibración Metabólica para ganar músculo'
+                : 'Tu Calibración Metabólica'}
             </p>
             <p className="text-base font-black text-white">
-              {isLoss ? '¡Tu reto está listo. Empieza hoy!'
-                : isGain ? '¡Tu reto está listo. Empieza hoy!'
-                : '¡Tu Reto de 28 días está listo!'}
+              ¡Tu Calibración Metabólica está lista. Empieza hoy!
             </p>
           </div>
 
@@ -990,7 +988,7 @@ export default function PreviewPage() {
                 da lista de valor, pra vender o Kit como sistema, não feature avulsa. */}
             <div>
               <p className="mb-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                Tu Reto tiene dos partes que trabajan juntas
+                Tu Calibración Metabólica tiene dos partes que trabajan juntas
               </p>
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="rounded-xl border border-primary/25 bg-white p-3.5">
@@ -1024,7 +1022,7 @@ export default function PreviewPage() {
             </div>
 
             <div>
-              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Reto</p>
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Calibración Metabólica</p>
               <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevás, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
@@ -1198,7 +1196,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
-    a: 'Porque las dietas genéricas te dan el mismo plan que a todas, sin mirar tu cuerpo ni tu rutina, y por eso se abandonan. Tu Reto se calcula a partir de tus datos e incluye tus comidas favoritas, así que no dependes de la fuerza de voluntad para sostenerlo. El calendario de 28 días es justo lo que te ayuda a no abandonarlo en la semana 2.',
+    a: 'Porque las dietas genéricas te dan el mismo plan que a todas, sin mirar tu cuerpo ni tu rutina, y por eso se abandonan. Tu plan se calcula con la Calibración Metabólica a partir de tus datos e incluye tus comidas favoritas, así que no dependes de la fuerza de voluntad para sostenerlo. El calendario de 28 días es justo lo que te ayuda a no abandonarlo en la semana 2.',
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
