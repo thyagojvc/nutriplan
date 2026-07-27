@@ -799,12 +799,6 @@ export default function PreviewPage() {
                 <ShieldCheck className="h-3 w-3" />
                 Reg. 24116789
               </span>
-              <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                Hipertrofia femenina
-              </span>
-              <span className="inline-flex items-center rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                Pérdida de grasa en mujeres
-              </span>
             </div>
 
             {/* Números reais da trajetória clínica — distinto do "+1.800 planes" do app */}
@@ -815,15 +809,17 @@ export default function PreviewPage() {
               </div>
               <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
                 <p className="text-2xl font-black text-primary">+2.000</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres atendidas con su metodología</p>
+                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres acompañadas con su metodología</p>
               </div>
             </div>
 
             <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-              Todo empezó con ella misma. Antes de ser nutricionista, María Fernanda pasó años con sobrepeso probando dietas rígidas que no consideraban su cuerpo ni su rutina, y siempre terminaba abandonándolas. Cuando se formó entendió por qué: no le faltaba disciplina, le faltaba un plan hecho para ella. Desde ahí se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una fórmula genérica. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti, con el mismo criterio que usaría en una consulta.
+              Todo empezó con ella misma. Antes de ser nutricionista, María Fernanda pasó años con sobrepeso probando dietas rígidas que no consideraban su cuerpo ni su rutina, y siempre terminaba abandonándolas. Cuando se formó entendió por qué: no le faltaba disciplina, le faltaba un plan hecho para ella. Desde ahí se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una fórmula genérica. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti.
             </p>
 
-            {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta */}
+            {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta.
+                Promete SUPORTE, não acesso pessoal à nutricionista (evita expectativa de
+                consulta individual incompatível com o ticket de $9.90). */}
             <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#25D366] shadow-[0_2px_8px_rgba(37,211,102,0.35)]">
                 <svg viewBox="0 0 24 24" fill="#fff" className="h-6 w-6">
@@ -832,7 +828,7 @@ export default function PreviewPage() {
               </span>
               <div>
                 <p className="text-sm font-bold text-gray-900">Soporte directo por WhatsApp</p>
-                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. María Fernanda responde tus dudas por WhatsApp. Recibes su contacto al comprar.</p>
+                <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. Recibes soporte por WhatsApp después de tu compra ante cualquier duda.</p>
               </div>
             </div>
           </div>
@@ -1157,7 +1153,7 @@ export default function PreviewPage() {
               <div className="flex items-start gap-2.5">
                 <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <p className="text-[13px] leading-snug text-gray-700">
-                  Recibes el <strong>WhatsApp de María Fernanda</strong> por si tienes cualquier duda. Hay una persona real detrás.
+                  Recibes <strong>soporte por WhatsApp</strong> por si tienes cualquier duda. Hay un equipo real detrás, no un bot.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">
