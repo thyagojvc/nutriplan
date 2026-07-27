@@ -765,59 +765,44 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Autoridade — responsável técnico, foto grande na frente */}
-        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white">
-          <div className="relative w-full aspect-[2/3]">
-            <Image
-              src="/FotoNutri-full.png"
-              alt="María Fernanda, Nutricionista"
-              fill
-              className="object-cover object-top"
-              sizes="(max-width: 520px) 100vw, 520px"
-            />
-            <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/75 via-black/35 to-transparent" />
-            <div className="absolute bottom-4 right-4">
+        {/* Autoridade — reduzida ao essencial: foto pequena + nome + 1 frase +
+            2 números. Versão anterior (foto grande de fundo + registro +
+            especializações + bio de 4 frases) prometia nível de consulta
+            individual, incompatível com o ticket de $9.90. */}
+        <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
+          <div className="flex items-center gap-3">
+            <div className="relative shrink-0">
               <Image
                 src="/FotoNutri.jpg"
-                alt="María Fernanda, primer plano"
-                width={64}
-                height={64}
-                className="h-16 w-16 rounded-full object-cover object-top border-[3px] border-white shadow-lg"
+                alt="María Fernanda, Nutricionista"
+                width={56}
+                height={56}
+                className="h-14 w-14 rounded-full object-cover object-top border-2 border-[#D8E8D4]"
               />
-              <BadgeCheck className="absolute -bottom-0.5 -right-0.5 h-6 w-6 rounded-full text-[#3897F0] bg-white shadow" strokeWidth={2.2} fill="#3897F0" stroke="white" />
+              <BadgeCheck className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full text-[#3897F0] bg-white shadow" strokeWidth={2.2} fill="#3897F0" stroke="white" />
             </div>
-            <div className="absolute inset-x-0 bottom-0 p-4 pr-20">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-white/80">Quién está detrás de tu plan</p>
-              <p className="font-display text-[19px] font-black text-white">María Fernanda</p>
-              <p className="text-[13px] font-semibold text-white/90">Nutricionista · Responsable técnico</p>
+            <div>
+              <p className="font-display text-base font-black text-gray-900">María Fernanda</p>
+              <p className="text-[13px] font-semibold text-muted-foreground">Nutricionista · Responsable técnica</p>
             </div>
           </div>
 
-          <div className="p-5 space-y-4">
-            <div className="flex flex-wrap gap-1.5">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-[#EAF3DE] border border-[#D8E8D4] px-2.5 py-0.5 text-[11px] font-bold text-primary">
-                <ShieldCheck className="h-3 w-3" />
-                Reg. 24116789
-              </span>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            NutriPlan fue desarrollado bajo la orientación de una profesional de la nutrición, utilizando una metodología diseñada para adaptar tu alimentación a tus objetivos, preferencias y rutina.
+          </p>
+
+          <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+              <p className="text-2xl font-black text-primary">+2.000</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres acompañadas con nuestra metodología</p>
             </div>
-
-            {/* Números reais da trajetória clínica — distinto do "+1.800 planes" do app */}
-            <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
-              <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
-                <p className="text-2xl font-black text-primary">6 años</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">de trayectoria clínica</p>
-              </div>
-              <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
-                <p className="text-2xl font-black text-primary">+2.000</p>
-                <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">mujeres acompañadas con su metodología</p>
-              </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-3 text-center">
+              <p className="text-2xl font-black text-primary">6 años</p>
+              <p className="mt-0.5 text-[11px] leading-tight text-muted-foreground">de experiencia clínica</p>
             </div>
+          </div>
 
-            <p className="text-[13px] leading-relaxed text-muted-foreground border-t border-[#D8E8D4] pt-3">
-              Todo empezó con ella misma. Antes de ser nutricionista, María Fernanda pasó años con sobrepeso probando dietas rígidas que no consideraban su cuerpo ni su rutina, y siempre terminaba abandonándolas. Cuando se formó entendió por qué: no le faltaba disciplina, le faltaba un plan hecho para ella. Desde ahí se especializó en un solo objetivo, mujeres perdiendo grasa y ganando fuerza con un método pensado para su cuerpo, no una fórmula genérica. Una calculadora de internet te da el mismo número que a todas. La Calibración Metabólica™ parte de tu metabolismo real y lo ajusta a ti.
-            </p>
-
-            {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta.
+          {/* Soporte por WhatsApp — vive aquí (junto a quién es él), não repetido na oferta.
                 Promete SUPORTE, não acesso pessoal à nutricionista (evita expectativa de
                 consulta individual incompatível com o ticket de $9.90). */}
             <div className="flex items-center gap-3 rounded-xl border border-[#25D366]/35 bg-[#25D366]/8 px-3.5 py-3">
@@ -831,7 +816,6 @@ export default function PreviewPage() {
                 <p className="text-[13px] leading-relaxed text-muted-foreground">No estás por tu cuenta. Recibes soporte por WhatsApp después de tu compra ante cualquier duda.</p>
               </div>
             </div>
-          </div>
         </div>
 
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
