@@ -64,8 +64,35 @@ function useEnsureSession(stepNumber: number) {
   return { error }
 }
 
+// Sinal mínimo pra separar "pessoa nunca tocou na tela" (preload de in-app
+// browser, bounce antes do JS rodar) de "tocou mas não completou" (fricção
+// real no step). EFEITO SEPARADO de propósito: não gate, não bloqueia, não
+// atrasa nada da criação de sessão (foi misturar as duas coisas que quebrou
+// o iOS na tentativa anterior, ver memória ios-quiz-abandonment-investigation).
+// Falha silenciosa (.catch vazio) — não pode nunca impedir o quiz de seguir.
+function useTrackFirstInteraction(stepNumber: number) {
+  useEffect(() => {
+    if (stepNumber !== 5) return
+    const send = () => {
+      fetch('/api/quiz/track-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'q1_interacted' }),
+        keepalive: true,
+      }).catch(() => {})
+    }
+    window.addEventListener('pointerdown', send, { once: true })
+    window.addEventListener('keydown', send, { once: true })
+    return () => {
+      window.removeEventListener('pointerdown', send)
+      window.removeEventListener('keydown', send)
+    }
+  }, [stepNumber])
+}
+
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession(stepNumber)
+  useTrackFirstInteraction(stepNumber)
 
   // Heartbeat de presença "ao vivo": informa a etapa visível atual a cada 8s.
   // Alimenta o painel ao vivo do quiz-funnel. Para quando a aba fecha (o painel
