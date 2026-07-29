@@ -20,45 +20,21 @@ function isIOS(): boolean {
 // Logo SVG — folha orgânica com veias, construída com paths
 // ---------------------------------------------------------------------------
 
+// Ícone-only do Método CALIBRA (chama + medidor calibrado + folha), recortado
+// do logo cheio (ver public/logo-calibra-transparent.png) sem o texto
+// "CALIBRA". Substitui a folha antiga desde a troca de identidade visual.
+const CALIBRA_ICON_ASPECT = 1023 / 630
+
 export function NutriLogo({ size = 24 }: { size?: number }) {
   return (
-    <svg
-      width={size}
+    <Image
+      src="/logo-calibra-icon.png"
+      alt="CALIBRA"
       height={size}
-      viewBox="0 0 24 24"
-      fill="none"
-      aria-label="NutriPlan"
-    >
-      {/* Corpo da folha */}
-      <path
-        d="M12 2.5C7.5 2.5 3.5 6.8 3.5 12C3.5 16.4 6.2 20 10 21.8L12 22.5L14 21.8C17.8 20 20.5 16.4 20.5 12C20.5 6.8 16.5 2.5 12 2.5Z"
-        fill="currentColor"
-        className="text-primary"
-      />
-      {/* Veia central */}
-      <path
-        d="M12 21.5V11.5"
-        stroke="white"
-        strokeWidth="1.4"
-        strokeLinecap="round"
-      />
-      {/* Veia esquerda */}
-      <path
-        d="M12 17.5L9 14.5"
-        stroke="white"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        opacity="0.85"
-      />
-      {/* Veia direita */}
-      <path
-        d="M12 14.5L15 11.5"
-        stroke="white"
-        strokeWidth="1.1"
-        strokeLinecap="round"
-        opacity="0.85"
-      />
-    </svg>
+      width={Math.round(size * CALIBRA_ICON_ASPECT)}
+      className="select-none object-contain"
+      style={{ height: size, width: 'auto' }}
+    />
   )
 }
 
@@ -71,10 +47,10 @@ export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 
   return (
     <Image
-      src="/Logo Clara NutriPlan.png"
-      alt="NutriPlan"
+      src="/logo-calibra-transparent.png"
+      alt="CALIBRA"
       height={h}
-      width={h * 4}
+      width={h}
       className="select-none object-contain"
       style={{ height: h, width: 'auto' }}
     />

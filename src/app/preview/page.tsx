@@ -755,6 +755,58 @@ export default function PreviewPage() {
       {/* ── Contenido ─────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pb-24 space-y-5">
 
+        {/* Prova social imediata — dobra "prova social" logo após o hook.
+            2 de los 4 casos reales (RESULTS) aparecen aquí en grade fija;
+            los otros 2 siguen en el carrusel más abajo, junto al resto de
+            la narrativa de resultados. Mismos datos, sin inventar nada. */}
+        <div className="grid grid-cols-2 gap-2.5">
+          {RESULTS.slice(0, 2).map(({ photo, name, country, age, result, w, h }) => (
+            <div key={name} className="overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]">
+              <Image
+                src={photo}
+                alt={`Antes y después de ${name}`}
+                width={w}
+                height={h}
+                className="h-auto w-full"
+              />
+              <div className="space-y-1 p-2.5">
+                <span className="inline-block rounded-full bg-primary px-2 py-0.5 text-[12px] font-black text-white">
+                  {result}
+                </span>
+                <p className="text-xs font-bold text-gray-800">{country} {name}, {age}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Agita a dor — espeja las voces de la cabeza (dudas reales antes de
+            comprar) y responde cada una señalando un villano externo (dietas
+            genéricas, falta de tiempo), nunca a ella. Regla dura del proyecto:
+            nunca "no tuviste disciplina", siempre "el método anterior falló". */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>¿Te suena <Hl>conocido</Hl>?</>} />
+          <div className="space-y-2.5">
+            {[
+              {
+                voice: '"Ya lo intenté todo y nada funcionó."',
+                reframe: 'No era falta de disciplina: eran dietas genéricas que no se ajustaban a tu cuerpo.',
+              },
+              {
+                voice: '"No tengo tiempo para dietas complicadas."',
+                reframe: 'El problema es que te pedían tiempo que no tienes, no que tú no puedas hacerlo.',
+              },
+              {
+                voice: '"Tengo miedo de ilusionarme otra vez."',
+                reframe: 'Esta vez el plan se ajusta a ti, no al revés. Por eso es diferente.',
+              },
+            ].map(({ voice, reframe }) => (
+              <div key={voice} className="rounded-xl border border-[#EAF2E6] bg-[#F9FBF7] p-3.5 space-y-1.5">
+                <p className="text-[13px] italic leading-snug text-gray-500">{voice}</p>
+                <p className="text-[13px] font-semibold leading-snug text-gray-800">{reframe}</p>
+              </div>
+            ))}
+          </div>
+        </div>
 
         {/* Tu perfil — consolidado: dados físicos + IMC + objetivo + actividad +
             gasto calórico num único card. Corta a duplicação com o card
@@ -935,13 +987,13 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          {/* Carrossel horizontal em vez de grade: com 4 casos a grade dobraria
-              a altura da página pra quem nem quer ler os depoimentos. O card
-              cortado na borda direita é a affordance de que tem mais.
+          {/* Carrossel horizontal com os 2 casos restantes (Camila e Fernanda já
+              apareceram logo cedo, ver bloco de prova social após o hero).
+              O card cortado na borda direita é a affordance de que tem mais.
               -mx-5/px-5 anula o padding do container pra o corte encostar na
               borda do bloco, senão o peek parece bug de layout. */}
           <div className="-mx-5 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-            {RESULTS.map(({ photo, name, country, age, result, w, h, quote }) => (
+            {RESULTS.slice(2).map(({ photo, name, country, age, result, w, h, quote }) => (
               <div
                 key={name}
                 className="flex w-[64%] shrink-0 snap-start flex-col overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]"
@@ -1071,6 +1123,28 @@ export default function PreviewPage() {
             </div>
         </div>
 
+        {/* Cómo funciona — a propósito reducido a 4 pasos bien simples, sem
+            explicar o mecanismo de novo (isso já foi feito em "El mecanismo").
+            Objetivo único desta dobra: parecer extremamente fácil de fazer. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>Así de <Hl>fácil</Hl> es</>} subtitle="Cuatro pasos. Nada más." />
+          <div className="space-y-2.5">
+            {[
+              { n: 1, text: 'Adquieres el Método CALIBRA' },
+              { n: 2, text: 'Descargas la app en tu celular' },
+              { n: 3, text: 'Ves y ejecutas la combinación del día' },
+              { n: 4, text: 'Sientes los resultados desde los primeros días' },
+            ].map(({ n, text }) => (
+              <div key={n} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] px-3.5 py-3">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-display text-sm font-black text-white">
+                  {n}
+                </span>
+                <p className="text-sm font-bold text-gray-900">{text}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
         {/* Oferta con ancla de valor */}
         <div ref={offerRef} className="relative overflow-hidden rounded-2xl border-2 border-primary/40 bg-white shadow-[0_10px_34px_rgba(15,110,86,0.13)]">
           {/* Header colorido */}
@@ -1187,10 +1261,37 @@ export default function PreviewPage() {
               </ul>
             </div>
 
-            {/* Precio directo: sin empilhamento de valor ni ancla vs. consulta —
-                eso es lógica de página de high ticket, no de low ticket. Aquí
-                solo tangibilizamos lo que ya viste arriba y mostramos el precio. */}
+            {/* Pra quem é — autoqualifica antes do preço: reduz reembolso de
+                quem compra achando que é milagre de 1 semana, e a bullet
+                "no es para ti" é a que dá credibilidade ao resto (só promete
+                o que promete mesmo). */}
+            <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] p-4 space-y-2.5">
+              <p className="text-center text-[11px] font-bold uppercase tracking-widest text-primary">¿Es para ti?</p>
+              <ul className="space-y-1.5">
+                {[
+                  'Quieres bajar de peso sin pasarte el día contando calorías',
+                  'No tienes tiempo para armar tu propia dieta desde cero',
+                  'Ya probaste dietas genéricas que no se ajustaron a ti',
+                  'Prefieres un plan que se adapte a tus antojos, no al revés',
+                ].map((t) => (
+                  <li key={t} className="flex items-start gap-2 text-[13px] text-gray-700">
+                    <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+              <p className="pt-1 text-[12px] leading-snug text-muted-foreground">
+                No es para ti si buscas bajar 10 kg en una semana. Ningún método sano hace eso, y tampoco el nuestro.
+              </p>
+            </div>
+
+            {/* Precio directo, sin empilhamento tipo "vale $1000" (lógica de
+                high ticket que soaria falso aqui). A âncora é uma comparação
+                honesta e modesta: o que custaria montar isso por conta própria. */}
             <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-2.5">
+              <p className="text-[13px] leading-relaxed text-gray-700">
+                Armar esto por tu cuenta (una app de seguimiento, un plan a tu medida, un calendario de constancia) fácilmente costaría más de <strong className="font-bold text-gray-900">{price(47)}</strong>.
+              </p>
               <p className="text-sm text-gray-800">Hoy, en un solo pago:</p>
               <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
               <p className="text-[12px] leading-relaxed text-muted-foreground">
@@ -1284,6 +1385,22 @@ export default function PreviewPage() {
 
             <PaymentTrust />
           </div>
+        </div>
+
+        {/* Custo de não agir — vilão continua sendo externo (las dietas
+            genéricas, el método anterior), nunca ela. Objetivo: fazer sentir
+            que esperar tem um custo real, sem culpar quem está lendo. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-2.5 text-center shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Una última cosa</p>
+          <p className="font-display text-[19px] font-black leading-snug text-gray-900">
+            Si hoy no haces nada, nada cambia.
+          </p>
+          <p className="text-sm leading-relaxed text-gray-700">
+            Las dietas genéricas van a seguir estando ahí, pidiéndote fuerza de voluntad que ya sabes que no sostiene. Dentro de un mes, sin un método que calibre tu hambre, lo más probable es que sigas en el mismo lugar, buscando la próxima dieta que tampoco se va a ajustar a ti.
+          </p>
+          <p className="text-sm font-bold text-gray-800">
+            El Método CALIBRA existe para que esta vez sea diferente.
+          </p>
         </div>
 
         <FaqSection />

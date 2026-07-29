@@ -38,8 +38,8 @@ export const metadata: Metadata = {
     title: 'NutriPlan',
   },
   icons: {
-    icon: '/Logo Clara NutriPlan.png',
-    apple: '/Logo Clara NutriPlan.png',
+    icon: '/logo-calibra-white.png',
+    apple: '/logo-calibra-white.png',
   },
   other: {
     'facebook-domain-verification': 'xgjk9bxl61cb1p1ngmsq295whvaf8e',

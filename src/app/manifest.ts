@@ -18,9 +18,9 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: '#F8F7F1',
     theme_color: '#226c45',
     icons: [
-      { src: '/logo-perfil.png', sizes: '192x192', type: 'image/png' },
-      { src: '/logo-perfil.png', sizes: '512x512', type: 'image/png' },
-      { src: '/logo-perfil.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
+      { src: '/logo-calibra-192.png', sizes: '192x192', type: 'image/png' },
+      { src: '/logo-calibra-512.png', sizes: '512x512', type: 'image/png' },
+      { src: '/logo-calibra-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
     ],
   }
 }
