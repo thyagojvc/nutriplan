@@ -39,21 +39,35 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Wordmark — "Nutri" leve + "Plan" pesado = identidade tipográfica
+// Wordmark — ícone (recorte de logo-calibra-transparent.png, sem o texto) +
+// "CALIBRA" em texto real, lado a lado. O arquivo cheio é um selo quadrado
+// (ícone empilhado sobre o texto) pensado pra ícone de app/redes, não pra
+// caber numa barra de header fina — usado direto em altura fixa, ele
+// vazava pra cima e pra baixo do header (h-14). Texto real também garante
+// nitidez em qualquer tamanho, sem depender da renderização de fonte do
+// gerador de imagem.
 // ---------------------------------------------------------------------------
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const h = { sm: 72, md: 120, lg: 160 }[size]
+  const h = { sm: 22, md: 30, lg: 38 }[size]
 
   return (
-    <Image
-      src="/logo-calibra-transparent.png"
-      alt="CALIBRA"
-      height={h}
-      width={h}
-      className="select-none object-contain"
-      style={{ height: h, width: 'auto' }}
-    />
+    <span className="inline-flex select-none items-center gap-1.5">
+      <Image
+        src="/logo-calibra-icon.png"
+        alt=""
+        height={h}
+        width={Math.round(h * CALIBRA_ICON_ASPECT)}
+        className="object-contain"
+        style={{ height: h, width: 'auto' }}
+      />
+      <span
+        className="font-display font-black uppercase tracking-wide text-primary"
+        style={{ fontSize: h * 0.72 }}
+      >
+        CALIBRA
+      </span>
+    </span>
   )
 }
 
