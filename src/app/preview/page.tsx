@@ -845,7 +845,9 @@ export default function PreviewPage() {
               ))}
             </div>
             <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
-              Una letra por combinación. Las 7 juntas forman <strong className="font-bold text-primary">CALIBRA</strong>, y son lo que calibra tu hambre día a día.
+              Una letra por combinación. Las 7 juntas forman <strong className="font-bold text-primary">CALIBRA</strong>: el nombre nace de tu{' '}
+              <span className="font-bold text-primary">Calibra</span>ción{' '}
+              <span className="font-bold text-primary">Metabol</span>ica, porque eso es justo lo que hacen. Calibran tu hambre y aceleran tu metabolismo, día a día.
             </p>
           </div>
 
