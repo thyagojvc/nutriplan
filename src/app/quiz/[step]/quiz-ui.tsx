@@ -39,35 +39,27 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Wordmark — ícone (recorte de logo-calibra-transparent.png, sem o texto) +
-// "CALIBRA" em texto real, lado a lado. O arquivo cheio é um selo quadrado
-// (ícone empilhado sobre o texto) pensado pra ícone de app/redes, não pra
-// caber numa barra de header fina — usado direto em altura fixa, ele
-// vazava pra cima e pra baixo do header (h-14). Texto real também garante
-// nitidez em qualquer tamanho, sem depender da renderização de fonte do
-// gerador de imagem.
+// Wordmark — só o ícone do selo original (sem recriar "CALIBRA" em fonte web:
+// a tentativa anterior misturava o desenho da chama com texto Fraunces, que
+// não tem nada a ver com a tipografia geométrica do logo de verdade, e ficou
+// com cara de 2 logos diferentes colados). O selo completo (ícone empilhado
+// sobre o texto) é feito pra ícone de app/rede social, não pra caber legível
+// numa barra de header fina — pra manter a arte original sem distorcer nem
+// esticar o header, o header mostra só o ícone.
 // ---------------------------------------------------------------------------
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
-  const h = { sm: 22, md: 30, lg: 38 }[size]
+  const h = { sm: 26, md: 34, lg: 42 }[size]
 
   return (
-    <span className="inline-flex select-none items-center gap-1.5">
-      <Image
-        src="/logo-calibra-icon.png"
-        alt=""
-        height={h}
-        width={Math.round(h * CALIBRA_ICON_ASPECT)}
-        className="object-contain"
-        style={{ height: h, width: 'auto' }}
-      />
-      <span
-        className="font-display font-black uppercase tracking-wide text-primary"
-        style={{ fontSize: h * 0.72 }}
-      >
-        CALIBRA
-      </span>
-    </span>
+    <Image
+      src="/logo-calibra-icon.png"
+      alt="CALIBRA"
+      height={h}
+      width={Math.round(h * CALIBRA_ICON_ASPECT)}
+      className="select-none object-contain"
+      style={{ height: h, width: 'auto' }}
+    />
   )
 }
 
