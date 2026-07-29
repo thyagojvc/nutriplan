@@ -201,6 +201,19 @@ export function PlanTab({
             <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
               {day.combo.action}
             </p>
+            {/* "El secreto" — a instrução acima diz O QUE fazer; isto diz por
+                que funciona, em causa → efeito que ela sente. Sem isto o combo
+                lê como dica solta de nutricionista, não como mecanismo. */}
+            {day.combo.secret && (
+              <div className="mt-3 rounded-xl border border-primary/25 bg-white p-3">
+                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+                  El secreto
+                </p>
+                <p className="mt-1 text-[13px] leading-relaxed text-foreground">
+                  {day.combo.secret}
+                </p>
+              </div>
+            )}
           </div>
         )}
 

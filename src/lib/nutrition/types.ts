@@ -89,6 +89,8 @@ export interface PlanDayCombo {
   letter: string
   name: string
   action: string
+  /** Opcional: planos gerados antes de out/2026 não têm o campo. */
+  secret?: string
   emoji: string
 }
 

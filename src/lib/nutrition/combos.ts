@@ -32,8 +32,16 @@ export interface Combo {
   /** O que ela SENTE. Benefício, nunca mecanismo. */
   tagline: string
   moment: ComboMoment
-  /** A instrução literal. Tem que caber em 10 segundos de execução. */
+  /** A instrução literal. Tem que caber em 10 segundos de execução.
+   *  REGRA DURA: nunca citar um número (gramas, porções) que o plano gerado
+   *  não entregue de fato — a instrução tem que bater com o cardápio do dia,
+   *  senão o mecanismo se contradiz na cara dela. Quando o número varia por
+   *  pessoa, mande ela olhar o plano ("tu plan ya te marca cuánta"). */
   action: string
+  /** O "segredo": traduz o mecanismo em causa → efeito que ela SENTE, com
+   *  imagem concreta. É o que faz parecer descoberta em vez de dica genérica.
+   *  Continua limitado por `science`: embalagem apelativa, conteúdo real. */
+  secret: string
   /** Por que funciona, na linguagem dela (não é o paper, é a tradução). */
   why: string
   /** Base fisiológica real. Auditoria interna: se um claim não couber aqui, sai. */
@@ -56,6 +64,8 @@ export const COMBOS: Combo[] = [
     moment: 'noche',
     action:
       'La última comida del día lleva proteína más una grasa buena (aguacate, aceite de oliva, un puñado de nueces) y cero azúcar simple. Después de eso, la cocina está cerrada.',
+    secret:
+      'Cuando juntas proteína con una grasa buena en la última comida y cortas el azúcar simple, tu cuerpo activa su mecanismo de protección de la saciedad: en vez de vaciarse rápido y despertarte con hambre, sostiene toda la noche. Por eso no picas nada a las 11 y tampoco amaneces exagerando en el desayuno.',
     why: 'La noche es donde la mayoría de las dietas se cae. Una cena que sostiene de verdad quita el impulso de volver a la alacena a las 11.',
     science:
       'Proteína y grasa en la última comida prolongan la saciedad nocturna; evitar azúcares simples en ese momento reduce el rebote de hambre por caída glucémica.',
@@ -69,7 +79,9 @@ export const COMBOS: Combo[] = [
     tagline: 'Llegas al almuerzo sin desesperación',
     moment: 'mañana',
     action:
-      'Mínimo 30 g de proteína en la primera comida del día, y siempre antes del carbohidrato. Tu plan ya te marca cuál y cuánta.',
+      'Empieza el desayuno por la proteína, siempre antes del carbohidrato. Tu plan ya te marca cuál es y cuánta te toca hoy.',
+    secret:
+      'Tu cuerpo gasta hasta 6 veces más energía digiriendo proteína que digiriendo carbohidrato. Al entrar el día por ahí, arrancas quemando desde la primera mordida y ese ritmo te acompaña el resto del día. Es el mismo desayuno, en otro orden.',
     why: 'Empezar el día con proteína apaga el hambre de la tarde antes de que aparezca. Además, tu cuerpo gasta parte de esas calorías solo en digerirla.',
     science:
       'Efecto térmico de los alimentos: 20-30% de las calorías de la proteína se gastan en digestión y metabolismo, contra 5-10% de los carbohidratos y 0-3% de las grasas. Desayuno alto en proteína se asocia a menor ingesta espontánea el resto del día.',
@@ -84,6 +96,8 @@ export const COMBOS: Combo[] = [
     moment: 'mañana',
     action:
       '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
+    secret:
+      'Esas tres fibras juntas forman un gel que funciona como un radar de tránsito dentro de tu estómago: obligan a la comida a bajar la velocidad. En vez de vaciarse en una hora, tu estómago se queda lleno durante horas. No es que aguantes el hambre, es que no llega.',
     why: 'La mezcla forma un gel en el estómago. Ese gel, junto a la proteína, hace que la comida salga más lento del estómago. Por eso llegas a la tarde sin esa ansiedad de picar cualquier cosa.',
     science:
       'Fibra viscosa (psyllium, chía, linaza) retarda el vaciamiento gástrico y aumenta la saciedad; el efecto es mayor cuando se combina con proteína en la misma comida.',
@@ -99,6 +113,8 @@ export const COMBOS: Combo[] = [
     moment: 'en la mesa',
     action:
       'Come en este orden dentro del mismo plato: primero la verdura, después la proteína, y el carbohidrato al final. Mismo plato, misma cantidad, otro orden.',
+    secret:
+      'La verdura y la proteína arman un colchón en tu estómago antes de que llegue el carbohidrato. El azúcar entra frenada, sin el pico de golpe. Y sin pico no hay caída: se acaba ese bajón de las 3 de la tarde que te deja con sueño y buscando algo dulce.',
     why: 'El mismo almuerzo te cae distinto según el orden en que lo comes. Terminar por el carbohidrato evita el subidón y el bajón que te deja con sueño y con hambre otra vez.',
     science:
       'Consumir verduras y proteína antes del carbohidrato reduce de forma medible el pico de glucosa e insulina postprandial frente a la secuencia inversa.',
@@ -112,7 +128,9 @@ export const COMBOS: Combo[] = [
     tagline: 'Pierdes grasa, no el músculo que sostiene tu metabolismo',
     moment: 'todo el día',
     action:
-      'Proteína repartida en las 3 comidas, 25 a 30 g en cada una. Nunca todo el día ligero y la carga entera en la cena.',
+      'Come la proteína de las 3 comidas, sin saltarte ninguna. Nunca todo el día ligero y la carga entera en la cena. Tu plan ya la reparte por ti.',
+    secret:
+      'Tu músculo es el motor que quema calorías incluso cuando estás sentada. La mayoría de las dietas lo apaga: bajas rápido, el motor se achica, y el peso vuelve. Repartir la proteína en las 3 comidas blinda ese motor, así lo que baja es la grasa y no tu capacidad de quemarla.',
     why: 'Si bajas de peso perdiendo músculo, tu cuerpo pasa a gastar menos y el peso vuelve. Repartir la proteína es lo que protege ese músculo mientras la grasa baja.',
     science:
       'En déficit calórico, ingesta proteica adecuada y distribuida a lo largo del día preserva masa magra, lo que sostiene el gasto energético total.',
@@ -127,6 +145,8 @@ export const COMBOS: Combo[] = [
     moment: 'en la mesa',
     action:
       'Cocina el arroz, la papa o la pasta y déjalos en la nevera mínimo 12 horas antes de comerlos. Puedes recalentarlos, el efecto se mantiene.',
+    secret:
+      'El frío reorganiza el almidón por dentro. Una parte se vuelve tan compacta que tu cuerpo ya no la puede romper en azúcar: pasa de largo y termina alimentando tu flora intestinal, como si fuera fibra. Mismo arroz, misma cantidad, y una parte deja de contar como azúcar rápido.',
     why: 'Enfriar el almidón cambia su estructura. Una parte deja de comportarse como azúcar rápido y pasa de largo hacia el intestino, donde alimenta tu flora.',
     science:
       'La retrogradación del almidón durante el enfriamiento genera almidón resistente, que reduce la respuesta glucémica y actúa como fibra fermentable.',
@@ -141,6 +161,8 @@ export const COMBOS: Combo[] = [
     moment: 'antes de comer',
     action:
       '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',
+    secret:
+      'Tu estómago tarda unos 20 minutos en avisarle a tu cerebro que ya hay comida. El truco es mandar ese aviso antes de sentarte: llegas a la mesa con el hambre ya bajando, te sirves menos y paras antes, sin estar frenándote con fuerza de voluntad.',
     why: 'Llegas a la mesa con el hambre ya bajada. No tienes que frenarte con fuerza de voluntad, simplemente no te cabe tanto.',
     science:
       'Precarga de proteína y volumen antes de la comida principal reduce la ingesta calórica espontánea en esa comida.',

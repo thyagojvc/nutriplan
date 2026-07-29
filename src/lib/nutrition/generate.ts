@@ -318,7 +318,7 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number, la
     label: label ?? `Día ${dayNum}`,
     meals,
     totals,
-    combo: { id: combo.id, n: combo.n, letter: combo.letter, name: combo.name, action: combo.action, emoji: combo.emoji },
+    combo: { id: combo.id, n: combo.n, letter: combo.letter, name: combo.name, action: combo.action, secret: combo.secret, emoji: combo.emoji },
   }
 }
 
@@ -847,6 +847,7 @@ function generatePlanStub(
       tagline: c.tagline,
       moment: c.moment,
       action: c.action,
+      secret: c.secret,
       why: c.why,
       emoji: c.emoji,
     })),
