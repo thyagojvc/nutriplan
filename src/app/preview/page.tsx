@@ -64,8 +64,8 @@ const OBSTACLE_HERO_PHRASE: Record<string, string> = {
 // genérica de transformación.
 function buildHeroSubheadline(goal: string, obstacles: string[]): string {
   const objectiveByGoal: Record<string, string> = {
-    lose_fat:    'Para bajar de peso sin pasar hambre',
-    perder_peso: 'Para bajar de peso sin pasar hambre',
+    lose_fat:    'Para bajar hasta 4 kg en 1 mes',
+    perder_peso: 'Para bajar hasta 4 kg en 1 mes',
     gain_muscle: 'Para ganar músculo comiendo bien',
     ganar_masa:  'Para ganar músculo comiendo bien',
   }
