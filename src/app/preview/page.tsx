@@ -827,6 +827,28 @@ export default function PreviewPage() {
             y sin pelear contigo misma.
           </p>
 
+          {/* Revelação do acrônimo ANTES da lista: ela precisa saber que o
+              método tem nome antes de ler os 7 itens, senão a lista vira uma
+              lista de dicas soltas em vez de um sistema fechado. */}
+          <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] px-4 py-3.5 text-center">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+              A ese método lo llamamos
+            </p>
+            <div className="mt-2 flex justify-center gap-1.5">
+              {COMBOS.map((c) => (
+                <span
+                  key={c.id}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white shadow-sm"
+                >
+                  {c.letter}
+                </span>
+              ))}
+            </div>
+            <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
+              Una letra por combinación. Las 7 juntas forman <strong className="font-bold text-primary">CALIBRA</strong>, y son lo que calibra tu hambre día a día.
+            </p>
+          </div>
+
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
               <p className="text-lg font-black leading-none text-primary">30%</p>
@@ -851,8 +873,8 @@ export default function PreviewPage() {
           <div className="space-y-2">
             {COMBOS.map((c) => (
               <div key={c.id} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-white p-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-black text-white">
-                  {c.n}
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-black text-white">
+                  {c.letter}
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-[13px] font-bold text-gray-900">
