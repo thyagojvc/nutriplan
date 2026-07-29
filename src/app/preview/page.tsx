@@ -112,7 +112,7 @@ const RESULTS: {
     quote: 'Lo que más me gustó de la Calibración Metabólica fue que la dieta está basada en cosas que me gustan y que ya compro en el día a día. No tuve que buscar alimentos ni suplementos difíciles de conseguir, y me sentí mucho más joven.',
   },
   {
-    photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '9 meses de transformación', w: 640, h: 842,
+    photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '−11 kg en 9 meses', w: 640, h: 842,
     quote: 'Nunca imaginé que en 9 meses iba a conseguir el cuerpo de mis sueños. Hoy estoy en mi mejor etapa. No sabía los secretos para quemar grasa más rápido y acelerar el metabolismo, y por eso no tenía motivación ni para alimentarme bien ni para entrenar. Después de conocer a la doctora María Fernanda mi vida cambió completamente y estoy muy agradecida por todo.',
   },
   {
@@ -1464,7 +1464,7 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Cómo y cuándo recibo mi plan?',
-    a: 'Al instante. Apenas se confirma tu pago recibes un correo con el link para descargar la app de NutriPlan, con tu plan ya generado adentro. La descargas desde el celular y la tienes a mano cada vez que vas a comer o a hacer las compras. Si no ves el correo, revisa spam o escríbenos por WhatsApp y te lo reenviamos.',
+    a: 'Al instante. Apenas se confirma tu pago recibes un correo con el link para descargar la app de Calibración Metabólica, con tu plan ya generado adentro. La descargas desde el celular y la tienes a mano cada vez que vas a comer o a hacer las compras. Si no ves el correo, revisa spam o escríbenos por WhatsApp y te lo reenviamos.',
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
