@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 
   // Usa sempre a URL de produção fixa para evitar que NEXT_PUBLIC_APP_URL
   // aponte para um preview do Vercel e bloqueie o acesso da cliente.
-  const appUrl = 'https://nutriplan-tzyt.vercel.app'
+  const appUrl = 'https://metodocalibra.vercel.app'
 
   const { data: linkData, error } = await supabase.auth.admin.generateLink({
     type: 'magiclink',

@@ -386,7 +386,7 @@ async function sendMagicLinkEmail(email: string, name: string) {
   if (!process.env.RESEND_API_KEY) return
 
   const supabase = createServiceClient()
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://metodocalibra.vercel.app'
 
   const { data: linkData } = await supabase.auth.admin.generateLink({
     type: 'magiclink',
@@ -416,7 +416,7 @@ async function handleRenewal({
   recurrenceNumber: number
 }) {
   const supabase = createServiceClient()
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://metodocalibra.vercel.app'
 
   // 1. Encontrar o usuário pelo email
   const { data: user } = await supabase
