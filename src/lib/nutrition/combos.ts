@@ -59,7 +59,7 @@ export const COMBOS: Combo[] = [
     why: 'La noche es donde la mayoría de las dietas se cae. Una cena que sostiene de verdad quita el impulso de volver a la alacena a las 11.',
     science:
       'Proteína y grasa en la última comida prolongan la saciedad nocturna; evitar azúcares simples en ese momento reduce el rebote de hambre por caída glucémica.',
-    emoji: '🌙',
+    emoji: '🔒',
   },
   {
     id: 'arranque',
