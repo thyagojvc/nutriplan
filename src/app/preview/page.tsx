@@ -117,7 +117,7 @@ const RESULTS: {
   },
   {
     photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '9 meses de transformación', w: 640, h: 842,
-    quote: 'Nunca imaginé que en 9 meses iba a conseguir el cuerpo de mis sueños. Hoy estoy en mi mejor etapa. No sabía qué tenía que comer, y por eso no tenía motivación ni para alimentarme bien ni para entrenar. Después de conocer al doctor Tiago mi vida cambió completamente y estoy muy agradecida por todo.',
+    quote: 'Nunca imaginé que en 9 meses iba a conseguir el cuerpo de mis sueños. Hoy estoy en mi mejor etapa. No sabía los secretos para quemar grasa más rápido y acelerar el metabolismo, y por eso no tenía motivación ni para alimentarme bien ni para entrenar. Después de conocer a la doctora María Fernanda mi vida cambió completamente y estoy muy agradecida por todo.',
   },
 ]
 
