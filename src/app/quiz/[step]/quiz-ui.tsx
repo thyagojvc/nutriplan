@@ -39,24 +39,24 @@ export function NutriLogo({ size = 24 }: { size?: number }) {
 }
 
 // ---------------------------------------------------------------------------
-// Wordmark — só o ícone do selo original (sem recriar "CALIBRA" em fonte web:
-// a tentativa anterior misturava o desenho da chama com texto Fraunces, que
-// não tem nada a ver com a tipografia geométrica do logo de verdade, e ficou
-// com cara de 2 logos diferentes colados). O selo completo (ícone empilhado
-// sobre o texto) é feito pra ícone de app/rede social, não pra caber legível
-// numa barra de header fina — pra manter a arte original sem distorcer nem
-// esticar o header, o header mostra só o ícone.
+// Wordmark — lockup horizontal oficial (ícone + "CALIBRA" lado a lado, mesma
+// tipografia do selo original). Ver public/logo-calibra-horizontal.png,
+// recortado sem as margens transparentes do arquivo gerado (ratio ~2.58:1).
+// Versões anteriores tentaram usar o selo quadrado (empilhado, pra ícone de
+// app) ou recriar o texto em fonte web — ambas destoavam do logo de verdade.
 // ---------------------------------------------------------------------------
+
+const CALIBRA_HORIZONTAL_ASPECT = 1125 / 436
 
 export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
   const h = { sm: 26, md: 34, lg: 42 }[size]
 
   return (
     <Image
-      src="/logo-calibra-icon.png"
+      src="/logo-calibra-horizontal.png"
       alt="CALIBRA"
       height={h}
-      width={Math.round(h * CALIBRA_ICON_ASPECT)}
+      width={Math.round(h * CALIBRA_HORIZONTAL_ASPECT)}
       className="select-none object-contain"
       style={{ height: h, width: 'auto' }}
     />
