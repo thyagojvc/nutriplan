@@ -116,7 +116,7 @@ const RESULTS: {
     quote: 'Es maravilloso tener toda mi dieta en el celular, eso ayuda muchísimo a mantener la constancia y a no abandonar. Fue la primera vez que logré seguir el paso a paso, y bajé de peso sin dificultades.',
   },
   {
-    photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '9 meses de transformación', w: 636, h: 794,
+    photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '9 meses de transformación', w: 640, h: 842,
     quote: 'Nunca imaginé que en 9 meses iba a conseguir el cuerpo de mis sueños. Hoy estoy en mi mejor etapa. No sabía qué tenía que comer, y por eso no tenía motivación ni para alimentarme bien ni para entrenar. Después de conocer al doctor Tiago mi vida cambió completamente y estoy muy agradecida por todo.',
   },
 ]
