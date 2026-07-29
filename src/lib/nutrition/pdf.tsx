@@ -18,6 +18,7 @@ import {
 } from '@react-pdf/renderer'
 import type { NutritionPlanJson } from './types'
 import type { TrainingPlanJson } from './generate'
+import { COMBOS } from './combos'
 
 const GOAL_LABEL: Record<string, string> = {
   lose_fat: 'Perder grasa',
@@ -130,6 +131,11 @@ const styles = StyleSheet.create({
   dayKcal: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.mint },
   dayBody: { padding: 10 },
 
+  // Faixa do combo do Método CALIBRA aplicado no dia — vive no topo do body,
+  // antes das comidas: é a única coisa que ela precisa fazer diferente hoje.
+  dayComboRow: { flexDirection: 'row', alignItems: 'flex-start', gap: 6, backgroundColor: c.softBg, borderRadius: 6, padding: 6, marginBottom: 8 },
+  dayComboText: { fontSize: 8, color: c.text, flex: 1, lineHeight: 1.35 },
+
   // Refeição dentro do dia
   meal: { marginBottom: 8 },
   mealHead: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 },
@@ -155,7 +161,10 @@ const styles = StyleSheet.create({
   calWeekTag: { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 3 },
   calWeekRow: { flexDirection: 'row', gap: 5 },
   calDayCell: { flex: 1, borderWidth: 1, borderColor: c.border, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 2, alignItems: 'center', backgroundColor: c.cream },
-  calDayNum: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 3 },
+  calDayNum: { fontSize: 10, fontFamily: 'Helvetica-Bold', color: c.greenDeep, marginBottom: 1 },
+  // Letra do Método CALIBRA do dia — cabe na mesma casilla apertada do
+  // calendário sem competir com o número (que é o que ela usa pra marcar).
+  calDayLetter: { fontSize: 6.5, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 2 },
   calMealBoxRow: { flexDirection: 'row', gap: 2.5 },
   calMealBox: { width: 6, height: 6, borderWidth: 1, borderColor: c.primary, borderRadius: 1.5 },
   weekFooter: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 5, backgroundColor: c.softBg, borderRadius: 6, paddingVertical: 4, paddingHorizontal: 8 },
@@ -325,6 +334,43 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         <Footer subtitle="Cómo usar tu Reto · NutriPlan" />
       </Page>
 
+      {/* ── Página: Método CALIBRA — el mecanismo, no solo el cardápio.
+          Los 7 combos (ver combos.ts) deletrean CALIBRA en el orden en que
+          se entregan. Mismo contenido/ciencia que la preview y el dashboard;
+          esta página es la versión imprimible del mecanismo. */}
+      <Page size="A4" style={styles.page}>
+        <View style={styles.pageHead}>
+          <View style={styles.pageHeadLeft}>
+            <Leaf size={20} leaf={c.primary} vein={c.white} />
+            <Text style={styles.pageHeadTitle}>Tu Método CALIBRA</Text>
+          </View>
+          <Wordmark color={c.primary} size={11} />
+        </View>
+
+        <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
+          No se trata de comer menos, sino de dejar de tener hambre. Cada día de tu Reto activa una de estas 7 combinaciones: reglas de 10 segundos que hacen que tu cuerpo pida menos comida, en vez de que tengas que prohibírtelo tú misma. Las 7 iniciales forman la palabra CALIBRA.
+        </Text>
+
+        <SectionHead title="Las 7 combinaciones" />
+        {COMBOS.map((combo) => (
+          <View key={combo.id} style={styles.stepRow}>
+            <Text style={styles.stepNum}>{combo.letter}</Text>
+            <Text style={styles.stepText}>
+              <Text style={{ fontFamily: 'Helvetica-Bold', color: c.ink }}>{combo.name}. </Text>{combo.action}
+            </Text>
+          </View>
+        ))}
+
+        <View style={[styles.milestoneBox, { marginTop: 12 }]}>
+          <Text style={styles.milestoneLabel}>No tenés que memorizarlas</Text>
+          <Text style={[styles.milestoneLine, { marginBottom: 0 }]}>
+            Tu calendario marca la letra del día y tu menú te recuerda la combinación completa. Solo seguí la que toca hoy.
+          </Text>
+        </View>
+
+        <Footer subtitle="Método CALIBRA · NutriPlan" />
+      </Page>
+
       {/* ── Página: calendario de 28 días — el objeto tangible del Reto ──
           Paisagem numa única página (pedido explícito, pra imprimir numa
           folha só). Cada dia tem 4 casillas em ordem fixa: Desayuno,
@@ -364,6 +410,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
               {weekDays.map((day, dayIdx) => (
                 <View key={dayIdx} style={styles.calDayCell}>
                   <Text style={styles.calDayNum}>{weekIdx * DAYS_PER_WEEK + dayIdx + 1}</Text>
+                  {day.combo && <Text style={styles.calDayLetter}>{day.combo.letter}</Text>}
                   <View style={styles.calMealBoxRow}>
                     {day.meals.map((_, mi) => (
                       <View key={mi} style={styles.calMealBox} />
@@ -483,6 +530,15 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
               <Text style={styles.dayKcal}>{day.totals.kcal} kcal</Text>
             </View>
             <View style={styles.dayBody}>
+              {day.combo && (
+                <View style={styles.dayComboRow}>
+                  <Text style={styles.stepNum}>{day.combo.letter}</Text>
+                  <Text style={styles.dayComboText}>
+                    <Text style={{ fontFamily: 'Helvetica-Bold', color: c.greenDeep }}>Método CALIBRA · {day.combo.name}: </Text>
+                    {day.combo.action}
+                  </Text>
+                </View>
+              )}
               {day.meals.map((meal, i) => (
                 <View key={i} style={[styles.meal, { marginBottom: i < day.meals.length - 1 ? 8 : 0 }]}>
                   <View style={styles.mealHead}>

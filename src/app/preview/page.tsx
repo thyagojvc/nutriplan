@@ -14,7 +14,7 @@ import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 // Os combos vêm do MESMO módulo que o gerador usa: a preview nunca pode
 // prometer um combo que o plano entregue não tenha.
-import { COMBOS } from '@/lib/nutrition/combos'
+import { COMBOS, COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
@@ -163,10 +163,31 @@ function Hl({ children, tone = 'primary' }: { children: React.ReactNode; tone?: 
   )
 }
 
+// Destaca que ESTA refeição não é uma composição qualquer: executa um combo
+// específico do Método CALIBRA. O benefício vem legível (é o que gera desejo),
+// o nome/execução exata do combo vem borrado (é o que ela paga para destravar).
+// Mesmo padrão visual do resto do teaser (nítido = grátis, borrado = trancado).
+function ComboTease({ combo, benefit }: { combo: Combo; benefit: string }) {
+  return (
+    <div className="flex items-start gap-2.5 border-t border-[#EAF2E6] bg-gradient-to-r from-primary/10 to-primary/5 px-3.5 py-3">
+      <span className="mt-0.5 shrink-0 text-lg">{combo.emoji}</span>
+      <div className="min-w-0 flex-1">
+        <p className="text-[12.5px] font-bold leading-snug text-gray-900">{benefit}</p>
+        <p className="mt-1 select-none text-[11px] font-semibold leading-snug text-primary/70 blur-[3px]">
+          Método CALIBRA · Combo {combo.letter} ({combo.name}): {combo.action}
+        </p>
+        <p className="mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-primary">
+          <Lock className="h-2.5 w-2.5" /> Se revela completo en tu app
+        </p>
+      </div>
+    </div>
+  )
+}
+
 // Uma refeição do teaser enxuto — só o 1º alimento (real, dos favoritos dela)
 // aparece nítido; o resto vem com a foto real só que desfocada, deixando claro
 // que TODO o prato é feito com os favoritos, não só o primeiro item.
-function TeaserMealBlurred({ meal }: { meal: SampleMeal }) {
+function TeaserMealBlurred({ meal, combo, comboBenefit }: { meal: SampleMeal; combo?: Combo; comboBenefit?: string }) {
   const [first, ...rest] = meal.items
   return (
     <div className="overflow-hidden rounded-xl border border-[#D8E8D4] shadow-sm">
@@ -195,6 +216,7 @@ function TeaserMealBlurred({ meal }: { meal: SampleMeal }) {
           </div>
         ))}
       </div>
+      {combo && comboBenefit && <ComboTease combo={combo} benefit={comboBenefit} />}
       <div className="flex items-center gap-1.5 bg-[#F5FAF2] px-3.5 py-2 text-[11px] font-semibold text-primary">
         <Lock className="h-3 w-3 shrink-0" />
         Los otros {rest.length} también son tuyos, elegidos por ti. Se revelan completos en tu app.
@@ -221,6 +243,16 @@ function TeaserThumb({ food, blurred }: { food: string; blurred?: boolean }) {
       onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
     />
   )
+}
+
+// Qual combo do Método CALIBRA se destaca em cada tipo de refeição do teaser,
+// e o benefício (legível) que acompanha. São combos reais de combos.ts — a
+// escolha aqui é ilustrativa (o combo do dia de verdade roda por rotação, ver
+// comboForDay em generate.ts), mas a combinação em si é a que de fato se aplica
+// a esse tipo de refeição no ciclo real.
+const MEAL_TEASE: Record<string, { comboId: string; benefit: string }> = {
+  Desayuno: { comboId: 'lleno', benefit: 'Esta combinación cierra tu hambre por horas, sin que tengas que comer de más.' },
+  Almuerzo: { comboId: 'inverso', benefit: 'Esta combinación evita el bajón de las 3 de la tarde que te manda directo a picar algo.' },
 }
 
 type ErrorKind = 'no_session' | 'calc_failed' | 'network'
@@ -742,9 +774,13 @@ export default function PreviewPage() {
             Cada comida se arma con los alimentos que marcaste como favoritos en tu quiz. Te mostramos el primero de cada una:
           </p>
           <div className="space-y-3">
-            {sample.slice(0, 2).map((meal) => (
-              <TeaserMealBlurred key={meal.name} meal={meal} />
-            ))}
+            {sample.slice(0, 2).map((meal) => {
+              const tease = MEAL_TEASE[meal.name]
+              const combo = tease ? COMBOS_BY_ID[tease.comboId] : undefined
+              return (
+                <TeaserMealBlurred key={meal.name} meal={meal} combo={combo} comboBenefit={tease?.benefit} />
+              )
+            })}
           </div>
 
           {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
