@@ -1,15 +1,21 @@
 // =============================================================================
-// NutriPlan — Los 7 Combos de la Calibración Metabólica
+// NutriPlan — Método CALIBRA: los 7 combos de la Calibración Metabólica
 //
-// O mecanismo único do produto. Cada combo é uma REGRA DE 10 SEGUNDOS aplicada
-// sobre o plano que o gerador já monta, nunca uma receita nova: o vilão do
-// avatar é escassez de tempo (ver .agents/product-marketing.md), então nenhum
-// combo pode custar tempo de cozinha.
+// CALIBRA es el acrónimo de las 7 combinaciones, en el orden en que se
+// entregan (n=1..7 deletrea la palabra): Candado, Arranque, Lleno, Inverso,
+// Blindaje, Resistente, Anticipo. No es casualidad que suene a "Calibración":
+// es la parte tangible y ejecutable del mecanismo — lo que ella hace, no solo
+// lo que el plan calcula.
 //
-// Todos os efeitos aqui são reais e defensáveis. A embalagem é apelativa, o
-// conteúdo não é inventado — é o que segura o reembolso em zero. Ao editar o
-// texto de um combo, o campo `science` é o limite: não prometa nada que ele
-// não sustente.
+// Cada combo es una REGLA DE 10 SEGUNDOS aplicada sobre el plan que el
+// generador ya arma, nunca una receta nueva: el villano del avatar es
+// escasez de tiempo (ver .agents/product-marketing.md), así que ningún combo
+// puede costar tiempo de cocina.
+//
+// Todos los efectos aquí son reales y defendibles. El envoltorio es apelativo,
+// el contenido no está inventado — es lo que mantiene el reembolso en cero. Al
+// editar el texto de un combo, el campo `science` es el límite: no prometas
+// nada que él no sostenga.
 // =============================================================================
 
 /** Momento do dia em que o combo se aplica (usado pra ordenar na UI). */
@@ -17,8 +23,10 @@ export type ComboMoment = 'mañana' | 'antes de comer' | 'en la mesa' | 'noche' 
 
 export interface Combo {
   id: string
-  /** Número fixo. É a identidade do combo na UI e nos criativos ("Combo 1"). */
+  /** Número fixo 1-7. También indexa la letra de CALIBRA (letter[n-1]). */
   n: number
+  /** La letra que este combo aporta al acrónimo CALIBRA. */
+  letter: string
   /** Nome curto, o que ela repete pra amiga. */
   name: string
   /** O que ela SENTE. Benefício, nunca mecanismo. */
@@ -35,25 +43,29 @@ export interface Combo {
   emoji: string
 }
 
+/** La palabra que deletrean los 7 combos, en orden. */
+export const METHOD_NAME = 'CALIBRA'
+
 export const COMBOS: Combo[] = [
   {
-    id: 'sello',
+    id: 'candado',
     n: 1,
-    name: 'El Sello',
-    tagline: 'Cierra el hambre por horas, sin comer de más',
-    moment: 'mañana',
+    letter: 'C',
+    name: 'Candado',
+    tagline: 'Cierras la cocina y no vuelves a abrirla',
+    moment: 'noche',
     action:
-      '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
-    why: 'La mezcla forma un gel en el estómago. Ese gel, junto a la proteína, hace que la comida salga más lento del estómago. Por eso llegas a la tarde sin esa ansiedad de picar cualquier cosa.',
+      'La última comida del día lleva proteína más una grasa buena (aguacate, aceite de oliva, un puñado de nueces) y cero azúcar simple. Después de eso, la cocina está cerrada.',
+    why: 'La noche es donde la mayoría de las dietas se cae. Una cena que sostiene de verdad quita el impulso de volver a la alacena a las 11.',
     science:
-      'Fibra viscosa (psyllium, chía, linaza) retarda el vaciamiento gástrico y aumenta la saciedad; el efecto es mayor cuando se combina con proteína en la misma comida.',
-    ingredientIds: ['chia', 'linaza', 'psyllium'],
-    emoji: '🔒',
+      'Proteína y grasa en la última comida prolongan la saciedad nocturna; evitar azúcares simples en ese momento reduce el rebote de hambre por caída glucémica.',
+    emoji: '🌙',
   },
   {
-    id: 'arranque30',
+    id: 'arranque',
     n: 2,
-    name: 'Arranque 30',
+    letter: 'A',
+    name: 'Arranque',
     tagline: 'Llegas al almuerzo sin desesperación',
     moment: 'mañana',
     action:
@@ -64,9 +76,25 @@ export const COMBOS: Combo[] = [
     emoji: '⚡',
   },
   {
-    id: 'plato_al_reves',
+    id: 'lleno',
     n: 3,
-    name: 'Plato al Revés',
+    letter: 'L',
+    name: 'Lleno',
+    tagline: 'Cierra el hambre por horas, sin comer de más',
+    moment: 'mañana',
+    action:
+      '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
+    why: 'La mezcla forma un gel en el estómago. Ese gel, junto a la proteína, hace que la comida salga más lento del estómago. Por eso llegas a la tarde sin esa ansiedad de picar cualquier cosa.',
+    science:
+      'Fibra viscosa (psyllium, chía, linaza) retarda el vaciamiento gástrico y aumenta la saciedad; el efecto es mayor cuando se combina con proteína en la misma comida.',
+    ingredientIds: ['chia', 'linaza', 'psyllium'],
+    emoji: '🥣',
+  },
+  {
+    id: 'inverso',
+    n: 4,
+    letter: 'I',
+    name: 'Inverso',
     tagline: 'Se acaba el bajón de las 3 de la tarde',
     moment: 'en la mesa',
     action:
@@ -77,22 +105,24 @@ export const COMBOS: Combo[] = [
     emoji: '🔄',
   },
   {
-    id: 'anticipo',
-    n: 4,
-    name: 'El Anticipo',
-    tagline: 'Comes menos sin estar controlándote',
-    moment: 'antes de comer',
+    id: 'blindaje',
+    n: 5,
+    letter: 'B',
+    name: 'Blindaje',
+    tagline: 'Pierdes grasa, no el músculo que sostiene tu metabolismo',
+    moment: 'todo el día',
     action:
-      '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',
-    why: 'Llegas a la mesa con el hambre ya bajada. No tienes que frenarte con fuerza de voluntad, simplemente no te cabe tanto.',
+      'Proteína repartida en las 3 comidas, 25 a 30 g en cada una. Nunca todo el día ligero y la carga entera en la cena.',
+    why: 'Si bajas de peso perdiendo músculo, tu cuerpo pasa a gastar menos y el peso vuelve. Repartir la proteína es lo que protege ese músculo mientras la grasa baja.',
     science:
-      'Precarga de proteína y volumen antes de la comida principal reduce la ingesta calórica espontánea en esa comida.',
-    emoji: '⏱️',
+      'En déficit calórico, ingesta proteica adecuada y distribuida a lo largo del día preserva masa magra, lo que sostiene el gasto energético total.',
+    emoji: '🛡️',
   },
   {
-    id: 'carbo_frio',
-    n: 5,
-    name: 'Carbo Frío',
+    id: 'resistente',
+    n: 6,
+    letter: 'R',
+    name: 'Resistente',
     tagline: 'Comes arroz y pasta sin sentirte hinchada',
     moment: 'en la mesa',
     action:
@@ -103,30 +133,18 @@ export const COMBOS: Combo[] = [
     emoji: '❄️',
   },
   {
-    id: 'reparto',
-    n: 6,
-    name: 'El Reparto',
-    tagline: 'Pierdes grasa, no el músculo que sostiene tu metabolismo',
-    moment: 'todo el día',
-    action:
-      'Proteína repartida en las 3 comidas, 25 a 30 g en cada una. Nunca todo el día ligero y la carga entera en la cena.',
-    why: 'Si bajas de peso perdiendo músculo, tu cuerpo pasa a gastar menos y el peso vuelve. Repartir la proteína es lo que protege ese músculo mientras la grasa baja.',
-    science:
-      'En déficit calórico, ingesta proteica adecuada y distribuida a lo largo del día preserva masa magra, lo que sostiene el gasto energético total.',
-    emoji: '🧱',
-  },
-  {
-    id: 'candado',
+    id: 'anticipo',
     n: 7,
-    name: 'El Candado',
-    tagline: 'Cierras la cocina y no vuelves a abrirla',
-    moment: 'noche',
+    letter: 'A',
+    name: 'Anticipo',
+    tagline: 'Comes menos sin estar controlándote',
+    moment: 'antes de comer',
     action:
-      'La última comida del día lleva proteína más una grasa buena (aguacate, aceite de oliva, un puñado de nueces) y cero azúcar simple. Después de eso, la cocina está cerrada.',
-    why: 'La noche es donde la mayoría de las dietas se cae. Una cena que sostiene de verdad quita el impulso de volver a la alacena a las 11.',
+      '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',
+    why: 'Llegas a la mesa con el hambre ya bajada. No tienes que frenarte con fuerza de voluntad, simplemente no te cabe tanto.',
     science:
-      'Proteína y grasa en la última comida prolongan la saciedad nocturna; evitar azúcares simples en ese momento reduce el rebote de hambre por caída glucémica.',
-    emoji: '🌙',
+      'Precarga de proteína y volumen antes de la comida principal reduce la ingesta calórica espontánea en esa comida.',
+    emoji: '⏱️',
   },
 ]
 
@@ -135,9 +153,9 @@ export const COMBOS_BY_ID: Record<string, Combo> = Object.fromEntries(
 )
 
 /**
- * Combo do dia. O ciclo tem 7 combos e o plano tem 7 ou 28 dias, então a
- * rotação fecha certinho: cada dia da semana carrega sempre o mesmo combo,
- * e em 4 semanas ela repete cada um 4 vezes (é o que forma o hábito).
+ * Combo do dia. O ciclo tem 7 combos (CALIBRA) e o plano tem 7 ou 28 dias,
+ * então a rotação fecha certinho: cada dia da semana carrega sempre o mesmo
+ * combo, e em 4 semanas ela repete cada um 4 vezes (é o que forma o hábito).
  */
 export function comboForDay(dayNum: number): Combo {
   return COMBOS[(dayNum - 1) % COMBOS.length]

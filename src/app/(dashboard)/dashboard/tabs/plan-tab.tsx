@@ -188,13 +188,15 @@ export function PlanTab({
         {day.combo && (
           <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
             <div className="flex items-center gap-2">
-              <span className="text-lg">{day.combo.emoji}</span>
+              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-black text-white">
+                {day.combo.letter}
+              </span>
               <span className="text-[11px] font-bold uppercase tracking-wide text-primary">
-                Combo {day.combo.n} de 7 · hoy
+                Método CALIBRA · combo {day.combo.n} de 7 · hoy
               </span>
             </div>
             <p className="mt-1.5 font-display text-lg font-black text-foreground">
-              {day.combo.name}
+              {day.combo.emoji} {day.combo.name}
             </p>
             <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
               {day.combo.action}

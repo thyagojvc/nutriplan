@@ -86,6 +86,7 @@ export interface PlanMeal {
 export interface PlanDayCombo {
   id: string
   n: number
+  letter: string
   name: string
   action: string
   emoji: string
@@ -127,6 +128,7 @@ export interface NutritionPlanJson {
   combos?: {
     id: string
     n: number
+    letter: string
     name: string
     tagline: string
     moment: string
@@ -134,6 +136,8 @@ export interface NutritionPlanJson {
     why: string
     emoji: string
   }[]
+  /** "CALIBRA" — deletreado pelos 7 combos, em ordem. Opcional por retrocompat. */
+  methodName?: string
   shoppingList: ShoppingCategory[]
   implementationGuide: string[]
   substitutions: SubstitutionGroup[]

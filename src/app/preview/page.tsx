@@ -892,42 +892,6 @@ export default function PreviewPage() {
           </p>
         </div>
 
-        {/* Fotos de uso real do plano (ferramenta em ação): cozinhando com o
-            NutriPlan aberto no celular + marcando a evolução no calendário.
-            Substitui a foto única do calendário e o passo-a-passo textual. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-          <SectionHeading title={<>Así vas a <Hl>usar</Hl> tu plan</>} />
-          <div className="grid grid-cols-2 gap-2.5">
-            <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
-              <Image
-                src="/Foto_Preenchendo_Calendario/Foto cozinhando com nutriplan.png"
-                alt="Mujer cocinando siguiendo su NutriPlan en el celular"
-                fill
-                sizes="(max-width: 640px) 50vw, 256px"
-                className="object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
-                <p className="text-[11.5px] font-bold leading-tight text-white">Cocinas siguiendo tu plan</p>
-              </div>
-            </div>
-            <div className="relative aspect-[3/4] overflow-hidden rounded-xl border border-[#D8E8D4]">
-              <Image
-                src="/Foto_Preenchendo_Calendario/Preenchendo calendário.png"
-                alt="Mujer marcando su avance en el calendario de 28 días"
-                fill
-                sizes="(max-width: 640px) 50vw, 256px"
-                className="object-cover"
-              />
-              <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-2.5">
-                <p className="text-[11.5px] font-bold leading-tight text-white">Marcas tu avance, semana a semana</p>
-              </div>
-            </div>
-          </div>
-          <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-            Recibes todo dentro de tu app: el plan de comidas y el calendario de 28 días juntos, el sistema completo. El calendario lo marcas desde el celular, o lo imprimes si prefieres tenerlo a la vista. El plan te dice qué comer, el calendario te muestra que está funcionando.
-          </p>
-        </div>
-
         {/* App instalable — prueba en video de que no es un PDF suelto, es un
             panel que vive en el celular (mismo ángulo "desde tu celular" del
             párrafo de arriba, ahora mostrado, no solo dicho). */}
@@ -998,7 +962,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            NutriPlan fue desarrollado bajo la orientación de una profesional de la nutrición, utilizando una metodología diseñada para adaptar tu alimentación a tus objetivos, preferencias y rutina.
+            La Calibración Metabólica fue desarrollada bajo la orientación de una profesional de la nutrición: un método de 7 combinaciones (CALIBRA) diseñado para adaptar tu alimentación a tus objetivos, tus antojos y tu rutina real.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
@@ -1043,14 +1007,30 @@ export default function PreviewPage() {
           </div>
 
           <div className="p-5 space-y-4">
-            {/* Mecanismo Único — destacado como THE product, não como feature */}
-            <div className="flex items-center gap-3 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-2.5">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white">
-                <Check className="h-3.5 w-3.5" strokeWidth={3} />
-              </span>
-              <div>
-                <p className="text-sm font-bold text-gray-900">Calibración Metabólica™ validada por María Fernanda</p>
-                <p className="text-[13px] text-muted-foreground">Calcula exactamente lo que <em>tu</em> cuerpo necesita, no una fórmula genérica</p>
+            {/* Mecanismo Único — destacado como THE product, não como feature.
+                O acrônimo CALIBRA (os 7 combos, ver combos.ts) é a parte
+                EXECUTÁVEL do mecanismo: não é mais "calcula por ti", é "ella
+                hace 7 cosas concretas y el hambre baja". */}
+            <div className="space-y-2.5 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-3">
+              <div className="flex items-center gap-3">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white">
+                  <Check className="h-3.5 w-3.5" strokeWidth={3} />
+                </span>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">Funciona con el Método CALIBRA™</p>
+                  <p className="text-[13px] text-muted-foreground">7 combinaciones diarias validadas por María Fernanda, para que tu cuerpo pida menos comida en vez de que tú se lo prohíbas</p>
+                </div>
+              </div>
+              <div className="flex justify-center gap-1.5">
+                {COMBOS.map((c) => (
+                  <span
+                    key={c.id}
+                    title={c.name}
+                    className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[13px] font-black text-white"
+                  >
+                    {c.letter}
+                  </span>
+                ))}
               </div>
             </div>
 
@@ -1074,7 +1054,7 @@ export default function PreviewPage() {
                   </div>
                   <p className="text-[13px] font-bold text-gray-900">El plan: qué comer</p>
                   <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                    Tus comidas de cada día, calculadas para tu cuerpo. Con tu lista de compras y tus sustituciones.
+                    Tus comidas de cada día, calculadas para tu cuerpo, con el Método CALIBRA ya aplicado. Con tu lista de compras y tus sustituciones.
                   </p>
                   <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                 </div>
@@ -1094,7 +1074,7 @@ export default function PreviewPage() {
                 <p className="text-base font-black text-white">Tu transformación de 28 días</p>
               </div>
               <p className="mt-2.5 text-center text-[13px] leading-relaxed text-gray-700">
-                Un plan solo no alcanza, por eso las dietas se abandonan. El calendario es lo que te sostiene los 28 días y te muestra que está funcionando.
+                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA es lo que te sostiene los 28 días, y el calendario te muestra que está funcionando.
               </p>
             </div>
 
@@ -1106,11 +1086,11 @@ export default function PreviewPage() {
                   // O app abre a lista: é o item que ancora o valor de todos os
                   // outros (não é um pacote de PDFs soltos). "Panel" era palavra
                   // nossa, não dela.
-                  { item: 'Tu app de NutriPlan instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
+                  { item: 'Tu app con tu Calibración Metabólica instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
+                  { item: 'El Método CALIBRA: tus 7 combinaciones diarias', note: 'una por día, con la cantidad exacta y el momento en que se toma' },
                   { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
                   { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
-                  { item: 'Lista de compras optimizada', note: 'sin dar vueltas en el súper pensando qué llevar' },
-                  { item: 'Guía de implementación', note: 'para empezar hoy sin dudas' },
+                  { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA' },
                   { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
                   { item: 'Bono: Guía Anti-Celulitis', note: null },
                   { item: 'Calendario descargable para imprimir', note: null },

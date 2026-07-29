@@ -30,7 +30,7 @@ import {
   type Exercise,
 } from './exercise-catalog'
 import { MEAL_DISTRIBUTION, clinicalDisclaimers } from './math'
-import { COMBOS, COMBO_INGREDIENT_IDS, comboForDay } from './combos'
+import { COMBOS, COMBO_INGREDIENT_IDS, METHOD_NAME, comboForDay } from './combos'
 import {
   CATALOG_BY_ID,
   CATALOG_BY_LABEL,
@@ -318,7 +318,7 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number, la
     label: label ?? `Día ${dayNum}`,
     meals,
     totals,
-    combo: { id: combo.id, n: combo.n, name: combo.name, action: combo.action, emoji: combo.emoji },
+    combo: { id: combo.id, n: combo.n, letter: combo.letter, name: combo.name, action: combo.action, emoji: combo.emoji },
   }
 }
 
@@ -842,6 +842,7 @@ function generatePlanStub(
     combos: COMBOS.map((c) => ({
       id: c.id,
       n: c.n,
+      letter: c.letter,
       name: c.name,
       tagline: c.tagline,
       moment: c.moment,
@@ -849,6 +850,7 @@ function generatePlanStub(
       why: c.why,
       emoji: c.emoji,
     })),
+    methodName: METHOD_NAME,
     shoppingList: buildShoppingList(days),
     implementationGuide,
     substitutions: buildSubstitutions(answers),
