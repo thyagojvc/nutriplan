@@ -62,22 +62,31 @@ const OBSTACLE_HERO_PHRASE: Record<string, string> = {
 // obstáculos reformulados. La headline ya nombra el producto tangible (el
 // plan); esta línea dice el objetivo y para quién es, no vende una promesa
 // genérica de transformación.
-function buildHeroSubheadline(goal: string, obstacles: string[]): string {
-  const objectiveByGoal: Record<string, string> = {
-    lose_fat:    'Para bajar hasta 4 kg en 1 mes',
-    perder_peso: 'Para bajar hasta 4 kg en 1 mes',
-    gain_muscle: 'Para ganar músculo comiendo bien',
-    ganar_masa:  'Para ganar músculo comiendo bien',
+interface HeroSubheadline {
+  prefix: string
+  // Trecho numérico (promessa de kg) isolado pra poder destacar em cor/peso
+  // no render, sem quebrar o resto da frase.
+  highlight?: string
+  suffix: string
+}
+
+function buildHeroSubheadline(goal: string, obstacles: string[]): HeroSubheadline {
+  const objectiveByGoal: Record<string, { prefix: string; highlight?: string }> = {
+    lose_fat:    { prefix: 'Para bajar ', highlight: 'hasta 4 kg en 1 mes' },
+    perder_peso: { prefix: 'Para bajar ', highlight: 'hasta 4 kg en 1 mes' },
+    gain_muscle: { prefix: 'Para ganar músculo comiendo bien' },
+    ganar_masa:  { prefix: 'Para ganar músculo comiendo bien' },
   }
-  const base = objectiveByGoal[goal] ?? 'Para llegar a tu meta, sin dietas genéricas'
+  const { prefix, highlight } = objectiveByGoal[goal] ?? { prefix: 'Para llegar a tu meta, sin dietas genéricas' }
 
   const tails = obstacles
     .map((o) => OBSTACLE_HERO_PHRASE[o])
     .filter(Boolean)
     .slice(0, 2)
 
-  if (tails.length === 0) return `${base}.`
-  return `${base}, ${tails.join(' y ')}.`
+  const suffix = tails.length === 0 ? '.' : `, ${tails.join(' y ')}.`
+
+  return { prefix, highlight, suffix }
 }
 
 // Resultados reales de pacientes (fotos con consentimiento por escrito).
@@ -645,13 +654,17 @@ export default function PreviewPage() {
     <PageShell>
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
-        {/* Badge de conclusão */}
-        <div className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
-          <Check className="h-3.5 w-3.5" strokeWidth={3} />
+        {/* Badge de conclusão. Texto enxuto de propósito: com o peso de fonte
+            mais forte do site, a frase completa ("...ya está hecha · solo
+            para ti") não cabia numa linha só e o check ficava flutuando no
+            meio de 2 linhas. items-start é rede de segurança pra telas bem
+            estreitas onde ainda quebre. */}
+        <div className="inline-flex items-start gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
+          <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={3} />
           {/* firstName nunca vem preenchido hoje (step12 parou de capturar nome,
               ver comentário em step12-form.tsx) — mantido pronto pra quando
               essa captura voltar, sem usar aqui pra não quebrar o texto. */}
-          Tu Calibración Metabólica ya está hecha · solo para ti
+          Tu Calibración Metabólica, lista para ti
         </div>
 
         {/* Headline tangibiliza el producto (el plan calculado); la sub-headline
@@ -660,7 +673,13 @@ export default function PreviewPage() {
         <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
           Tu <span className="text-primary">Método CALIBRA</span>, calculado para tu cuerpo
         </h1>
-        <p className="text-sm font-semibold text-gray-700">{heroSubheadline}</p>
+        <p className="text-sm font-semibold text-gray-700">
+          {heroSubheadline.prefix}
+          {heroSubheadline.highlight && (
+            <span className="font-black text-primary">{heroSubheadline.highlight}</span>
+          )}
+          {heroSubheadline.suffix}
+        </p>
 
         {/* Selos de personalización — refuerzan que no es una plantilla genérica.
             O selo de app vem primeiro e é incondicional: sem ele a headline
