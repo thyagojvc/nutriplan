@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   footer: { position: 'absolute', bottom: 22, left: 40, right: 40, flexDirection: 'row', justifyContent: 'space-between', borderTopWidth: 1, borderTopColor: c.border, paddingTop: 6 },
   footerText: { fontSize: 7, color: c.muted },
 
-  // Calendario de 28 días — layout compacto pra caber numa única página
+  // Calendario de constancia (primeiro mês impresso) — layout compacto pra caber numa única página
   // paisagem (pedido explícito: precisa ser impresso numa folha só).
   calWeekTag: { fontSize: 8.5, fontFamily: 'Helvetica-Bold', color: c.primary, marginBottom: 3 },
   calWeekRow: { flexDirection: 'row', gap: 5 },
@@ -185,7 +185,7 @@ const CAL_WEEK_CAPTIONS = [
   'tu cuerpo empieza a adaptarse',
   'acá abandona la mayoría, vos seguís',
   'ya notás la ropa distinta',
-  '28 días marcados, es tuyo',
+  'un mes marcado, esto ya es tuyo',
 ]
 
 const CHECKIN_LABELS = ['Menos hinchazón', 'Más energía', 'La ropa cae mejor']
@@ -218,7 +218,7 @@ function MacroChips({ p, ca, f }: { p: number; ca: number; f: number }) {
   )
 }
 
-// Objetivo do reto como META que ela busca (não promessa). Adapta ao goal dela.
+// Objetivo do método como META que ela busca (não promessa). Adapta ao goal dela.
 const RETO_GOAL: Record<string, string> = {
   lose_fat: 'para bajar de peso',
   perder_peso: 'para bajar de peso',
@@ -235,7 +235,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
   const retoGoal = RETO_GOAL[summary.goal] ?? ''
 
   return (
-    <Document title="Tu Reto de 28 días — NutriPlan" author="NutriPlan">
+    <Document title="Tu Método CALIBRA — NutriPlan" author="NutriPlan">
       {/* ── Capa (card verde em página normal — padrão confiável) ── */}
       <Page size="A4" style={styles.page}>
         <View style={styles.heroCard}>
@@ -243,7 +243,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
             <Leaf size={56} leaf={c.greenDeep} vein={c.white} />
           </View>
           <Wordmark color={c.white} size={16} />
-          <Text style={[styles.coverTitle, { marginTop: 24 }]}>Tu Reto de 28 días</Text>
+          <Text style={[styles.coverTitle, { marginTop: 24 }]}>Tu Método CALIBRA</Text>
           {!!retoGoal && <Text style={styles.coverGoal}>{retoGoal}</Text>}
           <View style={styles.coverDivider} />
           {!!name && <Text style={styles.coverName}>Preparado para {name}</Text>}
@@ -277,7 +277,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
             </View>
           </View>
 
-          <Text style={styles.coverTagline}>28 días. Un paso a la vez.</Text>
+          <Text style={styles.coverTagline}>Tu transformación continua. Un paso a la vez.</Text>
         </View>
       </Page>
 
@@ -286,13 +286,13 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         <View style={styles.pageHead}>
           <View style={styles.pageHeadLeft}>
             <Leaf size={20} leaf={c.primary} vein={c.white} />
-            <Text style={styles.pageHeadTitle}>Cómo usar tu Reto</Text>
+            <Text style={styles.pageHeadTitle}>Cómo usar tu Método</Text>
           </View>
           <Wordmark color={c.primary} size={11} />
         </View>
 
         <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
-          Leé esto primero. Te toma 2 minutos y te evita dudas. Tu Reto es un sistema simple que repetís durante 28 días.
+          Leé esto primero. Te toma 2 minutos y te evita dudas. Tu Método es un sistema simple que repetís día a día.
         </Text>
 
         <SectionHead title="Los 5 pasos, cada semana" />
@@ -315,7 +315,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         <View style={styles.card}>
           {[
             ['No te gusta un alimento', 'Usá las sustituciones de tu plan. Siempre hay una opción equivalente.'],
-            ['Comés fuera un día', 'Elegí lo más parecido a tu plan y seguí. Un día no arruina el reto.'],
+            ['Comés fuera un día', 'Elegí lo más parecido a tu plan y seguí. Un día no arruina tu constancia.'],
             ['La balanza no se mueve una semana', 'Mirá tu cintura y cómo te sentís. El cuerpo cambia aunque el número tarde.'],
           ].map(([t, d], i, arr) => (
             <Text key={t} style={[styles.listItem, { marginBottom: i < arr.length - 1 ? 4 : 0 }]}>
@@ -325,13 +325,13 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         </View>
 
         <View style={[styles.milestoneBox, { marginTop: 12 }]}>
-          <Text style={styles.milestoneLabel}>El objetivo del reto</Text>
+          <Text style={styles.milestoneLabel}>El objetivo del método</Text>
           <Text style={[styles.milestoneLine, { marginBottom: 0 }]}>
-            Llegar al día 28 con constancia. No buscamos perfección, buscamos que no lo abandones. Esa es la diferencia con las dietas de antes.
+            Sostener la constancia, semana tras semana. No buscamos perfección, buscamos que no lo abandones. Esa es la diferencia con las dietas de antes.
           </Text>
         </View>
 
-        <Footer subtitle="Cómo usar tu Reto · NutriPlan" />
+        <Footer subtitle="Cómo usar tu Método · NutriPlan" />
       </Page>
 
       {/* ── Página: Método CALIBRA — el mecanismo, no solo el cardápio.
@@ -348,7 +348,7 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         </View>
 
         <Text style={{ fontSize: 9, color: c.text, marginBottom: 12, lineHeight: 1.4 }}>
-          No se trata de comer menos, sino de dejar de tener hambre. Cada día de tu Reto activa una de estas 7 combinaciones: reglas de 10 segundos que hacen que tu cuerpo pida menos comida, en vez de que tengas que prohibírtelo tú misma. Las 7 iniciales forman la palabra CALIBRA.
+          No se trata de comer menos, sino de dejar de tener hambre. Cada día activa una de estas 7 combinaciones: reglas de 10 segundos que hacen que tu cuerpo pida menos comida, en vez de que tengas que prohibírtelo tú misma. Las 7 iniciales forman la palabra CALIBRA.
         </Text>
 
         <SectionHead title="Las 7 combinaciones" />
@@ -371,16 +371,18 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         <Footer subtitle="Método CALIBRA · NutriPlan" />
       </Page>
 
-      {/* ── Página: calendario de 28 días — el objeto tangible del Reto ──
+      {/* ── Página: calendario de constancia — el objeto tangible del Método ──
           Paisagem numa única página (pedido explícito, pra imprimir numa
           folha só). Cada dia tem 4 casillas em ordem fixa: Desayuno,
           Almuerzo, Cena, Snack — explicado uma vez na intro, sem repetir
-          letra por dia (é isso que garante caber tudo numa folha). */}
+          letra por dia (é isso que garante caber tudo numa folha). Cobre o
+          primeiro mês (4 semanas impressas); o método em si é contínuo, não
+          termina no dia 28 — ela repete o ciclo de 7 combos indefinidamente. */}
       <Page size="A4" orientation="landscape" style={[styles.page, { paddingBottom: 30 }]}>
         <View style={styles.pageHead}>
           <View style={styles.pageHeadLeft}>
             <Leaf size={20} leaf={c.primary} vein={c.white} />
-            <Text style={styles.pageHeadTitle}>Tu Reto de 28 días</Text>
+            <Text style={styles.pageHeadTitle}>Tu Calendario de Constancia</Text>
           </View>
           <Wordmark color={c.primary} size={11} />
         </View>
@@ -435,11 +437,11 @@ function NutritionDocument({ plan, name }: { plan: NutritionPlanJson; name: stri
         })}
 
         <View style={styles.milestoneBox}>
-          <Text style={styles.milestoneLabel}>Tu resultado (Día 28)</Text>
+          <Text style={styles.milestoneLabel}>Tu resultado (fin del primer mes)</Text>
           <Text style={styles.milestoneLine}>Peso: __________ kg     ·     Cintura: __________ cm     ·     Cómo me siento ahora: ________________________</Text>
         </View>
 
-        <Footer subtitle="Reto de 28 días · NutriPlan" />
+        <Footer subtitle="Método CALIBRA · NutriPlan" />
       </Page>
 
       {/* ── Página: resumo + compras + guia ────────────────────── */}

@@ -1194,7 +1194,7 @@ export default function PreviewPage() {
             </p>
 
             {/* Sistema de 2 peças — o plano (execução das 7 combos) + o
-                calendário (o que sustenta a execução por 28 dias). Fotos
+                calendário (o que sustenta a execução de forma contínua). Fotos
                 reais (não ícone genérico) pra não ler como "só um plan de
                 comidas": ela vê a mulher usando o app na cozinha e marcando
                 o calendário, mesma linguagem visual da seção de resultados. */}
@@ -1222,7 +1222,7 @@ export default function PreviewPage() {
                 <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
                   <Image
                     src="/foto-calendario.png"
-                    alt="Marcando el calendario de 28 días"
+                    alt="Marcando tu calendario de constancia"
                     width={941}
                     height={1672}
                     className="h-40 w-full object-cover object-top"
@@ -1238,10 +1238,10 @@ export default function PreviewPage() {
               </div>
               <div className="mt-2.5 rounded-xl bg-primary px-4 py-3 text-center">
                 <p className="text-[11px] font-semibold uppercase tracking-widest text-white/70">Juntos =</p>
-                <p className="text-base font-black text-white">Tu transformación de 28 días</p>
+                <p className="text-base font-black text-white">Tu transformación continua</p>
               </div>
               <p className="mt-2.5 text-center text-[13px] leading-relaxed text-gray-700">
-                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA es lo que te sostiene los 28 días, y el calendario te muestra que está funcionando.
+                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA es lo que te sostiene en el tiempo, y el calendario te muestra que está funcionando.
               </p>
             </div>
 
@@ -1256,7 +1256,7 @@ export default function PreviewPage() {
                   { item: 'Tu app con tu Calibración Metabólica instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
                   { item: 'El Método CALIBRA: tus 7 combinaciones diarias', note: 'una por día, con la cantidad exacta y el momento en que se toma' },
                   { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
-                  { item: 'Tu calendario de 28 días para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
+                  { item: 'Tu calendario para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
                   { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA' },
                   { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
                   { item: 'Bono: Guía Anti-Celulitis', note: null },

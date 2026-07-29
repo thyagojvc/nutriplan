@@ -175,7 +175,7 @@ export const COMBOS_BY_ID: Record<string, Combo> = Object.fromEntries(
 )
 
 /**
- * Combo do dia. O ciclo tem 7 combos (CALIBRA) e o plano tem 7 ou 28 dias,
+ * Combo do dia. O ciclo tem 7 combos (CALIBRA); o plano imprime 7 ou 28 dias,
  * então a rotação fecha certinho: cada dia da semana carrega sempre o mesmo
  * combo, e em 4 semanas ela repete cada um 4 vezes (é o que forma o hábito).
  */
