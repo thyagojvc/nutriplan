@@ -1287,6 +1287,7 @@ export default function PreviewPage() {
                   'No tienes tiempo para armar tu propia dieta desde cero',
                   'Ya probaste dietas genéricas que no se ajustaron a ti',
                   'Prefieres un plan que se adapte a tus antojos, no al revés',
+                  'Te interesa un método con mecanismo propio (las 7 combinaciones CALIBRA), no una lista de comidas sin explicación',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2 text-[13px] text-gray-700">
                     <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
