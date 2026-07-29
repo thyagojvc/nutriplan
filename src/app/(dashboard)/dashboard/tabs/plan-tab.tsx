@@ -182,6 +182,26 @@ export function PlanTab({
           </div>
         )}
 
+        {/* Combo do dia — vem ANTES das refeições de propósito: é o mecanismo
+            que ela comprou, e é a única coisa da tela que ela precisa fazer
+            diferente hoje. O cardápio é o contexto, o combo é a ação. */}
+        {day.combo && (
+          <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">{day.combo.emoji}</span>
+              <span className="text-[11px] font-bold uppercase tracking-wide text-primary">
+                Combo {day.combo.n} de 7 · hoy
+              </span>
+            </div>
+            <p className="mt-1.5 font-display text-lg font-black text-foreground">
+              {day.combo.name}
+            </p>
+            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
+              {day.combo.action}
+            </p>
+          </div>
+        )}
+
         <div className="space-y-3">
           {day.meals.map((meal, i) => (
             <div key={i} className="overflow-hidden rounded-xl border border-border">

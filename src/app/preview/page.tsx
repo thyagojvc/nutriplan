@@ -12,6 +12,9 @@ import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { parseAnswers } from '@/lib/nutrition/answers'
 import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
+// Os combos vêm do MESMO módulo que o gerador usa: a preview nunca pode
+// prometer um combo que o plano entregue não tenha.
+import { COMBOS } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
@@ -763,6 +766,80 @@ export default function PreviewPage() {
               <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear tu plan
             </p>
           </div>
+        </div>
+
+        {/* ── Mecanismo: los 7 combos ─────────────────────────────
+            Vive AQUI, entre o teaser do plano e a prova social: ela acabou de
+            ver O QUE come, agora entende POR QUE isso funciona diferente, e só
+            depois vê prova e preço. É a seção que justifica o ticket.
+            Regra dura: nomes e taglines vêm de combos.ts, nunca hardcoded, e a
+            AÇÃO de cada combo fica travada (é o que ela compra). */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <div className="space-y-1.5 text-center">
+            <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+              <Flame className="h-3 w-3" /> El mecanismo
+            </p>
+            <p className="font-display text-xl font-black leading-tight text-gray-900">
+              No es que comas menos. Es que dejas de tener hambre.
+            </p>
+          </div>
+
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            Todas las dietas que probaste fallaron por lo mismo: te pedían aguantar. La Calibración
+            Metabólica no te pide aguantar nada. Combina tus alimentos de una forma específica para que
+            el hambre baje sola. Y cuando el hambre baja, comes menos sin proponértelo, sin contar nada
+            y sin pelear contigo misma.
+          </p>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
+              <p className="text-lg font-black leading-none text-primary">30%</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+                de las calorías de la proteína se gastan solo en digerirla
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
+              <p className="text-lg font-black leading-none text-primary">2,5x</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+                más grasa quemada frente al grupo control, en estudios clínicos
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
+              <p className="text-lg font-black leading-none text-primary">7</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+                combinaciones, una por día, de 10 segundos cada una
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            {COMBOS.map((c) => (
+              <div key={c.id} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-white p-3">
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-black text-white">
+                  {c.n}
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[13px] font-bold text-gray-900">
+                    {c.emoji} {c.name}
+                  </p>
+                  <p className="text-[12px] leading-snug text-muted-foreground">{c.tagline}</p>
+                </div>
+                <Lock className="h-3.5 w-3.5 shrink-0 text-primary/50" />
+              </div>
+            ))}
+          </div>
+
+          <div className="rounded-xl bg-primary px-4 py-3.5 text-center">
+            <p className="text-[13px] font-bold leading-snug text-white">
+              No tienes que memorizar ninguna. Cada día tu app te muestra la combinación de ese día,
+              con la cantidad exacta y el momento en que se toma.
+            </p>
+          </div>
+
+          <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
+            Cada dato de esta página viene de estudios publicados. Te los enviamos por correo junto a tu
+            plan, para que los leas tú misma.
+          </p>
         </div>
 
         {/* Resultados reales — antes/después (fotos con consentimiento) */}

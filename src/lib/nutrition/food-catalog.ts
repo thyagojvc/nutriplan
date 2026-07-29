@@ -5,7 +5,11 @@
 // conhecimento. Os ids batem com os do quiz (step 1) quando aplicável.
 // =============================================================================
 
-export type FoodRole = 'protein' | 'carb' | 'veg' | 'fruit' | 'fat' | 'dairy'
+// 'fiber' entrou com os combos (combos.ts). Diferente dos outros papéis, ele
+// NUNCA é sorteado pelo gerador para compor uma refeição: quem o convoca é o
+// combo do dia. Fica no catálogo só para ter macros e medida caseira de
+// referência e para entrar na lista de compras.
+export type FoodRole = 'protein' | 'carb' | 'veg' | 'fruit' | 'fat' | 'dairy' | 'fiber'
 
 // Refeições onde um alimento é culturalmente adequado.
 // Evita absurdos como "arroz cocido no café da manhã".
@@ -29,6 +33,7 @@ export interface CatalogFood {
   proteinG: number
   carbsG: number
   fatG: number
+  fiberG?: number // só onde a fibra é o ponto do alimento (combos)
   home: HomeMeasure // medida caseira de referência
 }
 
@@ -94,6 +99,11 @@ export const FOOD_CATALOG: CatalogFood[] = [
   { id: 'queso_fresco', label: 'Queso fresco / panela', role: 'dairy', meals: ['desayuno', 'almuerzo', 'cena', 'snack'], kcal: 215, proteinG: 18, carbsG: 4, fatG: 14, home: PORCION_SM },
   { id: 'yogur_griego', label: 'Yogur griego', role: 'dairy', meals: MANANA_SNACK, kcal: 59, proteinG: 10, carbsG: 3.6, fatG: 0.4, home: { unit: 'envase', grams: 150 } },
   { id: 'aceite', label: 'Aceite de oliva', role: 'fat', meals: PRINCIPALES, kcal: 884, proteinG: 0, carbsG: 0, fatG: 100, home: { unit: 'cucharada', grams: 14 } },
+  // Fibras da mezcla do Combo 1 (El Sello). Não entram na composição das
+  // refeições — ver comentário em FoodRole.
+  { id: 'chia', label: 'Semillas de chía', role: 'fiber', meals: ['desayuno', 'snack'], kcal: 486, proteinG: 17, carbsG: 42, fatG: 31, fiberG: 34, home: { unit: 'cucharada', grams: 12 } },
+  { id: 'linaza', label: 'Linaza molida', role: 'fiber', meals: ['desayuno', 'snack'], kcal: 534, proteinG: 18, carbsG: 29, fatG: 42, fiberG: 27, home: { unit: 'cucharada', grams: 10 } },
+  { id: 'psyllium', label: 'Cáscara de psyllium', role: 'fiber', meals: ['desayuno', 'snack'], kcal: 200, proteinG: 2, carbsG: 85, fatG: 0.5, fiberG: 80, home: { unit: 'cucharada', grams: 5 } },
 ]
 
 export const CATALOG_BY_ID: Record<string, CatalogFood> = Object.fromEntries(

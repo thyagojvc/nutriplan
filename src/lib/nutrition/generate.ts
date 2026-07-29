@@ -30,6 +30,7 @@ import {
   type Exercise,
 } from './exercise-catalog'
 import { MEAL_DISTRIBUTION, clinicalDisclaimers } from './math'
+import { COMBOS, COMBO_INGREDIENT_IDS, comboForDay } from './combos'
 import {
   CATALOG_BY_ID,
   CATALOG_BY_LABEL,
@@ -149,6 +150,9 @@ const GRAM_CAP_BY_ID: Record<string, number> = {
 }
 const GRAM_CAP_BY_ROLE: Record<FoodRole, number> = {
   protein: 240, carb: 260, veg: 220, fruit: 220, fat: 45, dairy: 300,
+  // fiber nunca é sorteado numa refeição (só o combo do dia o convoca), mas o
+  // Record é exaustivo; o teto é uma cucharada colmada por segurança.
+  fiber: 15,
 }
 // Máximo de unidades caseiras num único prato — evita "9 tortillas" quando la
 // unidad casera es chica (tortilla, pan) y la meta calórica es alta.
@@ -306,7 +310,16 @@ function buildDay(dayNum: number, answers: ParsedAnswers, targetKcal: number, la
     }),
     { kcal: 0, proteinG: 0, carbsG: 0, fatG: 0 },
   )
-  return { day: dayNum, label: label ?? `Día ${dayNum}`, meals, totals }
+  // Combo do dia: a rotação de 7 fecha com o ciclo semanal, então cada dia da
+  // semana carrega sempre o mesmo combo (previsível é o que vira hábito).
+  const combo = comboForDay(dayNum)
+  return {
+    day: dayNum,
+    label: label ?? `Día ${dayNum}`,
+    meals,
+    totals,
+    combo: { id: combo.id, n: combo.n, name: combo.name, action: combo.action, emoji: combo.emoji },
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -414,24 +427,37 @@ function buildShoppingList(days: PlanDay[]): NutritionPlanJson['shoppingList'] {
       for (const it of m.items) usedLabels.add(it.food)
     }
   }
+  // Ingredientes que nenhuma refeição usa, mas os combos exigem (a mezcla do
+  // Combo 1). Sem isso ela compra tudo e não consegue executar o mecanismo que
+  // acabou de comprar.
+  for (const id of COMBO_INGREDIENT_IDS) {
+    const f = CATALOG_BY_ID[id]
+    if (f) usedLabels.add(f.label)
+  }
   const byCat: Record<string, { name: string; quantity: string }[]> = {
     Proteínas: [],
     Carbohidratos: [],
     'Verduras y frutas': [],
     'Grasas y otros': [],
+    'Para tu mezcla': [],
   }
   for (const label of usedLabels) {
     const f = CATALOG_BY_LABEL[label]
     if (!f) continue
     const cat =
-      f.role === 'protein' || f.role === 'dairy'
-        ? 'Proteínas'
-        : f.role === 'carb'
-          ? 'Carbohidratos'
-          : f.role === 'veg' || f.role === 'fruit'
-            ? 'Verduras y frutas'
-            : 'Grasas y otros'
-    byCat[cat].push({ name: f.label, quantity: 'según tu plan semanal' })
+      f.role === 'fiber'
+        ? 'Para tu mezcla'
+        : f.role === 'protein' || f.role === 'dairy'
+          ? 'Proteínas'
+          : f.role === 'carb'
+            ? 'Carbohidratos'
+            : f.role === 'veg' || f.role === 'fruit'
+              ? 'Verduras y frutas'
+              : 'Grasas y otros'
+    byCat[cat].push({
+      name: f.label,
+      quantity: f.role === 'fiber' ? 'un paquete rinde todo el mes' : 'según tu plan semanal',
+    })
   }
   return Object.entries(byCat)
     .filter(([, items]) => items.length > 0)
@@ -813,6 +839,16 @@ function generatePlanStub(
       notes,
     },
     days,
+    combos: COMBOS.map((c) => ({
+      id: c.id,
+      n: c.n,
+      name: c.name,
+      tagline: c.tagline,
+      moment: c.moment,
+      action: c.action,
+      why: c.why,
+      emoji: c.emoji,
+    })),
     shoppingList: buildShoppingList(days),
     implementationGuide,
     substitutions: buildSubstitutions(answers),

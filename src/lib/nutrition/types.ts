@@ -82,11 +82,22 @@ export interface PlanMeal {
   totals: { kcal: number; proteinG: number; carbsG: number; fatG: number }
 }
 
+/** Combo da Calibración Metabólica aplicado ao dia (ver combos.ts). */
+export interface PlanDayCombo {
+  id: string
+  n: number
+  name: string
+  action: string
+  emoji: string
+}
+
 export interface PlanDay {
   day: number // 1..7
   label: string // "Día 1"
   meals: PlanMeal[]
   totals: { kcal: number; proteinG: number; carbsG: number; fatG: number }
+  // Opcional: planos gerados antes dos combos (jul/2026) não têm o campo.
+  combo?: PlanDayCombo
 }
 
 export interface ShoppingCategory {
@@ -112,6 +123,17 @@ export interface NutritionPlanJson {
     notes: string[]
   }
   days: PlanDay[]
+  /** Os 7 combos completos, para a tela do mecanismo. Opcional por retrocompat. */
+  combos?: {
+    id: string
+    n: number
+    name: string
+    tagline: string
+    moment: string
+    action: string
+    why: string
+    emoji: string
+  }[]
   shoppingList: ShoppingCategory[]
   implementationGuide: string[]
   substitutions: SubstitutionGroup[]
