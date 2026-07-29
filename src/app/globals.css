@@ -110,18 +110,17 @@
   .calibra-letter { animation: none; }
 }
 
-/* Teste isolado de espessura de fonte, só no /quiz/5 (ver QuizLayout
-   className prop em quiz-ui.tsx e step5-physical.tsx). A fonte padrão do
-   projeto (system-ui/Segoe UI/Roboto) renderiza fina mesmo em pesos médios,
-   o que pode ler como "pouco sólido/barato" perto de sites que travam tudo
-   em semibold+. Isso sobe cada peso um degrau, sem trocar a fonte em si.
-   Se aprovado, generalizar essas regras (tirar o escopo .quiz5-heavy-test). */
-.quiz5-heavy-test .font-medium { font-weight: 600; }
-.quiz5-heavy-test .font-semibold { font-weight: 700; }
-.quiz5-heavy-test .font-bold { font-weight: 800; }
-.quiz5-heavy-test h1,
-.quiz5-heavy-test h2 { font-weight: 800; }
-.quiz5-heavy-test p:not([class*="font-"]) { font-weight: 500; }
+/* Espessura de fonte do site inteiro. Testado isolado no /quiz/5 (28/07),
+   aprovado ("melhorou MUITO"), generalizado pra todo o app. A fonte padrão
+   do projeto (system-ui/Segoe UI/Roboto) renderiza fina mesmo em pesos
+   médios, o que lia como "pouco sólido" perto de sites que travam tudo em
+   semibold+. Isso sobe cada peso do Tailwind um degrau e meio, sem trocar
+   a fonte em si. font-black já é 900 (teto), não precisa de regra. */
+.font-medium { font-weight: 700; }
+.font-semibold { font-weight: 800; }
+.font-bold { font-weight: 900; }
+h1, h2 { font-weight: 900; }
+p:not([class*="font-"]) { font-weight: 600; }
 
 /* Slider numérico do quiz (edad/peso/altura) — trilho preenchido via
    background inline (ver QuizSlider), trilho nativo transparente para

@@ -182,9 +182,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
   }
 
   return (
-    // quiz5-heavy-test: teste isolado de espessura de fonte, só nesta tela.
-    // Se aprovado, generalizar pro resto do quiz (ver globals.css).
-    <QuizLayout className="quiz5-heavy-test">
+    <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
       {/* Apresentação do mecanismo — primeira coisa que ela vê ao chegar do
