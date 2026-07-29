@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, CalendarCheck, BadgeCheck,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, BadgeCheck,
   Mail, MessageCircle, Smartphone, Dumbbell,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -1193,33 +1193,47 @@ export default function PreviewPage() {
               Un plan pensado para tu vida real: incluye tus antojos y tu rutina, para que no lo abandones a los 3 días.
             </p>
 
-            {/* Sistema de 2 peças — o plano (o meio) + o calendário (o
-                acompanhamento) = transformação. Eleva as duas peças-herói acima
-                da lista de valor, pra vender o Kit como sistema, não feature avulsa. */}
+            {/* Sistema de 2 peças — o plano (execução das 7 combos) + o
+                calendário (o que sustenta a execução por 28 dias). Fotos
+                reais (não ícone genérico) pra não ler como "só um plan de
+                comidas": ela vê a mulher usando o app na cozinha e marcando
+                o calendário, mesma linguagem visual da seção de resultados. */}
             <div>
-              <p className="mb-2.5 text-center text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-                Tu Calibración Metabólica tiene dos partes que trabajan juntas
+              <p className="text-center text-[13px] leading-relaxed text-gray-700">
+                Saber las 7 combinaciones no alcanza si las dejas a la mitad. Por eso tu Calibración Metabólica viene en dos partes:
               </p>
-              <div className="grid grid-cols-2 gap-2.5">
-                <div className="rounded-xl border border-primary/25 bg-white p-3.5">
-                  <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Utensils className="h-4 w-4" />
+              <div className="mt-2.5 grid grid-cols-2 gap-2.5">
+                <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
+                  <Image
+                    src="/foto-app-celular.png"
+                    alt="Ejecutando el Método CALIBRA desde la app"
+                    width={454}
+                    height={805}
+                    className="h-40 w-full object-cover object-top"
+                  />
+                  <div className="p-3">
+                    <p className="text-[13px] font-bold text-gray-900">El plan: tus 7 secretos aplicados</p>
+                    <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+                      Cada día ya viene con el Método CALIBRA ejecutado: sabes exactamente qué combinación toca hoy, sin adivinar nada.
+                    </p>
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                   </div>
-                  <p className="text-[13px] font-bold text-gray-900">El plan: qué comer</p>
-                  <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                    Tus comidas de cada día, calculadas para tu cuerpo, con el Método CALIBRA ya aplicado. Con tu lista de compras y tus sustituciones.
-                  </p>
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                 </div>
-                <div className="rounded-xl border border-primary/25 bg-white p-3.5">
-                  <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <CalendarCheck className="h-4 w-4" />
+                <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
+                  <Image
+                    src="/foto-calendario.png"
+                    alt="Marcando el calendario de 28 días"
+                    width={941}
+                    height={1672}
+                    className="h-40 w-full object-cover object-top"
+                  />
+                  <div className="p-3">
+                    <p className="text-[13px] font-bold text-gray-900">El calendario: para no abandonar</p>
+                    <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
+                      Marcas cada día que cumples tus combinaciones. Es lo que hace que el método se sostenga las 4 semanas, no solo los primeros días.
+                    </p>
+                    <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
                   </div>
-                  <p className="text-[13px] font-bold text-gray-900">El calendario: tu avance</p>
-                  <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                    Marcas cada día que completas y ves tu constancia crecer, semana a semana.
-                  </p>
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
                 </div>
               </div>
               <div className="mt-2.5 rounded-xl bg-primary px-4 py-3 text-center">
