@@ -230,32 +230,48 @@ export function PlanTab({
               </div>
 
               <div className="divide-y divide-border">
-                {meal.items.map((item, j) => {
-                  const imgUrl = getFoodImageUrl(item.food)
-                  return (
-                  <div key={j} className="flex items-center gap-3 px-3 py-2.5">
-                    {imgUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={imgUrl}
-                        alt={item.food}
-                        className="h-14 w-14 shrink-0 rounded-xl border border-border object-cover shadow-sm"
-                        loading="lazy"
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
-                      />
-                    )}
-                    <div className="min-w-0 flex-1">
-                      <p className="truncate text-sm font-medium">{item.food}</p>
-                      <p className="text-xs text-muted-foreground">{item.quantity}</p>
+                {(() => {
+                  // Arranque promete "tu plan ya te marca cuál es y cuánta te
+                  // toca hoy" — isso só é verdade se algo de fato destacar o
+                  // item. Marca o de maior proteína do desayuno (é sempre o
+                  // item de proteína: huevo/lácteo/complemento, nunca o carbo
+                  // nem la fruta, ver buildMeal em generate.ts).
+                  const highlightIdx =
+                    meal.name === 'Desayuno' && day.combo?.id === 'arranque' && meal.items.length > 0
+                      ? meal.items.reduce((best, it, idx) => (it.proteinG > meal.items[best].proteinG ? idx : best), 0)
+                      : -1
+                  return meal.items.map((item, j) => {
+                    const imgUrl = getFoodImageUrl(item.food)
+                    return (
+                    <div key={j} className="flex items-center gap-3 px-3 py-2.5">
+                      {imgUrl && (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img
+                          src={imgUrl}
+                          alt={item.food}
+                          className="h-14 w-14 shrink-0 rounded-xl border border-border object-cover shadow-sm"
+                          loading="lazy"
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+                        />
+                      )}
+                      <div className="min-w-0 flex-1">
+                        <p className="truncate text-sm font-medium">{item.food}</p>
+                        <p className="text-xs text-muted-foreground">{item.quantity}</p>
+                        {j === highlightIdx && (
+                          <span className="mt-0.5 inline-block rounded-full border border-primary bg-white px-1.5 py-0.5 text-[10px] font-bold text-primary">
+                            ⚡ Tu proteína de hoy
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex shrink-0 gap-1">
+                        <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.protein.chipBg, color: MACRO.protein.chipText }}>{item.proteinG}P</span>
+                        <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.carb.chipBg, color: MACRO.carb.chipText }}>{item.carbsG}C</span>
+                        <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.fat.chipBg, color: MACRO.fat.chipText }}>{item.fatG}G</span>
+                      </div>
                     </div>
-                    <div className="flex shrink-0 gap-1">
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.protein.chipBg, color: MACRO.protein.chipText }}>{item.proteinG}P</span>
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.carb.chipBg, color: MACRO.carb.chipText }}>{item.carbsG}C</span>
-                      <span className="rounded px-1.5 py-0.5 text-[10px] font-semibold" style={{ backgroundColor: MACRO.fat.chipBg, color: MACRO.fat.chipText }}>{item.fatG}G</span>
-                    </div>
-                  </div>
-                  )
-                })}
+                    )
+                  })
+                })()}
               </div>
 
               <div className="bg-muted/40 px-4 py-1.5 text-right text-[11px] text-muted-foreground">

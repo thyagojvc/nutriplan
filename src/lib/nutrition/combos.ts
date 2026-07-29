@@ -63,12 +63,12 @@ export const COMBOS: Combo[] = [
     tagline: 'Cierras la cocina y no vuelves a abrirla',
     moment: 'noche',
     action:
-      'La última comida del día lleva proteína más una grasa buena (aguacate, aceite de oliva, un puñado de nueces) y cero azúcar simple. Después de eso, la cocina está cerrada.',
+      'En la cena, prioriza tu fuente de proteína. Y antes de dormir, tu snack ya trae una grasa buena (aguacate, aceite de oliva o un puñado de nueces). Después de eso, la cocina está cerrada.',
     secret:
-      'Cuando juntas proteína con una grasa buena en la última comida y cortas el azúcar simple, tu cuerpo activa su mecanismo de protección de la saciedad: en vez de vaciarse rápido y despertarte con hambre, sostiene toda la noche. Por eso no picas nada a las 11 y tampoco amaneces exagerando en el desayuno.',
+      'Consumir proteína en la cena y una grasa buena antes de dormir activa el mecanismo de protección de la saciedad de tu cuerpo: en vez de vaciarse rápido y despertarte con hambre, sostiene toda la noche. Por eso no picas nada a las 11 y tampoco amaneces exagerando en el desayuno.',
     why: 'La noche es donde la mayoría de las dietas se cae. Una cena que sostiene de verdad quita el impulso de volver a la alacena a las 11.',
     science:
-      'Proteína y grasa en la última comida prolongan la saciedad nocturna; evitar azúcares simples en ese momento reduce el rebote de hambre por caída glucémica.',
+      'Proteína en la cena y grasa buena antes de dormir prolongan la saciedad nocturna, reduciendo el hambre al despertar y la ingesta espontánea en el desayuno siguiente.',
     emoji: '🔒',
   },
   {
