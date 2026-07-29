@@ -1,6 +1,6 @@
 {
-  "name": "CALIBRA",
-  "short_name": "CALIBRA",
+  "name": "Método CALIBRA",
+  "short_name": "Método CALIBRA",
   "description": "Tu Calibración Metabólica: cuánto comer exacto para tu cuerpo y tu objetivo.",
   "start_url": "/demo?training=1&recipes=1",
   "scope": "/demo",
