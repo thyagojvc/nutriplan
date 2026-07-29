@@ -93,6 +93,23 @@
 .quiz-enter-delay-1 { animation-delay: 0.06s; }
 .quiz-enter-delay-2 { animation-delay: 0.12s; }
 
+/* Revelação escalonada das letras de CALIBRA na entrada do quiz (/quiz/5).
+   O atraso de cada letra vem inline (index * 70ms), então a palavra se forma
+   na frente dela: é o primeiro contato com o mecanismo, antes de pedir
+   qualquer dado. O overshoot no cubic-bezier é o que dá o "pop". */
+@keyframes calibra-pop {
+  0% { opacity: 0; transform: translateY(7px) scale(0.75); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.calibra-letter {
+  animation: calibra-pop 0.44s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .calibra-letter { animation: none; }
+}
+
 /* Slider numérico do quiz (edad/peso/altura) — trilho preenchido via
    background inline (ver QuizSlider), trilho nativo transparente para
    revelar esse background em todos os navegadores. */

@@ -4,6 +4,9 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizStepperRow, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
 import { trackDualOnce } from '@/lib/fb-pixel'
+// Mesma fonte que a preview e o gerador usam — a entrada do quiz não pode
+// prometer um método diferente do que é entregue.
+import { COMBOS } from '@/lib/nutrition/combos'
 
 const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
@@ -182,20 +185,49 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-      {/* Promessa de entrada — só aparece neste passo, que é o início do quiz */}
-      <div className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-center">
-        <span className="text-base">⏱️</span>
-        <p className="text-[13px] font-bold leading-snug text-primary">
-          Responde este quiz de 60 segundos y recibe tu Calibración Metabólica, personalizada para ti
-        </p>
-      </div>
+      {/* Apresentação do mecanismo — primeira coisa que ela vê ao chegar do
+          anúncio. Substitui o banner solto de "60 segundos" + a linha de
+          motivação: agora o quiz tem um PORQUÊ (existe um método, tem nome, e
+          o quiz é o que o ajusta a ela) antes de pedir o primeiro dado.
+          Letras vêm de COMBOS pra nunca divergir do que o plano entrega. */}
+      <div className="relative overflow-hidden rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 pb-4 pt-3.5 text-center shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+        {/* Halo decorativo atrás das letras — dá profundidade sem pesar */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-0 h-28 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
+          style={{ backgroundColor: 'hsl(148, 52%, 28%, 0.16)' }}
+        />
 
-      {/* Linha de motivação pra iniciar — reforça a promessa em número concreto
-          antes de pedir o primeiro dado (ver histórico de abandono na entrada
-          em quiz-step.tsx). */}
-      <p className="text-center text-[13px] leading-relaxed text-gray-700 px-1">
-        En menos de 60 segundos vas a tener un número exacto: cuántas calorías tu cuerpo necesita hoy para bajar de peso, sin dietas genéricas de internet.
-      </p>
+        <div className="relative space-y-2.5">
+          <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
+            <span className="text-[11px]">⏱️</span> 60 segundos
+          </p>
+
+          {/* A palavra se forma na frente dela (stagger via animationDelay) */}
+          <div className="flex justify-center gap-1.5" role="img" aria-label="Método CALIBRA">
+            {COMBOS.map((c, i) => (
+              <span
+                key={c.id}
+                aria-hidden
+                className="calibra-letter flex h-9 w-9 items-center justify-center rounded-xl bg-primary font-display text-[17px] font-black text-white shadow-[0_3px_10px_rgba(34,109,69,0.32)]"
+                style={{ animationDelay: `${i * 70}ms` }}
+              >
+                {c.letter}
+              </span>
+            ))}
+          </div>
+
+          <p className="font-display text-[19px] font-black leading-[1.18] tracking-tight text-gray-900">
+            No es que comas menos.<br />
+            Es que <span className="text-primary">dejas de tener hambre</span>.
+          </p>
+
+          <p className="text-[12.5px] leading-relaxed text-gray-700">
+            CALIBRA son 7 combinaciones, una por día, que hacen que el hambre baje sola.
+            Responde 60 segundos y las ajustamos a tu cuerpo, tus antojos y tu rutina.
+          </p>
+        </div>
+      </div>
 
       <form onSubmit={handleContinue} className="space-y-4">
         <QuizCard>
