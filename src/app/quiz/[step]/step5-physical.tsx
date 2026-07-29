@@ -224,6 +224,8 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
           <p className="text-[12.5px] leading-relaxed text-gray-700">
             CALIBRA son 7 combinaciones, una por día, que hacen que el hambre baje sola.
+            El nombre nace de tu <span className="font-bold text-primary">Calibra</span>ción{' '}
+            <span className="font-bold text-primary">Metabol</span>ica: calibran tu hambre y aceleran tu metabolismo.
             Responde 60 segundos y las ajustamos a tu cuerpo, tus antojos y tu rutina.
           </p>
         </div>
