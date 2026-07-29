@@ -184,7 +184,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
             subtitle="Marca tus favoritos y armaremos tu plan con ellos. Si comes de todo, continúa sin marcar nada."
           />
 
-          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-xs font-medium text-primary">
+          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-sm font-medium text-primary">
             <span className="text-sm">✅</span>
             Los alimentos que marques tendrán prioridad en tu plan.
           </div>
@@ -221,7 +221,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
           </div>
 
           {selected.length > 0 && (
-            <p className="text-center text-xs text-muted-foreground">
+            <p className="text-center text-sm text-muted-foreground">
               Incluiremos {selected.length} alimento{selected.length !== 1 ? 's' : ''} que te gusta{selected.length !== 1 ? 'n' : ''} en tu plan
             </p>
           )}

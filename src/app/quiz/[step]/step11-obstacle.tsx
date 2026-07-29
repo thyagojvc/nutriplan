@@ -99,7 +99,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
         </div>
 
         {selected.length > 0 && (
-          <p className="text-center text-xs text-primary font-medium">
+          <p className="text-center text-sm text-primary font-medium">
             {selected.length} seleccionado{selected.length !== 1 ? 's' : ''} ✓
           </p>
         )}

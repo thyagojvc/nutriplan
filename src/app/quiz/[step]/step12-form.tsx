@@ -110,7 +110,7 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
 
       <QuizCard>
         <div className="space-y-4">
-          <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
+          <span className="inline-block rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
             {reframe.eyebrow}
           </span>
 
@@ -135,7 +135,7 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
         Ver mi plan
       </QuizCta>
 
-      <p className="text-center text-xs leading-relaxed text-muted-foreground">
+      <p className="text-center text-sm leading-relaxed text-muted-foreground">
         Al continuar, aceptas nuestra{' '}
         <a href="/privacidad" target="_blank" className="underline hover:text-foreground">
           Política de Privacidad

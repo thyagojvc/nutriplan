@@ -74,7 +74,7 @@ export function Step3MustHave({ stepNumber, totalSteps }: Props) {
             autoFocus
           />
 
-          <p className="rounded-xl bg-[#F0F8EC] border border-[#C8E4BC] px-4 py-3 text-xs text-[#2d6a2d]">
+          <p className="rounded-xl bg-[#F0F8EC] border border-[#C8E4BC] px-4 py-3 text-sm text-[#2d6a2d]">
             💡 Si no tienes ninguno, puedes dejarlo en blanco — igual continuamos.
           </p>
 

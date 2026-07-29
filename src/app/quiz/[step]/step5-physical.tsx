@@ -199,8 +199,8 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
         />
 
         <div className="relative space-y-2.5">
-          <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-white px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-primary">
-            <span className="text-[11px]">⏱️</span> 60 segundos
+          <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">
+            <span className="text-sm">⏱️</span> 60 segundos
           </p>
 
           {/* A palavra se forma na frente dela (stagger via animationDelay) */}
@@ -222,7 +222,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
             Es que <span className="text-primary">dejas de tener hambre</span>.
           </p>
 
-          <p className="text-[12.5px] leading-relaxed text-gray-700">
+          <p className="text-sm leading-relaxed text-gray-700">
             CALIBRA son 7 combinaciones, una por día, que hacen que el hambre baje sola.
             El nombre nace de tu <span className="font-bold text-primary">Calibra</span>ción{' '}
             <span className="font-bold text-primary">Metabol</span>ica: calibran tu hambre y aceleran tu metabolismo.
@@ -240,7 +240,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
 
           {/* Selo de privacidad — dado sensível (peso) logo na 1ª pregunta pede
               reforço visual próprio, não só uma frase solta no subtitle. */}
-          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-xs font-bold text-primary">
+          <div className="flex items-center gap-2 rounded-xl border border-primary/25 bg-primary/8 px-3.5 py-2.5 text-sm font-bold text-primary">
             <span className="text-sm">🔒</span>
             Nadie más los verá. 100% privado y confidencial.
           </div>
@@ -276,10 +276,10 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
           </div>
 
           {data.age < 18 && (
-            <p className="text-center text-xs text-red-500">Debes tener al menos 18 años.</p>
+            <p className="text-center text-sm text-red-500">Debes tener al menos 18 años.</p>
           )}
 
-          <p className="text-center text-xs text-muted-foreground">
+          <p className="text-center text-sm text-muted-foreground">
             Ajusta con − y +. Cuanto más exactos, más preciso será tu plan 🎯
           </p>
 

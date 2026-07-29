@@ -87,7 +87,7 @@ export function NutriWordmark({ size = 'md' }: { size?: 'sm' | 'md' | 'lg' }) {
 
 export function NutriTagline() {
   return (
-    <p className="text-xs text-muted-foreground text-center tracking-wide">
+    <p className="text-sm text-muted-foreground text-center tracking-wide">
       Tu nutrición, a tu medida.
     </p>
   )
@@ -189,7 +189,7 @@ export function QuizProgress({
             </button>
           )}
         </div>
-        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-[11px] font-bold text-primary border border-primary/20">
+        <span className="rounded-full bg-primary/12 px-2.5 py-0.5 text-xs font-bold text-primary border border-primary/20">
           {easedPct}%
         </span>
       </div>
@@ -244,7 +244,7 @@ export function QuizHeader({
               <path d="M1 3.5L3 5.5L8 1" stroke="white" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </span>
-          <p className="text-xs font-semibold leading-relaxed text-primary">{confirm}</p>
+          <p className="text-sm font-semibold leading-relaxed text-primary">{confirm}</p>
         </div>
       )}
       <div className="space-y-1.5">
@@ -299,7 +299,7 @@ export function QuizOption({
           {label}
         </p>
         {desc && (
-          <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">{desc}</p>
+          <p className="mt-0.5 text-sm leading-relaxed text-muted-foreground">{desc}</p>
         )}
       </div>
       <CheckCircle visible={selected} />
@@ -402,7 +402,7 @@ export function QuizInput({
           props.className ?? '',
         ].join(' ')}
       />
-      {hint && <p className="text-xs text-red-500">{hint}</p>}
+      {hint && <p className="text-sm text-red-500">{hint}</p>}
     </div>
   )
 }
@@ -480,12 +480,12 @@ export function QuizSlider({
         }}
       />
 
-      <div className="flex justify-between text-[11px] font-medium text-muted-foreground">
+      <div className="flex justify-between text-xs font-medium text-muted-foreground">
         <span>{min}</span>
         <span>{max}</span>
       </div>
 
-      {hint && <p className="text-center text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-center text-sm text-muted-foreground">{hint}</p>}
     </div>
   )
 }
@@ -575,7 +575,7 @@ export function QuizNumberField({
         </button>
       </div>
 
-      {hint && <p className="text-center text-xs text-muted-foreground">{hint}</p>}
+      {hint && <p className="text-center text-sm text-muted-foreground">{hint}</p>}
     </div>
   )
 }
@@ -651,7 +651,7 @@ export function QuizStepperRow({
         <span className="text-xl leading-none">{emoji}</span>
         <div className="min-w-0">
           <p className="text-sm font-semibold leading-tight text-gray-800">{label}</p>
-          <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">{unit}</p>
+          <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">{unit}</p>
         </div>
       </div>
 
@@ -823,7 +823,7 @@ export function QuizSection({
 }) {
   return (
     <div className="space-y-2.5">
-      <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
+      <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground">
         <span className="h-px flex-1 bg-border" />
         {title}
         <span className="h-px flex-1 bg-border" />
