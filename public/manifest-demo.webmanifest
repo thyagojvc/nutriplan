@@ -1,7 +1,7 @@
 {
-  "name": "NutriPlan",
-  "short_name": "NutriPlan",
-  "description": "Tu NutriPlan: cuánto comer exacto para tu cuerpo y tu objetivo.",
+  "name": "CALIBRA",
+  "short_name": "CALIBRA",
+  "description": "Tu Calibración Metabólica: cuánto comer exacto para tu cuerpo y tu objetivo.",
   "start_url": "/demo?training=1&recipes=1",
   "scope": "/demo",
   "display": "standalone",

@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'NutriPlan',
+    title: 'CALIBRA',
   },
   icons: {
     icon: '/logo-calibra-white.png',

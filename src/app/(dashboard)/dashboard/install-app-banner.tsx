@@ -88,7 +88,7 @@ export function InstallAppBanner() {
 
         <div className="space-y-1.5">
           <p className="font-display text-[15px] font-bold text-foreground leading-tight">
-            Guarda NutriPlan como tu app
+            Guarda tu Calibración Metabólica como app
           </p>
 
           {platform === 'ios' ? (

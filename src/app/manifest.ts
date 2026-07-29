@@ -4,9 +4,9 @@ import type { MetadataRoute } from 'next'
 // cheia), reaproveitando o app web existente. Servido em /manifest.webmanifest.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'NutriPlan — Tu plan nutricional personalizado',
-    short_name: 'NutriPlan',
-    description: 'Tu NutriPlan: cuánto comer exacto para tu cuerpo y tu objetivo.',
+    name: 'CALIBRA — Tu Calibración Metabólica',
+    short_name: 'CALIBRA',
+    description: 'Tu Calibración Metabólica: cuánto comer exacto para tu cuerpo y tu objetivo.',
     start_url: '/dashboard',
     // Sem scope explícito, o padrão vira '/' (domínio inteiro): o navegador
     // passa a considerar até /quiz e /preview como parte do "app instalável"
