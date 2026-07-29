@@ -38,8 +38,8 @@ export const metadata: Metadata = {
     title: 'Método CALIBRA',
   },
   icons: {
-    icon: '/logo-calibra-white.png',
-    apple: '/logo-calibra-white.png',
+    icon: '/logo-calibra-transparent.png',
+    apple: '/logo-calibra-transparent.png',
   },
   other: {
     'facebook-domain-verification': 'xgjk9bxl61cb1p1ngmsq295whvaf8e',

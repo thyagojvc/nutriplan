@@ -14,7 +14,7 @@ import { DashboardShell } from '@/app/(dashboard)/dashboard/dashboard-shell'
 
 export const metadata: Metadata = {
   manifest: '/manifest-demo.webmanifest',
-  icons: { apple: '/logo-calibra-white.png' },
+  icons: { apple: '/logo-calibra-transparent.png' },
   robots: { index: false, follow: false },
 }
 
