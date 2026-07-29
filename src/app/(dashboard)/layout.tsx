@@ -7,7 +7,7 @@ import type { Metadata } from 'next'
 // wordmark, ruim como ícone de tela de início).
 export const metadata: Metadata = {
   icons: {
-    apple: '/logo-perfil.png',
+    apple: '/logo-calibra-white.png',
   },
 }
 

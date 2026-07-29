@@ -6,7 +6,7 @@ import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 // Mesmo motivo do (dashboard)/layout: ícone quadrado em vez da wordmark.
 export const metadata: Metadata = {
   icons: {
-    apple: '/logo-perfil.png',
+    apple: '/logo-calibra-white.png',
   },
 }
 
