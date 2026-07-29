@@ -25,7 +25,7 @@ const FROM = process.env.RESEND_FROM ?? 'onboarding@resend.dev'
 // A página /auth/magic lê o link do hash via JS — scanners não executam JS.
 function wrapMagicLink(actionLink: string): string {
   const encoded = Buffer.from(actionLink).toString('base64')
-  const baseUrl = 'https://nutriplan-tzyt.vercel.app'
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? 'https://nutriplan-tzyt.vercel.app'
   return `${baseUrl}/auth/magic#${encoded}`
 }
 
