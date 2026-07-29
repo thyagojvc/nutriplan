@@ -115,6 +115,10 @@ const RESULTS: {
     photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
     quote: 'Es maravilloso tener toda mi dieta en el celular, eso ayuda muchísimo a mantener la constancia y a no abandonar. Fue la primera vez que logré seguir el paso a paso, y bajé de peso sin dificultades.',
   },
+  {
+    photo: '/resultados/caso-5.png', name: 'Yuliana R.', country: '🇨🇴', age: 27, result: '9 meses de transformación', w: 636, h: 794,
+    quote: 'Nunca imaginé que en 9 meses iba a conseguir el cuerpo de mis sueños. Hoy estoy en mi mejor etapa. No sabía qué tenía que comer, y por eso no tenía motivación ni para alimentarme bien ni para entrenar. Después de conocer al doctor Tiago mi vida cambió completamente y estoy muy agradecida por todo.',
+  },
 ]
 
 interface PreviewData {
@@ -1209,7 +1213,7 @@ export default function PreviewPage() {
                     alt="Ejecutando el Método CALIBRA desde la app"
                     width={454}
                     height={805}
-                    className="h-40 w-full object-cover object-top"
+                    className="w-full aspect-[4/5] object-cover object-center"
                   />
                   <div className="p-3">
                     <p className="text-[13px] font-bold text-gray-900">El plan: tus 7 secretos aplicados</p>
@@ -1225,7 +1229,7 @@ export default function PreviewPage() {
                     alt="Marcando tu calendario de constancia"
                     width={941}
                     height={1672}
-                    className="h-40 w-full object-cover object-top"
+                    className="w-full aspect-[4/5] object-cover object-center"
                   />
                   <div className="p-3">
                     <p className="text-[13px] font-bold text-gray-900">El calendario: para no abandonar</p>
