@@ -100,13 +100,17 @@ export function NutriTagline() {
 export function QuizLayout({
   children,
   showTagline,
+  className,
 }: {
   children: React.ReactNode
   showTagline?: boolean
+  // Escape hatch pra testar mudanças de estilo isoladas num único step, sem
+  // afetar o resto do quiz (ex: teste de espessura de fonte só no /quiz/5).
+  className?: string
 }) {
   return (
     <div
-      className="min-h-screen"
+      className={['min-h-screen', className].filter(Boolean).join(' ')}
       style={{
         background:
           'linear-gradient(180deg, hsl(148,38%,90%) 0px, hsl(148,28%,95%) 90px, hsl(80,18%,97%) 220px)',
