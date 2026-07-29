@@ -658,7 +658,7 @@ export default function PreviewPage() {
             dice el objetivo/para quién es. No vendemos una transformación
             genérica, vendemos el plan concreto que ya está armado. */}
         <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
-          Tu <span className="text-primary">plan de comidas de 28 días</span>, calculado para tu cuerpo
+          Tu <span className="text-primary">Método CALIBRA</span>, calculado para tu cuerpo
         </h1>
         <p className="text-sm font-semibold text-gray-700">{heroSubheadline}</p>
 
@@ -729,7 +729,7 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Ya está todo armado por ti. No tienes que calcular ni decidir nada: la Calibración Metabólica ya hizo el trabajo, solo abres tu plan y lo sigues.
+          Ya está todo armado por ti. No tienes que calcular ni decidir nada: el Método CALIBRA ya hizo el trabajo, solo abres tu plan y sigues las 7 combinaciones.
         </p>
       </div>
 
@@ -1311,11 +1311,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
-    a: 'Porque las dietas genéricas te dan el mismo plan que a todas, sin mirar tu cuerpo ni tu rutina, y por eso se abandonan. Tu plan se calcula con la Calibración Metabólica a partir de tus datos e incluye tus comidas favoritas, así que no dependes de la fuerza de voluntad para sostenerlo. El calendario de 28 días es justo lo que te ayuda a no abandonarlo en la semana 2.',
+    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Tu plan viene con el Método CALIBRA: 7 combinaciones (una por día) que hacen que el hambre baje sola, en vez de pedirte que la aguantes con fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
-    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, tienes tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. La idea es que comas bien sin pasar horas en la cocina.',
+    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El Método CALIBRA tampoco agrega trabajo: cada combinación toma 10 segundos (por ejemplo, tomar tu mezcla o cambiar el orden en que comes), no una receta nueva. No necesitas más tiempo en la cocina, solo seguir la combinación del día.',
   },
   {
     q: '¿Hay suscripción o cobros recurrentes?',
