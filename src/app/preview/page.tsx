@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, BadgeCheck,
-  Mail, MessageCircle, Smartphone, Dumbbell,
+  Mail, MessageCircle, Smartphone, Dumbbell, Repeat, Sparkles,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -753,7 +753,7 @@ export default function PreviewPage() {
           </>
         )}
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-          Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
+          Calculado solo para ti. Mira tu análisis completo abajo.
         </p>
         {/* Hierarquia da marca, dita em uma frase: MÉTODO → CALIBRACIÓN → PLANO.
             Sem isso a leitora acha que comprou uma dieta que veio com dicas. */}
@@ -768,7 +768,15 @@ export default function PreviewPage() {
         {/* Prova social imediata — dobra "prova social" logo após o hook.
             2 de los 4 casos reales (RESULTS) aparecen aquí en grade fija;
             los otros 2 siguen en el carrusel más abajo, junto al resto de
-            la narrativa de resultados. Mismos datos, sin inventar nada. */}
+            la narrativa de resultados. Mismos datos, sin inventar nada.
+            A linha de contexto existe porque sem ela as duas fotos entram
+            soltas na página, sem dizer de onde vieram nem o que provam. */}
+        {/* "+2.000" bate com o número da seção de autoridade mais abaixo.
+            Específico em vez de "miles": é verdadeiro e converte melhor. */}
+        <p className="text-center text-[13px] leading-relaxed text-gray-700">
+          Tus números son nuevos. El método que los calculó no: ya pasó por{' '}
+          <strong className="font-bold text-gray-900">más de 2.000 mujeres</strong> antes que tú.
+        </p>
         <div className="grid grid-cols-2 gap-2.5">
           {RESULTS.slice(0, 2).map(({ photo, name, country, age, result, w, h }) => (
             <div key={name} className="overflow-hidden rounded-xl border border-[#D8E8D4] bg-[#F5FAF2]">
@@ -844,46 +852,6 @@ export default function PreviewPage() {
             </div>
           )}
         </Card>
-
-        {/* Así es tu plan — teaser de 2 comidas (no las 4). Solo el primer
-            alimento de cada una aparece nítido (con foto real), el resto
-            aparece con foto real mas desenfocada: deixa claro que TODO o
-            plano é feito com os favoritos dela, não só o primeiro item. */}
-        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-          <SectionHeading title={<>Así es <Hl>tu</Hl> plan</>} />
-          <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
-            Cada comida se arma con los alimentos que marcaste como favoritos en tu quiz. Te mostramos el primero de cada una:
-          </p>
-          <div className="space-y-3">
-            {sample.slice(0, 2).map((meal) => {
-              const tease = MEAL_TEASE[meal.name]
-              const combo = tease ? COMBOS_BY_ID[tease.comboId] : undefined
-              return (
-                <TeaserMealBlurred key={meal.name} meal={meal} combo={combo} comboBenefit={tease?.benefit} />
-              )
-            })}
-          </div>
-
-          {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
-          <div className="flex flex-col items-center gap-2.5 rounded-xl border border-primary/15 bg-[#F5FAF2] px-4 py-3.5 text-center">
-            <div className="flex flex-wrap justify-center gap-1.5">
-              {[
-                { Icon: Sunrise,      label: 'Desayunos' },
-                { Icon: Utensils,     label: 'Almuerzos' },
-                { Icon: Moon,         label: 'Cenas' },
-                { Icon: Apple,        label: 'Snacks' },
-                { Icon: ShoppingCart, label: 'Lista de compras' },
-              ].map(({ Icon, label }) => (
-                <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[13px] font-semibold text-primary">
-                  <Icon className="h-3 w-3" /> {label}
-                </span>
-              ))}
-            </div>
-            <p className="flex items-center justify-center gap-1.5 text-xs font-bold text-gray-800">
-              <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear tu plan
-            </p>
-          </div>
-        </div>
 
         {/* ── Mecanismo: los 7 combos ─────────────────────────────
             Vive AQUI, entre o teaser do plano e a prova social: ela acabou de
@@ -981,20 +949,53 @@ export default function PreviewPage() {
                     {i < COMBOS.length - 1 && <span className="w-px flex-1 bg-primary/25" />}
                   </div>
                   <div className="min-w-0 flex-1 pb-2">
-                    <div className="flex items-start gap-2 rounded-xl border border-[#D8E8D4] bg-white p-3">
-                      <div className="min-w-0 flex-1">
-                        <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
-                          {c.emoji} {c.name}
-                          <span className="align-super text-[8px] font-bold text-primary">™</span>
-                        </p>
-                        <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">
-                          {c.teaser}
-                        </p>
-                        <p className="mt-1 text-[11px] italic leading-snug text-primary/75">
-                          {c.nameReason}
-                        </p>
+                    <div className="rounded-xl border border-[#D8E8D4] bg-white p-3">
+                      <div className="flex items-start gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
+                            {c.emoji} {c.name}
+                            <span className="align-super text-[8px] font-bold text-primary">™</span>
+                          </p>
+                          <p className="mt-0.5 text-[12px] font-semibold leading-snug text-gray-700">
+                            {c.teaser}
+                          </p>
+                        </div>
+                        <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/50" />
                       </div>
-                      <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/50" />
+
+                      {/* A ideia de graça: o porquê, nunca o como. É o que faz
+                          ela pensar "existe conhecimento real aqui" antes do
+                          preço. */}
+                      <p className="mt-2 border-t border-[#EAF2E6] pt-2 text-[11.5px] leading-relaxed text-muted-foreground">
+                        {c.insight}
+                      </p>
+
+                      {/* Quebra de padrão do LLENO: 1 ingrediente revelado,
+                          os outros visivelmente trancados. */}
+                      {c.revealedIngredient && (
+                        <div className="mt-2 rounded-lg border border-primary/25 bg-[#F5FAF2] p-2.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-white px-2 py-1 text-[11px] font-bold text-primary">
+                              {c.revealedIngredient.emoji} {c.revealedIngredient.name}
+                            </span>
+                            {/* Placeholders de propósito: blur não é segredo
+                                (basta inspecionar o DOM), então o nome real dos
+                                outros ingredientes nunca chega ao cliente. */}
+                            {[0, 1].map((i) => (
+                              <span
+                                key={i}
+                                className="inline-flex select-none items-center gap-1 rounded-md border border-primary/20 bg-white/70 px-2 py-1 text-[11px] font-bold text-primary/50"
+                              >
+                                <Lock className="h-2.5 w-2.5" />
+                                <span className="blur-[2.5px]">{i === 0 ? '••••••••' : '••••••••••'}</span>
+                              </span>
+                            ))}
+                          </div>
+                          <p className="mt-1.5 text-[11px] leading-snug text-gray-700">
+                            {c.revealedIngredient.note}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1020,11 +1021,54 @@ export default function PreviewPage() {
           </p>
         </div>
 
+        {/* El método ejecutado — vive DEPOIS do método de propósito. Quando
+            este bloco vinha antes, a leitora concluía que estava comprando um
+            plano de comidas e os 7 protocolos viravam um brinde. Aqui ele lê
+            como consequência: "é assim que o método aterrissa no meu dia".
+            Teaser de 2 comidas (no las 4): solo el primer alimento de cada una
+            aparece nítido, el resto con foto real desenfocada. */}
+        <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
+          <SectionHeading title={<>Y así se <Hl>ejecuta</Hl> en tu día</>} />
+          <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
+            El método se aplicó a tus datos y salió esto: comidas armadas con los alimentos que marcaste
+            como favoritos, cada una con su protocolo dentro. Te mostramos el primero de cada una:
+          </p>
+          <div className="space-y-3">
+            {sample.slice(0, 2).map((meal) => {
+              const tease = MEAL_TEASE[meal.name]
+              const combo = tease ? COMBOS_BY_ID[tease.comboId] : undefined
+              return (
+                <TeaserMealBlurred key={meal.name} meal={meal} combo={combo} comboBenefit={tease?.benefit} />
+              )
+            })}
+          </div>
+
+          {/* Lock: prova que há muito mais (días 2-7, otras comidas, lista) — travado */}
+          <div className="flex flex-col items-center gap-2.5 rounded-xl border border-primary/15 bg-[#F5FAF2] px-4 py-3.5 text-center">
+            <div className="flex flex-wrap justify-center gap-1.5">
+              {[
+                { Icon: Sunrise,      label: 'Desayunos' },
+                { Icon: Utensils,     label: 'Almuerzos' },
+                { Icon: Moon,         label: 'Cenas' },
+                { Icon: Apple,        label: 'Snacks' },
+                { Icon: ShoppingCart, label: 'Lista de compras' },
+              ].map(({ Icon, label }) => (
+                <span key={label} className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/8 px-2.5 py-0.5 text-[13px] font-semibold text-primary">
+                  <Icon className="h-3 w-3" /> {label}
+                </span>
+              ))}
+            </div>
+            <p className="flex items-center justify-center gap-1.5 text-xs font-bold text-gray-800">
+              <Lock className="h-3.5 w-3.5 text-primary" /> Los 7 días completos al desbloquear el método
+            </p>
+          </div>
+        </div>
+
         {/* Resultados reales — antes/después (fotos con consentimiento) */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Resultados reales con la Calibración Metabólica™
+              Resultados reales con el Método CALIBRA™
             </p>
             <p className="font-display text-base font-black text-gray-900">
               Así les fue a ellas
@@ -1075,8 +1119,8 @@ export default function PreviewPage() {
             párrafo de arriba, ahora mostrado, no solo dicho). */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
-            title={<>Tu Calibración Metabólica, ahora en <Hl>una app</Hl></>}
-            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está tu plan cada vez que abres la nevera."
+            title={<>El método, en <Hl>una app</Hl></>}
+            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está el protocolo del día cada vez que abres la nevera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
@@ -1109,8 +1153,14 @@ export default function PreviewPage() {
           <p className="font-display text-[19px] font-black leading-snug text-gray-900">
             Baja hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
           </p>
+          {/* Compliance: fala do EFEITO buscado (apetite e adesão) por
+              alimentação, sem afirmar equivalência a medicamento nem prometer
+              resultado médico. Nada de "igual que", "sustituye" ou "mismo
+              efecto que" — isso viraria promessa médica. */}
           <p className="text-sm leading-relaxed text-gray-700">
-            No necesitás inyecciones ni pastillas para adelgazar. Con la Calibración Metabólica™ y comida real, tu cuerpo baja de forma sostenible, al ritmo que tu cuerpo considera saludable.
+            El control del apetito que hoy mucha gente busca en un medicamento es exactamente el terreno
+            en el que trabajan los 7 protocolos, pero con comida real y hábitos. Sin inyecciones, sin
+            pastillas y sin dejar de comer.
           </p>
           <p className="text-[11px] leading-relaxed text-[#B7C3B2]">
             Ritmo estimado y sostenible. Los resultados varían según cada persona, su constancia y su punto de partida.
@@ -1140,7 +1190,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            El Método CALIBRA™ fue desarrollado bajo la orientación de una profesional de la nutrición: 7 protocolos propietarios que adaptan tu alimentación a tus objetivos, tus antojos y tu rutina real. Tu Calibración Metabólica es ese método aplicado a tu cuerpo.
+            El Método CALIBRA™ fue desarrollado bajo la orientación de una profesional de la nutrición: 7 protocolos propietarios que adaptan tu alimentación a tus objetivos, tus antojos y tu rutina real.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
@@ -1199,12 +1249,12 @@ export default function PreviewPage() {
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">
-              {isLoss ? 'Tu Calibración Metabólica para bajar de peso'
-                : isGain ? 'Tu Calibración Metabólica para ganar músculo'
-                : 'Tu Calibración Metabólica'}
+              {isLoss ? 'El Método CALIBRA™ para bajar de peso'
+                : isGain ? 'El Método CALIBRA™ para ganar músculo'
+                : 'El Método CALIBRA™'}
             </p>
             <p className="text-base font-black text-white">
-              ¡Tu Calibración Metabólica está lista. Empieza hoy!
+              Tu Calibración ya está calculada. Solo falta desbloquear el método.
             </p>
           </div>
 
@@ -1294,24 +1344,20 @@ export default function PreviewPage() {
               </p>
             </div>
 
+            {/* Duas listas separadas de propósito: o que ela COMPRA e o que ela
+                GANHA. Misturadas, o método virava um bullet entre nove e a
+                percepção de bônus desaparecia. A ordem dos itens principais é a
+                hierarquia da marca: método → calibración → plano → app. */}
             <div>
-              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye el Método CALIBRA™</p>
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Lo principal</p>
               <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevas, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
-                  // A ordem dos 3 primeiros itens É a hierarquia da marca:
-                  // método → calibración → plano. Trocar essa ordem faz o
-                  // método virar um bullet entre outros oito, que é o que a
-                  // página fazia antes.
-                  { item: 'El Método CALIBRA™ completo: los 7 protocolos', note: 'el sistema entero, en el orden en que fue diseñado' },
-                  { item: 'Tu Calibración Metabólica: el Método aplicado a tu cuerpo', note: 'tus números exactos, calculados solo para ti' },
-                  { item: 'Tu plan de comidas, que sale de esa Calibración', note: 'aunque ya hayas probado otras dietas sin resultado' },
-                  { item: 'Tu app con todo instalado en el celular', note: 'el protocolo del día, tu plan y tu lista en un solo toque' },
-                  { item: 'Tu calendario para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
-                  { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA™' },
-                  { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
-                  { item: 'Bono: Guía Anti-Celulitis', note: null },
-                  { item: 'Calendario descargable para imprimir', note: null },
+                  { item: 'El Método CALIBRA™ completo', note: 'los 7 protocolos, en el orden en que fue diseñado' },
+                  { item: 'Tu Calibración Metabólica', note: 'el método aplicado a tu cuerpo: tus números exactos' },
+                  { item: 'Tu plan de comidas, que nace de ahí', note: 'aunque ya hayas probado otras dietas sin resultado' },
+                  { item: 'Tu app, con todo instalado en el celular', note: 'el protocolo del día, tu plan y tu lista en un solo toque' },
+                  { item: 'Tu calendario de constancia', note: 'lo que te sostiene para no abandonar en la semana 2' },
                 ].map(({ item, note }) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-primary/12 text-primary">
@@ -1326,6 +1372,53 @@ export default function PreviewPage() {
               </ul>
             </div>
 
+            {/* Bônus como presentes, não como linhas de lista: card com capa,
+                ícone e rótulo "Gratis". A lista de compras e as sustituciones
+                já existiam, só estavam escondidas em bullet. */}
+            <div className="rounded-xl border border-dashed border-[#D85A30]/45 bg-[#FDF6F3] p-4">
+              <p className="mb-0.5 text-center text-[11px] font-bold uppercase tracking-widest text-[#B8481F]">
+                Y además, 3 bonos incluidos
+              </p>
+              <p className="mb-3 text-center text-[12px] text-gray-600">Sin costo extra, dentro de la misma app.</p>
+              <div className="space-y-2">
+                {[
+                  {
+                    Icon: ShoppingCart,
+                    title: 'Lista de Compras Optimizada',
+                    desc: 'Vas al súper una vez y sale todo lo del método. Sin vueltas ni ingredientes raros.',
+                  },
+                  {
+                    Icon: Repeat,
+                    title: 'Sustituciones Inteligentes',
+                    desc: '¿No tienes un ingrediente? La app te da el reemplazo que mantiene tus números.',
+                  },
+                  {
+                    Icon: Sparkles,
+                    title: 'Guía Anti-Celulitis',
+                    desc: 'Lo que sí funciona sobre la piel mientras la grasa baja.',
+                  },
+                ].map(({ Icon, title, desc }) => (
+                  <div key={title} className="flex items-start gap-3 rounded-lg border border-[#D85A30]/25 bg-white p-3">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#D85A30]/10 text-[#D85A30]">
+                      <Icon className="h-5 w-5" strokeWidth={2.2} />
+                    </span>
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-[13px] font-bold text-gray-900">{title}</p>
+                        <span className="shrink-0 rounded-full bg-[#D85A30] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-white">
+                          Gratis
+                        </span>
+                      </div>
+                      <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="mt-2.5 text-center text-[11px] text-gray-500">
+                Más tu calendario descargable para imprimir.
+              </p>
+            </div>
+
             {/* Pra quem é — autoqualifica antes do preço: reduz reembolso de
                 quem compra achando que é milagre de 1 semana, e a bullet
                 "no es para ti" é a que dá credibilidade ao resto (só promete
@@ -1334,11 +1427,13 @@ export default function PreviewPage() {
               <p className="text-center text-[11px] font-bold uppercase tracking-widest text-primary">¿Es para ti?</p>
               <ul className="space-y-1.5">
                 {[
-                  'Quieres bajar de peso sin pasarte el día contando calorías',
-                  'No tienes tiempo para armar tu propia dieta desde cero',
-                  'Ya probaste dietas genéricas que no se ajustaron a ti',
-                  'Prefieres un plan que se adapte a tus antojos, no al revés',
-                  'Quieres un método propietario (los 7 protocolos CALIBRA™), no una lista de comidas más',
+                  // Foco no MÉTODO, não no plano: quem se qualifica aqui está
+                  // comprando um sistema, e é isso que sustenta o ticket.
+                  'Buscas un método, no otra dieta que ya sabes cómo termina',
+                  'Quieres que tu cuerpo deje de pedirte comida, en vez de pasártela aguantando',
+                  'Ya probaste planes genéricos que no se ajustaron a ti',
+                  'No tienes tiempo para armar nada desde cero',
+                  'Te gusta la idea de un sistema con reglas claras, no de improvisar cada día',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2 text-[13px] text-gray-700">
                     <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
@@ -1511,11 +1606,11 @@ const FAQ_ITEMS = [
   },
   {
     q: '¿Cómo y cuándo recibo mi plan?',
-    a: 'Al instante. Apenas se confirma tu pago recibes un correo con el link para descargar la app de Calibración Metabólica, con tu plan ya generado adentro. La descargas desde el celular y la tienes a mano cada vez que vas a comer o a hacer las compras. Si no ves el correo, revisa spam o escríbenos por WhatsApp y te lo reenviamos.',
+    a: 'Al instante. Apenas se confirma tu pago recibes un correo con el link para descargar la app, con el método y tu plan ya generados adentro. La descargas desde el celular y la tienes a mano cada vez que vas a comer o a hacer las compras. Si no ves el correo, revisa spam o escríbenos por WhatsApp y te lo reenviamos.',
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
-    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Aquí no compras una dieta, compras un método: los 7 protocolos CALIBRA™ activan mecanismos naturales de saciedad y apetito para que el hambre baje sola, en vez de pedirte fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
+    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Aquí no compras una dieta, compras un método: los 7 protocolos trabajan juntos para que el hambre baje sola, en vez de pedirte fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',

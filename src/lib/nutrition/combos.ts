@@ -39,11 +39,18 @@ export interface Combo {
    *  se provoca. Nunca citar ingrediente, ordem de alimentos, fibra ou técnica —
    *  isso é o que ela compra pra descobrir. Só o efeito, em uma frase. */
   teaser: string
-  /** Por que o protocolo se chama assim. Uma linha curta, quase um slogan, que
-   *  faz o nome parecer inevitável em vez de arbitrário ("ah, agora faz
-   *  sentido"). É o que transforma o nome em marca memorável, então vale mais
-   *  ser elegante e vago do que preciso: não pode entregar a técnica. */
-  nameReason: string
+  /** A IDEIA que ela leva de graça, na página de vendas. Estrutura fixa:
+   *  afirmação surpreendente → por que isso acontece → "Por eso existe el
+   *  Protocolo X™". O objetivo é "que idea tan inteligente", não "já entendi,
+   *  não preciso comprar": entrega o PORQUÊ e nunca o COMO. Nada de ingrediente
+   *  (exceto LLENO, ver `revealedIngredient`), quantidade, ordem ou execução.
+   *  Também substitui um "por que o nome é esse": a frase final torna o nome
+   *  inevitável sem precisar de uma linha extra. */
+  insight: string
+  /** Só o LLENO quebra o padrão: mostra 1 ingrediente de verdade pra provar que
+   *  existe conhecimento real por trás, mantendo os outros bloqueados. A reação
+   *  buscada é "se um só faz isso, quero saber quais são os outros". */
+  revealedIngredient?: { name: string; emoji: string; note: string }
   moment: ComboMoment
   /** A instrução literal. Tem que caber em 10 segundos de execução.
    *  REGRA DURA: nunca citar um número (gramas, porções) que o plano gerado
@@ -75,7 +82,8 @@ export const COMBOS: Combo[] = [
     name: 'Candado',
     tagline: 'Cierras la cocina y no vuelves a abrirla',
     teaser: 'El protocolo que hace que la cocina deje de llamarte.',
-    nameReason: 'Porque hay una hora en la que todo se cierra.',
+    insight:
+      'El hambre con la que despiertas mañana ya se decidió esta noche. Una cena que sostiene de verdad cambia cuánta hambre tienes al día siguiente, no solo cuánta tienes ahora. Por eso existe el Protocolo CANDADO™.',
     moment: 'noche',
     action:
       'En la cena, prioriza tu fuente de proteína. Y antes de dormir, tu snack ya trae una grasa buena (aguacate, aceite de oliva o un puñado de nueces). Después de eso, la cocina está cerrada.',
@@ -93,7 +101,8 @@ export const COMBOS: Combo[] = [
     name: 'Arranque',
     tagline: 'Llegas al almuerzo sin desesperación',
     teaser: 'El protocolo que hace que tu primer bocado trabaje para ti.',
-    nameReason: 'Porque el día entero se decide en el primer minuto.',
+    insight:
+      'Tu cuerpo gasta energía solo en digerir lo que comes. Y no gasta lo mismo con todo: hay alimentos con los que gasta hasta seis veces más que con otros. Con cuál empiezas el día cambia cuánto quemas ese día. Por eso existe el Protocolo ARRANQUE™.',
     moment: 'mañana',
     action:
       'Empieza el desayuno por la proteína, siempre antes del carbohidrato. Tu plan ya te marca cuál es y cuánta te toca hoy.',
@@ -111,7 +120,13 @@ export const COMBOS: Combo[] = [
     name: 'Lleno',
     tagline: 'Cierra el hambre por horas, sin comer de más',
     teaser: 'El protocolo que retrasa el hambre durante horas.',
-    nameReason: 'Porque es la palabra exacta para lo que vas a sentir.',
+    insight:
+      'La chía absorbe muchas veces su peso en agua y forma un gel que hace que tu estómago se vacíe más lento. Ese gel es la razón por la que el hambre tarda horas en volver, en vez de una hora. Por eso existe el Protocolo LLENO™.',
+    revealedIngredient: {
+      name: 'Chía',
+      emoji: '🌱',
+      note: 'La chía no actúa sola. Es una pieza de una combinación específica, y las demás siguen bloqueadas.',
+    },
     moment: 'mañana',
     action:
       '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
@@ -130,7 +145,8 @@ export const COMBOS: Combo[] = [
     name: 'Inverso',
     tagline: 'Se acaba el bajón de las 3 de la tarde',
     teaser: 'El protocolo que cambia el resultado sin cambiar la comida.',
-    nameReason: 'Porque lo mismo, al revés, deja de ser lo mismo.',
+    insight:
+      'El mismo plato, con la misma cantidad, puede darte un pico de azúcar o no dártelo. La diferencia no está en lo que hay en el plato. Y ese pico es lo que te tira a las 3 de la tarde. Por eso existe el Protocolo INVERSO™.',
     moment: 'en la mesa',
     action:
       'Come en este orden dentro del mismo plato: primero la verdura, después la proteína, y el carbohidrato al final. Mismo plato, misma cantidad, otro orden.',
@@ -151,7 +167,8 @@ export const COMBOS: Combo[] = [
     // Fica mais misteriosa, mas "efecto rebote" é a dor que ela já nomeia
     // sozinha (efeito sanfona), então converte mais que o mistério aqui.
     teaser: 'El protocolo que ayuda a evitar el efecto rebote.',
-    nameReason: 'Porque hay algo tuyo que hay que proteger.',
+    insight:
+      'Cuando bajas de peso, no todo lo que baja es grasa. Y lo que se pierde de más es justamente lo que mantiene tu metabolismo funcionando, por eso el peso vuelve y vuelve más fácil. Por eso existe el Protocolo BLINDAJE™.',
     moment: 'todo el día',
     action:
       'Come la proteína de las 3 comidas, sin saltarte ninguna. Nunca todo el día ligero y la carga entera en la cena. Tu plan ya la reparte por ti.',
@@ -169,7 +186,8 @@ export const COMBOS: Combo[] = [
     name: 'Resistente',
     tagline: 'Comes arroz y pasta sin sentirte hinchada',
     teaser: 'El protocolo que hace que el arroz juegue a tu favor.',
-    nameReason: 'Porque hasta el arroz puede cambiar de bando.',
+    insight:
+      'Un mismo alimento puede cambiar por dentro sin que cambies nada de él: ni la cantidad, ni la receta. Una parte deja de comportarse como azúcar y pasa a comportarse como fibra. Por eso existe el Protocolo RESISTENTE™.',
     moment: 'en la mesa',
     action:
       'Cocina el arroz, la papa o la pasta y déjalos en la nevera mínimo 12 horas antes de comerlos. Puedes recalentarlos, el efecto se mantiene.',
@@ -187,7 +205,8 @@ export const COMBOS: Combo[] = [
     name: 'Anticipo',
     tagline: 'Comes menos sin estar controlándote',
     teaser: 'El protocolo que hace que tu cerebro llegue primero que tu hambre.',
-    nameReason: 'Porque llegar antes lo cambia todo.',
+    insight:
+      'Tu estómago tarda unos veinte minutos en avisarle a tu cerebro que ya comiste. En esos veinte minutos es cuando te sirves de más, y no es fuerza de voluntad: es un aviso que llega tarde. Por eso existe el Protocolo ANTICIPO™.',
     moment: 'antes de comer',
     action:
       '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',
