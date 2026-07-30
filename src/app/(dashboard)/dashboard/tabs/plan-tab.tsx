@@ -192,7 +192,7 @@ export function PlanTab({
                 {day.combo.letter}
               </span>
               <span className="text-[11px] font-bold uppercase tracking-wide text-primary">
-                Método CALIBRA · combo {day.combo.n} de 7 · hoy
+                Método CALIBRA · protocolo {day.combo.n} de 7 · hoy
               </span>
             </div>
             <p className="mt-1.5 font-display text-lg font-black text-foreground">
