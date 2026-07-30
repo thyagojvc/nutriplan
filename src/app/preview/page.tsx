@@ -1156,7 +1156,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
             title={<>Siempre en <Hl>tus manos</Hl></>}
-            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular, y ahí está el protocolo del día cada vez que abres la nevera."
+            subtitle="No recibes un PDF. Recibes el Método CALIBRA™ instalado en tu celular. Cada día tu app te muestra el protocolo que toca exactamente en ese momento. Tú solo abres, ejecutas y sigues con tu día."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
