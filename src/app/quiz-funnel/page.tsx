@@ -1,6 +1,7 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { LivePresence } from './live-presence'
-import { DeleteSessionButton } from './delete-session-button'
+import { IndividualsTable } from './individuals-table'
+import { OFFER_LABELS, STATUS_LABELS, DEVICE_LABELS, PLATFORM_LABELS } from './labels'
 
 const STEP_LABELS: Record<number, string> = {
   1:  'Alimentos favoritos',
@@ -60,25 +61,6 @@ function detectPlatformFromUA(ua: string): 'iOS' | 'Android' | 'Windows' | 'Mac'
 // depois dele aqui, mesmo não fazendo parte do VISIBLE_ORDER (não tem URL própria).
 // Atualizar aqui se a ordem do quiz mudar de novo.
 const VISIT_ORDER = [5, 1, 2, 6, 7, 4, 8, 9, 10, 11, 13, 12]
-
-const OFFER_LABELS: Record<string, string> = {
-  PLAN_BASIC: 'Só o plano · 7 dias',
-  PLAN_RECIPES: 'Plano + 28 Receitas Fitness',
-  PLAN_TRAINING: 'Plano + Receitas + Treino',
-  PLAN_STANDARD: 'Plano Standard (legado)',
-  TRAINING_BUMP: 'Bump Treino (legado)',
-  PLAN_4WEEKS: 'Transformación 4 semanas (legado)',
-}
-
-const STATUS_LABELS: Record<string, string> = {
-  pending: 'Pendiente',
-  paid: 'Pago',
-  generating: 'Generando',
-  needs_review: 'En revisión',
-  delivered: 'Entregado',
-  failed: 'Falló',
-  refunded: 'Reembolsado',
-}
 
 async function getFunnelData(sinceDate: string) {
   const supabase = createServiceClient()
@@ -410,9 +392,7 @@ export default async function QuizFunnelPage({
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
   const adRefRows = Object.entries(adRefCounts).sort((a, b) => b[1] - a[1])
-  const deviceLabels: Record<string, string> = { mobile: 'Celular', tablet: 'Tablet', desktop: 'Computador' }
   const deviceRows = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])
-  const platformLabels: Record<string, string> = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Otro' }
   const platformRows = Object.entries(platformCounts).sort((a, b) => b[1] - a[1])
   const checkoutDeviceRows = Object.entries(checkoutDeviceCounts).sort((a, b) => b[1] - a[1])
   const checkoutPlatformRows = Object.entries(checkoutPlatformCounts).sort((a, b) => b[1] - a[1])
@@ -733,7 +713,7 @@ export default async function QuizFunnelPage({
                 <td className="px-4 py-2.5 text-xs">{s.adRef}</td>
                 <td className="px-4 py-2.5 text-xs">{OFFER_LABELS[s.productCode] ?? s.productCode}</td>
                 <td className="px-4 py-2.5 text-xs">
-                  {s.platform ? (platformLabels[s.platform] ?? s.platform) : (s.device ? (deviceLabels[s.device] ?? s.device) : '—')}
+                  {s.platform ? (PLATFORM_LABELS[s.platform] ?? s.platform) : (s.device ? (DEVICE_LABELS[s.device] ?? s.device) : '—')}
                 </td>
                 <td className="px-4 py-2.5 text-xs">{STATUS_LABELS[s.status] ?? s.status}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold">
@@ -836,7 +816,7 @@ export default async function QuizFunnelPage({
             )}
             {deviceRows.map(([device, count]) => (
               <tr key={device} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-2.5 text-xs">{deviceLabels[device] ?? device}</td>
+                <td className="px-4 py-2.5 text-xs">{DEVICE_LABELS[device] ?? device}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {total > 0 ? Math.round((count / total) * 100) : 0}%
@@ -862,7 +842,7 @@ export default async function QuizFunnelPage({
             )}
             {platformRows.map(([platform, count]) => (
               <tr key={platform} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-2.5 text-xs">{platformLabels[platform] ?? platform}</td>
+                <td className="px-4 py-2.5 text-xs">{PLATFORM_LABELS[platform] ?? platform}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {total > 0 ? Math.round((count / total) * 100) : 0}%
@@ -888,7 +868,7 @@ export default async function QuizFunnelPage({
             )}
             {checkoutDeviceRows.map(([device, count]) => (
               <tr key={device} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-2.5 text-xs">{deviceLabels[device] ?? device}</td>
+                <td className="px-4 py-2.5 text-xs">{DEVICE_LABELS[device] ?? device}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {recentSales.length > 0 ? Math.round((count / recentSales.length) * 100) : 0}%
@@ -911,7 +891,7 @@ export default async function QuizFunnelPage({
             )}
             {checkoutPlatformRows.map(([platform, count]) => (
               <tr key={platform} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-2.5 text-xs">{platformLabels[platform] ?? platform}</td>
+                <td className="px-4 py-2.5 text-xs">{PLATFORM_LABELS[platform] ?? platform}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums">{count}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">
                   {recentSales.length > 0 ? Math.round((count / recentSales.length) * 100) : 0}%
@@ -925,84 +905,9 @@ export default async function QuizFunnelPage({
       {/* Todos os indivíduos — uma linha por sessão do período (sem limite de
           20/3 como as tabelas acima), com tudo que temos: ID completo, entrada
           no quiz (dispositivo/sistema/país/anúncio), até onde avançou, e (se
-          chegou a pedir) status/comprador/IP do checkout. */}
-      <div className="overflow-x-auto rounded-xl border border-border">
-        <div className="border-b border-border bg-muted/50 px-4 py-3">
-          <p className="text-sm font-semibold">Todos los individuos</p>
-          <p className="text-xs text-muted-foreground">Una fila por sesión del período · {allIndividuals.length} en total</p>
-        </div>
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-border bg-muted/30 text-left text-[10px] uppercase text-muted-foreground">
-              <th className="px-4 py-2 font-medium">ID</th>
-              <th className="px-4 py-2 font-medium">Fecha</th>
-              <th className="px-4 py-2 font-medium">Vivo</th>
-              <th className="px-4 py-2 font-medium">Anuncio</th>
-              <th className="px-4 py-2 font-medium">País</th>
-              <th className="px-4 py-2 font-medium">Dispositivo</th>
-              <th className="px-4 py-2 font-medium">Sistema</th>
-              <th className="px-4 py-2 font-medium">Último paso</th>
-              <th className="px-4 py-2 font-medium">Pedido</th>
-              <th className="px-4 py-2 font-medium">Producto</th>
-              <th className="px-4 py-2 font-medium">Comprador</th>
-              <th className="px-4 py-2 font-medium">IP</th>
-              <th className="px-4 py-2 text-right font-medium">Valor</th>
-              <th className="px-4 py-2 font-medium"></th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border">
-            {allIndividuals.length === 0 && (
-              <tr><td colSpan={14} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
-            )}
-            {allIndividuals.map((ind) => (
-              <tr key={ind.id} className="hover:bg-muted/30 transition-colors">
-                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground" title={ind.id}>
-                  {ind.id.slice(0, 8)}
-                </td>
-                <td className="px-4 py-2.5 text-xs text-muted-foreground whitespace-nowrap">
-                  {new Date(ind.createdAt).toLocaleString('pt-BR', {
-                    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
-                    timeZone: 'America/Sao_Paulo',
-                  })}
-                </td>
-                <td className="px-4 py-2.5">
-                  {ind.isLive && (
-                    <span className="flex items-center gap-1 rounded-full bg-green-100 px-1.5 py-0.5 text-[10px] font-semibold text-green-700 whitespace-nowrap">
-                      <span className="inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-green-500" />
-                      Vivo
-                    </span>
-                  )}
-                </td>
-                <td className="px-4 py-2.5 text-xs">{ind.adRef}</td>
-                <td className="px-4 py-2.5 font-mono text-xs">{ind.country}</td>
-                <td className="px-4 py-2.5 text-xs">{ind.device ? (deviceLabels[ind.device] ?? ind.device) : '—'}</td>
-                <td className="px-4 py-2.5 text-xs">{ind.platform ? (platformLabels[ind.platform] ?? ind.platform) : '—'}</td>
-                <td className="px-4 py-2.5 text-xs whitespace-nowrap">
-                  {ind.stepNum !== null && <span className="mr-1 font-mono text-[10px] text-muted-foreground/70">{ind.stepNum}·</span>}
-                  {ind.lastStep}
-                </td>
-                <td className="px-4 py-2.5 text-xs">{ind.orderStatus ? (STATUS_LABELS[ind.orderStatus] ?? ind.orderStatus) : '—'}</td>
-                <td className="px-4 py-2.5 text-xs">{ind.productCode ? (OFFER_LABELS[ind.productCode] ?? ind.productCode) : '—'}</td>
-                <td className="px-4 py-2.5 text-xs">
-                  {ind.buyerEmail ? (
-                    <>
-                      <p className="font-medium">{ind.buyerName?.trim() || 'Cliente'}</p>
-                      <p className="text-[10px] text-muted-foreground">{ind.buyerEmail}</p>
-                    </>
-                  ) : '—'}
-                </td>
-                <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{ind.ip ?? '—'}</td>
-                <td className="px-4 py-2.5 text-right tabular-nums font-semibold whitespace-nowrap">
-                  {ind.totalAmount !== null ? `${ind.currency} ${ind.totalAmount}` : '—'}
-                </td>
-                <td className="px-4 py-2.5 text-right">
-                  <DeleteSessionButton sessionId={ind.id} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+          chegou a pedir) status/comprador/IP do checkout. Seleção múltipla
+          (checkbox) pra apagar leads falsos/de teste em lote. */}
+      <IndividualsTable individuals={allIndividuals} />
     </div>
   )
 }
