@@ -1169,7 +1169,7 @@ export default function PreviewPage() {
 
             <div className="relative overflow-hidden rounded-[1.7rem] bg-black">
               <video
-                src="/app-nutriplan-demo.mp4"
+                src="/app-metodo-calibra-demo.mp4"
                 controls
                 playsInline
                 preload="metadata"
