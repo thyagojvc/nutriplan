@@ -996,7 +996,7 @@ export default function PreviewPage() {
               O card cortado na borda direita é a affordance de que tem mais.
               -mx-5/px-5 anula o padding do container pra o corte encostar na
               borda do bloco, senão o peek parece bug de layout. */}
-          <div className="-mx-5 flex snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+          <div className="-mx-5 flex items-start snap-x snap-mandatory gap-2.5 overflow-x-auto px-5 pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
             {RESULTS.slice(2).map(({ photo, name, country, age, result, w, h, quote }) => (
               <div
                 key={name}
