@@ -1155,8 +1155,8 @@ export default function PreviewPage() {
             párrafo de arriba, ahora mostrado, no solo dicho). */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
-            title={<>El método, en <Hl>una app</Hl></>}
-            subtitle="No es un PDF que se pierde en tus descargas. El método completo, siempre en la palma de tu mano, con el protocolo del día listo cada vez que abres la nevera."
+            title={<>Siempre en <Hl>tus manos</Hl></>}
+            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular, y ahí está el protocolo del día cada vez que abres la nevera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
