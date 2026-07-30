@@ -47,6 +47,33 @@ const ACTIVITY_LABEL: Record<string, string> = {
   muy_activo: 'Muy activo',
 }
 
+// Versão em prosa do nível de atividade — usada só na leitura interpretativa
+// de "Tu perfil" (ver buildProfileInsight). O card de cima já mostra o label
+// curto; aqui precisa soar como frase, não como etiqueta.
+const ACTIVITY_PROSE: Record<string, string> = {
+  sedentario: 'pasas la mayor parte del día sentada',
+  ligeramente_activo: 'te mueves algo, pero no entrenas seguido',
+  moderadamente_activo: 'entrenas varias veces por semana',
+  muy_activo: 'entrenas casi todos los días',
+}
+
+// A leitura que transforma os 4 dados isolados do card em UMA conclusão.
+// Regra: cruza pelo menos 2 variáveis reais (nunca repete 1 campo sozinho) e
+// termina contrastando com o número fixo que dietas genéricas empurram pra
+// qualquer pessoa — é o que faz a personalização parecer real, não decorativa.
+function buildProfileInsight(
+  activityLevel: string,
+  tdee: number,
+  targetCalories: number,
+): string {
+  // "1200 kcal" some de propósito: era específico demais pro caso de ganho de
+  // massa (onde targetCalories é superávit, não déficit), e viraria uma
+  // comparação sem sentido nesse cenário. O contraste com "número fijo" segue
+  // válido pros três objetivos sem prometer um valor que não se aplica a todos.
+  const activityProse = ACTIVITY_PROSE[activityLevel] ?? 'tu nivel de actividad es el que marcaste'
+  return `Como ${activityProse}, tu cuerpo gasta ${tdee} kcal solo para sostenerse, no las mismas que gastaría alguien con tu edad y tu peso pero otro nivel de actividad. De ahí, cruzado con tu objetivo, salió tu número real: ${targetCalories} kcal. No un número fijo que le dan a cualquiera, sin cruzar nada.`
+}
+
 // Cada obstáculo do step 11 reformulado como benefício (não repete a palavra
 // literal da opção do quiz). Usado no hero para conectar com o objetivo dela.
 const OBSTACLE_HERO_PHRASE: Record<string, string> = {
@@ -187,7 +214,7 @@ function ComboTease({ combo, benefit }: { combo: Combo; benefit: string }) {
       <div className="min-w-0 flex-1">
         <p className="text-[12.5px] font-bold leading-snug text-gray-900">{benefit}</p>
         <p className="mt-1 select-none text-[11px] font-semibold leading-snug text-primary/70 blur-[3px]">
-          Método CALIBRA™ · Protocolo {combo.letter} ({combo.name}): {combo.action}
+          Protocolo {combo.letter} ({combo.name}): {combo.action}
         </p>
         <p className="mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-primary">
           <Lock className="h-2.5 w-2.5" /> Protocolo bloqueado
@@ -658,17 +685,15 @@ export default function PreviewPage() {
     <PageShell>
       {/* ── Hero ──────────────────────────────────────────────── */}
       <div className="w-full max-w-lg px-4 pt-6 pb-5 text-center space-y-3">
-        {/* Badge de conclusão. Texto enxuto de propósito: com o peso de fonte
-            mais forte do site, a frase completa ("...ya está hecha · solo
-            para ti") não cabia numa linha só e o check ficava flutuando no
-            meio de 2 linhas. items-start é rede de segurança pra telas bem
-            estreitas onde ainda quebre. */}
+        {/* Badge de conclusão. Antes repetia literalmente a frase do h1 logo
+            abaixo ("Tu Calibración Metabólica..." duas vezes em 2 linhas) —
+            agora só confirma, sem repetir o nome da marca. */}
         <div className="inline-flex items-start gap-1.5 rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold text-white shadow-[0_4px_14px_rgba(15,110,86,0.25)]">
           <Check className="mt-0.5 h-3.5 w-3.5 shrink-0" strokeWidth={3} />
           {/* firstName nunca vem preenchido hoje (step12 parou de capturar nome,
               ver comentário em step12-form.tsx) — mantido pronto pra quando
               essa captura voltar, sem usar aqui pra não quebrar o texto. */}
-          Tu Calibración Metabólica, lista para ti
+          Análisis completo
         </div>
 
         {/* Hierarquia proposital: o RESULTADO dela vem primeiro (su Calibración
@@ -755,10 +780,11 @@ export default function PreviewPage() {
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
           Calculado solo para ti. Mira tu análisis completo abajo.
         </p>
-        {/* Hierarquia da marca, dita em uma frase: MÉTODO → CALIBRACIÓN → PLANO.
-            Sem isso a leitora acha que comprou uma dieta que veio com dicas. */}
+        {/* Hierarquia da marca (MÉTODO → CALIBRACIÓN → PLANO) sem repetir os
+            dois nomes de novo: badge, h1 e subhead da linha anterior já
+            nomearam os dois. Aqui só a ESTRUTURA, em palavras genéricas. */}
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Aplicamos el Método CALIBRA™ a tu cuerpo. De ahí salió tu Calibración Metabólica, y de ella, tu plan.
+          Así llega a tu plato: primero el método, después tus números, después tu comida.
         </p>
       </div>
 
@@ -851,6 +877,16 @@ export default function PreviewPage() {
               </div>
             </div>
           )}
+
+          {/* A leitura: sem isso o card só devolve o que ela mesma digitou no
+              quiz, e "isso não é interessante" (ela já sabe sua idade). Aqui
+              cruzamos as variáveis pra virar uma conclusão que ela não tinha
+              calculado sozinha. */}
+          {profile.activityLevel && (
+            <p className="border-t border-[#EAF2E6] pt-4 text-[13px] leading-relaxed text-gray-700">
+              {buildProfileInsight(profile.activityLevel, targets.tdee, targets.targetCalories)}
+            </p>
+          )}
         </Card>
 
         {/* ── Mecanismo: los 7 combos ─────────────────────────────
@@ -875,7 +911,7 @@ export default function PreviewPage() {
               Se uma frase deste bloco aumentar a compreensão em vez da
               curiosidade, ela está errada. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Las dietas te dan una lista de comidas y te piden aguantar. El Método CALIBRA™ no te pide
+            Las dietas te dan una lista de comidas y te piden aguantar. El método no te pide
             nada. Son siete protocolos, en distintos momentos de tu día, diseñados para ejecutarse
             juntos. No aguantas el hambre. El hambre baja sola.
           </p>
@@ -938,7 +974,7 @@ export default function PreviewPage() {
               + por que o nome é inevitável. Nunca a execução. */}
           <div>
             <p className="mb-2.5 text-[12px] leading-relaxed text-gray-700">
-              Los 7 Protocolos CALIBRA™ se ejecutan en un orden específico. Cada uno prepara el terreno
+              Los 7 protocolos se ejecutan en un orden específico. Cada uno prepara el terreno
               para el siguiente.
             </p>
             <div>
@@ -1008,7 +1044,7 @@ export default function PreviewPage() {
               ela compra é o efeito acumulado dos sete. */}
           <div className="rounded-xl bg-primary px-4 py-3.5 text-center">
             <p className="text-[13px] font-bold leading-snug text-white">
-              Ninguno de los siete funciona solo. El Método CALIBRA™ es lo que pasa cuando los siete se
+              Ninguno de los siete funciona solo. El método es lo que pasa cuando los siete se
               ejecutan juntos, en el orden en que fueron diseñados.
             </p>
             <p className="mt-2 text-[13px] font-bold leading-snug text-white/90">
@@ -1069,7 +1105,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Resultados reales con el Método CALIBRA™
+              Resultados reales
             </p>
             <p className="font-display text-base font-black text-gray-900">
               Así les fue a ellas
@@ -1121,7 +1157,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
             title={<>El método, en <Hl>una app</Hl></>}
-            subtitle="No es un PDF que se pierde en tus descargas. Se instala en tu celular con el ícono en la pantalla, y ahí está el protocolo del día cada vez que abres la nevera."
+            subtitle="No es un PDF que se pierde en tus descargas. El método completo, siempre en la palma de tu mano, con el protocolo del día listo cada vez que abres la nevera."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
@@ -1144,28 +1180,6 @@ export default function PreviewPage() {
               <div className="pointer-events-none absolute bottom-1.5 left-1/2 z-10 h-1 w-16 -translate-x-1/2 rounded-full bg-white/60" />
             </div>
           </div>
-        </div>
-
-        {/* Claim realista + ângulo anti-Ozempic. "Hasta 1 kg/semana" é ritmo
-            sustentável e defensável (não promete X kg), e o "sin Mounjaro ni
-            Ozempic" pega a onda cultural atual como diferencial. Sem garantia. */}
-        <div className="overflow-hidden rounded-2xl border border-primary/30 bg-primary/5 p-5 text-center space-y-2">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-primary">Sin inyecciones ni pastillas</p>
-          <p className="font-display text-[19px] font-black leading-snug text-gray-900">
-            Baja hasta <span className="text-primary">1 kg por semana</span>, sin Mounjaro ni Ozempic
-          </p>
-          {/* Compliance: fala do EFEITO buscado (apetite e adesão) por
-              alimentação, sem afirmar equivalência a medicamento nem prometer
-              resultado médico. Nada de "igual que", "sustituye" ou "mismo
-              efecto que" — isso viraria promessa médica. */}
-          <p className="text-sm leading-relaxed text-gray-700">
-            El control del apetito que hoy mucha gente busca en un medicamento es exactamente el terreno
-            en el que trabajan los 7 protocolos, pero con comida real y hábitos. Sin inyecciones, sin
-            pastillas y sin dejar de comer.
-          </p>
-          <p className="text-[11px] leading-relaxed text-[#B7C3B2]">
-            Ritmo estimado y sostenible. Los resultados varían según cada persona, su constancia y su punto de partida.
-          </p>
         </div>
 
         {/* Autoridade — reduzida ao essencial: foto pequena + nome + 1 frase +
@@ -1300,7 +1314,7 @@ export default function PreviewPage() {
                 o calendário, mesma linguagem visual da seção de resultados. */}
             <div>
               <p className="text-center text-[13px] leading-relaxed text-gray-700">
-                Tener los 7 protocolos no alcanza si los dejas a la mitad. Por eso el Método CALIBRA™ se entrega en dos partes:
+                Tener los 7 protocolos no alcanza si los dejas a la mitad. Por eso el método se entrega en dos partes:
               </p>
               <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                 <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
@@ -1312,9 +1326,11 @@ export default function PreviewPage() {
                     className="w-full aspect-[4/5] object-cover object-center"
                   />
                   <div className="p-3">
-                    <p className="text-[13px] font-bold text-gray-900">El plan: tus 7 secretos aplicados</p>
+                    {/* "secretos" era termo antigo, de antes do reposicionamento
+                        pra "protocolos" — ficou destoando do resto da página. */}
+                    <p className="text-[13px] font-bold text-gray-900">El plan: el método aplicado</p>
                     <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                      Cada día ya viene con el Método CALIBRA™ ejecutado: sabes exactamente qué protocolo toca hoy, sin adivinar nada.
+                      Cada día ya viene con el método ejecutado: sabes exactamente qué protocolo toca hoy, sin adivinar nada.
                     </p>
                     <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                   </div>
@@ -1341,7 +1357,7 @@ export default function PreviewPage() {
                 <p className="text-base font-black text-white">Tu transformación continua</p>
               </div>
               <p className="mt-2.5 text-center text-[13px] leading-relaxed text-gray-700">
-                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA™ es lo que te sostiene en el tiempo, y el calendario te muestra que está funcionando.
+                Un plan solo no alcanza, por eso las dietas se abandonan. El método es lo que te sostiene en el tiempo, y el calendario te muestra que está funcionando.
               </p>
             </div>
 
@@ -1561,7 +1577,7 @@ export default function PreviewPage() {
             Las dietas genéricas van a seguir estando ahí, pidiéndote fuerza de voluntad que ya sabes que no sostiene. Dentro de un mes, sin un método que calibre tu hambre, lo más probable es que sigas en el mismo lugar, buscando la próxima dieta que tampoco se va a ajustar a ti.
           </p>
           <p className="text-sm font-bold text-gray-800">
-            El Método CALIBRA™ existe para que esta vez sea diferente.
+            El método existe para que esta vez sea diferente.
           </p>
         </div>
 
@@ -1615,7 +1631,7 @@ const FAQ_ITEMS = [
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
-    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El Método CALIBRA™ tampoco agrega trabajo: cada protocolo toma 10 segundos y se aplica sobre la comida que ya ibas a hacer, no es una receta nueva. No necesitas más tiempo en la cocina, solo ejecutar el protocolo del día.',
+    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El método tampoco agrega trabajo: cada protocolo toma 10 segundos y se aplica sobre la comida que ya ibas a hacer, no es una receta nueva. No necesitas más tiempo en la cocina, solo ejecutar el protocolo del día.',
   },
   {
     q: '¿Hay suscripción o cobros recurrentes?',
