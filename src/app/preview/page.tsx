@@ -900,32 +900,34 @@ export default function PreviewPage() {
               ))}
             </div>
             <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
-              Siete protocolos. Una letra cada uno. En este orden, y no en otro. Juntos forman{' '}
+              Siete protocolos. Una letra cada uno. Juntos forman{' '}
               <strong className="font-bold text-primary">CALIBRA</strong>, que es justo lo que hacen
               contigo: <span className="font-bold text-primary">calibrar</span>te.
             </p>
           </div>
 
-          {/* Arquitetura do método, não estatística de venda. "1 orden" é o
-              sinal de sistema mais barato que existe: diz que a sequência é
-              projetada sem explicar por quê. */}
+          {/* Os 3 cards têm que ser da MESMA natureza: achado de estudo. Antes
+              misturavam contagem (7), conceito (1 orden) e pesquisa (2,5x) no
+              mesmo formato, e o "1" gigante não comunicava nada sozinho.
+              ATENÇÃO: o rodapé desta seção promete enviar os estudos por
+              e-mail. Não acrescentar número aqui sem ter o paper em mãos. */}
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
-              <p className="text-lg font-black leading-none text-primary">7</p>
+              <p className="text-lg font-black leading-none text-primary">30%</p>
               <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                protocolos propietarios
-              </p>
-            </div>
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
-              <p className="text-lg font-black leading-none text-primary">1</p>
-              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                orden, y no es intercambiable
+                de las calorías de la proteína se gastan solo en digerirla
               </p>
             </div>
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
               <p className="text-lg font-black leading-none text-primary">2,5x</p>
               <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
                 más grasa quemada frente al grupo control, en estudios clínicos
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
+              <p className="text-lg font-black leading-none text-primary">37%</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+                menos pico de azúcar comiendo lo mismo, solo cambiando el orden
               </p>
             </div>
           </div>
@@ -950,24 +952,23 @@ export default function PreviewPage() {
                   </div>
                   <div className="min-w-0 flex-1 pb-2">
                     <div className="rounded-xl border border-[#D8E8D4] bg-white p-3">
+                      {/* Sem o emoji do combo aqui de propósito: no CANDADO
+                          (🔒) ele colidia com o ícone de cadeado, dois símbolos
+                          iguais com sentidos diferentes no mesmo card. A letra
+                          do trilho já identifica o protocolo. */}
                       <div className="flex items-start gap-2">
-                        <div className="min-w-0 flex-1">
-                          <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
-                            {c.emoji} {c.name}
-                            <span className="align-super text-[8px] font-bold text-primary">™</span>
-                          </p>
-                          <p className="mt-0.5 text-[12px] font-semibold leading-snug text-gray-700">
-                            {c.teaser}
-                          </p>
-                        </div>
+                        <p className="min-w-0 flex-1 text-[13px] font-black uppercase tracking-wider text-gray-900">
+                          {c.name}
+                          <span className="align-super text-[8px] font-bold text-primary">™</span>
+                        </p>
                         <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/50" />
                       </div>
 
-                      {/* A ideia de graça: o porquê, nunca o como. É o que faz
-                          ela pensar "existe conhecimento real aqui" antes do
-                          preço. */}
-                      <p className="mt-2 border-t border-[#EAF2E6] pt-2 text-[11.5px] leading-relaxed text-muted-foreground">
-                        {c.insight}
+                      {/* Ideia e efeito num texto só. Antes eram duas linhas
+                          (uma em negrito, uma cinza) e o negrito ficava na
+                          frase intercambiável, não na interessante. */}
+                      <p className="mt-1 text-[12.5px] leading-relaxed text-gray-700">
+                        {c.teaser}
                       </p>
 
                       {/* Quebra de padrão do LLENO: 1 ingrediente revelado,
