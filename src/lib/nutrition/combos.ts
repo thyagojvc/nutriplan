@@ -12,6 +12,10 @@
 // escasez de tiempo (ver .agents/product-marketing.md), así que ningún combo
 // puede costar tiempo de cocina.
 //
+// Na PÁGINA DE VENDAS os combos se chamam "Protocolos CALIBRA™" e aparecem só
+// com nome + `teaser` (efeito, sem explicação). `action`, `secret`, `why` e
+// `science` são conteúdo pós-compra: nunca renderizar nítido antes do checkout.
+//
 // Todos los efectos aquí son reales y defendibles. El envoltorio es apelativo,
 // el contenido no está inventado — es lo que mantiene el reembolso en cero. Al
 // editar el texto de un combo, el campo `science` es el límite: no prometas
@@ -29,8 +33,12 @@ export interface Combo {
   letter: string
   /** Nome curto, o que ela repete pra amiga. */
   name: string
-  /** O que ela SENTE. Benefício, nunca mecanismo. */
+  /** O que ela SENTE. Benefício, nunca mecanismo. Usado DENTRO do produto. */
   tagline: string
+  /** Linha da PÁGINA DE VENDAS. Regra oposta à do tagline: aqui não se explica,
+   *  se provoca. Nunca citar ingrediente, ordem de alimentos, fibra ou técnica —
+   *  isso é o que ela compra pra descobrir. Só o efeito, em uma frase. */
+  teaser: string
   moment: ComboMoment
   /** A instrução literal. Tem que caber em 10 segundos de execução.
    *  REGRA DURA: nunca citar um número (gramas, porções) que o plano gerado
@@ -61,6 +69,7 @@ export const COMBOS: Combo[] = [
     letter: 'C',
     name: 'Candado',
     tagline: 'Cierras la cocina y no vuelves a abrirla',
+    teaser: 'El protocolo que hace que la cocina deje de llamarte.',
     moment: 'noche',
     action:
       'En la cena, prioriza tu fuente de proteína. Y antes de dormir, tu snack ya trae una grasa buena (aguacate, aceite de oliva o un puñado de nueces). Después de eso, la cocina está cerrada.',
@@ -77,6 +86,7 @@ export const COMBOS: Combo[] = [
     letter: 'A',
     name: 'Arranque',
     tagline: 'Llegas al almuerzo sin desesperación',
+    teaser: 'El protocolo que hace que tu primer bocado trabaje para ti.',
     moment: 'mañana',
     action:
       'Empieza el desayuno por la proteína, siempre antes del carbohidrato. Tu plan ya te marca cuál es y cuánta te toca hoy.',
@@ -93,6 +103,7 @@ export const COMBOS: Combo[] = [
     letter: 'L',
     name: 'Lleno',
     tagline: 'Cierra el hambre por horas, sin comer de más',
+    teaser: 'El protocolo que retrasa el hambre durante horas.',
     moment: 'mañana',
     action:
       '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
@@ -110,6 +121,7 @@ export const COMBOS: Combo[] = [
     letter: 'I',
     name: 'Inverso',
     tagline: 'Se acaba el bajón de las 3 de la tarde',
+    teaser: 'El protocolo que cambia el resultado sin cambiar la comida.',
     moment: 'en la mesa',
     action:
       'Come en este orden dentro del mismo plato: primero la verdura, después la proteína, y el carbohidrato al final. Mismo plato, misma cantidad, otro orden.',
@@ -126,6 +138,10 @@ export const COMBOS: Combo[] = [
     letter: 'B',
     name: 'Blindaje',
     tagline: 'Pierdes grasa, no el músculo que sostiene tu metabolismo',
+    // Alternativa avaliada: "El protocolo que protege lo que te hace bajar."
+    // Fica mais misteriosa, mas "efecto rebote" é a dor que ela já nomeia
+    // sozinha (efeito sanfona), então converte mais que o mistério aqui.
+    teaser: 'El protocolo que ayuda a evitar el efecto rebote.',
     moment: 'todo el día',
     action:
       'Come la proteína de las 3 comidas, sin saltarte ninguna. Nunca todo el día ligero y la carga entera en la cena. Tu plan ya la reparte por ti.',
@@ -142,6 +158,7 @@ export const COMBOS: Combo[] = [
     letter: 'R',
     name: 'Resistente',
     tagline: 'Comes arroz y pasta sin sentirte hinchada',
+    teaser: 'El protocolo que hace que el arroz juegue a tu favor.',
     moment: 'en la mesa',
     action:
       'Cocina el arroz, la papa o la pasta y déjalos en la nevera mínimo 12 horas antes de comerlos. Puedes recalentarlos, el efecto se mantiene.',
@@ -158,6 +175,7 @@ export const COMBOS: Combo[] = [
     letter: 'A',
     name: 'Anticipo',
     tagline: 'Comes menos sin estar controlándote',
+    teaser: 'El protocolo que hace que tu cerebro llegue primero que tu hambre.',
     moment: 'antes de comer',
     action:
       '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',

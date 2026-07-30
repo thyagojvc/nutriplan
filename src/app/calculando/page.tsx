@@ -28,7 +28,7 @@ const FALLBACK_PHASES = [
   'Adaptando a tus restricciones alimentarias…',
   'Seleccionando tus alimentos favoritos…',
   'Armando tu plan de 7 días…',
-  '¡Tu NutriPlan está listo!',
+  '¡Tu Calibración Metabólica está lista!',
 ]
 
 // Injeta os dados reais da sessão nas frases — reforça que o cálculo é
@@ -72,7 +72,7 @@ function buildPersonalizedPhases(): string[] {
     `Adaptando a tus restricciones alimentarias${restriccionesDetail}…`,
     `Seleccionando tus alimentos favoritos${alimentosDetail}…`,
     'Armando tu plan de 7 días…',
-    '¡Tu NutriPlan está listo!',
+    '¡Tu Calibración Metabólica está lista!',
   ]
 }
 

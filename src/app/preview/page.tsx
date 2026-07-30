@@ -187,10 +187,10 @@ function ComboTease({ combo, benefit }: { combo: Combo; benefit: string }) {
       <div className="min-w-0 flex-1">
         <p className="text-[12.5px] font-bold leading-snug text-gray-900">{benefit}</p>
         <p className="mt-1 select-none text-[11px] font-semibold leading-snug text-primary/70 blur-[3px]">
-          Método CALIBRA · Combo {combo.letter} ({combo.name}): {combo.action}
+          Método CALIBRA™ · Protocolo {combo.letter} ({combo.name}): {combo.action}
         </p>
         <p className="mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-primary">
-          <Lock className="h-2.5 w-2.5" /> Se revela completo en tu app
+          <Lock className="h-2.5 w-2.5" /> Protocolo bloqueado
         </p>
       </div>
     </div>
@@ -264,8 +264,8 @@ function TeaserThumb({ food, blurred }: { food: string; blurred?: boolean }) {
 // comboForDay em generate.ts), mas a combinação em si é a que de fato se aplica
 // a esse tipo de refeição no ciclo real.
 const MEAL_TEASE: Record<string, { comboId: string; benefit: string }> = {
-  Desayuno: { comboId: 'lleno', benefit: 'Esta combinación cierra tu hambre por horas, sin que tengas que comer de más.' },
-  Almuerzo: { comboId: 'inverso', benefit: 'Esta combinación evita el bajón de las 3 de la tarde que te manda directo a picar algo.' },
+  Desayuno: { comboId: 'lleno', benefit: 'Este protocolo cierra tu hambre por horas, sin que tengas que comer de más.' },
+  Almuerzo: { comboId: 'inverso', benefit: 'Este protocolo evita el bajón de las 3 de la tarde que te manda directo a picar algo.' },
 }
 
 type ErrorKind = 'no_session' | 'calc_failed' | 'network'
@@ -671,12 +671,16 @@ export default function PreviewPage() {
           Tu Calibración Metabólica, lista para ti
         </div>
 
-        {/* Headline tangibiliza el producto (el plan calculado); la sub-headline
-            dice el objetivo/para quién es. No vendemos una transformación
-            genérica, vendemos el plan concreto que ya está armado. */}
+        {/* Hierarquia proposital: o RESULTADO dela vem primeiro (su Calibración
+            ya está lista), e logo abaixo a assinatura do método que a gerou.
+            O protagonista da página é o Método CALIBRA™; el plan es apenas la
+            forma en que el método se ejecuta. */}
         <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
-          Tu <span className="text-primary">Método CALIBRA</span>, calculado para tu cuerpo
+          Tu Calibración Metabólica está lista.
         </h1>
+        <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-primary">
+          Generada con el Método CALIBRA™
+        </p>
         <p className="text-sm font-semibold text-gray-700">
           {heroSubheadline.prefix}
           {heroSubheadline.highlight && (
@@ -752,7 +756,7 @@ export default function PreviewPage() {
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          Ya está todo armado por ti. No tienes que calcular ni decidir nada: el Método CALIBRA ya hizo el trabajo, solo abres tu plan y sigues las 7 combinaciones.
+          No tienes que calcular ni decidir nada. El Método CALIBRA™ ya hizo el trabajo: abres tu plan y ejecutas el protocolo del día.
         </p>
       </div>
 
@@ -888,18 +892,21 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1.5 text-center">
             <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
-              <Flame className="h-3 w-3" /> El mecanismo
+              <Flame className="h-3 w-3" /> El método
             </p>
             <p className="font-display text-xl font-black leading-tight text-gray-900">
-              No es que comas menos. Es que dejas de tener hambre.
+              No es una dieta. Es un método.
             </p>
           </div>
 
+          {/* Posicionamento: o produto é o MÉTODO. O plano é a forma de
+              executá-lo. Nada aqui explica COMO funciona cada protocolo — a
+              explicação é o produto entregue após a compra. Aqui se vende el
+              efecto y se abre el loop. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Todas las dietas que probaste fallaron por lo mismo: te pedían aguantar. La Calibración
-            Metabólica no te pide aguantar nada. Combina tus alimentos de una forma específica para que
-            el hambre baje sola. Y cuando el hambre baja, comes menos sin proponértelo, sin contar nada
-            y sin pelear contigo misma.
+            Las dietas te dan una lista de comidas y te piden aguantar. El Método CALIBRA™ hace algo
+            distinto: activa mecanismos naturales de tu cuerpo relacionados con la saciedad, el apetito
+            y el metabolismo. No aguantas el hambre. El hambre baja sola.
           </p>
 
           {/* Revelação do acrônimo ANTES da lista: ela precisa saber que o
@@ -907,7 +914,7 @@ export default function PreviewPage() {
               lista de dicas soltas em vez de um sistema fechado. */}
           <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] px-4 py-3.5 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              A ese método lo llamamos
+              Siete protocolos. Una palabra.
             </p>
             <div className="mt-2 flex justify-center gap-1.5">
               {COMBOS.map((c) => (
@@ -920,17 +927,18 @@ export default function PreviewPage() {
               ))}
             </div>
             <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
-              Una letra por combinación. Las 7 juntas forman <strong className="font-bold text-primary">CALIBRA</strong>: el nombre nace de tu{' '}
-              <span className="font-bold text-primary">Calibra</span>ción{' '}
-              <span className="font-bold text-primary">Metabol</span>ica, porque eso es justo lo que hacen. Calibran tu hambre y aceleran tu metabolismo, día a día.
+              Cada protocolo aporta su letra. Los 7 juntos forman{' '}
+              <strong className="font-bold text-primary">CALIBRA</strong>, que es exactamente lo que
+              hacen con tu cuerpo: <span className="font-bold text-primary">calibrar</span>lo. Nada de
+              esto es casualidad. Es un sistema, y está cerrado.
             </p>
           </div>
 
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
-              <p className="text-lg font-black leading-none text-primary">30%</p>
+              <p className="text-lg font-black leading-none text-primary">7</p>
               <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                de las calorías de la proteína se gastan solo en digerirla
+                protocolos propietarios, uno por día
               </p>
             </div>
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
@@ -940,24 +948,31 @@ export default function PreviewPage() {
               </p>
             </div>
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
-              <p className="text-lg font-black leading-none text-primary">7</p>
+              <p className="text-lg font-black leading-none text-primary">10 s</p>
               <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                combinaciones, una por día, de 10 segundos cada una
+                es todo lo que toma ejecutar el protocolo del día
               </p>
             </div>
           </div>
 
+          {/* Cada protocolo é um MÓDULO trancado, não um item de lista: nome +
+              marca registrada + efeito, e nada mais. O que ele faz por dentro
+              não se conta aqui — é o que ela desbloqueia al comprar. */}
           <div className="space-y-2">
             {COMBOS.map((c) => (
-              <div key={c.id} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-white p-3">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-[13px] font-black text-white">
+              <div
+                key={c.id}
+                className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-white p-3"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white">
                   {c.letter}
                 </span>
                 <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-bold text-gray-900">
+                  <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
                     {c.emoji} {c.name}
+                    <span className="align-super text-[8px] font-bold text-primary">™</span>
                   </p>
-                  <p className="text-[12px] leading-snug text-muted-foreground">{c.tagline}</p>
+                  <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{c.teaser}</p>
                 </div>
                 <Lock className="h-3.5 w-3.5 shrink-0 text-primary/50" />
               </div>
@@ -966,8 +981,8 @@ export default function PreviewPage() {
 
           <div className="rounded-xl bg-primary px-4 py-3.5 text-center">
             <p className="text-[13px] font-bold leading-snug text-white">
-              No tienes que memorizar ninguna. Cada día tu app te muestra la combinación de ese día,
-              con la cantidad exacta y el momento en que se toma.
+              Cómo se ejecuta cada protocolo está dentro del método. Tu app te lo muestra el día que
+              toca, ya calculado para ti. No tienes que entenderlo. Tienes que hacerlo.
             </p>
           </div>
 
@@ -1097,7 +1112,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            La Calibración Metabólica fue desarrollada bajo la orientación de una profesional de la nutrición: un método de 7 combinaciones (CALIBRA) diseñado para adaptar tu alimentación a tus objetivos, tus antojos y tu rutina real.
+            El Método CALIBRA™ fue desarrollado bajo la orientación de una profesional de la nutrición: 7 protocolos propietarios que adaptan tu alimentación a tus objetivos, tus antojos y tu rutina real. Tu Calibración Metabólica es ese método aplicado a tu cuerpo.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
@@ -1134,9 +1149,9 @@ export default function PreviewPage() {
           <SectionHeading title={<>Así de <Hl>fácil</Hl> es</>} subtitle="Cuatro pasos. Nada más." />
           <div className="space-y-2.5">
             {[
-              { n: 1, text: 'Adquieres el Método CALIBRA' },
+              { n: 1, text: 'Desbloqueas el Método CALIBRA™' },
               { n: 2, text: 'Descargas la app en tu celular' },
-              { n: 3, text: 'Ves y ejecutas la combinación del día' },
+              { n: 3, text: 'Ejecutas el protocolo del día' },
               { n: 4, text: 'Sientes los resultados desde los primeros días' },
             ].map(({ n, text }) => (
               <div key={n} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] px-3.5 py-3">
@@ -1174,8 +1189,8 @@ export default function PreviewPage() {
                   <Check className="h-3.5 w-3.5" strokeWidth={3} />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-gray-900">Funciona con el Método CALIBRA™</p>
-                  <p className="text-[13px] text-muted-foreground">7 combinaciones diarias validadas por María Fernanda, para que tu cuerpo pida menos comida en vez de que tú se lo prohíbas</p>
+                  <p className="text-sm font-bold text-gray-900">Acceso al Método CALIBRA™</p>
+                  <p className="text-[13px] text-muted-foreground">Los 7 protocolos completos, validados por María Fernanda, para que tu cuerpo pida menos comida en vez de que tú se lo prohíbas</p>
                 </div>
               </div>
               <div className="flex justify-center gap-1.5">
@@ -1204,7 +1219,7 @@ export default function PreviewPage() {
                 o calendário, mesma linguagem visual da seção de resultados. */}
             <div>
               <p className="text-center text-[13px] leading-relaxed text-gray-700">
-                Saber las 7 combinaciones no alcanza si las dejas a la mitad. Por eso tu Calibración Metabólica viene en dos partes:
+                Tener los 7 protocolos no alcanza si los dejas a la mitad. Por eso el Método CALIBRA™ se entrega en dos partes:
               </p>
               <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                 <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
@@ -1218,7 +1233,7 @@ export default function PreviewPage() {
                   <div className="p-3">
                     <p className="text-[13px] font-bold text-gray-900">El plan: tus 7 secretos aplicados</p>
                     <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                      Cada día ya viene con el Método CALIBRA ejecutado: sabes exactamente qué combinación toca hoy, sin adivinar nada.
+                      Cada día ya viene con el Método CALIBRA™ ejecutado: sabes exactamente qué protocolo toca hoy, sin adivinar nada.
                     </p>
                     <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                   </div>
@@ -1234,7 +1249,7 @@ export default function PreviewPage() {
                   <div className="p-3">
                     <p className="text-[13px] font-bold text-gray-900">El calendario: para no abandonar</p>
                     <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                      Marcas cada día que cumples tus combinaciones. Es lo que hace que el método se sostenga las 4 semanas, no solo los primeros días.
+                      Marcas cada día que ejecutas tu protocolo. Es lo que hace que el método se sostenga las 4 semanas, no solo los primeros días.
                     </p>
                     <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
                   </div>
@@ -1245,7 +1260,7 @@ export default function PreviewPage() {
                 <p className="text-base font-black text-white">Tu transformación continua</p>
               </div>
               <p className="mt-2.5 text-center text-[13px] leading-relaxed text-gray-700">
-                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA es lo que te sostiene en el tiempo, y el calendario te muestra que está funcionando.
+                Un plan solo no alcanza, por eso las dietas se abandonan. El Método CALIBRA™ es lo que te sostiene en el tiempo, y el calendario te muestra que está funcionando.
               </p>
             </div>
 
@@ -1258,10 +1273,10 @@ export default function PreviewPage() {
                   // outros (não é um pacote de PDFs soltos). "Panel" era palavra
                   // nossa, não dela.
                   { item: 'Tu app con tu Calibración Metabólica instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
-                  { item: 'El Método CALIBRA: tus 7 combinaciones diarias', note: 'una por día, con la cantidad exacta y el momento en que se toma' },
+                  { item: 'El Método CALIBRA™: los 7 protocolos, desbloqueados', note: 'uno por día, ya calculado para ti, listo para ejecutar' },
                   { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
                   { item: 'Tu calendario para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
-                  { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA' },
+                  { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA™' },
                   { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
                   { item: 'Bono: Guía Anti-Celulitis', note: null },
                   { item: 'Calendario descargable para imprimir', note: null },
@@ -1291,7 +1306,7 @@ export default function PreviewPage() {
                   'No tienes tiempo para armar tu propia dieta desde cero',
                   'Ya probaste dietas genéricas que no se ajustaron a ti',
                   'Prefieres un plan que se adapte a tus antojos, no al revés',
-                  'Te interesa un método con mecanismo propio (las 7 combinaciones CALIBRA), no una lista de comidas sin explicación',
+                  'Quieres un método propietario (los 7 protocolos CALIBRA™), no una lista de comidas más',
                 ].map((t) => (
                   <li key={t} className="flex items-start gap-2 text-[13px] text-gray-700">
                     <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={3} />
@@ -1418,7 +1433,7 @@ export default function PreviewPage() {
             Las dietas genéricas van a seguir estando ahí, pidiéndote fuerza de voluntad que ya sabes que no sostiene. Dentro de un mes, sin un método que calibre tu hambre, lo más probable es que sigas en el mismo lugar, buscando la próxima dieta que tampoco se va a ajustar a ti.
           </p>
           <p className="text-sm font-bold text-gray-800">
-            El Método CALIBRA existe para que esta vez sea diferente.
+            El Método CALIBRA™ existe para que esta vez sea diferente.
           </p>
         </div>
 
@@ -1468,11 +1483,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
-    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Tu plan viene con el Método CALIBRA: 7 combinaciones (una por día) que hacen que el hambre baje sola, en vez de pedirte que la aguantes con fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
+    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Aquí no compras una dieta, compras un método: los 7 protocolos CALIBRA™ activan mecanismos naturales de saciedad y apetito para que el hambre baje sola, en vez de pedirte fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
-    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El Método CALIBRA tampoco agrega trabajo: cada combinación toma 10 segundos (por ejemplo, tomar tu mezcla o cambiar el orden en que comes), no una receta nueva. No necesitas más tiempo en la cocina, solo seguir la combinación del día.',
+    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El Método CALIBRA™ tampoco agrega trabajo: cada protocolo toma 10 segundos y se aplica sobre la comida que ya ibas a hacer, no es una receta nueva. No necesitas más tiempo en la cocina, solo ejecutar el protocolo del día.',
   },
   {
     q: '¿Hay suscripción o cobros recurrentes?',
