@@ -39,6 +39,11 @@ export interface Combo {
    *  se provoca. Nunca citar ingrediente, ordem de alimentos, fibra ou técnica —
    *  isso é o que ela compra pra descobrir. Só o efeito, em uma frase. */
   teaser: string
+  /** Por que o protocolo se chama assim. Uma linha curta, quase um slogan, que
+   *  faz o nome parecer inevitável em vez de arbitrário ("ah, agora faz
+   *  sentido"). É o que transforma o nome em marca memorável, então vale mais
+   *  ser elegante e vago do que preciso: não pode entregar a técnica. */
+  nameReason: string
   moment: ComboMoment
   /** A instrução literal. Tem que caber em 10 segundos de execução.
    *  REGRA DURA: nunca citar um número (gramas, porções) que o plano gerado
@@ -70,6 +75,7 @@ export const COMBOS: Combo[] = [
     name: 'Candado',
     tagline: 'Cierras la cocina y no vuelves a abrirla',
     teaser: 'El protocolo que hace que la cocina deje de llamarte.',
+    nameReason: 'Porque hay una hora en la que todo se cierra.',
     moment: 'noche',
     action:
       'En la cena, prioriza tu fuente de proteína. Y antes de dormir, tu snack ya trae una grasa buena (aguacate, aceite de oliva o un puñado de nueces). Después de eso, la cocina está cerrada.',
@@ -87,6 +93,7 @@ export const COMBOS: Combo[] = [
     name: 'Arranque',
     tagline: 'Llegas al almuerzo sin desesperación',
     teaser: 'El protocolo que hace que tu primer bocado trabaje para ti.',
+    nameReason: 'Porque el día entero se decide en el primer minuto.',
     moment: 'mañana',
     action:
       'Empieza el desayuno por la proteína, siempre antes del carbohidrato. Tu plan ya te marca cuál es y cuánta te toca hoy.',
@@ -104,6 +111,7 @@ export const COMBOS: Combo[] = [
     name: 'Lleno',
     tagline: 'Cierra el hambre por horas, sin comer de más',
     teaser: 'El protocolo que retrasa el hambre durante horas.',
+    nameReason: 'Porque es la palabra exacta para lo que vas a sentir.',
     moment: 'mañana',
     action:
       '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
@@ -122,6 +130,7 @@ export const COMBOS: Combo[] = [
     name: 'Inverso',
     tagline: 'Se acaba el bajón de las 3 de la tarde',
     teaser: 'El protocolo que cambia el resultado sin cambiar la comida.',
+    nameReason: 'Porque lo mismo, al revés, deja de ser lo mismo.',
     moment: 'en la mesa',
     action:
       'Come en este orden dentro del mismo plato: primero la verdura, después la proteína, y el carbohidrato al final. Mismo plato, misma cantidad, otro orden.',
@@ -142,6 +151,7 @@ export const COMBOS: Combo[] = [
     // Fica mais misteriosa, mas "efecto rebote" é a dor que ela já nomeia
     // sozinha (efeito sanfona), então converte mais que o mistério aqui.
     teaser: 'El protocolo que ayuda a evitar el efecto rebote.',
+    nameReason: 'Porque hay algo tuyo que hay que proteger.',
     moment: 'todo el día',
     action:
       'Come la proteína de las 3 comidas, sin saltarte ninguna. Nunca todo el día ligero y la carga entera en la cena. Tu plan ya la reparte por ti.',
@@ -159,6 +169,7 @@ export const COMBOS: Combo[] = [
     name: 'Resistente',
     tagline: 'Comes arroz y pasta sin sentirte hinchada',
     teaser: 'El protocolo que hace que el arroz juegue a tu favor.',
+    nameReason: 'Porque hasta el arroz puede cambiar de bando.',
     moment: 'en la mesa',
     action:
       'Cocina el arroz, la papa o la pasta y déjalos en la nevera mínimo 12 horas antes de comerlos. Puedes recalentarlos, el efecto se mantiene.',
@@ -176,6 +187,7 @@ export const COMBOS: Combo[] = [
     name: 'Anticipo',
     tagline: 'Comes menos sin estar controlándote',
     teaser: 'El protocolo que hace que tu cerebro llegue primero que tu hambre.',
+    nameReason: 'Porque llegar antes lo cambia todo.',
     moment: 'antes de comer',
     action:
       '20 minutos antes del almuerzo o de la cena: un vaso grande de agua más una porción pequeña de proteína (un huevo, una cucharada de yogur griego, unas lonchas de pavo).',

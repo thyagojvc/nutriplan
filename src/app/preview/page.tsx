@@ -755,8 +755,10 @@ export default function PreviewPage() {
         <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
           Calculado solo para ti con la <span className="font-semibold text-gray-700">Calibración Metabólica™</span>. Mira tu análisis completo abajo.
         </p>
+        {/* Hierarquia da marca, dita em uma frase: MÉTODO → CALIBRACIÓN → PLANO.
+            Sem isso a leitora acha que comprou uma dieta que veio com dicas. */}
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
-          No tienes que calcular ni decidir nada. El Método CALIBRA™ ya hizo el trabajo: abres tu plan y ejecutas el protocolo del día.
+          Aplicamos el Método CALIBRA™ a tu cuerpo. De ahí salió tu Calibración Metabólica, y de ella, tu plan.
         </p>
       </div>
 
@@ -900,21 +902,24 @@ export default function PreviewPage() {
           </div>
 
           {/* Posicionamento: o produto é o MÉTODO. O plano é a forma de
-              executá-lo. Nada aqui explica COMO funciona cada protocolo — a
-              explicação é o produto entregue após a compra. Aqui se vende el
-              efecto y se abre el loop. */}
+              executá-lo. Nada aqui explica COMO funciona — a explicação é o
+              produto entregue após a compra. Aqui se vende sistema e mistério.
+              Se uma frase deste bloco aumentar a compreensão em vez da
+              curiosidade, ela está errada. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Las dietas te dan una lista de comidas y te piden aguantar. El Método CALIBRA™ hace algo
-            distinto: activa mecanismos naturales de tu cuerpo relacionados con la saciedad, el apetito
-            y el metabolismo. No aguantas el hambre. El hambre baja sola.
+            Las dietas te dan una lista de comidas y te piden aguantar. El Método CALIBRA™ no te pide
+            nada. Son siete protocolos, en distintos momentos de tu día, diseñados para ejecutarse
+            juntos. No aguantas el hambre. El hambre baja sola.
           </p>
 
           {/* Revelação do acrônimo ANTES da lista: ela precisa saber que o
               método tem nome antes de ler os 7 itens, senão a lista vira uma
-              lista de dicas soltas em vez de um sistema fechado. */}
+              lista de dicas soltas em vez de um sistema fechado. A leitura é de
+              cima pra baixo (a palavra existe, os protocolos a preenchem), não
+              de baixo pra cima — senão CALIBRA vira anagrama, não arquitetura. */}
           <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] px-4 py-3.5 text-center">
             <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              Siete protocolos. Una palabra.
+              No se llama CALIBRA por casualidad
             </p>
             <div className="mt-2 flex justify-center gap-1.5">
               {COMBOS.map((c) => (
@@ -927,18 +932,26 @@ export default function PreviewPage() {
               ))}
             </div>
             <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
-              Cada protocolo aporta su letra. Los 7 juntos forman{' '}
-              <strong className="font-bold text-primary">CALIBRA</strong>, que es exactamente lo que
-              hacen con tu cuerpo: <span className="font-bold text-primary">calibrar</span>lo. Nada de
-              esto es casualidad. Es un sistema, y está cerrado.
+              Siete protocolos. Una letra cada uno. En este orden, y no en otro. Juntos forman{' '}
+              <strong className="font-bold text-primary">CALIBRA</strong>, que es justo lo que hacen
+              contigo: <span className="font-bold text-primary">calibrar</span>te.
             </p>
           </div>
 
+          {/* Arquitetura do método, não estatística de venda. "1 orden" é o
+              sinal de sistema mais barato que existe: diz que a sequência é
+              projetada sem explicar por quê. */}
           <div className="grid grid-cols-3 gap-2">
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
               <p className="text-lg font-black leading-none text-primary">7</p>
               <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                protocolos propietarios, uno por día
+                protocolos propietarios
+              </p>
+            </div>
+            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
+              <p className="text-lg font-black leading-none text-primary">1</p>
+              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
+                orden, y no es intercambiable
               </p>
             </div>
             <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
@@ -947,42 +960,57 @@ export default function PreviewPage() {
                 más grasa quemada frente al grupo control, en estudios clínicos
               </p>
             </div>
-            <div className="rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] p-2.5 text-center">
-              <p className="text-lg font-black leading-none text-primary">10 s</p>
-              <p className="mt-1 text-[10px] leading-tight text-muted-foreground">
-                es todo lo que toma ejecutar el protocolo del día
-              </p>
+          </div>
+
+          {/* Os 7 protocolos como SEQUÊNCIA, não lista: o trilho vertical liga
+              um módulo ao próximo, e a letra vive fora do card (é a posição
+              dela na palavra, não um bullet). Cada card traz nome + ™ + efeito
+              + por que o nome é inevitável. Nunca a execução. */}
+          <div>
+            <p className="mb-2.5 text-[12px] leading-relaxed text-gray-700">
+              Los 7 Protocolos CALIBRA™ se ejecutan en un orden específico. Cada uno prepara el terreno
+              para el siguiente.
+            </p>
+            <div>
+              {COMBOS.map((c, i) => (
+                <div key={c.id} className="flex gap-3">
+                  <div className="flex w-9 shrink-0 flex-col items-center">
+                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white">
+                      {c.letter}
+                    </span>
+                    {i < COMBOS.length - 1 && <span className="w-px flex-1 bg-primary/25" />}
+                  </div>
+                  <div className="min-w-0 flex-1 pb-2">
+                    <div className="flex items-start gap-2 rounded-xl border border-[#D8E8D4] bg-white p-3">
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
+                          {c.emoji} {c.name}
+                          <span className="align-super text-[8px] font-bold text-primary">™</span>
+                        </p>
+                        <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">
+                          {c.teaser}
+                        </p>
+                        <p className="mt-1 text-[11px] italic leading-snug text-primary/75">
+                          {c.nameReason}
+                        </p>
+                      </div>
+                      <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/50" />
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Cada protocolo é um MÓDULO trancado, não um item de lista: nome +
-              marca registrada + efeito, e nada mais. O que ele faz por dentro
-              não se conta aqui — é o que ela desbloqueia al comprar. */}
-          <div className="space-y-2">
-            {COMBOS.map((c) => (
-              <div
-                key={c.id}
-                className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-white p-3"
-              >
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white">
-                  {c.letter}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <p className="text-[13px] font-black uppercase tracking-wider text-gray-900">
-                    {c.emoji} {c.name}
-                    <span className="align-super text-[8px] font-bold text-primary">™</span>
-                  </p>
-                  <p className="mt-0.5 text-[12px] leading-snug text-muted-foreground">{c.teaser}</p>
-                </div>
-                <Lock className="h-3.5 w-3.5 shrink-0 text-primary/50" />
-              </div>
-            ))}
-          </div>
-
+          {/* Regra central da marca: nenhum protocolo se vende sozinho. O que
+              ela compra é o efeito acumulado dos sete. */}
           <div className="rounded-xl bg-primary px-4 py-3.5 text-center">
             <p className="text-[13px] font-bold leading-snug text-white">
-              Cómo se ejecuta cada protocolo está dentro del método. Tu app te lo muestra el día que
-              toca, ya calculado para ti. No tienes que entenderlo. Tienes que hacerlo.
+              Ninguno de los siete funciona solo. El Método CALIBRA™ es lo que pasa cuando los siete se
+              ejecutan juntos, en el orden en que fueron diseñados.
+            </p>
+            <p className="mt-2 text-[13px] font-bold leading-snug text-white/90">
+              No tienes que entenderlo. Tienes que hacerlo.
             </p>
           </div>
 
@@ -1151,8 +1179,10 @@ export default function PreviewPage() {
             {[
               { n: 1, text: 'Desbloqueas el Método CALIBRA™' },
               { n: 2, text: 'Descargas la app en tu celular' },
-              { n: 3, text: 'Ejecutas el protocolo del día' },
-              { n: 4, text: 'Sientes los resultados desde los primeros días' },
+              { n: 3, text: 'Cada día, la app te da el protocolo que toca' },
+              // Fecho acumulativo de propósito: o resultado é dos sete juntos,
+              // nunca de um dia isolado (é o que sustenta o valor do sistema).
+              { n: 4, text: 'Los siete se acumulan y tu cuerpo se calibra' },
             ].map(({ n, text }) => (
               <div key={n} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] px-3.5 py-3">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-display text-sm font-black text-white">
@@ -1190,7 +1220,7 @@ export default function PreviewPage() {
                 </span>
                 <div>
                   <p className="text-sm font-bold text-gray-900">Acceso al Método CALIBRA™</p>
-                  <p className="text-[13px] text-muted-foreground">Los 7 protocolos completos, validados por María Fernanda, para que tu cuerpo pida menos comida en vez de que tú se lo prohíbas</p>
+                  <p className="text-[13px] text-muted-foreground">Los 7 protocolos, en el orden en que fueron diseñados y validados por María Fernanda. No se venden por separado porque no funcionan por separado</p>
                 </div>
               </div>
               <div className="flex justify-center gap-1.5">
@@ -1265,16 +1295,18 @@ export default function PreviewPage() {
             </div>
 
             <div>
-              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye tu Calibración Metabólica</p>
-              <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevás, no un &ldquo;paquete&rdquo; sin nombre.</p>
+              <p className="mb-1 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">Todo lo que incluye el Método CALIBRA™</p>
+              <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevas, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
-                  // O app abre a lista: é o item que ancora o valor de todos os
-                  // outros (não é um pacote de PDFs soltos). "Panel" era palavra
-                  // nossa, não dela.
-                  { item: 'Tu app con tu Calibración Metabólica instalada en el celular', note: 'tu plan, tu lista y tu calendario en un solo toque, sin buscar archivos' },
-                  { item: 'El Método CALIBRA™: los 7 protocolos, desbloqueados', note: 'uno por día, ya calculado para ti, listo para ejecutar' },
-                  { item: 'Tu plan de comidas, calculado para tu cuerpo', note: 'aunque ya hayas probado otras dietas sin resultado' },
+                  // A ordem dos 3 primeiros itens É a hierarquia da marca:
+                  // método → calibración → plano. Trocar essa ordem faz o
+                  // método virar um bullet entre outros oito, que é o que a
+                  // página fazia antes.
+                  { item: 'El Método CALIBRA™ completo: los 7 protocolos', note: 'el sistema entero, en el orden en que fue diseñado' },
+                  { item: 'Tu Calibración Metabólica: el Método aplicado a tu cuerpo', note: 'tus números exactos, calculados solo para ti' },
+                  { item: 'Tu plan de comidas, que sale de esa Calibración', note: 'aunque ya hayas probado otras dietas sin resultado' },
+                  { item: 'Tu app con todo instalado en el celular', note: 'el protocolo del día, tu plan y tu lista en un solo toque' },
                   { item: 'Tu calendario para marcar tu avance', note: 'lo que te sostiene para no abandonar en la semana 2' },
                   { item: 'Lista de compras optimizada', note: 'incluye lo que necesitas para el Método CALIBRA™' },
                   { item: 'Sustituciones para cada comida', note: 'si un día no tienes un ingrediente, lo cambias' },
