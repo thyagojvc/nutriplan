@@ -31,6 +31,7 @@ const PUBLIC_PATHS = [
   '/api/webhooks/hotmart',
   '/api/admin/generate',
   '/api/admin/resend-link',
+  '/api/admin/delete-session',
   '/admin',
   '/quiz-funnel',
   '/dev', // páginas de preview dev-only (retornam 404 em produção)

@@ -1,5 +1,6 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { LivePresence } from './live-presence'
+import { DeleteSessionButton } from './delete-session-button'
 
 const STEP_LABELS: Record<number, string> = {
   1:  'Alimentos favoritos',
@@ -946,11 +947,12 @@ export default async function QuizFunnelPage({
               <th className="px-4 py-2 font-medium">Comprador</th>
               <th className="px-4 py-2 font-medium">IP</th>
               <th className="px-4 py-2 text-right font-medium">Valor</th>
+              <th className="px-4 py-2 font-medium"></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-border">
             {allIndividuals.length === 0 && (
-              <tr><td colSpan={13} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
+              <tr><td colSpan={14} className="px-4 py-3 text-muted-foreground">Sin sesiones en el período.</td></tr>
             )}
             {allIndividuals.map((ind) => (
               <tr key={ind.id} className="hover:bg-muted/30 transition-colors">
@@ -992,6 +994,9 @@ export default async function QuizFunnelPage({
                 <td className="px-4 py-2.5 font-mono text-[10px] text-muted-foreground">{ind.ip ?? '—'}</td>
                 <td className="px-4 py-2.5 text-right tabular-nums font-semibold whitespace-nowrap">
                   {ind.totalAmount !== null ? `${ind.currency} ${ind.totalAmount}` : '—'}
+                </td>
+                <td className="px-4 py-2.5 text-right">
+                  <DeleteSessionButton sessionId={ind.id} />
                 </td>
               </tr>
             ))}
