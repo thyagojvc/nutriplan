@@ -66,12 +66,11 @@ function buildProfileInsight(
   tdee: number,
   targetCalories: number,
 ): string {
-  // "1200 kcal" some de propósito: era específico demais pro caso de ganho de
-  // massa (onde targetCalories é superávit, não déficit), e viraria uma
-  // comparação sem sentido nesse cenário. O contraste com "número fijo" segue
-  // válido pros três objetivos sem prometer um valor que não se aplica a todos.
+  // Sem comparação com "dieta genérica" no fecho: soava forçado, como se a
+  // análise só existisse pra ter algo pra menosprezar. A leitura já se
+  // sustenta sozinha cruzando as variáveis reais dela.
   const activityProse = ACTIVITY_PROSE[activityLevel] ?? 'tu nivel de actividad es el que marcaste'
-  return `Como ${activityProse}, tu cuerpo gasta ${tdee} kcal solo para sostenerse, no las mismas que gastaría alguien con tu edad y tu peso pero otro nivel de actividad. De ahí, cruzado con tu objetivo, salió tu número real: ${targetCalories} kcal. No un número fijo que le dan a cualquiera, sin cruzar nada.`
+  return `Como ${activityProse}, tu cuerpo gasta ${tdee} kcal solo para sostenerse, no las mismas que gastaría alguien con tu edad y tu peso pero otro nivel de actividad. De ahí, cruzado con tu objetivo, salió tu número real: ${targetCalories} kcal.`
 }
 
 // Cada obstáculo do step 11 reformulado como benefício (não repete a palavra
