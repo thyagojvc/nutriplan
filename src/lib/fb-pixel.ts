@@ -5,6 +5,8 @@
 // e ViewContent (preview). InitiateCheckout e Purchase são disparados pelo Hotmart.
 // =============================================================================
 
+import { quizFetch } from '@/lib/quiz-session-client'
+
 declare global {
   interface Window {
     fbq?: (...args: unknown[]) => void
@@ -139,7 +141,10 @@ export function trackDualOnce(
   trackPixel(event, params, { custom: options?.custom, eventID: eventId })
 
   const fbclid = rememberFbclid()
-  fetch('/api/quiz/capi-event', {
+  // quizFetch: a CAPI deriva o external_id da sessão do quiz. Sem o header de
+  // fallback, todo evento vindo de webview in-app perde o external_id e a Meta
+  // deixa de casar o evento com a pessoa, degradando a otimização.
+  quizFetch('/api/quiz/capi-event', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

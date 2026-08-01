@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError, QuizSection } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 interface FoodItem { id: string; label: string; emoji: string }
 interface FoodGroup { title: string; items: FoodItem[] }
@@ -152,7 +153,7 @@ export function Step1Likes({ stepNumber, totalSteps, detectedCountry }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 1, answers: { likes: selected } }),

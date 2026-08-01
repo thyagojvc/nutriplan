@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizChip, QuizCta, QuizError } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const OPTIONS = [
   { id: 'ninguna_condicion',  label: 'Ninguna condición médica', emoji: '💪' },
@@ -67,7 +68,7 @@ export function Step9Health({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 9, answers: { health: values } }),

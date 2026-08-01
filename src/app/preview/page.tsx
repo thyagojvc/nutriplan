@@ -18,12 +18,13 @@ import { COMBOS, COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 // Dispara um evento de funil pós-quiz no Supabase (fire-and-forget).
 // Mesma via do preview_viewed: grava _ev_<event> em draft_answers, lido no
 // dashboard /quiz-funnel. Serve para medir até onde a lead rola a preview.
 function trackFunnelEvent(event: 'preview_viewed' | 'offer_reached' | 'tiers_reached' | 'page_end') {
-  fetch('/api/quiz/track-event', {
+  quizFetch('/api/quiz/track-event', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ event }),
@@ -449,7 +450,7 @@ export default function PreviewPage() {
   useEffect(() => {
     if (!data) return
     const send = () => {
-      fetch('/api/quiz/presence', {
+      quizFetch('/api/quiz/presence', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 12 }),
@@ -498,7 +499,7 @@ export default function PreviewPage() {
     if (ctaState === 'loading') return
     setCtaState('loading')
     try {
-      const r = await fetch('/api/checkout/create-order', {
+      const r = await quizFetch('/api/checkout/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan_type: 'basic' }),
@@ -606,7 +607,7 @@ export default function PreviewPage() {
     }
 
     // ── Caminho 2: fallback via API (aba nova, sessionStorage vazio) ──────────
-    fetch('/api/quiz/preview-data')
+    quizFetch('/api/quiz/preview-data')
       .then(r => r.json())
       .then(d => { if (d.error) setErrorKind('no_session'); else setData(d) })
       .catch(() => setErrorKind(session ? 'calc_failed' : 'no_session'))

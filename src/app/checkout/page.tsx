@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { BarChart2, Utensils, ShoppingCart, BookOpen, RefreshCw, FileDown, GraduationCap } from 'lucide-react'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const TESTIMONIALS = [
   { initials: 'LM', color: 'bg-pink-400',    name: 'Laura M.',  country: 'México',   text: 'Bajé 6 kg en 5 semanas. Por fin un plan que se adapta a lo que como normalmente.' },
@@ -31,7 +32,7 @@ export default function CheckoutPage() {
   const [idempotencyKey, setIdempotencyKey] = useState<string | null>(null)
 
   useEffect(() => {
-    fetch('/api/checkout/create-order', {
+    quizFetch('/api/checkout/create-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ include_bump: false }),

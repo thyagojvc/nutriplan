@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { trackDualOnce, setPixelExternalId } from '@/lib/fb-pixel'
+import { quizFetch, rememberQuizSession, whenQuizSessionReady } from '@/lib/quiz-session-client'
 
 interface Props {
   stepNumber: number
@@ -44,14 +45,24 @@ function useEnsureSession(stepNumber: number) {
 
     function initSession() {
       const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
-      fetch('/api/quiz/init-session', {
+      // Página nasceu em segundo plano (preload do in-app browser do IG/FB):
+      // marca a sessão como carga fantasma, pra separar no funil "ninguém viu
+      // essa página" de "pessoa real que viu e desistiu".
+      const hidden = document.visibilityState === 'hidden'
+      // Mandamos o id conhecido no header também aqui: quando o cookie não
+      // persiste (webview in-app), é o que permite ao init-session reconhecer
+      // a sessão existente em vez de criar uma nova a cada montagem.
+      quizFetch('/api/quiz/init-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ad_ref: adRef }),
+        body: JSON.stringify({ ad_ref: adRef, hidden }),
       })
         .then(async (res) => {
           try {
             const data = await res.json()
+            // Guarda no cliente ANTES de qualquer outra chamada: é o que faz o
+            // quiz funcionar onde o cookie é descartado.
+            rememberQuizSession(data?.session_id)
             if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
           } catch { /* resposta sem json — segue sem external_id */ }
           trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
@@ -70,17 +81,27 @@ function useEnsureSession(stepNumber: number) {
 // atrasa nada da criação de sessão (foi misturar as duas coisas que quebrou
 // o iOS na tentativa anterior, ver memória ios-quiz-abandonment-investigation).
 // Falha silenciosa (.catch vazio) — não pode nunca impedir o quiz de seguir.
+// Dispara um evento de funil sem depender da ordem de chegada: espera a sessão
+// existir antes de mandar. O track-event descarta em silêncio (200, sem gravar)
+// qualquer evento que chegue sem sessão, e o primeiro toque na tela costuma
+// acontecer ANTES do init-session responder — era por isso que o q1_interacted
+// registrava 7 de 124 respostas reais da 1ª pergunta (0 de 27 no iOS).
+function sendFunnelEvent(event: 'q1_interacted' | 'page_visible') {
+  void whenQuizSessionReady().then((id) => {
+    if (!id) return
+    quizFetch('/api/quiz/track-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event }),
+      keepalive: true,
+    }).catch(() => {})
+  })
+}
+
 function useTrackFirstInteraction(stepNumber: number) {
   useEffect(() => {
     if (stepNumber !== 5) return
-    const send = () => {
-      fetch('/api/quiz/track-event', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ event: 'q1_interacted' }),
-        keepalive: true,
-      }).catch(() => {})
-    }
+    const send = () => sendFunnelEvent('q1_interacted')
     window.addEventListener('pointerdown', send, { once: true })
     window.addEventListener('keydown', send, { once: true })
     return () => {
@@ -90,9 +111,30 @@ function useTrackFirstInteraction(stepNumber: number) {
   }, [stepNumber])
 }
 
+// Promove a sessão de "carga fantasma" pra visita real. Junto com o _hidden_load
+// marcado no init-session, é o par que separa preload de in-app browser (página
+// criada e nunca exibida) de pessoa que viu a tela e desistiu. Sem isso, as duas
+// coisas ficam indistinguíveis no funil e o abandono da entrada parece maior do
+// que é. O emissor nunca tinha sido implementado: o evento existia na rota e no
+// comentário do init-session, mas nada no cliente o mandava.
+function useTrackPageVisible(stepNumber: number) {
+  useEffect(() => {
+    if (stepNumber !== 5) return
+    if (document.visibilityState === 'visible') { sendFunnelEvent('page_visible'); return }
+    const onVisible = () => {
+      if (document.visibilityState !== 'visible') return
+      sendFunnelEvent('page_visible')
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [stepNumber])
+}
+
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
   const { error: sessionError } = useEnsureSession(stepNumber)
   useTrackFirstInteraction(stepNumber)
+  useTrackPageVisible(stepNumber)
 
   // Heartbeat de presença "ao vivo": informa a etapa visível atual a cada 8s.
   // Alimenta o painel ao vivo do quiz-funnel. Para quando a aba fecha (o painel
@@ -100,7 +142,7 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   useEffect(() => {
     if (displayStep < 1) return
     const send = () => {
-      fetch('/api/quiz/presence', {
+      quizFetch('/api/quiz/presence', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: displayStep }),

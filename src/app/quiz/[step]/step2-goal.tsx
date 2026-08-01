@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const GOALS = [
   { id: 'perder_peso',   label: 'Perder peso',          desc: 'Quiero reducir mi grasa corporal',                     emoji: '🔥' },
@@ -56,7 +57,7 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 2, answers: { goal } }),

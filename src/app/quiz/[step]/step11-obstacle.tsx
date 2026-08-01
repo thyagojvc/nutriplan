@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const OPTIONS = [
   { id: 'falta_tiempo',      label: 'Falta de tiempo',         desc: 'Mi agenda está siempre llena',                emoji: '⏰' },
@@ -58,7 +59,7 @@ export function Step11Obstacle({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 11, answers: { obstacles: selected } }),

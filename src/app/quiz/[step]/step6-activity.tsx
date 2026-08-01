@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const GOAL_LABEL: Record<string, string> = {
   perder_peso: 'perder peso',
@@ -75,7 +76,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 6, answers: { activity_level: activityLevel, activity_factor: level.factor } }),
@@ -86,7 +87,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
       try {
         sessionStorage.setItem('nutriplan_step_7', JSON.stringify({ country: dbCountry, country_detail: detectedCountry ?? null }))
       } catch { /* segue sem cache local; o save-step abaixo ainda persiste no banco */ }
-      fetch('/api/quiz/save-step', {
+      quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 7, answers: { country: dbCountry, country_detail: detectedCountry ?? null }, country: dbCountry }),

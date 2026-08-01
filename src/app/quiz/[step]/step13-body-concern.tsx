@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError } from './quiz-ui'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const OPTIONS = [
   { id: 'ropa',      label: 'La ropa que ya no me queda',        desc: 'Guardé cosas esperando volver a usarlas',        emoji: '👗' },
@@ -64,7 +65,7 @@ export function Step13BodyConcern({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

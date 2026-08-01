@@ -62,6 +62,27 @@ function detectPlatformFromUA(ua: string): 'iOS' | 'Android' | 'Windows' | 'Mac'
 // Atualizar aqui se a ordem do quiz mudar de novo.
 const VISIT_ORDER = [5, 1, 2, 6, 7, 4, 8, 9, 10, 11, 13, 12]
 
+const BROWSER_ENV_LABELS: Record<string, string> = {
+  instagram: 'Instagram in-app',
+  facebook: 'Facebook in-app',
+  'chrome-ios': 'Chrome iOS',
+  'android-webview': 'WebView Android',
+  browser: 'Navegador',
+}
+
+// O utm_content chega como veio na URL, então um nome de anúncio com espaço ou
+// acento aparece percent-encoded ("Organico1+-+Cal%C3%A7a+Cinza"). Sem decodificar,
+// o MESMO criativo vira duas linhas no painel e a leitura por anúncio racha.
+// '+' vira espaço (codificação de formulário) antes do decode.
+function decodeAdRef(raw: string | undefined): string {
+  if (!raw) return 'Sin dato'
+  try {
+    return decodeURIComponent(raw.replace(/\+/g, ' '))
+  } catch {
+    return raw // sequência percent inválida — mostra cru em vez de quebrar a página
+  }
+}
+
 async function getFunnelData(sinceDate: string) {
   const supabase = createServiceClient()
 
@@ -162,6 +183,16 @@ async function getFunnelData(sinceDate: string) {
   const tiersReached = data.filter((r) => hasEvent(r, '_ev_tiers_reached')).length
   const pageEnd = data.filter((r) => hasEvent(r, '_ev_page_end')).length
 
+  // Funil de ENTRADA: o trecho entre "sessão criada" e "respondeu a 1ª pergunta",
+  // que é onde some a maior parte do tráfego pago e que a tabela de steps não
+  // enxergava (ela começa a contar só de quem já respondeu). page_visible e
+  // q1_interacted só passaram a ser confiáveis em 01/08 — antes disso o evento
+  // era descartado quando chegava sem cookie de sessão, então períodos anteriores
+  // aparecem artificialmente baixos aqui.
+  const hiddenLoad = data.filter((r) => hasEvent(r, '_hidden_load')).length
+  const pageVisible = data.filter((r) => hasEvent(r, '_ev_page_visible')).length
+  const q1Interacted = data.filter((r) => hasEvent(r, '_ev_q1_interacted')).length
+
   // País real (ISO detectado no step 7, guardado em country_detail). Cai no
   // código de DB (ex: 'OTHER') se o detalhe não foi salvo (sessões antigas).
   const countryCounts: Record<string, number> = {}
@@ -172,13 +203,15 @@ async function getFunnelData(sinceDate: string) {
   // init-session). Sessões de antes dessa captura existir (22/07) caem em "Sin dato".
   const deviceCounts: Record<string, number> = {}
   const platformCounts: Record<string, number> = {}
+  // plataforma+ambiente → quantas sessões e quantas chegaram a responder a Q1
+  const browserEnvCounts: Record<string, { total: number; answered: number }> = {}
   for (const r of data) {
     const draft = (r.draft_answers ?? {}) as Record<string, unknown>
     const s7 = (draft.step_7 ?? {}) as { country?: string; country_detail?: string }
     const country = s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? 'Sin dato'
     countryCounts[country] = (countryCounts[country] ?? 0) + 1
 
-    const adRef = (draft._ad_ref as string | undefined) ?? 'Sin dato'
+    const adRef = decodeAdRef(draft._ad_ref as string | undefined)
     adRefCounts[adRef] = (adRefCounts[adRef] ?? 0) + 1
 
     const device = (draft._device as string | undefined) ?? 'Sin dato'
@@ -186,6 +219,16 @@ async function getFunnelData(sinceDate: string) {
 
     const platform = (draft._platform as string | undefined) ?? 'Sin dato'
     platformCounts[platform] = (platformCounts[platform] ?? 0) + 1
+
+    // Plataforma cruzada com o ambiente do navegador: é o corte que revela
+    // problema de webview in-app (IG/FB), onde o cookie de sessão costuma não
+    // persistir. Sem esse cruzamento, "iOS vai mal" esconde que o problema é
+    // só dentro do app, não no Safari.
+    const envRaw = (draft._browser_env as string | undefined) ?? null
+    const envKey = envRaw ? `${platform} · ${BROWSER_ENV_LABELS[envRaw] ?? envRaw}` : `${platform} · Sin dato`
+    browserEnvCounts[envKey] ??= { total: 0, answered: 0 }
+    browserEnvCounts[envKey].total += 1
+    if (`step_5` in draft) browserEnvCounts[envKey].answered += 1
   }
 
   // Vendas recentes: nome/email só existem depois do webhook criar o user
@@ -215,7 +258,7 @@ async function getFunnelData(sinceDate: string) {
       createdAt: row.created_at,
       productCode: row.order_items?.[0]?.product_code ?? 'Sin ítem',
       country: step7.country_detail ?? step7.country ?? (draft._detected_country as string | undefined) ?? '—',
-      adRef: (draft._ad_ref as string | undefined) ?? '—',
+      adRef: draft._ad_ref ? decodeAdRef(draft._ad_ref as string) : '—',
       buyerName: row.users?.name ?? null,
       buyerEmail: row.users?.email ?? null,
       device: ua ? detectDeviceFromUA(ua) : null,
@@ -271,7 +314,7 @@ async function getFunnelData(sinceDate: string) {
     return {
       id: r.id,
       createdAt: r.created_at,
-      adRef: (draft._ad_ref as string | undefined) ?? '—',
+      adRef: draft._ad_ref ? decodeAdRef(draft._ad_ref as string) : '—',
       country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
       lastStep,
       stepNum,
@@ -346,7 +389,7 @@ async function getFunnelData(sinceDate: string) {
       id: r.id,
       createdAt: r.created_at,
       isLive,
-      adRef: (draft._ad_ref as string | undefined) ?? '—',
+      adRef: draft._ad_ref ? decodeAdRef(draft._ad_ref as string) : '—',
       country: s7.country_detail ?? s7.country ?? (draft._detected_country as string | undefined) ?? '—',
       device: (draft._device as string | undefined) ?? null,
       platform: (draft._platform as string | undefined) ?? null,
@@ -364,7 +407,7 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals }
 }
 
 export default async function QuizFunnelPage({
@@ -387,13 +430,14 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
   const adRefRows = Object.entries(adRefCounts).sort((a, b) => b[1] - a[1])
   const deviceRows = Object.entries(deviceCounts).sort((a, b) => b[1] - a[1])
   const platformRows = Object.entries(platformCounts).sort((a, b) => b[1] - a[1])
+  const browserEnvRows = Object.entries(browserEnvCounts).sort((a, b) => b[1].total - a[1].total)
   const checkoutDeviceRows = Object.entries(checkoutDeviceCounts).sort((a, b) => b[1] - a[1])
   const checkoutPlatformRows = Object.entries(checkoutPlatformCounts).sort((a, b) => b[1] - a[1])
 
@@ -485,6 +529,76 @@ export default async function QuizFunnelPage({
         </table>
       </div>
 
+      {/* Entrada — o trecho entre "sessão criada" e "respondeu a 1ª pergunta".
+          É onde some a maior parte do tráfego pago, e a tabela de steps abaixo
+          não enxerga isso (ela usa quem já respondeu como 100%). */}
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Entrada</p>
+          <p className="text-xs text-muted-foreground">
+            Antes da 1ª resposta. &quot;Visível&quot; e &quot;tocou&quot; só são confiáveis a partir de 01/08
+            (antes o evento era descartado quando chegava sem sessão)
+          </p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {[
+              { label: 'Sessões criadas', count: total, hint: 'entrou na URL do quiz' },
+              { label: 'Carga fantasma', count: hiddenLoad, hint: 'página nasceu em segundo plano (preload do in-app)' },
+              { label: 'Página ficou visível', count: pageVisible, hint: 'alguém de fato viu a tela' },
+              { label: 'Tocou na 1ª pergunta', count: q1Interacted, hint: 'primeiro toque ou tecla' },
+              { label: 'Respondeu a 1ª pergunta', count: stepCounts[5] ?? 0, hint: 'avançou pro passo seguinte' },
+            ].map(({ label, count, hint }) => (
+              <tr key={label} className="hover:bg-muted/30 transition-colors">
+                <td className="px-4 py-2.5">
+                  <p className="font-medium">{label}</p>
+                  <p className="text-[11px] text-muted-foreground">{hint}</p>
+                </td>
+                <td className="px-4 py-2.5 text-right tabular-nums font-semibold">{count}</td>
+                <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground w-16">
+                  {total > 0 ? Math.round((count / total) * 100) : 0}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Ambiente do navegador — o corte que separa "iOS vai mal" de "webview do
+          IG/FB vai mal". O cookie de sessão costuma não persistir no in-app, o
+          que derruba o save-step; por isso a taxa de resposta da Q1 aqui é o
+          termômetro do fallback de sessão (ver src/lib/quiz-session-client.ts). */}
+      <div className="overflow-x-auto rounded-xl border border-border">
+        <div className="border-b border-border bg-muted/50 px-4 py-3">
+          <p className="text-sm font-semibold">Ambiente do navegador</p>
+          <p className="text-xs text-muted-foreground">Plataforma + onde a página abriu · % = quem respondeu a 1ª pergunta</p>
+        </div>
+        <table className="w-full text-sm">
+          <tbody className="divide-y divide-border">
+            {browserEnvRows.length === 0 && (
+              <tr><td className="px-4 py-3 text-muted-foreground">Sem sessões no período.</td></tr>
+            )}
+            {browserEnvRows.map(([env, { total: envTotal, answered }]) => {
+              const pct = envTotal > 0 ? Math.round((answered / envTotal) * 100) : 0
+              return (
+                <tr key={env} className="hover:bg-muted/30 transition-colors">
+                  <td className="px-4 py-2.5 text-xs">{env}</td>
+                  <td className="px-4 py-2.5 text-right tabular-nums text-xs text-muted-foreground">{envTotal} sess.</td>
+                  <td className="px-4 py-2.5 text-right tabular-nums w-20">
+                    <span className={[
+                      'inline-block rounded-full px-2 py-0.5 text-xs font-semibold',
+                      pct >= 60 ? 'bg-green-100 text-green-700' : pct >= 35 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700',
+                    ].join(' ')}>
+                      {pct}%
+                    </span>
+                  </td>
+                </tr>
+              )
+            })}
+          </tbody>
+        </table>
+      </div>
+
       <div className="overflow-x-auto rounded-xl border border-border">
         <table className="w-full text-sm">
           <thead>
@@ -544,7 +658,11 @@ export default async function QuizFunnelPage({
             {/* Linha: Preview visualizada */}
             {(() => {
               const count = previewViewed
-              const prev = stepCounts[12] ?? 0
+              // Compara com o step 13 (último passo real), não com o 12: o 12 é
+              // auto-save sem UI e foi desativado junto com a captura de e-mail
+              // (ver step12-form.tsx), então vive zerado. Dividir por ele fazia
+              // o abandono da preview aparecer como -37700%.
+              const prev = stepCounts[13] ?? 0
               const pctStart = firstStepCount > 0 ? Math.round((count / firstStepCount) * 100) : 0
               const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
               return (

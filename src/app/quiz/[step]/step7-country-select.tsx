@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 type DbCountry = 'MX' | 'CO' | 'CL' | 'ES' | 'OTHER'
 
@@ -32,7 +33,7 @@ export function Step7CountrySelect({ detectedCountry }: Props) {
     const dbCountry = toDbCountry(detectedCountry)
 
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

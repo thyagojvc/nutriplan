@@ -7,6 +7,7 @@ import { trackDualOnce } from '@/lib/fb-pixel'
 // Mesma fonte que a preview e o gerador usam — a entrada do quiz não pode
 // prometer um método diferente do que é entregue.
 import { COMBOS } from '@/lib/nutrition/combos'
+import { quizFetch } from '@/lib/quiz-session-client'
 
 const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
@@ -144,7 +145,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
     setSaving(true)
     setError(false)
     try {
-      const res = await fetch('/api/quiz/save-step', {
+      const res = await quizFetch('/api/quiz/save-step', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 5, answers: { age: data.age, weight_kg: data.weight_kg, height_cm: data.height_cm } }),
