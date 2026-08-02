@@ -9,7 +9,6 @@ const PUBLIC_PATHS = [
   '/quiz',
   '/calculando',
   '/preview',
-  '/checkout',
   '/exito',
   '/auth/callback',
   '/auth/magic',

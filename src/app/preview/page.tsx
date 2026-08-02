@@ -696,15 +696,21 @@ export default function PreviewPage() {
           Análisis completo
         </div>
 
-        {/* Hierarquia proposital: o RESULTADO dela vem primeiro (su Calibración
-            ya está lista), e logo abaixo a assinatura do método que a gerou.
-            O protagonista da página é o Método CALIBRA™; el plan es apenas la
-            forma en que el método se ejecuta. */}
+        {/* A h1 precisa carregar TANGÍVEL + DIFERENCIAÇÃO na mesma linha.
+            Só "Tu Calibración Metabólica está lista" era abstrato demais: ela
+            chega do anúncio curiosa sobre o que é a calibração e a página
+            repetia a pergunta em vez de responder. Só "plan de comidas" cairia
+            no oposto (commodity, ela assume PDF genérico e não rola).
+            Solução: o plano é o substantivo (ela vê o que leva), "calibrado
+            para tu metabolismo" é o qualificador que nenhum plano genérico usa,
+            e ecoa o verbo do anúncio ("calibré mi metabolismo").
+            A linha abaixo planta os 7 protocolos ACIMA DA DOBRA: sem isso ela
+            pode decidir que é só um cardápio antes de chegar no mecanismo. */}
         <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
-          Tu Calibración Metabólica está lista.
+          Tu plan de comidas, calibrado para tu metabolismo
         </h1>
         <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-primary">
-          Generada con el Método CALIBRA™
+          Generado por los 7 protocolos del Método CALIBRA™
         </p>
         <p className="text-sm font-semibold text-gray-700">
           {heroSubheadline.prefix}
@@ -781,8 +787,8 @@ export default function PreviewPage() {
           Calculado solo para ti. Mira tu análisis completo abajo.
         </p>
         {/* Hierarquia da marca (MÉTODO → CALIBRACIÓN → PLANO) sem repetir os
-            dois nomes de novo: badge, h1 e subhead da linha anterior já
-            nomearam os dois. Aqui só a ESTRUTURA, em palavras genéricas. */}
+            nomes de novo: h1 e a linha dos 7 protocolos já nomearam método e
+            calibração. Aqui só a ESTRUTURA, em palavras genéricas. */}
         <p className="mx-auto max-w-xs text-sm font-semibold text-gray-800">
           Así llega a tu plato: primero el método, después tus números, después tu comida.
         </p>
