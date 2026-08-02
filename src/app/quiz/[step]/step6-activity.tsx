@@ -93,7 +93,7 @@ export function Step6Activity({ stepNumber, totalSteps, detectedCountry }: Props
         body: JSON.stringify({ step: 7, answers: { country: dbCountry, country_detail: detectedCountry ?? null }, country: dbCountry }),
       }).catch(() => {})
 
-      router.push('/quiz/4') // → sexo biológico
+      router.push('/quiz/2') // → sexo biológico
     } catch {
       setError(true)
       setSaving(false)

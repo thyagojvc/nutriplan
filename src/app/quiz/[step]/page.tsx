@@ -5,15 +5,13 @@ import { QuizStep } from './quiz-step'
 const TOTAL_STEPS = 13
 
 // Ordem VISÍVEL do quiz por número de URL (o array define o fluxo e a numeração
-// "Paso X de Y"). A SEQUÊNCIA DE URLs abaixo não muda com trocas de conteúdo —
-// só qual componente cada URL renderiza é trocado em quiz-step.tsx (ver nota lá).
-//   URL 5=dados físicos (entrada, 19/07) · 1=alimentos · 2=objetivo ·
-//   6=atividade(+país) · 4=sexo · 8=restrições · 9=saúde · 10=exercício ·
+// "Paso X de Y"). A SEQUÊNCIA DE URLs abaixo NÃO muda com trocas de conteúdo —
+// só qual componente cada URL renderiza é trocado em quiz-step.tsx (ver nota lá),
+// porque /quiz/5 é a entrada pra onde os anúncios ativos apontam.
+// Conteúdo por URL desde 02/08:
+//   URL 5=objetivo (entrada) · 1=rutina diaria(+país) · 2=sexo ·
+//   6=alimentos · 4=dados físicos · 8=restrições · 9=saúde · 10=exercício ·
 //   11=obstáculos · 13=incômodo corporal · 12=ponte
-// Reordenado em 19/07 pra bater com o anúncio (que promete plano + treino em 60s):
-// a entrada agora pede idade/peso/altura, depois alimentos, objetivo e atividade.
-// Mapeamento URL→componente voltou a ser natural (URL N = StepN), sem os swaps
-// anteriores de 5↔11.
 const VISIBLE_ORDER = [5, 1, 2, 6, 4, 8, 9, 10, 11, 13, 12]
 
 // Passos que não aparecem no fluxo (só alcançáveis por URL direta):

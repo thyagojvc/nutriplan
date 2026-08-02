@@ -2,18 +2,18 @@
 
 import { useEffect, useState } from 'react'
 
-// Rótulos por ETAPA VISÍVEL (posição no fluxo que a pessoa realmente vê),
-// alinhados ao VISIBLE_ORDER do quiz (src/app/quiz/[step]/page.tsx):
-// [5, 1, 2, 6, 4, 8, 9, 10, 11, 13, 12]. Posição 12 é fixa, enviada pela
-// preview/page.tsx (step: 12 hardcoded), não faz parte do VISIBLE_ORDER.
-// Atualizado em 22/07 pra bater com o reorder que tornou Dados físicos a
-// entrada do quiz (era Obstáculos antes).
+// Rótulos por ETAPA VISÍVEL (POSIÇÃO no fluxo, não número de URL nem chave de
+// dado). O heartbeat manda a posição, então este mapa precisa acompanhar a ordem
+// das perguntas — ver o mapeamento URL→componente em quiz-step.tsx.
+// Posição 12 é fixa, enviada pela preview/page.tsx (step: 12 hardcoded), e não
+// faz parte do fluxo do quiz.
+// Atualizado em 02/08: objetivo virou a 1ª pergunta e dados físicos foi pro 5º.
 const VISIBLE_STEP_LABELS: Record<number, string> = {
-  1: 'Dados físicos',
-  2: 'Alimentos favoritos',
-  3: 'Objetivo',
-  4: 'Nível de atividade',
-  5: 'Sexo',
+  1: 'Objetivo',
+  2: 'Rotina diária',
+  3: 'Sexo',
+  4: 'Alimentos favoritos',
+  5: 'Dados físicos',
   6: 'Restrições alimentares',
   7: 'Condições de saúde',
   8: 'Exercício',

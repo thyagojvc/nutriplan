@@ -9,7 +9,7 @@ const STEP_LABELS: Record<number, string> = {
   3:  'Alimento imprescindível',
   4:  'Sexo',
   5:  'Dados físicos',
-  6:  'Nível de atividade',
+  6:  'Rotina diária',
   7:  'País detectado',
   8:  'Restrições alimentares',
   9:  'Condições de saúde',
@@ -52,15 +52,16 @@ function detectPlatformFromUA(ua: string): 'iOS' | 'Android' | 'Windows' | 'Mac'
   return 'Other'
 }
 
-// Ordem em que a pessoa realmente responde o quiz (chave de dado, não o
-// número da URL — ver VISIBLE_ORDER em src/app/quiz/[step]/page.tsx). A
-// numeração step_N é fixa por componente e não reflete mais a ordem de
-// visita. Atualizada em 22/07 pra bater com o reorder que tornou o Step5Physical
-// (dados físicos) a entrada do quiz: URL 5 vira 1º, URL 11 (obstáculos) vira 9º.
-// step_7 (país, oculto) é salvo junto do step 6 (atividade), por isso entra logo
-// depois dele aqui, mesmo não fazendo parte do VISIBLE_ORDER (não tem URL própria).
-// Atualizar aqui se a ordem do quiz mudar de novo.
-const VISIT_ORDER = [5, 1, 2, 6, 7, 4, 8, 9, 10, 11, 13, 12]
+// Ordem em que a pessoa realmente responde o quiz (chave de DADO step_N, não o
+// número da URL — ver o mapeamento URL→componente em quiz-step.tsx). A numeração
+// step_N é fixa por componente e não acompanha a URL, então este array é a única
+// coisa que precisa ser atualizada aqui quando o quiz é reordenado. Se ficar
+// desatualizado, a coluna "Abandono" exibe percentuais NEGATIVOS (mais gente
+// completando um passo posterior do que o anterior) — é esse o sintoma.
+// step_7 (país, oculto) é salvo junto do step 6 (rutina diaria), por isso entra
+// logo depois dele, mesmo não tendo URL própria.
+// Atualizado em 02/08: objetivo virou a 1ª pergunta e dados físicos foi pro 5º.
+const VISIT_ORDER = [2, 6, 7, 4, 1, 5, 8, 9, 10, 11, 13, 12]
 
 const BROWSER_ENV_LABELS: Record<string, string> = {
   instagram: 'Instagram in-app',
@@ -228,7 +229,7 @@ async function getFunnelData(sinceDate: string) {
     const envKey = envRaw ? `${platform} · ${BROWSER_ENV_LABELS[envRaw] ?? envRaw}` : `${platform} · Sin dato`
     browserEnvCounts[envKey] ??= { total: 0, answered: 0 }
     browserEnvCounts[envKey].total += 1
-    if (`step_5` in draft) browserEnvCounts[envKey].answered += 1
+    if (`step_${VISIT_ORDER[0]}` in draft) browserEnvCounts[envKey].answered += 1
   }
 
   // Vendas recentes: nome/email só existem depois do webhook criar o user
@@ -547,7 +548,7 @@ export default async function QuizFunnelPage({
               { label: 'Carga fantasma', count: hiddenLoad, hint: 'página nasceu em segundo plano (preload do in-app)' },
               { label: 'Página ficou visível', count: pageVisible, hint: 'alguém de fato viu a tela' },
               { label: 'Tocou na 1ª pergunta', count: q1Interacted, hint: 'primeiro toque ou tecla' },
-              { label: 'Respondeu a 1ª pergunta', count: stepCounts[5] ?? 0, hint: 'avançou pro passo seguinte' },
+              { label: 'Respondeu a 1ª pergunta', count: stepCounts[VISIT_ORDER[0]] ?? 0, hint: 'avançou pro passo seguinte' },
             ].map(({ label, count, hint }) => (
               <tr key={label} className="hover:bg-muted/30 transition-colors">
                 <td className="px-4 py-2.5">
