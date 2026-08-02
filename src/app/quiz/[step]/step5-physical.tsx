@@ -126,7 +126,7 @@ export function Step5Physical({ stepNumber, totalSteps }: Props) {
                 ? `${likesCount} alimento${likesCount !== 1 ? 's' : ''} favorito${likesCount !== 1 ? 's' : ''} guardado${likesCount !== 1 ? 's' : ''}. Ahora, tus datos físicos.`
                 : 'Preferencias registradas. Ahora, tus datos físicos.'
             }
-            title="Por último, tus datos físicos"
+            title="Ahora, tus datos físicos"
             subtitle="Ajusta cada número al tuyo. Los usaremos para calcular tus calorías y macros exactos."
           />
 

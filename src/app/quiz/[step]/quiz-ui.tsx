@@ -653,7 +653,7 @@ export function QuizStepperRow({
           onChange={(e) => handleTextChange(e.target.value)}
           onBlur={(e) => commit(e.target.value)}
           onKeyDown={(e) => { if (e.key === 'Enter') e.currentTarget.blur() }}
-          className={`quiz-number-input w-16 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25${iosReadOnly ? ' pointer-events-none select-none' : ''}`}
+          className={`quiz-number-input w-20 rounded-lg bg-[#F5FAF2] py-1.5 text-center font-display text-2xl font-black leading-none text-primary tabular-nums focus:outline-none focus:ring-2 focus:ring-primary/25${iosReadOnly ? ' pointer-events-none select-none' : ''}`}
         />
         <button type="button" onClick={() => onChange(clamp(value + step))} aria-label={`Sumar ${label}`} className={btnCls}>
           +
