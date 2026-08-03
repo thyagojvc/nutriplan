@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { Component, useEffect, useState, type ReactNode } from 'react'
 import dynamic from 'next/dynamic'
 import { trackDualOnce, setPixelExternalId } from '@/lib/fb-pixel'
 import { quizFetch, rememberQuizSession, whenQuizSessionReady, getQuizSessionId } from '@/lib/quiz-session-client'
@@ -13,20 +13,94 @@ interface Props {
   detectedCountry?: string
 }
 
-// ssr: false em todos os steps — evita hydration mismatch com sessionStorage
-const Step1Likes       = dynamic(() => import('./step1-likes').then(m => ({ default: m.Step1Likes })), { ssr: false })
-const Step2Goal        = dynamic(() => import('./step2-goal').then(m => ({ default: m.Step2Goal })), { ssr: false })
-const Step3MustHave    = dynamic(() => import('./step3-must-have').then(m => ({ default: m.Step3MustHave })), { ssr: false })
-const Step4Sex         = dynamic(() => import('./step4-sex').then(m => ({ default: m.Step4Sex })), { ssr: false })
-const Step5Physical    = dynamic(() => import('./step5-physical').then(m => ({ default: m.Step5Physical })), { ssr: false })
-const Step6Activity    = dynamic(() => import('./step6-activity').then(m => ({ default: m.Step6Activity })), { ssr: false })
-const Step7CountrySelect = dynamic(() => import('./step7-country-select').then(m => ({ default: m.Step7CountrySelect })), { ssr: false })
-const Step8Restrictions = dynamic(() => import('./step8-restrictions').then(m => ({ default: m.Step8Restrictions })), { ssr: false })
-const Step9Health      = dynamic(() => import('./step9-health').then(m => ({ default: m.Step9Health })), { ssr: false })
-const Step10Exercise   = dynamic(() => import('./step10-exercise').then(m => ({ default: m.Step10Exercise })), { ssr: false })
-const Step11Obstacle   = dynamic(() => import('./step11-obstacle').then(m => ({ default: m.Step11Obstacle })), { ssr: false })
-const Step12Form       = dynamic(() => import('./step12-form').then(m => ({ default: m.Step12Form })), { ssr: false })
-const Step13BodyConcern = dynamic(() => import('./step13-body-concern').then(m => ({ default: m.Step13BodyConcern })), { ssr: false })
+const CHUNK_RELOAD_FLAG = 'nutriplan_chunk_reloaded'
+
+// TELA EM BRANCO NO iOS — o que isto conserta (03/08):
+// os steps são todos dynamic(ssr:false) e, até aqui, sem loading e sem
+// boundary. Se o chunk do step não baixasse (rede do webview in-app cortando o
+// download do bundle), o QuizStep montava normalmente — disparando page_visible
+// e o heartbeat de presença, que vivem AQUI no pai — mas a pergunta em si não
+// renderizava nada. Resultado: tela em branco, sem nada pra tocar, com a sessão
+// parecendo saudável no banco.
+// Essa é exatamente a assinatura das sessões iOS que não entram: page_visible
+// presente, _live_1 presente, q1_interacted AUSENTE (o listener é pointerdown
+// na window, então captaria qualquer toque — logo, ninguém tocou na tela) e
+// zero steps. Em 03/08, mesmo anúncio e mesma hora, Android fez 5/5 e iOS 1/4.
+// A pessoa de Honduras voltou 32 min depois (updated_at) e continuou em 0.
+// Falha de chunk é quase sempre transitória, então um reload resolve; o flag
+// em sessionStorage impede laço infinito se o problema for permanente.
+function StepLoading() {
+  return (
+    <div className="flex min-h-screen items-center justify-center">
+      <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  )
+}
+
+class StepBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false }
+
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+
+  componentDidCatch(err: Error) {
+    const detail = `boundary ${err?.name || '?'} ${err?.message || ''}`.slice(0, 140)
+    try {
+      quizFetch('/api/quiz/track-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event: 'js_error', detail }),
+        keepalive: true,
+      }).catch(() => {})
+    } catch { /* telemetria nunca propaga */ }
+
+    try {
+      if (sessionStorage.getItem(CHUNK_RELOAD_FLAG) !== '1') {
+        sessionStorage.setItem(CHUNK_RELOAD_FLAG, '1')
+        window.location.reload()
+      }
+    } catch { /* storage bloqueado: cai na tela de retry do render */ }
+  }
+
+  render() {
+    if (!this.state.failed) return this.props.children
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          No pudimos cargar la pregunta. Toca para intentarlo de nuevo.
+        </p>
+        <button
+          type="button"
+          onClick={() => {
+            try { sessionStorage.removeItem(CHUNK_RELOAD_FLAG) } catch { /* ignora */ }
+            window.location.reload()
+          }}
+          className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-sm active:scale-95"
+        >
+          Reintentar
+        </button>
+      </div>
+    )
+  }
+}
+
+// ssr: false em todos os steps — evita hydration mismatch com sessionStorage.
+// loading: StepLoading — sem ele, chunk lento = tela branca indistinguível de
+// bug (ver nota do StepBoundary acima).
+const Step1Likes       = dynamic(() => import('./step1-likes').then(m => ({ default: m.Step1Likes })), { ssr: false, loading: StepLoading })
+const Step2Goal        = dynamic(() => import('./step2-goal').then(m => ({ default: m.Step2Goal })), { ssr: false, loading: StepLoading })
+const Step3MustHave    = dynamic(() => import('./step3-must-have').then(m => ({ default: m.Step3MustHave })), { ssr: false, loading: StepLoading })
+const Step4Sex         = dynamic(() => import('./step4-sex').then(m => ({ default: m.Step4Sex })), { ssr: false, loading: StepLoading })
+const Step5Physical    = dynamic(() => import('./step5-physical').then(m => ({ default: m.Step5Physical })), { ssr: false, loading: StepLoading })
+const Step6Activity    = dynamic(() => import('./step6-activity').then(m => ({ default: m.Step6Activity })), { ssr: false, loading: StepLoading })
+const Step7CountrySelect = dynamic(() => import('./step7-country-select').then(m => ({ default: m.Step7CountrySelect })), { ssr: false, loading: StepLoading })
+const Step8Restrictions = dynamic(() => import('./step8-restrictions').then(m => ({ default: m.Step8Restrictions })), { ssr: false, loading: StepLoading })
+const Step9Health      = dynamic(() => import('./step9-health').then(m => ({ default: m.Step9Health })), { ssr: false, loading: StepLoading })
+const Step10Exercise   = dynamic(() => import('./step10-exercise').then(m => ({ default: m.Step10Exercise })), { ssr: false, loading: StepLoading })
+const Step11Obstacle   = dynamic(() => import('./step11-obstacle').then(m => ({ default: m.Step11Obstacle })), { ssr: false, loading: StepLoading })
+const Step12Form       = dynamic(() => import('./step12-form').then(m => ({ default: m.Step12Form })), { ssr: false, loading: StepLoading })
+const Step13BodyConcern = dynamic(() => import('./step13-body-concern').then(m => ({ default: m.Step13BodyConcern })), { ssr: false, loading: StepLoading })
 
 function useEnsureSession(stepNumber: number) {
   const [error, setError] = useState(false)
@@ -242,17 +316,25 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
   // cada Step sempre salva na sua chave (físico→step_5, objetivo→step_2 etc.),
   // então a preview e o cálculo não são afetados pela reordenação. Quem precisa
   // acompanhar a ordem nova é o VISIT_ORDER do painel /quiz-funnel.
-  if (stepNumber === 5)  return <Step2Goal {...props} />
-  if (stepNumber === 1)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
-  if (stepNumber === 2)  return <Step4Sex {...props} />
-  if (stepNumber === 6)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
-  if (stepNumber === 4)  return <Step5Physical {...props} />
-  if (stepNumber === 3)  return <Step3MustHave {...props} />
-  if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
-  if (stepNumber === 8)  return <Step8Restrictions {...props} />
-  if (stepNumber === 9)  return <Step9Health {...props} />
-  if (stepNumber === 10) return <Step10Exercise {...props} />
-  if (stepNumber === 11) return <Step11Obstacle {...props} />
-  if (stepNumber === 13) return <Step13BodyConcern {...props} />
-  return <Step12Form {...props} />
+  //
+  // O boundary envolve TODOS os steps: a falha que ele pega (chunk do dynamic
+  // que não baixa) não é específica da entrada, e sem ele o sintoma é tela em
+  // branco silenciosa em qualquer passo.
+  function step() {
+    if (stepNumber === 5)  return <Step2Goal {...props} />
+    if (stepNumber === 1)  return <Step6Activity {...props} detectedCountry={detectedCountry} />
+    if (stepNumber === 2)  return <Step4Sex {...props} />
+    if (stepNumber === 6)  return <Step1Likes {...props} detectedCountry={detectedCountry} />
+    if (stepNumber === 4)  return <Step5Physical {...props} />
+    if (stepNumber === 3)  return <Step3MustHave {...props} />
+    if (stepNumber === 7)  return <Step7CountrySelect stepNumber={displayStep} totalSteps={displayTotal} detectedCountry={detectedCountry} />
+    if (stepNumber === 8)  return <Step8Restrictions {...props} />
+    if (stepNumber === 9)  return <Step9Health {...props} />
+    if (stepNumber === 10) return <Step10Exercise {...props} />
+    if (stepNumber === 11) return <Step11Obstacle {...props} />
+    if (stepNumber === 13) return <Step13BodyConcern {...props} />
+    return <Step12Form {...props} />
+  }
+
+  return <StepBoundary>{step()}</StepBoundary>
 }

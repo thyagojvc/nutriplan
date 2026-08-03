@@ -76,10 +76,16 @@ export default function RootLayout({
             era justamente a informação que responderia a pergunta.
             Chave de sessão = a mesma de quiz-session-client.ts; a tentativa
             anterior lia 'nutriplan_sid_fallback', que não existe, então o
-            header nunca ia e o evento se perdia justo em webview sem cookie. */}
+            header nunca ia e o evento se perdia justo em webview sem cookie.
+            03/08: a query string sai do filename antes do corte. Quando o erro
+            vinha de script inline, filename era a própria URL do documento e os
+            ~90 chars de utm_* comiam todo o orçamento da chave, apagando a
+            mensagem — que é o único dado que identifica o erro. Junto vai o
+            e.error.name, pra separar ChunkLoadError (bundle não baixou, tela
+            fica em branco) de TypeError (script do webview do IG). */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){var n=0;function send(d){try{var h={'Content-Type':'application/json'};try{var s=localStorage.getItem('nutriplan_session_id')||sessionStorage.getItem('nutriplan_session_id');if(s)h['x-quiz-session']=s}catch(e){}fetch('/api/quiz/track-event',{method:'POST',headers:h,body:JSON.stringify({event:'js_error',detail:d})}).catch(function(){})}catch(e){}}function rep(d){if(n>=3)return;n++;d=String(d).slice(0,180);send(d);setTimeout(function(){send(d)},5000)}window.addEventListener('error',function(e){var f=(e.filename||'').split('/').pop()||'inline';rep('@'+f+':'+(e.lineno||0)+' '+(e.message||'err'))});window.addEventListener('unhandledrejection',function(e){var r=e.reason;rep('@promise '+(r&&r.message?r.message:String(r)))})})();`,
+            __html: `(function(){var n=0;function send(d){try{var h={'Content-Type':'application/json'};try{var s=localStorage.getItem('nutriplan_session_id')||sessionStorage.getItem('nutriplan_session_id');if(s)h['x-quiz-session']=s}catch(e){}fetch('/api/quiz/track-event',{method:'POST',headers:h,body:JSON.stringify({event:'js_error',detail:d})}).catch(function(){})}catch(e){}}function rep(d){if(n>=3)return;n++;d=String(d).slice(0,180);send(d);setTimeout(function(){send(d)},5000)}window.addEventListener('error',function(e){var f=(e.filename||'').split('?')[0].split('/').pop()||'inline';var nm=(e.error&&e.error.name)?e.error.name+' ':'';rep('@'+f+':'+(e.lineno||0)+' '+nm+(e.message||'err'))});window.addEventListener('unhandledrejection',function(e){var r=e.reason;rep('@promise '+(r&&r.message?r.message:String(r)))})})();`,
           }}
         />
       </head>
