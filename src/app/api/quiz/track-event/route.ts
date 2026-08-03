@@ -33,8 +33,11 @@ export async function POST(request: NextRequest) {
   // js_error carrega a mensagem no próprio nome da chave (a RPC só grava
   // chave→timestamp; sem migration não há onde pôr valor). Sanitizado e
   // limitado pra não explodir o jsonb.
+  // 80 chars cortavam o "@arquivo:linha" (que o cliente manda PRIMEIRO) quando
+  // a mensagem era longa — e o arquivo é o dado que diz se o erro é do nosso
+  // bundle ou de script injetado pelo webview. 140 cabe os dois.
   if (parsed.data.event === 'js_error' && parsed.data.detail) {
-    key += '__' + parsed.data.detail.replace(/[^a-zA-Z0-9 _.:-]/g, ' ').slice(0, 80)
+    key += '__' + parsed.data.detail.replace(/[^a-zA-Z0-9 _.:@-]/g, ' ').slice(0, 140)
   }
   const supabase = createServiceClient()
 
