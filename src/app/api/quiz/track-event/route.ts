@@ -30,13 +30,16 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) return NextResponse.json({ ok: false })
 
   let key = `_ev_${parsed.data.event}`
-  // js_error carrega a mensagem no próprio nome da chave (a RPC só grava
-  // chave→timestamp; sem migration não há onde pôr valor). Sanitizado e
-  // limitado pra não explodir o jsonb.
+  // js_error e save_step_* carregam o detalhe no próprio nome da chave (a RPC
+  // só grava chave→timestamp; sem migration não há onde pôr valor). Sanitizado
+  // e limitado pra não explodir o jsonb.
   // 80 chars cortavam o "@arquivo:linha" (que o cliente manda PRIMEIRO) quando
   // a mensagem era longa — e o arquivo é o dado que diz se o erro é do nosso
   // bundle ou de script injetado pelo webview. 140 cabe os dois.
-  if (parsed.data.event === 'js_error' && parsed.data.detail) {
+  // Em save_step_failed o detalhe é o status HTTP, que separa causas: 401 =
+  // sessão perdida (cookie do webview), 5xx = servidor, 400 = payload.
+  const CARRIES_DETAIL = ['js_error', 'save_step_failed', 'save_step_error']
+  if (CARRIES_DETAIL.includes(parsed.data.event) && parsed.data.detail) {
     key += '__' + parsed.data.detail.replace(/[^a-zA-Z0-9 _.:@-]/g, ' ').slice(0, 140)
   }
   const supabase = createServiceClient()

@@ -15,6 +15,25 @@ function isIOS(): boolean {
   return /iPhone|iPad|iPod/.test(navigator.userAgent)
 }
 
+// PONTO CEGO QUE ISTO FECHA: quando o save da 1ª resposta falha, a pessoa vê
+// "Error al guardar" e sai — e no banco a sessão fica idêntica à de quem nunca
+// tocou em nada (zero passos, nenhum evento). Isso torna impossível separar
+// "tentou e o site quebrou" de "olhou e desistiu", que é justamente a pergunta
+// que decide se o gargalo da entrada é bug ou copy.
+// O detalhe vira sufixo da chave (ver track-event): o status separa as causas,
+// 401 = sessão perdida no webview, 5xx = servidor, 400 = payload.
+// Falha silenciosa de propósito: telemetria nunca pode atrapalhar o quiz.
+function reportSaveFailure(event: 'save_step_failed' | 'save_step_error', detail: string) {
+  try {
+    quizFetch('/api/quiz/track-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ event, detail }),
+      keepalive: true,
+    }).catch(() => {})
+  } catch { /* nunca propaga */ }
+}
+
 const GOALS = [
   { id: 'perder_peso',   label: 'Perder peso',          desc: 'Quiero reducir mi grasa corporal',                     emoji: '🔥' },
   { id: 'mantener',      label: 'Mantener mi peso',      desc: 'Quiero mantenerme saludable sin cambiar mi peso',      emoji: '⚖️' },
@@ -120,13 +139,14 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ step: 2, answers: { goal } }),
       })
-      if (!res.ok) { setError(true); setSaving(false); return }
+      if (!res.ok) { reportSaveFailure('save_step_failed', String(res.status)); setError(true); setSaving(false); return }
       // Marca "iniciou o quiz de fato" (respondeu a 1ª pergunta). Junto com o
       // QuizStart (dispara no landing), permite montar no Meta o público de
       // exclusão "clicou no link mas não iniciou" = QuizStart EXCLUDE QuizFirstAnswer.
       trackDualOnce('px_quiz_first_answer', 'QuizFirstAnswer', undefined, { custom: true })
       router.push('/quiz/1') // → rutina diaria
-    } catch {
+    } catch (e) {
+      reportSaveFailure('save_step_error', e instanceof Error ? e.message : 'erro')
       setError(true)
       setSaving(false)
     }
