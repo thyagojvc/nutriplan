@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
 import { trackDualOnce, setPixelExternalId } from '@/lib/fb-pixel'
-import { quizFetch, rememberQuizSession, whenQuizSessionReady } from '@/lib/quiz-session-client'
+import { quizFetch, rememberQuizSession, whenQuizSessionReady, getQuizSessionId } from '@/lib/quiz-session-client'
 
 interface Props {
   stepNumber: number
@@ -30,6 +30,9 @@ const Step13BodyConcern = dynamic(() => import('./step13-body-concern').then(m =
 
 function useEnsureSession(stepNumber: number) {
   const [error, setError] = useState(false)
+  // Muda pra forçar uma nova rodada de tentativas (botão "Reintentar").
+  const [attemptRound, setAttemptRound] = useState(0)
+
   useEffect(() => {
     // /quiz/5 é a porta de entrada (ver nota abaixo) — só cria sessão ali,
     // igual o QuizStart. Visitas diretas a outras URLs não geram sessão.
@@ -43,36 +46,74 @@ function useEnsureSession(stepNumber: number) {
     // sessão (dedupe do trackDualOnce), sem inflar a contagem.
     if (stepNumber !== 5) return
 
-    function initSession() {
+    let cancelled = false
+
+    async function attempt(): Promise<boolean> {
       const adRef = new URLSearchParams(window.location.search).get('utm_content') ?? undefined
       // Página nasceu em segundo plano (preload do in-app browser do IG/FB):
       // marca a sessão como carga fantasma, pra separar no funil "ninguém viu
       // essa página" de "pessoa real que viu e desistiu".
       const hidden = document.visibilityState === 'hidden'
-      // Mandamos o id conhecido no header também aqui: quando o cookie não
-      // persiste (webview in-app), é o que permite ao init-session reconhecer
-      // a sessão existente em vez de criar uma nova a cada montagem.
-      quizFetch('/api/quiz/init-session', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ad_ref: adRef, hidden }),
-      })
-        .then(async (res) => {
-          try {
-            const data = await res.json()
-            // Guarda no cliente ANTES de qualquer outra chamada: é o que faz o
-            // quiz funcionar onde o cookie é descartado.
-            rememberQuizSession(data?.session_id)
-            if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
-          } catch { /* resposta sem json — segue sem external_id */ }
-          trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
+      try {
+        // Mandamos o id conhecido no header também aqui: quando o cookie não
+        // persiste (webview in-app), é o que permite ao init-session reconhecer
+        // a sessão existente em vez de criar uma nova a cada montagem.
+        const res = await quizFetch('/api/quiz/init-session', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ad_ref: adRef, hidden }),
         })
-        .catch(() => setError(true))
+        if (!res.ok) return false
+        try {
+          const data = await res.json()
+          // Guarda no cliente ANTES de qualquer outra chamada: é o que faz o
+          // quiz funcionar onde o cookie é descartado.
+          rememberQuizSession(data?.session_id)
+          if (data?.tracking_id) void setPixelExternalId(data.tracking_id)
+        } catch { /* resposta sem json — segue sem external_id */ }
+        // Isolado: telemetria nunca pode derrubar a sessão. Antes isto ficava
+        // solto dentro do .then(), então qualquer exceção aqui caía no .catch()
+        // do fetch e pintava a tela de erro fatal, mesmo com a sessão criada.
+        try {
+          trackDualOnce('px_quiz_start', 'QuizStart', undefined, { custom: true })
+        } catch { /* pixel/adblock — irrelevante pro quiz */ }
+        return true
+      } catch {
+        return false
+      }
     }
 
-    initSession()
-  }, [stepNumber])
-  return { error }
+    // POR QUE TENTAR DE NOVO: quase todo o tráfego chega por webview in-app do
+    // IG/FB, onde requisição cair é rotina (rede móvel, página pré-carregada em
+    // segundo plano que o iOS suspende antes do fetch terminar). Uma única falha
+    // aqui deixava a pessoa numa tela morta, e o save-step não sabe se recuperar
+    // (devolve 401 sem sessão), então não havia nenhum caminho adiante.
+    async function run() {
+      for (const wait of [0, 1200, 3500]) {
+        if (cancelled) return
+        if (wait) await new Promise((r) => setTimeout(r, wait))
+        if (await attempt()) { if (!cancelled) setError(false); return }
+      }
+      if (!cancelled) setError(true)
+    }
+    void run()
+
+    // Se a página nasceu escondida (preload do in-app browser) e o fetch morreu
+    // com ela suspensa, tenta de novo assim que ela aparecer de verdade.
+    function onVisible() {
+      if (document.visibilityState !== 'visible') return
+      if (getQuizSessionId()) return
+      void run()
+    }
+    document.addEventListener('visibilitychange', onVisible)
+
+    return () => {
+      cancelled = true
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [stepNumber, attemptRound])
+
+  return { error, retry: () => { setError(false); setAttemptRound((n) => n + 1) } }
 }
 
 // Sinal mínimo pra separar "pessoa nunca tocou na tela" (preload de in-app
@@ -132,7 +173,7 @@ function useTrackPageVisible(stepNumber: number) {
 }
 
 export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, detectedCountry }: Props) {
-  const { error: sessionError } = useEnsureSession(stepNumber)
+  const { error: sessionError, retry: retrySession } = useEnsureSession(stepNumber)
   useTrackFirstInteraction(stepNumber)
   useTrackPageVisible(stepNumber)
 
@@ -155,12 +196,22 @@ export function QuizStep({ stepNumber, totalSteps, displayStep, displayTotal, de
     return () => { clearTimeout(first); clearInterval(iv) }
   }, [displayStep])
 
+  // Só aparece depois das 3 tentativas falharem. Antes era um beco sem saída
+  // ("Recarga la página", sem botão): num webview in-app muita gente não sabe
+  // como recarregar, então isso era o fim da linha pra ela.
   if (sessionError) {
     return (
-      <div className="flex min-h-screen items-center justify-center p-4">
-        <p className="text-sm text-destructive">
-          Error al iniciar la sesión. Recarga la página.
+      <div className="flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center">
+        <p className="text-sm text-muted-foreground">
+          No pudimos conectar. Revisa tu internet e inténtalo de nuevo.
         </p>
+        <button
+          type="button"
+          onClick={retrySession}
+          className="rounded-full bg-primary px-6 py-3 text-sm font-bold text-white shadow-sm active:scale-95"
+        >
+          Reintentar
+        </button>
       </div>
     )
   }
