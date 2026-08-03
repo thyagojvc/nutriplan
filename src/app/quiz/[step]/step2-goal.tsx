@@ -5,9 +5,6 @@ import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizProgress, QuizCard, QuizHeader, QuizOption, QuizCta, QuizError, ExitIntentModal } from './quiz-ui'
 import { quizFetch } from '@/lib/quiz-session-client'
 import { trackDualOnce } from '@/lib/fb-pixel'
-// Mesma fonte que a preview e o gerador usam — a entrada do quiz não pode
-// prometer um método diferente do que é entregue.
-import { COMBOS } from '@/lib/nutrition/combos'
 
 const EXIT_FLAG = 'nutriplan_exit_intent_shown'
 
@@ -143,49 +140,16 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-      {/* Apresentação do mecanismo — primeira coisa que ela vê ao chegar do
-          anúncio. O quiz tem um PORQUÊ (existe um método, tem nome, e o quiz é
-          o que o ajusta a ela) antes de pedir a primeira resposta.
-          Letras vêm de COMBOS pra nunca divergir do que o plano entrega. */}
-      <div className="relative overflow-hidden rounded-2xl border border-[#D8E8D4] bg-[#F5FAF2] px-4 pb-4 pt-3.5 text-center shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
-        {/* Halo decorativo atrás das letras — dá profundidade sem pesar */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 h-28 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full blur-2xl"
-          style={{ backgroundColor: 'hsl(148, 52%, 28%, 0.16)' }}
-        />
-
-        <div className="relative space-y-2.5">
-          <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-white px-3 py-1 text-xs font-bold uppercase tracking-[0.16em] text-primary">
-            <span className="text-sm">⏱️</span> 60 segundos
-          </p>
-
-          {/* A palavra se forma na frente dela (stagger via animationDelay) */}
-          <div className="flex justify-center gap-1.5" role="img" aria-label="Método CALIBRA">
-            {COMBOS.map((c, i) => (
-              <span
-                key={c.id}
-                aria-hidden
-                className="calibra-letter flex h-9 w-9 items-center justify-center rounded-xl bg-primary font-display text-[17px] font-black text-white shadow-[0_3px_10px_rgba(34,109,69,0.32)]"
-                style={{ animationDelay: `${i * 70}ms` }}
-              >
-                {c.letter}
-              </span>
-            ))}
-          </div>
-
-          <p className="font-display text-[19px] font-black leading-[1.18] tracking-tight text-gray-900">
-            No es que comas menos.<br />
-            Es que <span className="text-primary">dejas de tener hambre</span>.
-          </p>
-
-          <p className="text-sm leading-relaxed text-gray-700">
-            CALIBRA son 7 combinaciones, una por día, que hacen que el hambre baje sola.
-            El nombre nace de tu <span className="font-bold text-primary">Calibra</span>ción{' '}
-            <span className="font-bold text-primary">Metabol</span>ica: calibran tu hambre y aceleran tu metabolismo.
-            Responde 60 segundos y las ajustamos a tu cuerpo, tus antojos y tu rutina.
-          </p>
-        </div>
+      {/* Entrada enxuta de propósito: ela acabou de clicar num anúncio, ainda
+          não decidiu se confia. Um bloco grande de marca/método aqui assusta
+          ("isso é venda") antes mesmo da 1ª pergunta. Só situa que é rápido e
+          qual é o assunto — o mecanismo (CALIBRA, 7 protocolos) só aparece
+          depois, na preview, quando ela já investiu tempo respondendo. */}
+      <div className="flex items-center justify-center gap-2 rounded-full border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-2.5 text-center">
+        <span className="text-sm">⏱️</span>
+        <p className="text-sm font-bold text-gray-800">
+          Quiz de 60 segundos para calibrar tu metabolismo
+        </p>
       </div>
 
       <QuizCard>
