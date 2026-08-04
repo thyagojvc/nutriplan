@@ -982,10 +982,14 @@ export default function PreviewPage() {
             </p>
           </div>
 
-          <p className="text-center text-[11px] leading-relaxed text-muted-foreground">
-            Cada dato de esta página viene de estudios publicados. Te los enviamos por correo junto a tu
-            plan, para que los leas tú misma.
-          </p>
+          {/* Saiu em 04/08 a linha "Cada dato viene de estudios publicados. Te
+              los enviamos por correo junto a tu plan". Era uma promessa que a
+              gente não consegue cumprir: o quiz não captura mais e-mail, então
+              não existe endereço pra onde mandar estudo nenhum. Promessa não
+              cumprível na página de venda custa mais do que o pouco de
+              credibilidade que ela comprava.
+              Se um dia voltar a capturar e-mail, ver o alerta de fonte do 2,5x
+              na memória mechanism_7_combos antes de reprometer isso. */}
         </div>
 
         {/* El método ejecutado — vive DEPOIS do método de propósito. Quando
