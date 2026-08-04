@@ -29,7 +29,43 @@ const CHUNK_RELOAD_FLAG = 'nutriplan_chunk_reloaded'
 // A pessoa de Honduras voltou 32 min depois (updated_at) e continuou em 0.
 // Falha de chunk é quase sempre transitória, então um reload resolve; o flag
 // em sessionStorage impede laço infinito se o problema for permanente.
+// PONTO CEGO QUE ISTO FECHA (04/08): o boundary acima só pega chunk que FALHA
+// (a promise rejeita e o React joga a exceção pra cá). Chunk que TRAVA não passa
+// por ele: se a requisição do bundle fica pendurada em vez de dar erro, a
+// promise nunca resolve nem rejeita, ninguém lança nada, e a pessoa fica no
+// spinner pra sempre. No banco isso é indistinguível de quem viu e não quis:
+// page_visible disparou, o heartbeat segue batendo do pai, zero toques porque
+// não há o que tocar, e nenhum evento de erro em lugar nenhum.
+//
+// É exatamente a pergunta que trava o diagnóstico do iOS. Hoje o iOS faz ~metade
+// do Android em TODO criativo e TODO período (Criat-Demo 53%, Organico 32%,
+// Todo lo que 28%, versões APP 19%), e não dá pra saber se são pessoas presas no
+// carregamento ou pessoas que abriram e saíram.
+//
+// 8s porque a mediana de permanência de quem NÃO entra é 5s: quem passa disso
+// olhando spinner não é alguém desistindo, é alguém esperando.
+// O passo vem da URL porque o `loading` do next/dynamic não recebe props nossas.
+// Não cancela nada e não bloqueia nada: se o chunk chegar depois, o componente
+// desmonta e o timer morre no cleanup.
+const STUCK_MS = 8000
+
 function StepLoading() {
+  useEffect(() => {
+    const t = setTimeout(() => {
+      const step = (window.location.pathname.split('/').pop() || '?').slice(0, 4)
+      void whenQuizSessionReady().then((id) => {
+        if (!id) return
+        quizFetch('/api/quiz/track-event', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ event: 'step_stuck', detail: `${step} ${STUCK_MS / 1000}s` }),
+          keepalive: true,
+        }).catch(() => {})
+      })
+    }, STUCK_MS)
+    return () => clearTimeout(t)
+  }, [])
+
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary border-t-transparent" />

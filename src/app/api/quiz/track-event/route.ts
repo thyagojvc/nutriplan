@@ -7,7 +7,7 @@ const bodySchema = z.object({
   // save_step_error = fetch nem completou (rede/CORS). Diagnóstico do abandono
   // iOS na 1ª pergunta: sessão sem steps COM esse evento = pessoa tentou e o
   // save falhou; sem o evento = nem tocou em Continuar (problema de UI).
-  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted', 'page_visible']),
+  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted', 'page_visible', 'step_stuck']),
   // Só para js_error: mensagem resumida do erro, vira sufixo do valor gravado.
   detail: z.string().max(200).optional(),
 })
@@ -38,7 +38,7 @@ export async function POST(request: NextRequest) {
   // bundle ou de script injetado pelo webview. 140 cabe os dois.
   // Em save_step_failed o detalhe é o status HTTP, que separa causas: 401 =
   // sessão perdida (cookie do webview), 5xx = servidor, 400 = payload.
-  const CARRIES_DETAIL = ['js_error', 'save_step_failed', 'save_step_error']
+  const CARRIES_DETAIL = ['js_error', 'save_step_failed', 'save_step_error', 'step_stuck']
   if (CARRIES_DETAIL.includes(parsed.data.event) && parsed.data.detail) {
     key += '__' + parsed.data.detail.replace(/[^a-zA-Z0-9 _.:@-]/g, ' ').slice(0, 140)
   }
