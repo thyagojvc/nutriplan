@@ -16,7 +16,7 @@ import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/n
 // prometer um combo que o plano entregue não tenha.
 import { COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
-import { formatPrice, currencyForCountry, formatLocalTotal } from '@/lib/pricing/localize'
+import { formatPrice, currencyForCountry, formatLocalTotal, hasExtraFees } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 import { quizFetch } from '@/lib/quiz-session-client'
 
@@ -1426,8 +1426,16 @@ export default function PreviewPage() {
               {localPrice(9.90) && (
                 <p className="text-[13px] font-semibold text-gray-700">
                   En tu moneda: <span className="font-bold tabular-nums text-gray-900">{localPrice(9.90)} {fx.currency}</span>
+                  {/* "Nada se suma después" só pode ser dito onde é verdade. Na
+                      Argentina a própria Hotmart escreve "más tarifas
+                      correspondientes" ao lado do preço: são as percepções que o
+                      banco cobra sobre compra em moeda estrangeira, e ninguém
+                      consegue calcular antes da fatura. Prometer total fechado
+                      lá seria quebrar a confiança justo em quem já desconfia. */}
                   <span className="block text-[11px] font-normal text-muted-foreground">
-                    Es el total que vas a pagar, nada se suma después.
+                    {hasExtraFees(fx.country)
+                      ? 'Tu banco puede sumar las percepciones de siempre por comprar en dólares.'
+                      : 'Es el total que vas a pagar, nada se suma después.'}
                   </span>
                 </p>
               )}

@@ -206,6 +206,23 @@ export function formatLocalTotal(
   return `${cfg.symbol}${num}`
 }
 
+// Países onde o valor do checkout NÃO é o final: a Hotmart escreve, ao lado do
+// preço, "más tarifas correspondientes. Haz clic aquí para saber más".
+// Hoje só a Argentina. Conferido em 04/08 percorrendo os 9 países no seletor do
+// checkout: MX e CL dizem "IVA incluido" (valor fechado, imposto já dentro), e
+// CO, PE, UY, CR, PY e PA não trazem nota nenhuma. Só a AR avisa que soma.
+// São as percepções que o banco argentino cobra sobre compra em moeda
+// estrangeira, e a Hotmart não tem como calcular porque quem aplica é o emissor
+// do cartão. Por isso NÃO dá pra embutir num multiplicador: o número não existe
+// até a fatura fechar.
+// Consequência na copy: nesses países a página não pode dizer "é o total que
+// você vai pagar". Ver o bloco de preço em preview/page.tsx.
+const EXTRA_FEES: ReadonlySet<string> = new Set(['AR'])
+
+export function hasExtraFees(country: string | null | undefined): boolean {
+  return !!country && EXTRA_FEES.has(country.toUpperCase())
+}
+
 // NÃO existe um hasLocalTax aqui, de propósito. A primeira versão deduzia
 // "tem imposto" de um multiplicador acima de 1,02, e isso marcava Costa Rica
 // (1,055) e Paraguai (1,054) como tendo imposto quando aqueles ~5% são só
