@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, BadgeCheck,
-  Mail, MessageCircle, Smartphone, Dumbbell, Repeat, Sparkles,
+  Mail, MessageCircle, Smartphone, Dumbbell, Sparkles,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -14,7 +14,7 @@ import { calcTargets } from '@/lib/nutrition/math'
 import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/nutrition/generate'
 // Os combos vêm do MESMO módulo que o gerador usa: a preview nunca pode
 // prometer um combo que o plano entregue não tenha.
-import { COMBOS, COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
+import { COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
 import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
@@ -144,7 +144,7 @@ const RESULTS: {
   },
   {
     photo: '/resultados/caso-2.png', name: 'Noelia', country: '🇵🇾', age: 42, result: '−8 kg en 3 meses', w: 1080, h: 1350,
-    quote: 'Me quedé asombrada cuando empecé a aplicar el Método CALIBRA. Además de bajar el peso en la balanza, estos secretos ayudan a moldear el cuerpo, y eso hizo que mi cara y mi cuello se afinaran, que eran áreas que me incomodaban y de las que tenía vergüenza. Solo tengo que agradecer a todo el equipo del método y, especialmente, a la doctora María Fernanda.',
+    quote: 'Me quedé asombrada cuando empecé mi Calibración Metabólica. Además de bajar el peso en la balanza, estos secretos ayudan a moldear el cuerpo, y eso hizo que mi cara y mi cuello se afinaran, que eran áreas que me incomodaban y de las que tenía vergüenza. Solo tengo que agradecer a todo el equipo del método y, especialmente, a la doctora María Fernanda.',
   },
 ]
 
@@ -214,10 +214,10 @@ function ComboTease({ combo, benefit }: { combo: Combo; benefit: string }) {
       <div className="min-w-0 flex-1">
         <p className="text-[12.5px] font-bold leading-snug text-gray-900">{benefit}</p>
         <p className="mt-1 select-none text-[11px] font-semibold leading-snug text-primary/70 blur-[3px]">
-          Protocolo {combo.letter} ({combo.name}): {combo.action}
+          Atajo {combo.letter} ({combo.name}): {combo.action}
         </p>
         <p className="mt-1.5 flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-primary">
-          <Lock className="h-2.5 w-2.5" /> Protocolo bloqueado
+          <Lock className="h-2.5 w-2.5" /> Atajo bloqueado
         </p>
       </div>
     </div>
@@ -291,8 +291,8 @@ function TeaserThumb({ food, blurred }: { food: string; blurred?: boolean }) {
 // comboForDay em generate.ts), mas a combinação em si é a que de fato se aplica
 // a esse tipo de refeição no ciclo real.
 const MEAL_TEASE: Record<string, { comboId: string; benefit: string }> = {
-  Desayuno: { comboId: 'lleno', benefit: 'Este protocolo cierra tu hambre por horas, sin que tengas que comer de más.' },
-  Almuerzo: { comboId: 'inverso', benefit: 'Este protocolo evita el bajón de las 3 de la tarde que te manda directo a picar algo.' },
+  Desayuno: { comboId: 'lleno', benefit: 'Este atajo cierra tu hambre por horas, sin que tengas que comer de más.' },
+  Almuerzo: { comboId: 'inverso', benefit: 'Este atajo evita el bajón de las 3 de la tarde que te manda directo a picar algo.' },
 }
 
 type ErrorKind = 'no_session' | 'calc_failed' | 'network'
@@ -704,13 +704,14 @@ export default function PreviewPage() {
             Solução: o plano é o substantivo (ela vê o que leva), "calibrado
             para tu metabolismo" é o qualificador que nenhum plano genérico usa,
             e ecoa o verbo do anúncio ("calibré mi metabolismo").
-            A linha abaixo planta os 7 protocolos ACIMA DA DOBRA: sem isso ela
-            pode decidir que é só um cardápio antes de chegar no mecanismo. */}
+            A linha abaixo planta a CALIBRACIÓN acima da dobra: sem isso ela
+            pode decidir que é só um cardápio antes de chegar no mecanismo.
+            Antes citava os 7 protocolos aqui; saiu na inversão de 04/08. */}
         <h1 className="font-display text-[26px] font-black leading-[1.15] text-gray-900">
           Tu plan de comidas, calibrado para tu metabolismo
         </h1>
         <p className="text-[13px] font-bold uppercase tracking-[0.18em] text-primary">
-          Generado por los 7 protocolos del Método CALIBRA™
+          Generado por tu Calibración Metabólica
         </p>
         <p className="text-sm font-semibold text-gray-700">
           {heroSubheadline.prefix}
@@ -895,58 +896,46 @@ export default function PreviewPage() {
           )}
         </Card>
 
-        {/* ── Mecanismo: los 7 combos ─────────────────────────────
+        {/* ── Mecanismo: la Calibración ───────────────────────────
             Vive AQUI, entre o teaser do plano e a prova social: ela acabou de
             ver O QUE come, agora entende POR QUE isso funciona diferente, e só
-            depois vê prova e preço. É a seção que justifica o ticket.
-            Regra dura: nomes e taglines vêm de combos.ts, nunca hardcoded, e a
-            AÇÃO de cada combo fica travada (é o que ela compra). */}
+            depois vê prova e preço.
+            04/08 — INVERSÃO: o produto é a CALIBRACIÓN, não os 7 protocolos.
+            Antes esta seção ensinava os sete (acrônimo + trilho de 7 cards) e
+            isso é ferramenta de ticket alto: obriga a pessoa a estudar um
+            framework antes de conseguir querer. A $9.90 a compra é por impulso,
+            e densidade produz avaliação, que é o inverso de impulso. Sintoma no
+            banco: 130 pessoas liam a página INTEIRA e não clicavam.
+            Os sete continuam existindo no app e agora aparecem uma única vez,
+            como bônus acelerador, com nome e resultado e SEM sumário.
+            Regra dura desta seção: uma ideia só. Se uma frase aqui aumentar a
+            compreensão em vez da curiosidade, ela está errada. */}
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <div className="space-y-1.5 text-center">
             <p className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/8 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-primary">
-              <Flame className="h-3 w-3" /> El método
+              <Flame className="h-3 w-3" /> La calibración
             </p>
             <p className="font-display text-xl font-black leading-tight text-gray-900">
-              No es una dieta. Es un método.
+              No es una dieta. Es una calibración.
             </p>
           </div>
 
-          {/* Posicionamento: o produto é o MÉTODO. O plano é a forma de
-              executá-lo. Nada aqui explica COMO funciona — a explicação é o
-              produto entregue após a compra. Aqui se vende sistema e mistério.
-              Se uma frase deste bloco aumentar a compreensão em vez da
-              curiosidade, ela está errada. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Las dietas te dan una lista de comidas y te piden aguantar. El método no te pide
-            nada. Son siete protocolos, en distintos momentos de tu día, diseñados para ejecutarse
-            juntos. No aguantas el hambre. El hambre baja sola.
+            Una dieta te da una lista de comidas y te pide aguantar. Es la misma lista para
+            todas, así que si tu cuerpo no responde igual, el problema pareces tú.
+          </p>
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            Calibrar es lo contrario: se ajusta el plan a tu metabolismo, a tus horarios y a
+            las comidas que ya te gustan, hasta dar con el punto en el que tu cuerpo deja de
+            pedirte comida. <strong className="font-bold text-gray-900">No aguantas el hambre.
+            El hambre baja sola.</strong>
           </p>
 
-          {/* Revelação do acrônimo ANTES da lista: ela precisa saber que o
-              método tem nome antes de ler os 7 itens, senão a lista vira uma
-              lista de dicas soltas em vez de um sistema fechado. A leitura é de
-              cima pra baixo (a palavra existe, os protocolos a preenchem), não
-              de baixo pra cima — senão CALIBRA vira anagrama, não arquitetura. */}
-          <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] px-4 py-3.5 text-center">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
-              No se llama CALIBRA por casualidad
-            </p>
-            <div className="mt-2 flex justify-center gap-1.5">
-              {COMBOS.map((c) => (
-                <span
-                  key={c.id}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white shadow-sm"
-                >
-                  {c.letter}
-                </span>
-              ))}
-            </div>
-            <p className="mt-2.5 text-[12.5px] leading-relaxed text-gray-700">
-              Siete protocolos. Una letra cada uno. Juntos forman{' '}
-              <strong className="font-bold text-primary">CALIBRA</strong>, que es justo lo que hacen
-              contigo: <span className="font-bold text-primary">calibrar</span>te.
-            </p>
-          </div>
+          {/* O acrônimo CALIBRA (7 letras, 7 protocolos) vivia aqui e saiu na
+              inversão de 04/08: era a peça que mais exigia estudo da leitora e
+              a que mais entregava a estrutura de graça. Quem precisa entender
+              sete coisas antes de comprar não compra por impulso.
+              NÃO recolocar sem antes bater o número dos 130 que leem até o fim. */}
 
           {/* Os 3 cards têm que ser da MESMA natureza: achado de estudo. Antes
               misturavam contagem (7), conceito (1 orden) e pesquisa (2,5x) no
@@ -974,84 +963,19 @@ export default function PreviewPage() {
             </div>
           </div>
 
-          {/* Os 7 protocolos como SEQUÊNCIA, não lista: o trilho vertical liga
-              um módulo ao próximo, e a letra vive fora do card (é a posição
-              dela na palavra, não um bullet). Cada card traz nome + ™ + efeito
-              + por que o nome é inevitável. Nunca a execução. */}
-          <div>
-            <p className="mb-2.5 text-[12px] leading-relaxed text-gray-700">
-              Los 7 protocolos se ejecutan en un orden específico. Cada uno prepara el terreno
-              para el siguiente.
-            </p>
-            <div>
-              {COMBOS.map((c, i) => (
-                <div key={c.id} className="flex gap-3">
-                  <div className="flex w-9 shrink-0 flex-col items-center">
-                    <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary font-display text-base font-black text-white">
-                      {c.letter}
-                    </span>
-                    {i < COMBOS.length - 1 && <span className="w-px flex-1 bg-primary/25" />}
-                  </div>
-                  <div className="min-w-0 flex-1 pb-2">
-                    <div className="rounded-xl border border-[#D8E8D4] bg-white p-3">
-                      {/* Sem o emoji do combo aqui de propósito: no CANDADO
-                          (🔒) ele colidia com o ícone de cadeado, dois símbolos
-                          iguais com sentidos diferentes no mesmo card. A letra
-                          do trilho já identifica o protocolo. */}
-                      <div className="flex items-start gap-2">
-                        <p className="min-w-0 flex-1 text-[13px] font-black uppercase tracking-wider text-gray-900">
-                          {c.name}
-                          <span className="align-super text-[8px] font-bold text-primary">™</span>
-                        </p>
-                        <Lock className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary/50" />
-                      </div>
+          {/* O trilho vertical com os 7 protocolos (nome ™ + teaser + cadeado,
+              ~80 linhas) vivia aqui e saiu na inversão de 04/08. Era a peça mais
+              densa da página: sete cards pra percorrer antes de chegar no preço.
+              O device de curiosidade que ele criava (cadeado + blur) NÃO se
+              perdeu — continua no teaser das refeições, onde o mistério é sobre
+              a COMIDA dela e não sobre um currículo de sete itens.
+              COMBOS segue sendo a fonte de verdade e os sete seguem no app;
+              nesta página eles aparecem uma única vez, como bônus acelerador. */}
 
-                      {/* Ideia e efeito num texto só. Antes eram duas linhas
-                          (uma em negrito, uma cinza) e o negrito ficava na
-                          frase intercambiável, não na interessante. */}
-                      <p className="mt-1 text-[12.5px] leading-relaxed text-gray-700">
-                        {c.teaser}
-                      </p>
-
-                      {/* Quebra de padrão do LLENO: 1 ingrediente revelado,
-                          os outros visivelmente trancados. */}
-                      {c.revealedIngredient && (
-                        <div className="mt-2 rounded-lg border border-primary/25 bg-[#F5FAF2] p-2.5">
-                          <div className="flex items-center gap-1.5">
-                            <span className="inline-flex items-center gap-1 rounded-md border border-primary/30 bg-white px-2 py-1 text-[11px] font-bold text-primary">
-                              {c.revealedIngredient.emoji} {c.revealedIngredient.name}
-                            </span>
-                            {/* Placeholders de propósito: blur não é segredo
-                                (basta inspecionar o DOM), então o nome real dos
-                                outros ingredientes nunca chega ao cliente. */}
-                            {[0, 1].map((i) => (
-                              <span
-                                key={i}
-                                className="inline-flex select-none items-center gap-1 rounded-md border border-primary/20 bg-white/70 px-2 py-1 text-[11px] font-bold text-primary/50"
-                              >
-                                <Lock className="h-2.5 w-2.5" />
-                                <span className="blur-[2.5px]">{i === 0 ? '••••••••' : '••••••••••'}</span>
-                              </span>
-                            ))}
-                          </div>
-                          <p className="mt-1.5 text-[11px] leading-snug text-gray-700">
-                            {c.revealedIngredient.note}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Regra central da marca: nenhum protocolo se vende sozinho. O que
-              ela compra é o efeito acumulado dos sete. */}
           <div className="rounded-xl bg-primary px-4 py-3.5 text-center">
             <p className="text-[13px] font-bold leading-snug text-white">
-              Ninguno de los siete funciona solo. El método es lo que pasa cuando los siete se
-              ejecutan juntos, en el orden en que fueron diseñados.
+              Tu calibración no la armas tú. Sale calculada con lo que respondiste, y la app te
+              dice qué te toca comer cada día.
             </p>
             <p className="mt-2 text-[13px] font-bold leading-snug text-white/90">
               No tienes que entenderlo. Tienes que hacerlo.
@@ -1074,7 +998,7 @@ export default function PreviewPage() {
           <SectionHeading title={<>Y así se <Hl>ejecuta</Hl> en tu día</>} />
           <p className="text-center text-[13px] leading-relaxed text-muted-foreground">
             El método se aplicó a tus datos y salió esto: comidas armadas con los alimentos que marcaste
-            como favoritos, cada una con su protocolo dentro. Te mostramos el primero de cada una:
+            como favoritos, cada una con su atajo dentro. Te mostramos el primero de cada una:
           </p>
           <div className="space-y-3">
             {sample.slice(0, 2).map((meal) => {
@@ -1163,7 +1087,7 @@ export default function PreviewPage() {
         <div className="rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-3.5 shadow-[0_4px_18px_rgba(15,110,86,0.07)]">
           <SectionHeading
             title={<>Siempre en <Hl>tus manos</Hl></>}
-            subtitle="No recibes un PDF. Recibes el Método CALIBRA™ instalado en tu celular. Cada día tu app te muestra el protocolo que toca exactamente en ese momento. Tú solo abres, ejecutas y sigues con tu día."
+            subtitle="No recibes un PDF. Recibes tu Calibración Metabólica instalada en tu celular. Cada día la app te muestra qué te toca comer en ese momento. Tú solo abres, comes y sigues con tu día."
           />
           {/* Moldura de celular: o video em si é uma tela recortada, sem
               proporção fixa de aparelho, então "object-contain" + bezel
@@ -1211,7 +1135,7 @@ export default function PreviewPage() {
           </div>
 
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            El Método CALIBRA™ fue desarrollado bajo la orientación de una profesional de la nutrición: 7 protocolos propietarios que adaptan tu alimentación a tus objetivos, tus antojos y tu rutina real.
+            Tu Calibración Metabólica fue desarrollada bajo la orientación de una profesional de la nutrición, con un sistema propietario que adapta tu alimentación a tus objetivos, tus antojos y tu rutina real.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
@@ -1248,12 +1172,12 @@ export default function PreviewPage() {
           <SectionHeading title={<>Así de <Hl>fácil</Hl> es</>} subtitle="Cuatro pasos. Nada más." />
           <div className="space-y-2.5">
             {[
-              { n: 1, text: 'Desbloqueas el Método CALIBRA™' },
+              { n: 1, text: 'Desbloqueas tu Calibración Metabólica' },
               { n: 2, text: 'Descargas la app en tu celular' },
-              { n: 3, text: 'Cada día, la app te da el protocolo que toca' },
+              { n: 3, text: 'Cada día, la app te dice qué te toca' },
               // Fecho acumulativo de propósito: o resultado é dos sete juntos,
               // nunca de um dia isolado (é o que sustenta o valor do sistema).
-              { n: 4, text: 'Los siete se acumulan y tu cuerpo se calibra' },
+              { n: 4, text: 'Los días se acumulan y tu cuerpo se calibra' },
             ].map(({ n, text }) => (
               <div key={n} className="flex items-center gap-3 rounded-xl border border-[#D8E8D4] bg-[#F5FAF2] px-3.5 py-3">
                 <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-primary font-display text-sm font-black text-white">
@@ -1270,9 +1194,9 @@ export default function PreviewPage() {
           {/* Header colorido */}
           <div className="bg-primary px-5 py-3 text-center">
             <p className="text-[13px] font-bold uppercase tracking-widest text-white/80">
-              {isLoss ? 'El Método CALIBRA™ para bajar de peso'
-                : isGain ? 'El Método CALIBRA™ para ganar músculo'
-                : 'El Método CALIBRA™'}
+              {isLoss ? 'Tu Calibración Metabólica para bajar de peso'
+                : isGain ? 'Tu Calibración Metabólica para ganar músculo'
+                : 'Tu Calibración Metabólica'}
             </p>
             <p className="text-base font-black text-white">
               Tu Calibración ya está calculada. Solo falta desbloquear el método.
@@ -1280,30 +1204,22 @@ export default function PreviewPage() {
           </div>
 
           <div className="p-5 space-y-4">
-            {/* Mecanismo Único — destacado como THE product, não como feature.
-                O acrônimo CALIBRA (os 7 combos, ver combos.ts) é a parte
-                EXECUTÁVEL do mecanismo: não é mais "calcula por ti", é "ella
-                hace 7 cosas concretas y el hambre baja". */}
+            {/* O item principal da oferta é a CALIBRACIÓN, não os 7 protocolos
+                (inversão de 04/08). Antes este card vendia "Acceso al Método
+                CALIBRA™: los 7 protocolos" e trazia as 7 letras em bolinhas —
+                ou seja, o mesmo produto que agora é bônus. Vender a mesma coisa
+                como produto e como brinde na mesma página anula os dois.
+                A fileira de letras saiu junto: ela só fazia sentido pra quem
+                tinha lido o acrônimo, que também saiu. */}
             <div className="space-y-2.5 rounded-xl border border-primary/30 bg-primary/5 px-3.5 py-3">
               <div className="flex items-center gap-3">
                 <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                   <Check className="h-3.5 w-3.5" strokeWidth={3} />
                 </span>
                 <div>
-                  <p className="text-sm font-bold text-gray-900">Acceso al Método CALIBRA™</p>
-                  <p className="text-[13px] text-muted-foreground">Los 7 protocolos, en el orden en que fueron diseñados y validados por María Fernanda. No se venden por separado porque no funcionan por separado</p>
+                  <p className="text-sm font-bold text-gray-900">Tu Calibración Metabólica completa</p>
+                  <p className="text-[13px] text-muted-foreground">Calculada con tus datos y validada por María Fernanda. Tu plan de comidas, tus porciones y tus horarios, ajustados a tu metabolismo y no al de otra persona</p>
                 </div>
-              </div>
-              <div className="flex justify-center gap-1.5">
-                {COMBOS.map((c) => (
-                  <span
-                    key={c.id}
-                    title={c.name}
-                    className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-[13px] font-black text-white"
-                  >
-                    {c.letter}
-                  </span>
-                ))}
               </div>
             </div>
 
@@ -1320,13 +1236,13 @@ export default function PreviewPage() {
                 o calendário, mesma linguagem visual da seção de resultados. */}
             <div>
               <p className="text-center text-[13px] leading-relaxed text-gray-700">
-                Tener los 7 protocolos no alcanza si los dejas a la mitad. Por eso el método se entrega en dos partes:
+                Tener el plan no alcanza si lo dejas a la mitad. Por eso tu calibración se entrega en dos partes:
               </p>
               <div className="mt-2.5 grid grid-cols-2 gap-2.5">
                 <div className="overflow-hidden rounded-xl border border-primary/25 bg-white">
                   <Image
                     src="/foto-app-celular.png"
-                    alt="Ejecutando el Método CALIBRA desde la app"
+                    alt="Siguiendo su Calibración Metabólica desde la app"
                     width={454}
                     height={805}
                     className="w-full aspect-[4/5] object-cover object-center"
@@ -1336,7 +1252,7 @@ export default function PreviewPage() {
                         pra "protocolos" — ficou destoando do resto da página. */}
                     <p className="text-[13px] font-bold text-gray-900">El plan: el método aplicado</p>
                     <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                      Cada día ya viene con el método ejecutado: sabes exactamente qué protocolo toca hoy, sin adivinar nada.
+                      Cada día ya viene resuelto: sabes exactamente qué te toca hoy, sin adivinar nada.
                     </p>
                     <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">El camino</p>
                   </div>
@@ -1352,7 +1268,7 @@ export default function PreviewPage() {
                   <div className="p-3">
                     <p className="text-[13px] font-bold text-gray-900">El calendario: para no abandonar</p>
                     <p className="mt-1 text-[12px] leading-snug text-muted-foreground">
-                      Marcas cada día que ejecutas tu protocolo. Es lo que hace que el método se sostenga las 4 semanas, no solo los primeros días.
+                      Marcas cada día que cumples. Es lo que hace que tu calibración se sostenga las 4 semanas, no solo los primeros días.
                     </p>
                     <p className="mt-2 text-[10px] font-bold uppercase tracking-wide text-primary">Tu seguimiento</p>
                   </div>
@@ -1376,10 +1292,10 @@ export default function PreviewPage() {
               <p className="mb-2.5 text-[12px] text-gray-500">Para que veas exactamente qué te llevas, no un &ldquo;paquete&rdquo; sin nombre.</p>
               <ul className="space-y-2.5">
                 {[
-                  { item: 'El Método CALIBRA™ completo', note: 'los 7 protocolos, en el orden en que fue diseñado' },
+                  { item: 'Tu Calibración Metabólica completa', note: 'tu plan, tus porciones y tus horarios, calculados con tus datos' },
                   { item: 'Tu Calibración Metabólica', note: 'el método aplicado a tu cuerpo: tus números exactos' },
                   { item: 'Tu plan de comidas, que nace de ahí', note: 'aunque ya hayas probado otras dietas sin resultado' },
-                  { item: 'Tu app, con todo instalado en el celular', note: 'el protocolo del día, tu plan y tu lista en un solo toque' },
+                  { item: 'Tu app, con todo instalado en el celular', note: 'lo que te toca hoy, tu plan y tu lista en un solo toque' },
                   { item: 'Tu calendario de constancia', note: 'lo que te sostiene para no abandonar en la semana 2' },
                 ].map(({ item, note }) => (
                   <li key={item} className="flex items-start gap-2 text-sm text-gray-700">
@@ -1396,8 +1312,11 @@ export default function PreviewPage() {
             </div>
 
             {/* Bônus como presentes, não como linhas de lista: card com capa,
-                ícone e rótulo "Gratis". A lista de compras e as sustituciones
-                já existiam, só estavam escondidas em bullet. */}
+                ícone e rótulo "Gratis".
+                04/08: as sustituciones saíram daqui. Elas só têm valor percebido
+                se alguém as citar — ninguém sente falta delas se não aparecem —
+                e ocupavam o lugar do único bônus que a pessoa realmente quer.
+                Seguem vivas no FAQ, que é onde de fato derrubam objeção. */}
             <div className="rounded-xl border border-dashed border-[#D85A30]/45 bg-[#FDF6F3] p-4">
               <p className="mb-0.5 text-center text-[11px] font-bold uppercase tracking-widest text-[#B8481F]">
                 Y además, 3 bonos incluidos
@@ -1405,15 +1324,19 @@ export default function PreviewPage() {
               <p className="mb-3 text-center text-[12px] text-gray-600">Sin costo extra, dentro de la misma app.</p>
               <div className="space-y-2">
                 {[
+                  // O bônus de maior valor vem PRIMEIRO e é o único que não se
+                  // explica: nome + resultado, nunca a lista dos sete. Ver o
+                  // comentário do bloco do mecanismo — os atajos existem no app,
+                  // aqui eles só precisam soar como atalho, não como currículo.
+                  {
+                    Icon: Zap,
+                    title: 'Los 7 atajos que aceleran tu Calibración',
+                    desc: 'Hasta 5x más rápido para llegar a tu punto de calibración. Ya vienen dentro de la app, listos para usar.',
+                  },
                   {
                     Icon: ShoppingCart,
                     title: 'Lista de Compras Optimizada',
-                    desc: 'Vas al súper una vez y sale todo lo del método. Sin vueltas ni ingredientes raros.',
-                  },
-                  {
-                    Icon: Repeat,
-                    title: 'Sustituciones Inteligentes',
-                    desc: '¿No tienes un ingrediente? La app te da el reemplazo que mantiene tus números.',
+                    desc: 'Vas al súper una vez y sale todo. Sin vueltas ni ingredientes raros.',
                   },
                   {
                     Icon: Sparkles,
@@ -1633,11 +1556,11 @@ const FAQ_ITEMS = [
   },
   {
     q: 'Ya probé muchas dietas y ninguna funcionó. ¿Por qué esta sí?',
-    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Aquí no compras una dieta, compras un método: los 7 protocolos trabajan juntos para que el hambre baje sola, en vez de pedirte fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
+    a: 'Porque las dietas genéricas solo te dicen qué comer, y eso no alcanza si igual te da hambre todo el día. Aquí no compras una dieta, compras una calibración: el plan se ajusta a tu metabolismo, a tus horarios y a lo que ya te gusta comer, para que el hambre baje sola en vez de pedirte fuerza de voluntad. Eso es lo que faltaba en las dietas anteriores, y es lo que te sostiene después de la semana 2.',
   },
   {
     q: 'No tengo mucho tiempo para cocinar. ¿Igual me sirve?',
-    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. El método tampoco agrega trabajo: cada protocolo toma 10 segundos y se aplica sobre la comida que ya ibas a hacer, no es una receta nueva. No necesitas más tiempo en la cocina, solo ejecutar el protocolo del día.',
+    a: 'Sí, está pensado exactamente para eso. Las comidas son sencillas y reales, con tu lista de compras ya optimizada y sustituciones para cuando te falte un ingrediente. Tu calibración tampoco agrega trabajo: se aplica sobre la comida que ya ibas a hacer, no es una receta nueva. No necesitas más tiempo en la cocina.',
   },
   {
     q: '¿Hay suscripción o cobros recurrentes?',
