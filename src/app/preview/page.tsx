@@ -16,7 +16,7 @@ import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/n
 // prometer um combo que o plano entregue não tenha.
 import { COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
-import { formatPrice, currencyForCountry } from '@/lib/pricing/localize'
+import { formatPrice, currencyForCountry, formatLocalTotal } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 import { quizFetch } from '@/lib/quiz-session-client'
 
@@ -310,9 +310,14 @@ export default function PreviewPage() {
   const [ctaState, setCtaState] = useState<'idle' | 'loading' | 'error'>('idle')
   // Até 2 obstáculos escolhidos no step 11, usados para personalizar o hero.
   const [heroObstacles, setHeroObstacles] = useState<string[]>([])
-  // Câmbio para localizar o preço EXIBIDO. Default USD (fallback) até carregar.
-  // O pedido e o tracking continuam sempre em USD — ver handleCta.
-  const [fx, setFx] = useState<{ currency: string; rate: number }>({ currency: 'USD', rate: 1 })
+  // 04/08 — o preço da página virou o USD, e o câmbio agora serve só pra dizer
+  // "isso vira X na tua moeda". Antes o preço exibido ERA o convertido, e ele
+  // não batia com o checkout: o buffer de 3% mais o arredondamento charm davam
+  // uma folga aleatória (+3,4% no MXN, +15,7% no BRL) que ora ficava acima, ora
+  // abaixo do que a Hotmart cobra de fato. A mexicana via 179 e pagava 216.
+  // O país entra no estado porque o multiplicador é POR PAÍS, não por moeda
+  // (EC, PA e PR usam USD e cobram valores diferentes) — ver localize.ts.
+  const [fx, setFx] = useState<{ currency: string; rate: number; country?: string }>({ currency: 'USD', rate: 1 })
 
   // Âncoras de scroll para medir profundidade da lead na preview (ver observer abaixo).
   const offerRef = useRef<HTMLDivElement | null>(null)
@@ -333,19 +338,27 @@ export default function PreviewPage() {
     } catch {}
 
     const currency = currencyForCountry(country)
-    if (currency === 'USD') return
+    // País dolarizado não precisa de câmbio, mas PRECISA entrar no estado: o
+    // Panamá cobra em USD e ainda assim sai 21% mais caro. Sair antes daqui
+    // (como fazia antes) deixava o panamenho vendo $9.90 e pagando $12.00.
+    if (currency === 'USD') { setFx({ currency: 'USD', rate: 1, country }); return }
 
     fetch('/api/fx')
       .then((r) => r.json())
       .then((d) => {
         const rate = d?.rates?.[currency]
-        if (typeof rate === 'number' && rate > 0) setFx({ currency, rate })
+        if (typeof rate === 'number' && rate > 0) setFx({ currency, rate, country })
       })
       .catch(() => { /* mantém fallback USD */ })
   }, [])
 
-  // Formata um valor em USD na moeda da visitante. Usado em toda a oferta.
-  const price = (usd: number) => formatPrice(usd, fx.currency, fx.rate)
+  // O preço da oferta é o USD, sempre. É o valor que vai pro pedido, pro pixel
+  // e pra Hotmart, então é o único número que não pode divergir de nada.
+  const price = (usd: number) => formatPrice(usd, 'USD', 1)
+
+  // Quanto isso vira na moeda dela, com imposto embutido, batendo com o
+  // checkout. null quando não dá pra prometer (país sem medição ou já em USD).
+  const localPrice = (usd: number) => formatLocalTotal(usd, fx.country, fx.currency, fx.rate)
 
   useEffect(() => {
     try {
@@ -1404,7 +1417,20 @@ export default function PreviewPage() {
                 Armar esto por tu cuenta (una app de seguimiento, un plan a tu medida, un calendario de constancia) fácilmente costaría más de <strong className="font-bold text-gray-900">{price(47)}</strong>.
               </p>
               <p className="text-sm text-gray-800">Hoy, en un solo pago:</p>
-              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">{price(9.90)}</p>
+              <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">
+                {price(9.90)} <span className="text-lg font-bold text-primary/70">USD</span>
+              </p>
+              {/* O equivalente local é o número que ela vai ver na Hotmart, com
+                  imposto já dentro. Some quando não dá pra prometer com certeza
+                  (país sem medição), e aí sobra só o USD, que nunca erra. */}
+              {localPrice(9.90) && (
+                <p className="text-[13px] font-semibold text-gray-700">
+                  En tu moneda: <span className="font-bold tabular-nums text-gray-900">{localPrice(9.90)} {fx.currency}</span>
+                  <span className="block text-[11px] font-normal text-muted-foreground">
+                    Es el total que vas a pagar, nada se suma después.
+                  </span>
+                </p>
+              )}
               <p className="text-[12px] leading-relaxed text-muted-foreground">
                 Un solo pago, sin suscripción ni cobros cada mes.
               </p>
@@ -1453,9 +1479,14 @@ export default function PreviewPage() {
                   `Ver mi plan por ${price(9.90)} →`
                 )}
               </button>
-              {fx.currency !== 'USD' && (
+              {/* Antes dizia "Precio aproximado en X. Se cobra en tu moneda
+                  local", o que era enganoso duas vezes: o preço exibido era o
+                  convertido (e errava pra mais ou pra menos), e "se cobra en tu
+                  moneda" soava como promessa de valor final. Agora o preço é o
+                  USD e a conversão é explicitamente uma estimativa do dia. */}
+              {localPrice(9.90) && (
                 <p className="mt-2 text-center text-[11px] text-muted-foreground">
-                  *Precio aproximado en {fx.currency}. Se cobra en tu moneda local.
+                  *El cobro es de {price(9.90)} USD. La conversión a {fx.currency} es del día de hoy y puede variar un poco.
                 </p>
               )}
             </div>

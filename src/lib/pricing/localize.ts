@@ -120,3 +120,103 @@ export function formatPrice(usd: number, currency: string, rate: number): string
   })
   return `${cfg.symbol}${num}`
 }
+
+// =============================================================================
+// EQUIVALENTE LOCAL — o que a Hotmart REALMENTE cobra
+// =============================================================================
+// O preço da página passou a ser o USD (que é o que o pedido e o tracking usam),
+// e ao lado dele mostramos quanto isso vira na moeda dela. Esse segundo número
+// precisa bater com o checkout, senão a promessa quebra na hora de pagar.
+//
+// MEDIDO, não calculado. Em 04/08/2026 abri pay.hotmart.com/O106407229L com
+// ?checkoutMode=10 e percorri o seletor "Alterar país" do próprio checkout,
+// lendo o "Total de" de cada país. O multiplicador abaixo é esse total dividido
+// pelo preço nominal em USD, com o câmbio do dia.
+//
+// Por que medido e não pela alíquota legal: a Hotmart só cobra imposto onde tem
+// registro fiscal, não onde a lei manda. O Peru tem IGV de 18% e o Uruguai IVA
+// de 22%, e nas vendas reais do relatório ela não cobrou nenhum dos dois
+// (Preço Total == Preço do Produto). Usar alíquota legal daria preço errado.
+//
+// Por que por PAÍS e não por moeda: Equador, Panamá e Porto Rico usam os três
+// USD. Equador e Porto Rico pagam $9.90 exato, o Panamá paga $12.00. Chavear
+// por moeda erraria os três de uma vez.
+//
+// O número embute DUAS coisas de uma vez: o spread de câmbio da Hotmart
+// (medido em ~7,4% nas 10 vendas do relatório) e o imposto local.
+//
+// COMO REFAZER a medição (vale quando a Hotmart mudar política fiscal, quando
+// o preço mudar, ou ao entrar num país novo): abrir o checkout, trocar o país,
+// ler "Total de", dividir pelo preço nominal em USD do dia.
+const COUNTRY_MARKUP: Record<string, number> = {
+  CL: 1.245, // IVA 19%
+  MX: 1.231, // IVA 16%
+  PA: 1.212, // ITBMS (cobrado em USD: B/. 12.00 para um produto de $9.90)
+  AR: 1.159,
+  PE: 1.106,
+  BR: 1.102,
+  CO: 1.085,
+  UY: 1.063,
+  HN: 1.057,
+  CR: 1.055,
+  PY: 1.054,
+  EC: 1.0, // dolarizado e sem imposto: paga o valor cheio, sem acréscimo
+  PR: 1.0,
+}
+
+// Casas decimais de exibição por moeda. Moedas de valor alto não usam centavos
+// no dia a dia — "$33.884" e não "$33.884,12".
+const NO_DECIMALS = new Set(['COP', 'CLP', 'ARS', 'PYG', 'CRC'])
+
+// Quanto ela vai pagar de fato, na moeda dela, com imposto embutido.
+// Devolve null quando não dá para prometer um número: país sem medição, moeda
+// USD (aí o próprio preço já é o valor final) ou câmbio indisponível.
+// Não arredonda para número "charm": o charm criava uma folga aleatória (de
+// +3,4% no MXN a +15,7% no BRL) que era justamente a origem do descasamento.
+export function localTotal(
+  usd: number,
+  country: string | null | undefined,
+  rate: number,
+): number | null {
+  if (!country) return null
+  const markup = COUNTRY_MARKUP[country.toUpperCase()]
+  if (!markup || !rate || rate <= 0) return null
+  return usd * markup * rate
+}
+
+export function formatLocalTotal(
+  usd: number,
+  country: string | null | undefined,
+  currency: string,
+  rate: number,
+): string | null {
+  const total = localTotal(usd, country, rate)
+  if (total === null) return null
+  // Some quando o total JÁ É o preço exibido (Equador e Porto Rico: dolarizados
+  // e sem acréscimo). O corte é pelo VALOR e não pela moeda de propósito: o
+  // Panamá também cobra em USD e mesmo assim sai 21% mais caro ($12.00), então
+  // um `currency === 'USD'` aqui esconderia justamente o caso que mais importa.
+  if (Math.abs(total - usd) < 0.01) return null
+  const cfg = CURRENCY_CONFIG[currency] ?? CURRENCY_CONFIG.USD
+  const decimals = NO_DECIMALS.has(currency) ? 0 : 2
+  const num = total.toLocaleString(cfg.locale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+  return `${cfg.symbol}${num}`
+}
+
+// NÃO existe um hasLocalTax aqui, de propósito. A primeira versão deduzia
+// "tem imposto" de um multiplicador acima de 1,02, e isso marcava Costa Rica
+// (1,055) e Paraguai (1,054) como tendo imposto quando aqueles ~5% são só
+// spread de câmbio — o relatório mostra Preço Total == Preço do Produto nos
+// dois. Dizer "impuestos incluidos" onde não há imposto é afirmação falsa.
+//
+// Separar imposto de spread exigiria evidência que eu só tenho pro México
+// (relatório mostra 184 → 213,44, exatamente +16%, e o checkout exibe botão de
+// IVA e campo de RFC). Chile (+24,5%) e Panamá (+21,2% em USD puro, onde não
+// cabe spread) quase certamente têm imposto, mas "quase certamente" não entra
+// em copy de página de vendas.
+//
+// A página não precisa dessa distinção: o que importa pra ela é que o número
+// mostrado é o total final, e isso é verdade em todo país medido.
