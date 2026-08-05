@@ -1167,7 +1167,7 @@ export default function PreviewPage() {
             alt="María Fernanda y Tiago Vieira, responsables técnicos de la Calibración Metabólica"
             width={1122}
             height={1402}
-            className="-mx-5 -mt-5 mb-1 w-[calc(100%+2.5rem)] max-w-none max-h-64 object-cover object-top"
+            className="-mx-5 -mt-5 mb-1 w-[calc(100%+2.5rem)] max-w-none aspect-[1122/1402] object-cover object-top"
           />
           <div>
             <p className="font-display text-base font-black text-gray-900">María Fernanda y Tiago Vieira</p>
