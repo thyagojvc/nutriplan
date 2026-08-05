@@ -16,7 +16,7 @@ import { buildPreviewSample, type SampleMeal, type PreviewSample } from '@/lib/n
 // prometer um combo que o plano entregue não tenha.
 import { COMBOS_BY_ID, type Combo } from '@/lib/nutrition/combos'
 import { trackPixel, trackDualOnce, setPixelUserData } from '@/lib/fb-pixel'
-import { formatPrice, currencyForCountry, formatLocalTotal, hasExtraFees } from '@/lib/pricing/localize'
+import { formatPrice, currencyForCountry, formatLocalTotal, formatLocalApprox, hasExtraFees, hasMercadoPago } from '@/lib/pricing/localize'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 import { quizFetch } from '@/lib/quiz-session-client'
 
@@ -359,6 +359,14 @@ export default function PreviewPage() {
   // Quanto isso vira na moeda dela, com imposto embutido, batendo com o
   // checkout. null quando não dá pra prometer (país sem medição ou já em USD).
   const localPrice = (usd: number) => formatLocalTotal(usd, fx.country, fx.currency, fx.rate)
+
+  // Âncora de valor ("montar por conta própria custaria X"). TEM que sair na
+  // mesma moeda do preço, senão a comparação não existe: em 05/08 a âncora
+  // ficou em USD ($47) e o preço em ARS ($17.170), e pra ela 47 é um número
+  // MENOR que 17.170 — a âncora inverteu e sugeria que montar sozinha era mais
+  // barato. Conversão pura, sem markup (ver formatLocalApprox).
+  const anchorPrice = (usd: number) =>
+    formatLocalApprox(usd, fx.currency, fx.rate) ?? price(usd)
 
   // 05/08 — texto do CTA: no card de preço, o USD já vinha grande e o
   // equivalente local do lado. No botão, o dólar sozinho seguia sendo o
@@ -1439,7 +1447,7 @@ export default function PreviewPage() {
                 honesta e modesta: o que custaria montar isso por conta própria. */}
             <div className="rounded-xl border border-primary/25 bg-primary/5 px-4 py-4 text-center space-y-2.5">
               <p className="text-[13px] leading-relaxed text-gray-700">
-                Armar esto por tu cuenta (una app de seguimiento, un plan a tu medida, un calendario de constancia) fácilmente costaría más de <strong className="font-bold text-gray-900">{price(47)}</strong>.
+                Armar esto por tu cuenta (una app de seguimiento, un plan a tu medida, un calendario de constancia) fácilmente costaría más de <strong className="font-bold text-gray-900">{anchorPrice(47)}</strong>.
               </p>
               <p className="text-sm text-gray-800">Hoy, en un solo pago:</p>
               <p className="text-[2.5rem] font-black leading-none text-primary tabular-nums">
@@ -1558,7 +1566,7 @@ export default function PreviewPage() {
               </div>
             </div>
 
-            <PaymentTrust />
+            <PaymentTrust mercadoPago={hasMercadoPago(fx.country)} />
           </div>
         </div>
 
@@ -1601,7 +1609,7 @@ export default function PreviewPage() {
               ctaLabel(9.90)
             )}
           </button>
-          <PaymentTrust />
+          <PaymentTrust mercadoPago={hasMercadoPago(fx.country)} />
         </div>
 
       </div>
@@ -1671,7 +1679,7 @@ function FaqSection() {
 // Trust signals (logos de pago + badges) — vão logo abaixo do CTA principal
 // ---------------------------------------------------------------------------
 
-function PaymentTrust() {
+function PaymentTrust({ mercadoPago = false }: { mercadoPago?: boolean }) {
   return (
     <div className="space-y-2">
       {/* Logos de bandeiras */}
@@ -1697,6 +1705,18 @@ function PaymentTrust() {
             <text x="28" y="15" fontFamily="Arial" fontSize="15" fontWeight="bold" fill="#009CDE">Pal</text>
           </svg>
         </div>
+        {/* Mercado Pago — só onde a Hotmart de fato oferece (ver localize.ts).
+            Faltava aqui e é o método de 6 das 7 vendas argentinas do histórico:
+            quem não tem cartão internacional olhava VISA/Master/PayPal e
+            desistia antes de clicar, sem saber que o MP estava lá dentro. */}
+        {mercadoPago && (
+          <div className="flex h-7 items-center justify-center rounded-md border border-[#E0E0DA] bg-white px-1.5">
+            <svg viewBox="0 0 80 20" width="62" height="14" xmlns="http://www.w3.org/2000/svg">
+              <text x="0" y="14" fontFamily="Arial" fontSize="13" fontWeight="bold" fill="#00B1EA">Mercado</text>
+              <text x="52" y="14" fontFamily="Arial" fontSize="13" fontWeight="bold" fill="#2D3277">Pago</text>
+            </svg>
+          </div>
+        )}
       </div>
 
       <div className="flex flex-wrap items-center justify-center gap-3 text-[13px] text-muted-foreground">

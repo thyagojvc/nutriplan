@@ -206,6 +206,46 @@ export function formatLocalTotal(
   return `${cfg.symbol}${num}`
 }
 
+// Converte um valor de REFERÊNCIA (não uma cobrança) para a moeda dela.
+// Sem COUNTRY_MARKUP de propósito: o markup é o spread e o imposto que a
+// Hotmart cobra, e não faz sentido aplicar isso a um custo hipotético como a
+// âncora "montar por conta própria custaria $47" — ninguém vai pagar esses $47
+// pela Hotmart. Aqui é conversão de câmbio pura.
+//
+// Existe porque a âncora e o preço PRECISAM estar na mesma moeda pra comparação
+// funcionar. Em 05/08 a âncora ficou em USD ($47) enquanto o preço passou pra
+// moeda local ($17.170 ARS): pra ela, 47 é um número MENOR que 17.170, então a
+// âncora não só parou de ancorar, ela inverteu — parecia que montar sozinha
+// saía mais barato que comprar. Nunca exibir os dois em moedas diferentes.
+export function formatLocalApprox(
+  usd: number,
+  currency: string,
+  rate: number,
+): string | null {
+  if (!rate || rate <= 0 || currency === 'USD') return null
+  const cfg = CURRENCY_CONFIG[currency] ?? CURRENCY_CONFIG.USD
+  const decimals = NO_DECIMALS.has(currency) ? 0 : 2
+  const num = (usd * rate).toLocaleString(cfg.locale, {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+  return `${cfg.symbol}${num}`
+}
+
+// Países onde o checkout da Hotmart oferece Mercado Pago.
+// Importa porque 6 das 7 vendas argentinas do histórico foram por Mercado Pago,
+// e os selos da preview só mostravam VISA/Mastercard/PayPal — uma argentina sem
+// cartão internacional concluía que não tinha como pagar ANTES de clicar,
+// mesmo com o MP disponível lá dentro. Conferido no checkout em 05/08 (a lista
+// de métodos aparece por país no seletor "Cambiar país").
+// Só estes: nos demais (CR, EC, HN, PA, PR, PY) o MP não é oferecido, e mostrar
+// o selo lá seria prometer método que não existe.
+const MERCADO_PAGO_COUNTRIES: ReadonlySet<string> = new Set(['AR', 'BR', 'CL', 'CO', 'MX', 'PE', 'UY'])
+
+export function hasMercadoPago(country: string | null | undefined): boolean {
+  return !!country && MERCADO_PAGO_COUNTRIES.has(country.toUpperCase())
+}
+
 // Países onde o valor do checkout NÃO é o final: a Hotmart escreve, ao lado do
 // preço, "más tarifas correspondientes. Haz clic aquí para saber más".
 // Hoje só a Argentina. Conferido em 04/08 percorrendo os 9 países no seletor do
