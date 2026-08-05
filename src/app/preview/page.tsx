@@ -360,6 +360,26 @@ export default function PreviewPage() {
   // checkout. null quando não dá pra prometer (país sem medição ou já em USD).
   const localPrice = (usd: number) => formatLocalTotal(usd, fx.country, fx.currency, fx.rate)
 
+  // 05/08 — texto do CTA: no card de preço, o USD já vinha grande e o
+  // equivalente local do lado. No botão, o dólar sozinho seguia sendo o
+  // número que ela via bem no momento de decidir clicar, que é justamente o
+  // pior lugar pra pedir conta de cabeça. Aqui o botão passa a mostrar só o
+  // valor na moeda dela, que é o número que ela reconhece como "meu dinheiro".
+  // O USD não se perde: continua grande no card acima e no aviso "*El cobro
+  // es de $9.90 USD..." logo abaixo do botão principal — repetir ele aqui
+  // dentro só juntava dígitos sem ajudar.
+  // Testado em 375px (mobile real, não os 1280px do desktop): o parêntese
+  // "($9.90)" empurrava o texto pra 2 linhas em países de número longo (MXN,
+  // COP, ARS), então saiu — o objetivo era reduzir esforço mental, não somar
+  // uma segunda leitura ao lado da primeira.
+  // Quando não há preço local (país sem medição, ou EC/PR que já pagam o USD
+  // cheio) cai só no USD, sem parêntese e sem gap.
+  const ctaLabel = (usd: number) => {
+    const local = localPrice(usd)
+    if (!local) return `Ver mi plan por ${price(usd)} →`
+    return `Ver mi plan por ${local} ${fx.currency} →`
+  }
+
   useEffect(() => {
     try {
       const s11 = sessionStorage.getItem('nutriplan_step_11')
@@ -1484,7 +1504,7 @@ export default function PreviewPage() {
                     Procesando…
                   </>
                 ) : (
-                  `Ver mi plan por ${price(9.90)} →`
+                  ctaLabel(9.90)
                 )}
               </button>
               {/* Antes dizia "Precio aproximado en X. Se cobra en tu moneda
@@ -1573,7 +1593,7 @@ export default function PreviewPage() {
                 Procesando…
               </>
             ) : (
-              `Ver mi plan por ${price(9.90)} →`
+              ctaLabel(9.90)
             )}
           </button>
           <PaymentTrust />
