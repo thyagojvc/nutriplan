@@ -1150,7 +1150,7 @@ export default function PreviewPage() {
         </div>
 
         {/* Autoridade — 05/08: virou dupla. Antes era só María Fernanda (foto
-            pequena redonda + 1 frase); agora entra Thyago Vieira ao lado dela
+            pequena redonda + 1 frase); agora entra Tiago Vieira ao lado dela
             como responsável técnico também. Isso é MUDANÇA DE ESTRATÉGIA, não
             ajuste de copy: até aqui a página evitava de propósito misturar a
             autoria do Thyago com a persona da María Fernanda (ver memória
@@ -1164,20 +1164,20 @@ export default function PreviewPage() {
         <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
           <Image
             src="/autoridad-maria-fernanda-thyago.png"
-            alt="María Fernanda y Thyago Vieira, responsables técnicos de la Calibración Metabólica"
+            alt="María Fernanda y Tiago Vieira, responsables técnicos de la Calibración Metabólica"
             width={1122}
             height={1402}
             className="-mx-5 -mt-5 mb-1 w-[calc(100%+2.5rem)] max-w-none max-h-64 object-cover object-top"
           />
           <div>
-            <p className="font-display text-base font-black text-gray-900">María Fernanda y Thyago Vieira</p>
+            <p className="font-display text-base font-black text-gray-900">María Fernanda y Tiago Vieira</p>
             <p className="text-[13px] font-semibold text-muted-foreground">Responsables técnicos</p>
           </div>
 
           {/* Introdução breve de propósito (pedido explícito): não é bio, é só
               o suficiente pra nomear quem está por trás e dar autoridade. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            María Fernanda y Thyago Vieira son los creadores de la Calibración Metabólica, y los responsables técnicos de que cada plan se ajuste a tus objetivos, tus antojos y tu rutina real.
+            María Fernanda y Tiago Vieira son los creadores de la Calibración Metabólica, y los responsables técnicos de que cada plan se ajuste a tus objetivos, tus antojos y tu rutina real.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
