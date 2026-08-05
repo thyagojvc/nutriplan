@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
-  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw, BadgeCheck,
+  Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw,
   Mail, MessageCircle, Smartphone, Dumbbell, Sparkles,
 } from 'lucide-react'
 import Image from 'next/image'
@@ -1149,30 +1149,35 @@ export default function PreviewPage() {
           </div>
         </div>
 
-        {/* Autoridade — reduzida ao essencial: foto pequena + nome + 1 frase +
-            2 números. Vive AQUI, logo antes da oferta: é a última coisa que a
-            pessoa vê antes do preço, reforçando "quem está por trás" no
-            momento exato da decisão (em vez de lá em cima, longe do CTA). */}
+        {/* Autoridade — 05/08: virou dupla. Antes era só María Fernanda (foto
+            pequena redonda + 1 frase); agora entra Thyago Vieira ao lado dela
+            como responsável técnico também. Isso é MUDANÇA DE ESTRATÉGIA, não
+            ajuste de copy: até aqui a página evitava de propósito misturar a
+            autoria do Thyago com a persona da María Fernanda (ver memória
+            site_persona_maria_fernanda), pra manter um rosto só. A decisão de
+            juntar os dois foi pedida direto pelo dono do produto.
+            Foto grande (retrato dos dois, corpo inteiro em jaleco) substitui o
+            avatar redondo pequeno — "aumente a foto" foi pedido explícito.
+            Vive AQUI, logo antes da oferta: é a última coisa que a pessoa vê
+            antes do preço, reforçando "quem está por trás" no momento exato
+            da decisão (em vez de lá em cima, longe do CTA). */}
         <div className="overflow-hidden rounded-2xl border border-[#D8E8D4] bg-white p-5 space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="relative shrink-0">
-              <Image
-                src="/FotoNutri.jpg"
-                alt="María Fernanda, Nutricionista"
-                width={56}
-                height={56}
-                className="h-14 w-14 rounded-full object-cover object-top border-2 border-[#D8E8D4]"
-              />
-              <BadgeCheck className="absolute -bottom-0.5 -right-0.5 h-5 w-5 rounded-full text-[#3897F0] bg-white shadow" strokeWidth={2.2} fill="#3897F0" stroke="white" />
-            </div>
-            <div>
-              <p className="font-display text-base font-black text-gray-900">María Fernanda</p>
-              <p className="text-[13px] font-semibold text-muted-foreground">Nutricionista · Responsable técnica</p>
-            </div>
+          <Image
+            src="/autoridad-maria-fernanda-thyago.png"
+            alt="María Fernanda y Thyago Vieira, responsables técnicos de la Calibración Metabólica"
+            width={1122}
+            height={1402}
+            className="-mx-5 -mt-5 mb-1 w-[calc(100%+2.5rem)] max-w-none max-h-64 object-cover object-top"
+          />
+          <div>
+            <p className="font-display text-base font-black text-gray-900">María Fernanda y Thyago Vieira</p>
+            <p className="text-[13px] font-semibold text-muted-foreground">Responsables técnicos</p>
           </div>
 
+          {/* Introdução breve de propósito (pedido explícito): não é bio, é só
+              o suficiente pra nomear quem está por trás e dar autoridade. */}
           <p className="text-[13px] leading-relaxed text-muted-foreground">
-            Tu Calibración Metabólica fue desarrollada bajo la orientación de una profesional de la nutrición, con un sistema propietario que adapta tu alimentación a tus objetivos, tus antojos y tu rutina real.
+            María Fernanda y Thyago Vieira son los creadores de la Calibración Metabólica, y los responsables técnicos de que cada plan se ajuste a tus objetivos, tus antojos y tu rutina real.
           </p>
 
           <div className="grid grid-cols-2 gap-3 border-t border-[#D8E8D4] pt-4">
