@@ -2,10 +2,11 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import type { Metadata } from 'next'
 
-// O manifest global (src/app/manifest.ts) já cobre o site inteiro; aqui só
-// trocamos o ícone de instalação pelo ícone quadrado (o layout raiz usa a
-// wordmark, ruim como ícone de tela de início).
+// O manifest só é linkado AQUI, dentro do grupo (dashboard) — não mais no
+// layout raiz. Antes (src/app/manifest.ts) ele cobria o site inteiro e o
+// Chrome oferecia "Instalar app" até no quiz/preview, antes da compra.
 export const metadata: Metadata = {
+  manifest: '/manifest.webmanifest',
   icons: {
     apple: '/logo-calibra-transparent.png',
   },

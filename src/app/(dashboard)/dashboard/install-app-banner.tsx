@@ -39,7 +39,16 @@ export function InstallAppBanner() {
     setReady(true)
 
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(() => {})
+      navigator.serviceWorker.getRegistrations().then((regs) => {
+        // Migração: versões antigas registravam sem scope, controlando o
+        // domínio inteiro e fazendo o Chrome oferecer "Instalar app" até no
+        // quiz/preview, antes da compra. Desregistra o worker antigo (raiz)
+        // se encontrar, e registra de novo só pra dentro de /dashboard.
+        for (const reg of regs) {
+          if (reg.scope === `${window.location.origin}/`) reg.unregister()
+        }
+        navigator.serviceWorker.register('/sw.js', { scope: '/dashboard' }).catch(() => {})
+      })
     }
 
     function onBeforeInstall(e: Event) {
