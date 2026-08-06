@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   User, Gauge, Flame, Cake, Scale, Ruler, Target, Zap,
   Sunrise, Utensils, Moon, Apple, ShoppingCart, ShieldCheck, Check, Lock, RotateCcw,
-  Mail, MessageCircle, Smartphone, Dumbbell, Sparkles,
+  Mail, MessageCircle, Smartphone, Dumbbell, Sparkles, Tag,
 } from 'lucide-react'
 import Image from 'next/image'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
@@ -1477,6 +1477,10 @@ export default function PreviewPage() {
               </p>
             </div>
 
+            {/* Cupom com prazo de 10 min por visita. Remoção é manual
+                (retirar este componente quando o cupom BAJARHOY sair do ar). */}
+            <CouponBanner />
+
             {/* Menção única ao bump de treino, condicionada à resposta do step 10.
                 Pra quem treina: confirma a expectativa de quem chegou pelo
                 criativo "dieta + treino". Pra quem respondeu que não treina:
@@ -1678,6 +1682,22 @@ function FaqSection() {
 // ---------------------------------------------------------------------------
 // Trust signals (logos de pago + badges) — vão logo abaixo do CTA principal
 // ---------------------------------------------------------------------------
+
+// Cupom estático, sem contagem. Remoção é manual quando o cupom sair do ar.
+function CouponBanner() {
+  return (
+    <div className="rounded-xl border-2 border-dashed border-[#D85A30] bg-[#FFF4EF] px-4 py-3 text-center space-y-1.5">
+      <p className="flex items-center justify-center gap-1.5 text-[11px] font-black uppercase tracking-widest text-[#D85A30]">
+        <Tag className="h-3.5 w-3.5" strokeWidth={2.5} />
+        Cupón válido solo hoy
+      </p>
+      <p className="text-sm leading-snug text-gray-800">
+        Usa el código <span className="font-black tracking-wide text-[#D85A30]">BAJARHOY</span> al pagar y llévate{' '}
+        <span className="font-black text-gray-900">10% off</span>
+      </p>
+    </div>
+  )
+}
 
 function PaymentTrust({ mercadoPago = false }: { mercadoPago?: boolean }) {
   return (
