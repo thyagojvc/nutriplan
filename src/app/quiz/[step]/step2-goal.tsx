@@ -160,17 +160,14 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-      {/* Entrada enxuta de propósito: ela acabou de clicar num anúncio, ainda
-          não decidiu se confia. Um bloco grande de marca/método aqui assusta
-          ("isso é venda") antes mesmo da 1ª pergunta. Só situa que é rápido e
-          qual é o assunto — o mecanismo (CALIBRA, 7 protocolos) só aparece
-          depois, na preview, quando ela já investiu tempo respondendo. */}
-      <div className="flex items-center justify-center gap-2 rounded-full border border-[#D8E8D4] bg-[#F5FAF2] px-4 py-2.5 text-center">
-        <span className="text-sm">⏱️</span>
-        <p className="text-sm font-bold text-gray-800">
-          Quiz de 60 segundos para calibrar tu metabolismo
-        </p>
-      </div>
+      {/* Message match com o criativo "orgmain1": quem clicou no anúncio já
+          leu essa frase no hook, então repeti-la aqui confirma que caiu no
+          lugar certo em vez de estranhar uma tela nova. Substituiu a pill de
+          "60 segundos" (mesma promessa de tempo, dita como headline em vez
+          de badge pequeno) — testar se sobe a taxa de interação. */}
+      <p className="text-center font-display text-xl font-black leading-snug text-gray-900">
+        Arma tu calibración metabólica en menos de 2 minutos
+      </p>
 
       <QuizCard>
         <QuizHeader
