@@ -165,8 +165,8 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
           lugar certo em vez de estranhar uma tela nova. Substituiu a pill de
           "60 segundos" (mesma promessa de tempo, dita como headline em vez
           de badge pequeno) — testar se sobe a taxa de interação. */}
-      <p className="text-center font-display text-xl font-black leading-snug text-gray-900">
-        Arma tu calibración metabólica en menos de 2 minutos
+      <p className="text-center font-display text-2xl font-black leading-snug text-primary">
+        Arma tu <span className="text-[#D85A30]">calibración metabólica</span> en menos de 2 minutos
       </p>
 
       <QuizCard>
