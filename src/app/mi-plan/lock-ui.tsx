@@ -246,7 +246,7 @@ export function UnlockSheet({
             onClick={onSeeAll}
             className="w-full py-1 text-center text-[12.5px] font-bold text-primary underline underline-offset-2"
           >
-            Ver todo lo que se desbloquea
+            Continuar viendo mi Calibración Metabólica
           </button>
         </div>
       </div>

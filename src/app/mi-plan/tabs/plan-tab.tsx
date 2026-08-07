@@ -241,11 +241,6 @@ export function MiPlanTab({
         </section>
       )}
 
-      {plan.disclaimers.length > 0 && (
-        <div className="space-y-1.5 rounded-lg border border-amber-200 bg-amber-50 p-4 text-xs text-amber-900">
-          {plan.disclaimers.map((d, i) => <p key={i}>{d}</p>)}
-        </div>
-      )}
     </div>
   )
 }

@@ -19,7 +19,7 @@ export type TabId = 'plan' | 'resultados' | 'lista' | 'bonos' | 'entreno' | 'des
 // não se perde: aparece inteiro no cabeçalho quando ela está aberta
 // (ver TAB_TITLE em mi-plan-app).
 const TABS: { id: TabId; label: string; Icon: typeof Utensils }[] = [
-  { id: 'plan',        label: 'Mi Plan', Icon: Utensils },
+  { id: 'plan',        label: 'Calibra', Icon: Utensils },
   { id: 'resultados',  label: 'Ellas',   Icon: Heart },
   { id: 'lista',       label: 'Lista',   Icon: ClipboardList },
   { id: 'bonos',       label: 'Bonos',   Icon: Gift },
