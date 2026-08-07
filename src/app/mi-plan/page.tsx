@@ -21,6 +21,7 @@ import { generateNutritionPlan, generateTrainingPlan, type TrainingPlanJson } fr
 import type { NutritionPlanJson } from '@/lib/nutrition/types'
 import type { Profile } from '@/app/(dashboard)/dashboard/dashboard-ui'
 import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+import { firstNameFromDraft } from '@/lib/first-name'
 import { MiPlanApp } from './mi-plan-app'
 
 const ACTIVITY_FACTORS: Record<string, number> = {
@@ -36,6 +37,7 @@ interface Loaded {
   trainingPlan: TrainingPlanJson | null
   noTraining: boolean
   hasTrainingAnswer: boolean
+  firstName: string
 }
 
 type ErrorKind = 'no_session' | 'calc_failed'
@@ -48,6 +50,10 @@ function readLocalDraft(): { draft: Record<string, unknown>; country: string } |
       const raw = sessionStorage.getItem(`nutriplan_step_${n}`)
       if (raw) draft[`step_${n}`] = JSON.parse(raw)
     }
+    // Passo 12 fora do laço: é o único acima de 10 que a página usa (o nome).
+    const raw12 = sessionStorage.getItem('nutriplan_step_12')
+    if (raw12) draft.step_12 = JSON.parse(raw12)
+
     const s5 = (draft.step_5 ?? {}) as Record<string, unknown>
     if (!s5.age || !s5.weight_kg || !s5.height_cm) return null
 
@@ -98,6 +104,7 @@ async function build(rawDraft: Record<string, unknown>, country: string): Promis
     trainingPlan,
     noTraining: s10.experience === 'no_ejercicio',
     hasTrainingAnswer: !!s10.experience,
+    firstName: firstNameFromDraft(draft),
   }
 }
 
@@ -192,6 +199,7 @@ export default function MiPlanPage() {
       trainingPlan={data.trainingPlan}
       noTraining={data.noTraining}
       hasTrainingAnswer={data.hasTrainingAnswer}
+      firstName={data.firstName}
     />
   )
 }

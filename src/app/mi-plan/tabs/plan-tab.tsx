@@ -26,10 +26,13 @@ import { LockedBlock, TapHint } from '../lock-ui'
 export function MiPlanTab({
   plan,
   profile,
+  firstName,
   onUnlock,
 }: {
   plan: NutritionPlanJson
   profile: Profile
+  /** Primeiro nome dela, ou '' se preferiu não dizer no quiz. */
+  firstName: string
   onUnlock: (id: string) => void
 }) {
   const { summary } = plan
@@ -50,13 +53,18 @@ export function MiPlanTab({
   return (
     <div className="space-y-6">
       {/* Confirmação de posse. É a primeira frase que ela lê dentro do app e
-          precisa dizer duas coisas: está pronto, e é dela. */}
+          precisa dizer duas coisas: está pronto, e é DELA. O nome próprio no
+          título é a forma mais barata de dizer a segunda: um plano com o nome
+          de alguém não parece plantilla, mesmo antes de ela ler os números. */}
       <div className="rounded-2xl border border-primary/25 bg-primary/5 px-4 py-3.5">
         <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-primary">
           <Check className="h-3.5 w-3.5" strokeWidth={3} />
-          Tu plan está listo
+          Calibración Metabólica
         </p>
-        <p className="mt-1 text-[13.5px] leading-relaxed text-gray-700">
+        <p className="mt-1 font-display text-[20px] font-black leading-tight text-gray-900">
+          {firstName ? `Armada para ${firstName}.` : 'Armada para ti.'}
+        </p>
+        <p className="mt-1.5 text-[13.5px] leading-relaxed text-gray-700">
           Salió de tus respuestas: tus alimentos, tus porciones y tu número de calorías.
           El <strong className="font-bold text-gray-900">Día 1 está abierto</strong>, puedes empezar hoy mismo.
         </p>

@@ -1513,7 +1513,7 @@ export default function PreviewPage() {
               <div className="flex items-start gap-2.5">
                 <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
                 <p className="text-[13px] leading-snug text-gray-700">
-                  Recibes <strong>soporte por WhatsApp</strong> por si tienes cualquier duda. Hay un equipo real detrás, no un bot.
+                  Recibes <strong>soporte por WhatsApp</strong> por si tienes cualquier duda.
                 </p>
               </div>
               <div className="flex items-start gap-2.5">

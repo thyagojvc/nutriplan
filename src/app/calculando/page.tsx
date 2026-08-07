@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { NutriLogo, NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
+import { cleanFirstName } from '@/lib/first-name'
 
 const ACTIVITY_LABELS: Record<string, string> = {
   sedentario: 'sedentario',
@@ -27,7 +28,7 @@ const FALLBACK_PHASES = [
   'Distribuyendo tus macronutrientes…',
   'Adaptando a tus restricciones alimentarias…',
   'Seleccionando tus alimentos favoritos…',
-  'Armando tu plan de 7 días…',
+  'Armando tus 28 días…',
   '¡Tu Calibración Metabólica está lista!',
 ]
 
@@ -39,6 +40,7 @@ function buildPersonalizedPhases(): string[] {
   let activityLabel: string | undefined
   let likesCount = 0
   let restrictionsCount = 0
+  let firstName = ''
 
   try {
     const s5 = sessionStorage.getItem('nutriplan_step_5')
@@ -55,6 +57,9 @@ function buildPersonalizedPhases(): string[] {
 
     const s8 = sessionStorage.getItem('nutriplan_step_8')
     if (s8) restrictionsCount = ((JSON.parse(s8) as { restrictions?: string[] }).restrictions ?? []).length
+
+    const s12 = sessionStorage.getItem('nutriplan_step_12')
+    if (s12) firstName = cleanFirstName((JSON.parse(s12) as { first_name?: string }).first_name)
   } catch {
     return FALLBACK_PHASES
   }
@@ -65,14 +70,16 @@ function buildPersonalizedPhases(): string[] {
   const alimentosDetail = likesCount > 0 ? ` (${likesCount} alimentos)` : ''
 
   return [
-    'Analizando tus respuestas…',
+    firstName ? `Analizando tus respuestas, ${firstName}…` : 'Analizando tus respuestas…',
     `Calculando tu metabolismo basal${metabolismoDetail}…`,
     `Determinando tus calorías objetivo${caloriasDetail}…`,
     'Distribuyendo tus macronutrientes…',
     `Adaptando a tus restricciones alimentarias${restriccionesDetail}…`,
     `Seleccionando tus alimentos favoritos${alimentosDetail}…`,
-    'Armando tu plan de 7 días…',
-    '¡Tu Calibración Metabólica está lista!',
+    'Armando tus 28 días…',
+    firstName
+      ? `¡La Calibración Metabólica de ${firstName} está lista!`
+      : '¡Tu Calibración Metabólica está lista!',
   ]
 }
 
@@ -196,7 +203,7 @@ export default function CalculandoPage() {
               />
             </div>
             <p className="text-xs text-muted-foreground">
-              Calibrando según tus respuestas — solo un momento…
+              Calibrando según tus respuestas. Solo un momento…
             </p>
           </div>
 

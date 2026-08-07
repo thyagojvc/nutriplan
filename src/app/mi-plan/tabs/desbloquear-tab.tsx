@@ -6,10 +6,13 @@
 // Ela chega aqui já tendo tocado cadeados, então esta tela não apresenta um
 // produto novo: ela devolve, item por item, o que a pessoa acabou de ver
 // trancado. Por isso a lista é ORDENADA pelos cadeados que ela mesma tocou
-// (ver `tapped`) — o que ela quis abrir aparece primeiro e marcado. É o mesmo
-// fechamento de ciclo que faz o order bump funcionar na página que serviu de
-// referência: o que estava trancado lá em cima é o que reaparece na hora de
-// pagar, e aí já não é oferta nova, é coisa que ela já queria.
+// (ver `tapped`): o que ela quis abrir aparece primeiro. É o mesmo fechamento
+// de ciclo que faz o order bump funcionar na página que serviu de referência.
+//
+// A ordenação é SILENCIOSA de propósito (07/08). Antes cada item tocado levava
+// um selo laranja "Lo intentaste abrir"; ficava com cara de rastreamento e
+// roubava o laranja, que nesta tela só pode pertencer ao botão de comprar.
+// A ordem sozinha faz o mesmo trabalho sem anunciar que estamos observando.
 //
 // O treino fica FORA da lista de incluídos de propósito: é acréscimo dentro do
 // checkout, não faz parte dos $9.90.
@@ -24,9 +27,9 @@ import { PRICE_USD } from '../use-offer'
 const UNLOCK_ITEMS: { key: string; match: (id: string) => boolean; item: string; note: string }[] = [
   {
     key: 'dias',
-    match: (id) => id.startsWith('dia_'),
-    item: 'Tus 7 días completos',
-    note: 'los otros 6 días armados con tus alimentos, no solo el que ya viste',
+    match: (id) => id.startsWith('dia_') || id.startsWith('semana_'),
+    item: 'Tus 28 días completos',
+    note: 'los otros 27 días armados con tus alimentos, no solo el que ya viste',
   },
   {
     key: 'atajos',
@@ -37,8 +40,8 @@ const UNLOCK_ITEMS: { key: string; match: (id: string) => boolean; item: string;
   {
     key: 'lista',
     match: (id) => id === 'lista_semana',
-    item: 'Tu lista de compras de la semana',
-    note: 'organizada por pasillo, vas una vez y sale todo',
+    item: 'Tu lista de compras',
+    note: 'organizada por pasillo del súper, vas una vez y sale todo',
   },
   {
     key: 'guia',
@@ -106,7 +109,6 @@ export function DesbloquearTab({
     return i === -1 ? Number.MAX_SAFE_INTEGER : i
   }
   const items = [...UNLOCK_ITEMS].sort((a, b) => rank(a.key) - rank(b.key))
-  const wanted = new Set(items.filter((u) => rank(u.key) !== Number.MAX_SAFE_INTEGER).map((u) => u.key))
 
   const local = localPrice(PRICE_USD)
 
@@ -128,9 +130,7 @@ export function DesbloquearTab({
               Lo que se desbloquea
             </p>
             <p className="mb-2.5 text-[12px] text-gray-500">
-              {wanted.size > 0
-                ? 'Empezando por lo que intentaste abrir.'
-                : 'Todo lo que viste bloqueado, de una sola vez.'}
+              Todo lo que viste bloqueado, de una sola vez.
             </p>
             <ul className="space-y-2.5">
               {items.map(({ key, item, note }) => (
@@ -139,14 +139,7 @@ export function DesbloquearTab({
                     <Check className="h-3 w-3" strokeWidth={3} />
                   </span>
                   <span className="flex-1">
-                    <span className="flex flex-wrap items-center gap-1.5">
-                      {item}
-                      {wanted.has(key) && (
-                        <span className="rounded-full bg-[#D85A30] px-1.5 py-0.5 text-[9px] font-black uppercase tracking-wide text-white">
-                          Lo intentaste abrir
-                        </span>
-                      )}
-                    </span>
+                    <span className="block">{item}</span>
                     <span className="block text-[12px] leading-snug text-muted-foreground">{note}</span>
                   </span>
                 </li>
@@ -247,7 +240,7 @@ export function DesbloquearTab({
             <div className="flex items-start gap-2.5">
               <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-primary" />
               <p className="text-[13px] leading-snug text-gray-700">
-                Recibes <strong>soporte por WhatsApp</strong> si tienes cualquier duda. Hay un equipo real detrás.
+                Recibes <strong>soporte por WhatsApp</strong> si tienes cualquier duda.
               </p>
             </div>
             <div className="flex items-start gap-2.5">

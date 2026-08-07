@@ -4,6 +4,8 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { QuizLayout, QuizCard, QuizCta } from './quiz-ui'
 import { trackDualOnce } from '@/lib/fb-pixel'
+import { quizFetch } from '@/lib/quiz-session-client'
+import { cleanFirstName } from '@/lib/first-name'
 
 // Passo 12 — NÃO é mais formulário de captura de e-mail.
 // Virou uma tela-ponte emocional antes da preview: espelha o obstáculo que a
@@ -13,6 +15,15 @@ import { trackDualOnce } from '@/lib/fb-pixel'
 // de sessão "submetida", então não capturamos mais e-mail aqui. A identidade
 // pós-compra vem do e-mail digitado na própria Hotmart no pagamento.
 // (Consequência: a rota /api/quiz/submit-step12 ficou sem uso.)
+//
+// O NOME (07/08/2026) — único campo digitado do quiz inteiro, e fica aqui de
+// propósito: é o último passo, então o custo de um campo a mais é o menor de
+// todo o funil (11 passos de compromisso já investidos), e o retorno é imediato,
+// porque a tela seguinte já abre com "Armada para <nome>". Pedir o nome cedo
+// cobraria o mesmo teclado sem nenhum pagamento visível.
+//
+// Nunca é obrigatório: o "Prefiero no decirlo" existe pra que ninguém morra aqui
+// com o teclado aberto. Vale mais o plano sem nome do que a lead perdida.
 
 interface Props {
   stepNumber: number
@@ -82,10 +93,37 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
   const router = useRouter()
   const [reframe] = useState<Reframe>(pickReframe)
   const [going, setGoing] = useState(false)
+  const [name, setName] = useState(() => {
+    if (typeof window === 'undefined') return ''
+    try {
+      const cached = sessionStorage.getItem('nutriplan_step_12')
+      return cached ? ((JSON.parse(cached) as { first_name?: string }).first_name ?? '') : ''
+    } catch { return '' }
+  })
 
-  function handleContinue() {
+  const firstName = cleanFirstName(name)
+
+  function go(value: string) {
     if (going) return
     setGoing(true)
+
+    // sessionStorage primeiro: é o que a /mi-plan lê sem rede, no mesmo instante.
+    try {
+      sessionStorage.setItem('nutriplan_step_12', JSON.stringify({ first_name: value }))
+    } catch { /* modo privado: o plano sai sem nome, e tudo bem */ }
+
+    // O save-step é enviado mas NÃO é esperado nem checado. Um nome é enfeite de
+    // personalização; travar a saída do quiz num POST que pode falhar seria
+    // trocar conversão por cosmética.
+    if (value) {
+      quizFetch('/api/quiz/save-step', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ step: 12, answers: { first_name: value } }),
+        keepalive: true,
+      }).catch(() => {})
+    }
+
     // Mantém o sinal de quiz concluído para o Pixel (antes era no submit do form).
     trackDualOnce('px_quiz_complete', 'QuizComplete', undefined, { custom: true })
     router.push('/calculando' as never)
@@ -128,12 +166,46 @@ export function Step12Form({ stepNumber, totalSteps }: Props) {
               Por primera vez, el plan se adapta a ti. No tú a él.
             </p>
           </div>
+
+          {/* O nome. Vem logo depois da linha "el plan se adapta a ti" porque é a
+              prova imediata dela: ela escreve o nome e o plano sai com o nome. */}
+          <div className="space-y-2 border-t border-border pt-4">
+            <label htmlFor="first_name" className="block text-base font-bold text-gray-900">
+              ¿Cómo te llamas?
+            </label>
+            <p className="text-sm text-muted-foreground">
+              Para armar tu plan a tu nombre.
+            </p>
+            <input
+              id="first_name"
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              onKeyDown={(e) => { if (e.key === 'Enter' && firstName) go(firstName) }}
+              placeholder="Tu nombre"
+              autoComplete="given-name"
+              enterKeyHint="go"
+              maxLength={30}
+              className="w-full rounded-xl border-2 border-border bg-white px-4 py-3.5 text-[1.05rem] font-semibold text-gray-900 outline-none transition-colors placeholder:font-normal placeholder:text-muted-foreground focus:border-primary"
+            />
+          </div>
         </div>
       </QuizCard>
 
-      <QuizCta onClick={handleContinue} disabled={going}>
-        Ver mi plan
+      <QuizCta onClick={() => go(firstName)} disabled={going || !firstName}>
+        {firstName ? `Ver el plan de ${firstName}` : 'Ver mi plan'}
       </QuizCta>
+
+      {/* Saída sem nome. Discreta, mas sempre presente: nenhum passo do quiz
+          pode ser beco sem saída por causa de um campo opcional. */}
+      <button
+        type="button"
+        onClick={() => go('')}
+        disabled={going}
+        className="mx-auto block text-sm text-muted-foreground underline underline-offset-2 disabled:opacity-50"
+      >
+        Prefiero no decirlo
+      </button>
 
       <p className="text-center text-sm leading-relaxed text-muted-foreground">
         Al continuar, aceptas nuestra{' '}

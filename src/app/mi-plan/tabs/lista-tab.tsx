@@ -41,8 +41,6 @@ export function ListaTab({
     .map((id) => CATALOG_BY_ID[id]?.label)
     .filter((label): label is string => !!label)
 
-  const totalItems = plan.shoppingList.reduce((acc, c) => acc + c.items.length, 0)
-
   return (
     <div className="space-y-6">
       <section className="space-y-3">
@@ -89,11 +87,15 @@ export function ListaTab({
         </section>
       )}
 
+      {/* NÃO mostrar a contagem aqui. Com 28 dias o número passa de 50, e "50
+          ingredientes" não lê como abundância, lê como conta do supermercado:
+          a pessoa que teme não ter dinheiro pra fazer o plano some antes de
+          descobrir que são os mesmos alimentos repetidos ao longo do mês. */}
       <section className="space-y-3">
-        <SectionTitle>Tu lista de la semana</SectionTitle>
+        <SectionTitle>Tu lista de compras</SectionTitle>
         <LockedBlock
           id="lista_semana"
-          title={`${totalItems} ingredientes, organizados por pasillo del súper`}
+          title="Todos los ingredientes, organizados por pasillo del súper"
           hint="Vas una vez, sale todo. Sin volver a mitad de semana por lo que faltó."
           onUnlock={onUnlock}
         >

@@ -49,7 +49,7 @@ const GATE_MS = 35_000
 const OPENED_AT_KEY = 'nutriplan_miplan_opened_at'
 
 const TAB_TITLE: Record<TabId, string> = {
-  plan: 'Tu plan personalizado',
+  plan: 'Tu Calibración Metabólica',
   resultados: 'Resultados reales',
   lista: 'Lista y guía',
   bonos: 'Tus bonos',
@@ -60,10 +60,10 @@ const TAB_TITLE: Record<TabId, string> = {
 /** Texto da folha por cadeado. Cada uma responde a coisa exata que ela tentou
  *  abrir — folha genérica lê como popup de venda e quebra a sensação de posse. */
 function sheetCopy(lockId: string): { headline: string; body: string } {
-  if (lockId.startsWith('dia_')) {
+  if (lockId.startsWith('dia_') || lockId.startsWith('semana_')) {
     return {
       headline: 'Ese día también es tuyo',
-      body: 'Tus 7 días ya están armados con los mismos alimentos que elegiste y las mismas calorías del Día 1 que ya estás viendo. Solo falta abrirlos.',
+      body: 'Tus 28 días ya están armados con los mismos alimentos que elegiste y las mismas calorías del Día 1 que ya estás viendo. Solo falta abrirlos.',
     }
   }
   if (lockId.startsWith('atajo_')) {
@@ -80,8 +80,8 @@ function sheetCopy(lockId: string): { headline: string; body: string } {
   }
   const byId: Record<string, { headline: string; body: string }> = {
     lista_semana: {
-      headline: 'Tu lista de la semana está lista',
-      body: 'Organizada por pasillo del súper, con las cantidades exactas de tus 7 días. Vas una vez y sale todo, sin volver a mitad de semana por lo que faltó.',
+      headline: 'Tu lista de compras está lista',
+      body: 'Organizada por pasillo del súper, con todo lo que tus días necesitan. Vas una vez y sale todo, sin volver a mitad de semana por lo que faltó.',
     },
     guia_implementacion: {
       headline: 'Tu guía de arranque está lista',
@@ -120,12 +120,15 @@ export function MiPlanApp({
   trainingPlan,
   noTraining,
   hasTrainingAnswer,
+  firstName,
 }: {
   plan: NutritionPlanJson
   profile: Profile
   trainingPlan: TrainingPlanJson | null
   noTraining: boolean
   hasTrainingAnswer: boolean
+  /** Primeiro nome dela, ou '' se preferiu não dizer. */
+  firstName: string
 }) {
   const [tab, setTab] = useState<TabId>('plan')
   const [unlockedTab, setUnlockedTab] = useState(false)
@@ -248,14 +251,14 @@ export function MiPlanApp({
           <div className="flex h-14 items-center gap-3 px-4">
             <NutriWordmark size="sm" />
             <h1 className="flex-1 truncate text-right font-display text-[15px] font-black leading-tight text-foreground">
-              {TAB_TITLE[tab]}
+              {tab === 'plan' && firstName ? `El plan de ${firstName}` : TAB_TITLE[tab]}
             </h1>
           </div>
         </header>
 
         <div className="p-4 pb-28">
           {tab === 'plan' && (
-            <MiPlanTab plan={plan} profile={profile} onUnlock={handleUnlock} />
+            <MiPlanTab plan={plan} profile={profile} firstName={firstName} onUnlock={handleUnlock} />
           )}
           {tab === 'resultados' && <ResultadosTab onCta={goToOffer} />}
           {tab === 'lista' && <ListaTab plan={plan} onUnlock={handleUnlock} />}
