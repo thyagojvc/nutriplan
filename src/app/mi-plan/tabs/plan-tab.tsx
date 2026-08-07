@@ -14,6 +14,7 @@
 
 import type { NutritionPlanJson, PlanDay, PlanMeal } from '@/lib/nutrition/types'
 import { getFoodImageUrl } from '@/lib/nutrition/food-images'
+import { COMBOS_BY_ID } from '@/lib/nutrition/combos'
 import { Lock, Check } from 'lucide-react'
 import {
   GOAL_LABEL, ACTIVITY_LABEL, MEAL_EMOJI, MACRO,
@@ -140,33 +141,12 @@ export function MiPlanTab({
           ))}
         </div>
 
-        {/* Atajo do dia — aberto. É a prova de que existe método por trás do
-            cardápio, e ela pode executar hoje à noite. Os outros 6 ficam na
-            aba Bonos, trancados. */}
-        {day1.combo && (
-          <div className="rounded-2xl border-2 border-primary/30 bg-primary/5 p-4">
-            <div className="flex items-center gap-2">
-              <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[12px] font-black text-white">
-                {day1.combo.letter}
-              </span>
-              <span className="text-[11px] font-bold uppercase tracking-wide text-primary">
-                Tu atajo de hoy · 1 de 7
-              </span>
-            </div>
-            <p className="mt-1.5 font-display text-lg font-black text-foreground">
-              {day1.combo.emoji} {day1.combo.name}
-            </p>
-            <p className="mt-1 text-[13px] leading-relaxed text-muted-foreground">
-              {day1.combo.action}
-            </p>
-            {day1.combo.secret && (
-              <div className="mt-3 rounded-xl border border-primary/25 bg-white p-3">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-primary">El secreto</p>
-                <p className="mt-1 text-[13px] leading-relaxed text-foreground">{day1.combo.secret}</p>
-              </div>
-            )}
-          </div>
-        )}
+        {/* Atajo do dia — aberto, e é a peça que mais tem que vender sozinha.
+            Ela recebe isto de graça: se ler como conselho de bom senso, não
+            gera vontade nenhuma de ver os outros seis. Por isso o número vem
+            grande e antes da instrução (é o que ela repete pra amiga), e a
+            execução vem depois, como quem entrega a receita do segredo. */}
+        {day1.combo && <AtajoAbierto combo={day1.combo} />}
 
         <div className="space-y-3">
           {day1.meals.map((meal, i) => <MealCard key={i} meal={meal} />)}
@@ -204,6 +184,88 @@ export function MiPlanTab({
           {plan.disclaimers.map((d, i) => <p key={i}>{d}</p>)}
         </div>
       )}
+    </div>
+  )
+}
+
+/**
+ * O atajo do Día 1, aberto.
+ *
+ * Ordem deliberada: promessa → número → como se faz → por que funciona. O
+ * número vem cedo porque é a única parte que ela consegue repetir de cabeça, e
+ * é o que faz um atajo grátis parecer descoberta em vez de dica. A instrução
+ * vem depois: quem já quer o resultado lê a execução como recompensa, não como
+ * tarefa.
+ *
+ * O `combo` do plano (PlanDayCombo) carrega só o essencial pro app, então o
+ * número e a fonte vêm do catálogo por id.
+ */
+function AtajoAbierto({ combo }: { combo: NonNullable<PlanDay['combo']> }) {
+  const full = COMBOS_BY_ID[combo.id]
+  const proof = full?.proof
+
+  return (
+    <div className="overflow-hidden rounded-2xl border-2 border-primary/35 bg-white shadow-[0_6px_24px_rgba(15,110,86,0.12)]">
+      <div className="flex items-center gap-2 bg-primary px-4 py-2.5">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/20 text-[12px] font-black text-white">
+          {combo.letter}
+        </span>
+        <span className="flex-1 text-[11px] font-bold uppercase tracking-wide text-white/85">
+          Tu atajo de hoy · 1 de 7
+        </span>
+        <span className="shrink-0 rounded-full bg-white px-2 py-0.5 text-[9px] font-black uppercase tracking-wide text-primary">
+          Abierto
+        </span>
+      </div>
+
+      <div className="space-y-3 p-4">
+        <div>
+          <p className="font-display text-[22px] font-black leading-tight text-gray-900">
+            {combo.emoji} {combo.name}
+          </p>
+          {full?.tagline && (
+            <p className="mt-0.5 text-[14px] font-bold leading-snug text-primary">{full.tagline}</p>
+          )}
+        </div>
+
+        {/* O número. Atribuído sempre, nunca como promessa nossa (ver `proof`
+            em combos.ts). Sem fonte na tela, "43%" viraria claim inventado. */}
+        {proof && (
+          <div className="flex items-center gap-3.5 rounded-xl border border-[#D85A30]/35 bg-[#FDF6F3] px-4 py-3">
+            <span className="font-display text-[34px] font-black leading-none text-[#D85A30] tabular-nums">
+              {proof.value}
+            </span>
+            <span className="min-w-0 flex-1">
+              <span className="block text-[13px] font-bold leading-snug text-gray-900">
+                {proof.label}
+              </span>
+              <span className="mt-0.5 block text-[10.5px] leading-snug text-muted-foreground">
+                {proof.source}
+              </span>
+            </span>
+          </div>
+        )}
+
+        {combo.secret && (
+          <div className="rounded-xl border border-primary/25 bg-[#F5FAF2] p-3.5">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-primary">
+              Por qué casi nadie lo sabe
+            </p>
+            <p className="mt-1 text-[13px] leading-relaxed text-foreground">{combo.secret}</p>
+          </div>
+        )}
+
+        <div className="rounded-xl border border-[#D8E8D4] bg-white p-3.5">
+          <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-gray-900">
+            <Check className="h-3.5 w-3.5 text-primary" strokeWidth={3} />
+            Cómo se hace hoy
+          </p>
+          <p className="mt-1 text-[13px] leading-relaxed text-foreground">{combo.action}</p>
+          <p className="mt-2 text-[12px] font-semibold leading-snug text-primary">
+            Diez segundos. No cambia tu comida ni te quita tiempo de cocina.
+          </p>
+        </div>
+      </div>
     </div>
   )
 }

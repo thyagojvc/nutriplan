@@ -12,6 +12,8 @@
 
 import type { NutritionPlanJson } from '@/lib/nutrition/types'
 import { ShoppingCart, Check } from 'lucide-react'
+import { COMBOS_BY_ID } from '@/lib/nutrition/combos'
+import { CATALOG_BY_ID } from '@/lib/nutrition/food-catalog'
 import { SectionTitle } from '@/app/(dashboard)/dashboard/dashboard-ui'
 import { LockedBlock } from '../lock-ui'
 
@@ -22,11 +24,22 @@ export function ListaTab({
   plan: NutritionPlanJson
   onUnlock: (id: string) => void
 }) {
+  const day1 = plan.days[0]
+
   // O que ela precisa comprar pra executar o dia que já é dela. Sai do próprio
   // Día 1, então nunca promete um ingrediente que o dia não use.
   const day1Foods = Array.from(
-    new Set(plan.days[0].meals.flatMap((m) => m.items.map((i) => i.food))),
+    new Set(day1.meals.flatMap((m) => m.items.map((i) => i.food))),
   )
+
+  // Os ingredientes do atajo do Día 1 NÃO estão nas refeições (a mezcla do
+  // Lleno é fibra tomada à parte, ver COMBO_INGREDIENT_IDS em generate.ts).
+  // Sem isto ela lê "cómo se hace: 1 cucharada de la mezcla" e não encontra
+  // chía, linaza nem psyllium em lugar nenhum da lista aberta, ou seja, o
+  // único atajo que damos de graça fica impossível de executar.
+  const day1ComboFoods = (COMBOS_BY_ID[day1.combo?.id ?? '']?.ingredientIds ?? [])
+    .map((id) => CATALOG_BY_ID[id]?.label)
+    .filter((label): label is string => !!label)
 
   const totalItems = plan.shoppingList.reduce((acc, c) => acc + c.items.length, 0)
 
@@ -52,6 +65,29 @@ export function ListaTab({
           </p>
         </div>
       </section>
+
+      {day1ComboFoods.length > 0 && (
+        <section className="space-y-3">
+          <SectionTitle>Para tu atajo del Día 1</SectionTitle>
+          <div className="rounded-2xl border border-[#D85A30]/35 bg-[#FDF6F3] p-4">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-[#B8481F]">
+              Abierto · la mezcla
+            </p>
+            <ul className="mt-2.5 space-y-1.5">
+              {day1ComboFoods.map((food) => (
+                <li key={food} className="flex items-start gap-1.5 text-[13px] text-gray-800">
+                  <Check className="mt-0.5 h-3 w-3 shrink-0 text-[#D85A30]" strokeWidth={3} />
+                  <span className="min-w-0 flex-1">{food}</span>
+                </li>
+              ))}
+            </ul>
+            <p className="mt-3 text-[12px] leading-snug text-muted-foreground">
+              A partes iguales. Se consiguen en cualquier súper o tienda naturista, y una bolsa
+              de cada una te dura semanas.
+            </p>
+          </div>
+        </section>
+      )}
 
       <section className="space-y-3">
         <SectionTitle>Tu lista de la semana</SectionTitle>

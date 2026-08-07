@@ -48,7 +48,12 @@ export interface Combo {
   teaser: string
   /** Só o LLENO quebra o padrão: mostra 1 ingrediente de verdade pra provar que
    *  existe conhecimento real por trás, mantendo os outros bloqueados. A reação
-   *  buscada é "se um só faz isso, quero saber quais são os outros". */
+   *  buscada é "se um só faz isso, quero saber quais são os outros".
+   *
+   *  SEM USO NA UI desde 07/08: o Lleno passou a abrir o plano inteiro (ver
+   *  DELIVERY_ORDER), então revelar um ingrediente dele dentro de um cadeado
+   *  perdeu o sentido. Mantido porque o padrão volta a servir na hora que
+   *  outro combo precisar da mesma jogada. */
   revealedIngredient?: { name: string; emoji: string; note: string }
   moment: ComboMoment
   /** A instrução literal. Tem que caber em 10 segundos de execução.
@@ -65,6 +70,18 @@ export interface Combo {
   why: string
   /** Base fisiológica real. Auditoria interna: se um claim não couber aqui, sai. */
   science: string
+  /** Número duro do efeito, quando existe literatura que o sustente.
+   *
+   *  É o que separa "dica de nutricionista" de "descoberta": uma promessa sem
+   *  número ela já ouviu mil vezes e não sente nada; um número ela repete pra
+   *  amiga. Por isso o combo que abre o plano é sempre um que TEM proof (ver
+   *  DELIVERY_ORDER) — é o primeiro que ela executa e precisa ser o que mais
+   *  gera vontade de ver os outros seis.
+   *
+   *  REGRA: só preencher com número que o `source` sustente de fato, e sempre
+   *  renderizar atribuído ("en los estudios..."), nunca como promessa nossa.
+   *  Sem fonte, o campo fica vazio e o combo vive só do mecanismo. */
+  proof?: { value: string; label: string; source: string }
   /** Ingredientes extra que este combo exige na lista de compras. */
   ingredientIds?: string[]
   emoji: string
@@ -115,22 +132,33 @@ export const COMBOS: Combo[] = [
     n: 3,
     letter: 'L',
     name: 'Lleno',
-    tagline: 'Cierra el hambre por horas, sin comer de más',
+    tagline: 'Hasta 43% menos hambre, sin aguantar nada',
     teaser:
-      'La chía absorbe muchas veces su peso en agua y forma un gel que retrasa el vaciado del estómago. El hambre no vuelve en una hora. Tarda.',
+      'Tres fibras que por separado no hacen casi nada. Juntas, en el orden y la proporción correctos, forman un gel que frena el vaciado del estómago. En los estudios, hasta 43% menos hambre en las horas siguientes.',
     revealedIngredient: {
       name: 'Chía',
       emoji: '🌱',
-      note: 'La chía no actúa sola. Es una pieza de una combinación específica, y las demás siguen bloqueadas.',
+      note: 'La chía sola no llega ni cerca de ese número. Es una pieza de una combinación específica.',
     },
     moment: 'mañana',
     action:
       '1 cucharada de la mezcla (chía + linaza + psyllium a partes iguales) en un vaso de agua, tomada junto a tu fuente de proteína del desayuno. Se toma de inmediato, antes de que espese.',
     secret:
-      'Esas tres fibras juntas forman un gel que funciona como un radar de tránsito dentro de tu estómago: obligan a la comida a bajar la velocidad. En vez de vaciarse en una hora, tu estómago se queda lleno durante horas. No es que aguantes el hambre, es que no llega.',
-    why: 'La mezcla forma un gel en el estómago. Ese gel, junto a la proteína, hace que la comida salga más lento del estómago. Por eso llegas a la tarde sin esa ansiedad de picar cualquier cosa.',
+      'Por separado, cada una de esas tres fibras hace poco. Juntas cambian de comportamiento: forman un gel que obliga a la comida a bajar despacio, y tu estómago deja de vaciarse en una hora para quedarse lleno durante horas. Ahí está el número que casi nadie conoce: en los estudios, esta combinación reduce el hambre hasta un 43% en las horas siguientes. No es que aguantes mejor. Es que el hambre no llega, y no tuviste que usar ni un gramo de fuerza de voluntad para eso.',
+    why: 'No estás peleando contra el hambre, simplemente no aparece. Por eso llegas a la tarde sin esa ansiedad de picar cualquier cosa, y por eso el déficit de tu plan deja de costarte esfuerzo: comes menos porque no te cabe más, no porque te estés frenando.',
     science:
-      'Fibra viscosa (psyllium, chía, linaza) retarda el vaciamiento gástrico y aumenta la saciedad; el efecto es mayor cuando se combina con proteína en la misma comida.',
+      'Fibra viscosa (psyllium, chía, linaza) retarda el vaciamiento gástrico y aumenta la saciedad; el efecto es mayor cuando se combina con proteína en la misma comida. Revisión de 4 estudios sobre fibra viscosa y apetito: reducciones de apetito subjetivo de hasta ~43% frente a control.',
+    // O 43% veio da revisão de 4 estudos feita pelo Thyago (nutricionista
+    // responsável) em 07/08/2026. As referências exatas ainda não estão
+    // anexadas neste arquivo: se um dia precisar defender o número (Meta,
+    // reembolso, dúvida de cliente), pedir a lista pra ele antes de responder.
+    // Regra de uso: sempre atribuído ("en los estudios"), nunca como promessa
+    // nossa, e nunca no criativo de anúncio (ver compliance em product-marketing).
+    proof: {
+      value: '43%',
+      label: 'menos hambre en las horas siguientes',
+      source: 'Revisión de 4 estudios sobre fibra viscosa (psyllium, chía y linaza) y apetito.',
+    },
     ingredientIds: ['chia', 'linaza', 'psyllium'],
     emoji: '🥣',
   },
@@ -216,12 +244,37 @@ export const COMBOS_BY_ID: Record<string, Combo> = Object.fromEntries(
 )
 
 /**
- * Combo do dia. O ciclo tem 7 combos (CALIBRA); o plano imprime 7 ou 28 dias,
- * então a rotação fecha certinho: cada dia da semana carrega sempre o mesmo
- * combo, e em 4 semanas ela repete cada um 4 vezes (é o que forma o hábito).
+ * Ordem em que os combos são ENTREGUES nos dias do plano.
+ *
+ * NÃO é a ordem do acrônimo. `COMBOS` segue fixo em C-A-L-I-B-R-A (é o que
+ * soletra a palavra e o que o PDF imprime); esta lista é só a rotação por dia.
+ *
+ * O LLENO abre (07/08/2026, decisão do dono). Motivo: o Día 1 é o único que ela
+ * executa ANTES de decidir comprar, então tem que ser o combo mais forte que
+ * existe, e o Lleno é o único com número duro (ver `proof`). O Candado abria
+ * antes e lia como conselho de bom senso: "jante proteína e feche a cozinha".
+ * Conselho de bom senso ela já ouviu, não gera vontade de ver os outros seis.
+ *
+ * MUDAR ISTO MUDA O PLANO ENTREGUE, não só a página: o /mi-plan mostra o Día 1
+ * de verdade antes do pagamento, e a promessa "este é o teu plano" só se
+ * sustenta se a rotação aqui for a mesma dos dois lados. Planos já gerados não
+ * mudam (ficam congelados no plan_json do pedido).
+ */
+const DELIVERY_ORDER = [
+  'lleno', 'candado', 'arranque', 'inverso', 'blindaje', 'resistente', 'anticipo',
+] as const
+
+/** Os 7 na ordem em que ela os recebe. Use isto em qualquer UI que fale de
+ *  "atajo 1, 2, 3…"; `COMBOS` é a ordem do acrônimo e daria numeração errada. */
+export const COMBOS_IN_DELIVERY_ORDER: Combo[] = DELIVERY_ORDER.map((id) => COMBOS_BY_ID[id])
+
+/**
+ * Combo do dia. O ciclo tem 7 combos; o plano imprime 7 ou 28 dias, então a
+ * rotação fecha certinho: cada dia da semana carrega sempre o mesmo combo, e em
+ * 4 semanas ela repete cada um 4 vezes (é o que forma o hábito).
  */
 export function comboForDay(dayNum: number): Combo {
-  return COMBOS[(dayNum - 1) % COMBOS.length]
+  return COMBOS_IN_DELIVERY_ORDER[(dayNum - 1) % COMBOS_IN_DELIVERY_ORDER.length]
 }
 
 /** Ids de alimentos que só entram na lista de compras por causa dos combos. */

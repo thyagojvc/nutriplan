@@ -9,22 +9,24 @@
 // entende o método inteiro de graça não precisa comprá-lo.
 //
 // O que fica visível aqui é só a ESTRUTURA, nunca o conteúdo:
-//   · o atajo 1 (Candado) aberto, porque ela já o recebeu no Día 1;
+//   · o atajo 1 (Lleno) aberto, porque ela já o recebeu no Día 1;
 //   · o momento do dia de cada um (não entrega mecanismo nenhum, e é o que
-//     faz ela pensar "tem um pra noite? qual?");
-//   · a chía do atajo 3, único ingrediente revelado de propósito — prova que
-//     existe conhecimento real por trás, mantendo o resto trancado.
+//     faz ela pensar "tem um pra noite? qual?").
 // O nome dos outros seis vem borrado. É forma sem conteúdo, que é exatamente
 // o que abre curiosidade em vez de fechá-la.
+//
+// A ordem vem de COMBOS_IN_DELIVERY_ORDER, não de COMBOS: a numeração aqui tem
+// que ser a mesma que ela vê nos dias do plano, e COMBOS está na ordem do
+// acrônimo (que não é a ordem de entrega desde 07/08).
 // =============================================================================
 
 import { Sparkles, CalendarDays, Lock } from 'lucide-react'
-import { COMBOS } from '@/lib/nutrition/combos'
+import { COMBOS_IN_DELIVERY_ORDER } from '@/lib/nutrition/combos'
 import { SectionTitle } from '@/app/(dashboard)/dashboard/dashboard-ui'
 import { LockChip } from '../lock-ui'
 
 export function BonosTab({ onUnlock }: { onUnlock: (id: string) => void }) {
-  const [first, ...rest] = COMBOS
+  const [first, ...rest] = COMBOS_IN_DELIVERY_ORDER
 
   return (
     <div className="space-y-6">
@@ -34,10 +36,11 @@ export function BonosTab({ onUnlock }: { onUnlock: (id: string) => void }) {
         </p>
         <p className="mt-1.5 text-[13px] leading-relaxed text-gray-700">
           Reglas de diez segundos que se aplican sobre el plan que ya tienes. No agregan tiempo
-          de cocina, no cambian tus comidas. Cambian el resultado de las mismas.
+          de cocina, no cambian tus comidas. Cambian lo que las mismas comidas producen en tu
+          cuerpo, y es la diferencia entre bajar peleando y bajar sin darte cuenta.
         </p>
         <p className="mt-2 text-[12px] font-bold text-primary">
-          Tienes 1 de 7. Los otros 6 vienen con tu plan.
+          Te abrimos el primero completo. Los otros 6 vienen con tu plan.
         </p>
       </div>
 
@@ -60,11 +63,29 @@ export function BonosTab({ onUnlock }: { onUnlock: (id: string) => void }) {
               Abierto
             </span>
           </div>
-          <div className="space-y-2 p-4">
+          <div className="space-y-2.5 p-4">
             <p className="text-[13.5px] font-bold text-gray-900">{first.tagline}</p>
+            {/* O número repetido aqui de propósito: quem entra por esta aba (e
+                não pelo Mi Plan) tem que topar com ele igual. É o que faz os
+                seis cadeados abaixo parecerem valiosos em vez de decorativos. */}
+            {first.proof && (
+              <div className="flex items-center gap-3 rounded-xl border border-[#D85A30]/35 bg-[#FDF6F3] px-3.5 py-2.5">
+                <span className="font-display text-[28px] font-black leading-none text-[#D85A30] tabular-nums">
+                  {first.proof.value}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-[12.5px] font-bold leading-snug text-gray-900">
+                    {first.proof.label}
+                  </span>
+                  <span className="mt-0.5 block text-[10px] leading-snug text-muted-foreground">
+                    {first.proof.source}
+                  </span>
+                </span>
+              </div>
+            )}
             <p className="text-[13px] leading-relaxed text-muted-foreground">{first.action}</p>
-            <p className="text-[12px] leading-snug text-primary">
-              Está aplicado en tu Día 1. Puedes hacerlo esta misma noche.
+            <p className="text-[12px] font-semibold leading-snug text-primary">
+              Está aplicado en tu Día 1. Puedes hacerlo mañana en el desayuno.
             </p>
           </div>
         </div>
@@ -97,14 +118,10 @@ export function BonosTab({ onUnlock }: { onUnlock: (id: string) => void }) {
                 >
                   {combo.name}
                 </p>
-                {/* O único ingrediente revelado de todo o método. Existe pra
-                    provar que há conhecimento real por trás dos cadeados. */}
-                {combo.revealedIngredient && (
-                  <p className="mt-1 text-[12px] leading-snug text-primary">
-                    {combo.revealedIngredient.emoji} Uno de sus ingredientes es{' '}
-                    <strong className="font-bold">{combo.revealedIngredient.name}</strong>. Los demás siguen bloqueados.
-                  </p>
-                )}
+                {/* `revealedIngredient` não aparece mais aqui: ele existia pra
+                    provar conhecimento real dentro de um cadeado, e esse papel
+                    passou pro Lleno aberto acima (com número e receita
+                    inteira). Repetir a prova dentro do bloqueado só diluiria. */}
               </div>
               <LockChip />
             </button>
