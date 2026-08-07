@@ -9,6 +9,7 @@ const PUBLIC_PATHS = [
   '/quiz',
   '/calculando',
   '/preview',
+  '/mi-plan', // app travado pós-quiz (teste paralelo à /preview)
   '/exito',
   '/auth/callback',
   '/auth/magic',
@@ -22,6 +23,7 @@ const PUBLIC_PATHS = [
   '/api/quiz/presence',
   '/api/quiz/live-presence',
   '/api/quiz/preview-data',
+  '/api/quiz/draft',
   '/api/quiz/recent-activity',
   '/api/fx',
   '/api/checkout/resolve-price',
