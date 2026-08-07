@@ -17,11 +17,11 @@ import { getFoodImageUrl } from '@/lib/nutrition/food-images'
 import { COMBOS_BY_ID } from '@/lib/nutrition/combos'
 import { Lock, Check } from 'lucide-react'
 import {
-  GOAL_LABEL, ACTIVITY_LABEL, MEAL_EMOJI, MACRO,
+  GOAL_LABEL, ACTIVITY_LABEL, MEAL_EMOJI, MACRO, WEEK_PHASES,
   SectionTitle, ProfileCard, ImcBadge, ImcScale, MacroDonut, MacroLegend,
   Metric, MetabolismExplain, type Profile,
 } from '@/app/(dashboard)/dashboard/dashboard-ui'
-import { LockedBlock } from '../lock-ui'
+import { LockedBlock, TapHint } from '../lock-ui'
 
 export function MiPlanTab({
   plan,
@@ -36,6 +36,7 @@ export function MiPlanTab({
   const day1 = plan.days[0]
   const day2 = plan.days[1]
   const totalDays = plan.days.length
+  const is4Week = totalDays > 7
 
   const imc =
     profile.weightKg && profile.heightCm
@@ -116,10 +117,58 @@ export function MiPlanTab({
         </div>
       </section>
 
-      {/* Seletor de dias. Os 6 travados ficam VISÍVEIS com cadeado: sumir com
-          eles apagaria justamente a informação de que o plano continua. */}
+      {/* Seletor de semanas e dias. Os travados ficam VISÍVEIS com cadeado:
+          sumir com eles apagaria justamente a informação de que o plano
+          continua. */}
       <section className="space-y-3">
-        <SectionTitle>Tus {totalDays} días</SectionTitle>
+        <div className="flex items-center justify-between gap-2">
+          <SectionTitle>{is4Week ? 'Tus 4 semanas' : `Tus ${totalDays} días`}</SectionTitle>
+          <span className="shrink-0 rounded-full border border-primary/25 bg-primary/8 px-2.5 py-0.5 text-[11px] font-bold text-primary">
+            1 de {totalDays} abierto
+          </span>
+        </div>
+
+        {/* Instrução explícita. Sem ela a pessoa lê os chips como enfeite e nem
+            tenta tocar: cadeado cinza em fila parece legenda, não botão. */}
+        <TapHint>
+          Tu <strong className="font-black">Día 1</strong> está abierto. Toca cualquier otro día
+          o semana para ver qué trae.
+        </TapHint>
+
+        {is4Week && (
+          <div className="grid grid-cols-4 gap-1.5">
+            {WEEK_PHASES.map((phase, w) => {
+              const open = w === 0
+              return (
+                <button
+                  key={w}
+                  type="button"
+                  onClick={open ? undefined : () => onUnlock(`semana_${w + 1}`)}
+                  className={[
+                    'flex flex-col items-center rounded-xl px-1 py-2.5 transition-transform',
+                    open
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-muted active:scale-95',
+                  ].join(' ')}
+                >
+                  <span className="flex items-center gap-1 text-sm font-bold">
+                    {!open && <Lock className="h-2.5 w-2.5" strokeWidth={2.8} />}
+                    Sem {w + 1}
+                  </span>
+                  <span
+                    className={[
+                      'mt-0.5 text-center text-[9px] font-medium leading-tight',
+                      open ? 'text-primary-foreground/75' : 'text-muted-foreground',
+                    ].join(' ')}
+                  >
+                    {phase.label}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        )}
+
         <div className="flex gap-1.5">
           <button
             type="button"
@@ -128,12 +177,17 @@ export function MiPlanTab({
             <span className="text-[9px] font-medium text-primary-foreground/75">Hoy</span>
             <span className="mt-0.5 text-sm font-bold">D1</span>
           </button>
-          {plan.days.slice(1).map((d) => (
+          {plan.days.slice(1, 7).map((d, i) => (
             <button
               key={d.day}
               type="button"
               onClick={() => onUnlock(`dia_${d.day}`)}
-              className="flex flex-1 flex-col items-center rounded-xl bg-muted py-2.5 text-muted-foreground transition-transform active:scale-95"
+              className={[
+                'flex flex-1 flex-col items-center rounded-xl bg-muted py-2.5 text-muted-foreground transition-transform active:scale-95',
+                // Anel pulsante só no primeiro travado: é a affordance mínima
+                // que transforma a fila inteira de "legenda" em "isto se toca".
+                i === 0 ? 'ring-2 ring-[#D85A30]/60 animate-pulse' : '',
+              ].join(' ')}
             >
               <Lock className="h-2.5 w-2.5" strokeWidth={2.6} />
               <span className="mt-0.5 text-sm font-bold">D{d.day}</span>
@@ -169,7 +223,7 @@ export function MiPlanTab({
           <LockedBlock
             id="dia_2_preview"
             title={`Tu Día 2 ya está armado, y los otros ${totalDays - 2} también`}
-            hint="Comidas distintas, mismos alimentos tuyos, mismo número de calorías."
+            hint="Comidas distintas cada día, siempre con tus alimentos y tu número de calorías."
             onUnlock={onUnlock}
           >
             <div className="space-y-3 p-1">

@@ -16,6 +16,31 @@
 import { useEffect } from 'react'
 import { Lock, ShieldCheck, X } from 'lucide-react'
 
+/**
+ * Instrução de toque.
+ *
+ * Existe porque num app travado a affordance desaparece: uma fila de chips
+ * cinza com cadeado lê como legenda, não como botão, e a pessoa fica presa na
+ * primeira tela achando que viu tudo. Custa uma linha e é a diferença entre ela
+ * descobrir que o plano continua ou não.
+ */
+export function TapHint({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex items-center gap-2.5 rounded-xl border border-dashed border-[#D85A30]/50 bg-[#FDF6F3] px-3 py-2">
+      <span aria-hidden className="animate-[nudge_1.5s_ease-in-out_infinite] text-base leading-none">
+        👆
+      </span>
+      <p className="text-[12px] leading-snug text-gray-800">{children}</p>
+      <style>{`
+        @keyframes nudge {
+          0%, 100% { transform: translateY(0) }
+          50%      { transform: translateY(-3px) }
+        }
+      `}</style>
+    </div>
+  )
+}
+
 /** Etiqueta pequena de "bloqueado", pra cantos de card. */
 export function LockChip({ label = 'Bloqueado' }: { label?: string }) {
   return (

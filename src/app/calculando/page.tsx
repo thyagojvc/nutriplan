@@ -102,7 +102,11 @@ export default function CalculandoPage() {
       if (elapsed >= ANIMATION_MS && !done.current) {
         done.current = true
         clearInterval(tick)
-        router.push('/preview' as never)
+        // 07/08/2026: destino único passou de /preview pra /mi-plan (o app com
+        // o plano dela já montado e travado). A /preview segue no ar e
+        // funcional, só não recebe mais tráfego do quiz — é o rollback de um
+        // comando se o /mi-plan converter pior.
+        router.push('/mi-plan' as never)
       }
     }, 80)
     return () => clearInterval(tick)

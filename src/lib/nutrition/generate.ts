@@ -233,6 +233,34 @@ function proteinBaseGrams(food: CatalogFood, targetProtG: number, maxG: number):
   return Math.round(Math.min(Math.max(g, 110), maxG))
 }
 
+/** Semente por refeição, pra almuerzo e cena não embaralharem igual quando
+ *  caem no mesmo pool (acontece quando ela marca poucos favoritos). */
+const SLOT_SEED: Record<MealSlot, number> = {
+  desayuno: 11, almuerzo: 23, cena: 41, snack: 67,
+}
+
+/**
+ * Embaralha um pool de forma determinística a partir de uma semente.
+ *
+ * LCG de Lehmer, NÃO Math.random: a geração precisa ser reproduzível. O mesmo
+ * pedido processado duas vezes (reenvio de webhook da Hotmart, PDF gerado
+ * depois do plano) tem que devolver exatamente o mesmo cardápio, senão a pessoa
+ * vê um plano no app e outro no PDF.
+ */
+function shuffleForCycle<T>(arr: T[], seed: number): T[] {
+  const out = [...arr]
+  let s = (Math.abs(Math.trunc(seed)) * 48271) % 2147483647 || 1
+  const next = () => {
+    s = (s * 48271) % 2147483647
+    return s / 2147483647
+  }
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(next() * (i + 1))
+    ;[out[i], out[j]] = [out[j], out[i]]
+  }
+  return out
+}
+
 /** Constrói uma refeição para um índice de dia, rotacionando alimentos por variedade. */
 function buildMeal(
   mealName: string,
@@ -242,9 +270,26 @@ function buildMeal(
 ): PlanMeal {
   const slot = MEAL_SLOT[mealName] ?? 'almuerzo'
 
-  // Rotação por dia: cada dia avança no pool → menos repetição ao longo da semana.
-  const rotate = <T,>(arr: T[], offset: number): T | null =>
-    arr.length === 0 ? null : arr[(dayIndex + offset) % arr.length]
+  // Rotação por dia: cada dia avança no pool → percorre o pool inteiro antes de
+  // repetir qualquer alimento.
+  //
+  // A cada VOLTA completa o pool é reembaralhado. Sem isso, um plano de 28 dias
+  // vira cópia carbonada de si mesmo: com 4 proteínas favoritas o dia 5 é o dia
+  // 1, item por item, e ela abre a semana 2 achando que recebeu o mesmo
+  // cardápio. Embaralhando por volta, mantém-se a garantia de variedade (todo o
+  // pool antes de repetir) e nenhuma semana sai igual à anterior.
+  //
+  // A primeira volta fica na ordem natural de propósito: poolForMeal já ordena
+  // com os favoritos dela na frente, e os primeiros dias são os que decidem se
+  // ela continua.
+  const rotate = <T,>(arr: T[], offset: number): T | null => {
+    const n = arr.length
+    if (n === 0) return null
+    const pos = dayIndex + offset
+    const cycle = Math.floor(pos / n)
+    if (cycle === 0) return arr[pos % n]
+    return shuffleForCycle(arr, cycle * 1013 + offset * 71 + n * 7 + SLOT_SEED[slot])[pos % n]
+  }
 
   const raw: RawItem[] = []
 

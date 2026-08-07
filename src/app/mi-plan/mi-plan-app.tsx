@@ -29,6 +29,7 @@ import { NutriWordmark } from '@/app/quiz/[step]/quiz-ui'
 import { trackDualOnce, trackPixel } from '@/lib/fb-pixel'
 import { quizFetch } from '@/lib/quiz-session-client'
 import { MiPlanTabBar, type TabId } from './tab-bar'
+import { NextStepCard } from './next-step'
 import { UnlockSheet } from './lock-ui'
 import { useOffer, PRICE_USD } from './use-offer'
 import { MiPlanTab } from './tabs/plan-tab'
@@ -277,6 +278,10 @@ export function MiPlanApp({
               noTraining={noTraining}
             />
           )}
+
+          {/* Fecho de toda aba que não é a oferta: ensina que existe uma
+              próxima. Ver o comentário de next-step.tsx. */}
+          <NextStepCard from={tab} onGo={changeTab} />
         </div>
       </div>
 

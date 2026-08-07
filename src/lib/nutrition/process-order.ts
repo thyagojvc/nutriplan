@@ -86,7 +86,13 @@ export async function processPaidOrder(orderId: string): Promise<ProcessResult> 
     const hasRecipes = productCode === 'PLAN_RECIPES' || productCode === 'PLAN_TRAINING'
       || (items ?? []).some((it) => it.kind === 'recipes')
     const hasTraining = productCode === 'PLAN_TRAINING' || (items ?? []).some((it) => it.kind === 'training')
-    const planWeeks: 1 | 4 = 1 // todos os tiers são 7 dias
+    // 07/08/2026: passou de 7 pra 28 dias em todos os tiers. Plano alimentar
+    // se pensa por mês, e o /mi-plan mostra o Día 1 real antes do pagamento —
+    // se aqui entregasse 7 dias, a página estaria prometendo 4 semanas e a
+    // entrega dando uma. As 4 semanas já vinham com nome e função próprias
+    // (Adaptación → Calibración → Aceleración → Consolidación), só não eram
+    // usadas em venda nenhuma.
+    const planWeeks: 1 | 4 = 4
 
     // 4. Gerar e salvar plano nutricional (sempre)
     const nutritionPlan = await generateNutritionPlan(answers, targets, phaseNumber, checkin, planWeeks)

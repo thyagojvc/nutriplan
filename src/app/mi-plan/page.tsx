@@ -9,8 +9,9 @@
 // que passar a buscar o plano do servidor, senão a promessa "é o teu plano"
 // deixa de ser verdade.
 //
-// planWeeks = 1 de propósito: o pedido entregue hoje é de 7 dias
-// (process-order.ts). Mostrar 4 semanas aqui prometeria o que não chega.
+// planWeeks TEM que ser o mesmo de process-order.ts (hoje 4). É o que sustenta
+// a promessa "este é o teu plano": se divergir, a página mostra um mês e a
+// entrega manda uma semana.
 // =============================================================================
 
 import { useEffect, useState } from 'react'
@@ -82,7 +83,7 @@ async function build(rawDraft: Record<string, unknown>, country: string): Promis
   const s6 = (draft.step_6 ?? {}) as Record<string, unknown>
   const s10 = (draft.step_10 ?? {}) as Record<string, unknown>
 
-  const plan = await generateNutritionPlan(answers, targets, 1, undefined, 1)
+  const plan = await generateNutritionPlan(answers, targets, 1, undefined, 4)
   const trainingPlan = await generateTrainingPlan(answers)
 
   return {
