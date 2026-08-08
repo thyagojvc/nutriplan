@@ -10,7 +10,7 @@ const bodySchema = z.object({
   // miplan_* são do /mi-plan (o app travado que roda em paralelo à /preview).
   // Ficam com prefixo próprio de propósito: misturar com preview_viewed/
   // offer_reached inviabilizaria comparar as duas páginas no mesmo painel.
-  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted', 'page_visible', 'step_stuck', 'miplan_viewed', 'miplan_lock_tapped', 'miplan_offer_unlocked', 'miplan_offer_viewed', 'miplan_checkout_clicked']),
+  event: z.enum(['preview_viewed', 'offer_reached', 'tiers_reached', 'page_end', 'save_step_failed', 'save_step_error', 'js_error', 'q1_interacted', 'page_visible', 'step_stuck', 'miplan_viewed', 'miplan_tab', 'miplan_lock_tapped', 'miplan_offer_unlocked', 'miplan_offer_viewed', 'miplan_checkout_clicked']),
   // Só para js_error: mensagem resumida do erro, vira sufixo do valor gravado.
   detail: z.string().max(200).optional(),
 })
@@ -44,7 +44,9 @@ export async function POST(request: NextRequest) {
   // miplan_lock_tapped carrega QUAL cadeado ela tocou, e miplan_offer_unlocked
   // carrega por qual das três travas a aba de oferta apareceu (timer, scroll ou
   // toque). São os dois dados que dizem o que ela queria e o que a moveu.
-  const CARRIES_DETAIL = ['js_error', 'save_step_failed', 'save_step_error', 'step_stuck', 'miplan_lock_tapped', 'miplan_offer_unlocked']
+  // miplan_tab carrega o id da aba: numa navegação em ziguezague o número de
+  // abas distintas é o que separa quem explorou o app de quem parou na 1ª tela.
+  const CARRIES_DETAIL = ['js_error', 'save_step_failed', 'save_step_error', 'step_stuck', 'miplan_tab', 'miplan_lock_tapped', 'miplan_offer_unlocked']
   if (CARRIES_DETAIL.includes(parsed.data.event) && parsed.data.detail) {
     key += '__' + parsed.data.detail.replace(/[^a-zA-Z0-9 _.:@-]/g, ' ').slice(0, 140)
   }

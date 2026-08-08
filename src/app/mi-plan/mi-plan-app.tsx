@@ -200,9 +200,22 @@ export function MiPlanApp({
   // Troca de aba sempre volta ao topo: em app nativo cada aba tem o próprio
   // scroll, e herdar a rolagem da aba anterior é a coisa que mais denuncia
   // que isto é uma página web fingindo de app.
+  //
+  // A aba visitada vira evento porque neste formato ela é o equivalente ao
+  // scroll da /preview: numa página de vendas a profundidade se mede rolando,
+  // num app travado se mede por quantas abas distintas ela abriu. Sem isso o
+  // painel só sabe que a pessoa entrou, não se ela explorou ou parou na 1ª tela.
+  // Uma vez por aba por sessão ('plan' já entra marcada, é a de entrada e
+  // miplan_viewed a cobre): quem vai e volta entre duas abas reescreveria a
+  // mesma chave e gastaria request à toa.
+  const seenTabs = useRef<Set<TabId>>(new Set(['plan']))
   const changeTab = useCallback((next: TabId) => {
     setTab(next)
     if (next === 'desbloquear') setSeenUnlockTab(true)
+    if (!seenTabs.current.has(next)) {
+      seenTabs.current.add(next)
+      trackEvent('miplan_tab', next)
+    }
     window.scrollTo({ top: 0 })
   }, [])
 

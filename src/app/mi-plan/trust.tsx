@@ -6,7 +6,63 @@
 // quem não tem cartão internacional desistia antes de clicar sem saber que
 // estava disponível lá dentro.
 
-import { Lock, Zap, RotateCcw, Tag } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Lock, Zap, RotateCcw, Tag, Flame } from 'lucide-react'
+
+// Balão de actividad reciente. NUNCA inventa nombres ni compras individuales
+// (eso es prueba social falsa, prohibido en este proyecto): usa el conteo
+// real de /api/quiz/recent-activity, que solo responde algo cuando hay
+// volumen real (mínimo 3 pedidos) y si no, no muestra nada.
+export function LiveActivityToast() {
+  const [data, setData] = useState<{ count: number; label: string } | null>(null)
+  const [visible, setVisible] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    fetch('/api/quiz/recent-activity')
+      .then((r) => r.json())
+      .then((d: { count: number | null; label: string | null }) => {
+        if (!cancelled && d.count && d.label) setData({ count: d.count, label: d.label })
+      })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [])
+
+  useEffect(() => {
+    if (!data) return
+    let timer: ReturnType<typeof setTimeout>
+    const cycle = (delay: number) => {
+      timer = setTimeout(() => {
+        setVisible(true)
+        timer = setTimeout(() => {
+          setVisible(false)
+          cycle(20_000 + Math.random() * 25_000)
+        }, 4500)
+      }, delay)
+    }
+    cycle(6_000 + Math.random() * 6_000)
+    return () => clearTimeout(timer)
+  }, [data])
+
+  if (!data) return null
+
+  return (
+    <div
+      className={[
+        'pointer-events-none fixed inset-x-0 bottom-[76px] z-40 flex justify-center px-4 transition-all duration-500',
+        visible ? 'translate-y-0 opacity-100' : 'translate-y-2 opacity-0',
+      ].join(' ')}
+      style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+    >
+      <div className="flex items-center gap-2 rounded-full border border-[#D8E8D4] bg-white/95 px-4 py-2.5 shadow-[0_6px_20px_rgba(0,0,0,0.12)] backdrop-blur-md">
+        <Flame className="h-4 w-4 shrink-0 text-[#D85A30]" strokeWidth={2.4} />
+        <p className="text-[12.5px] font-semibold leading-snug text-gray-800">
+          {data.count} personas compraron su Calibración {data.label}
+        </p>
+      </div>
+    </div>
+  )
+}
 
 export function CouponBanner() {
   return (

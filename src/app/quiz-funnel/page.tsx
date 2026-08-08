@@ -1,7 +1,7 @@
 import { createServiceClient } from '@/lib/supabase/service'
 import { LivePresence } from './live-presence'
 import { IndividualsTable } from './individuals-table'
-import { OFFER_LABELS, STATUS_LABELS, DEVICE_LABELS, PLATFORM_LABELS } from './labels'
+import { OFFER_LABELS, STATUS_LABELS, DEVICE_LABELS, PLATFORM_LABELS, MIPLAN_TAB_LABELS, MIPLAN_UNLOCK_LABELS } from './labels'
 
 const STEP_LABELS: Record<number, string> = {
   1:  'Alimentos favoritos',
@@ -179,10 +179,57 @@ async function getFunnelData(sinceDate: string) {
   const hasEvent = (r: { draft_answers: unknown }, key: string) =>
     !!r.draft_answers && typeof r.draft_answers === 'object' && key in (r.draft_answers as object)
 
+  // Eventos que carregam detalhe (_ev_miplan_tab__lista) guardam o detalhe no
+  // NOME da chave, não no valor: busca é por prefixo, não por igualdade.
+  const eventDetails = (r: { draft_answers: unknown }, prefix: string): string[] =>
+    !r.draft_answers || typeof r.draft_answers !== 'object'
+      ? []
+      : Object.keys(r.draft_answers as object)
+          .filter((k) => k.startsWith(prefix))
+          .map((k) => k.slice(prefix.length))
+
   const previewViewed = data.filter((r) => hasEvent(r, '_ev_preview_viewed')).length
   const offerReached = data.filter((r) => hasEvent(r, '_ev_offer_reached')).length
   const tiersReached = data.filter((r) => hasEvent(r, '_ev_tiers_reached')).length
   const pageEnd = data.filter((r) => hasEvent(r, '_ev_page_end')).length
+
+  // ── App /mi-plan ────────────────────────────────────────────────────────────
+  // Desde 07/08 o quiz manda TODO mundo pra cá, então as quatro linhas de
+  // preview_* acima vivem zeradas nas datas novas. A /preview segue no ar e o
+  // código dela intacto (é o rollback), por isso as duas leituras convivem aqui
+  // em vez de uma substituir a outra.
+  //
+  // A equivalência com a /preview não é um-pra-um: lá a profundidade era scroll
+  // ("chegou na oferta", "chegou nos tiers"), aqui é navegação por abas e toque
+  // em cadeado. Contado por SESSÃO distinta: quem tocou 3 cadeados conta uma vez
+  // em cada cadeado, nunca 3 no total.
+  const miplanViewed = data.filter((r) => hasEvent(r, '_ev_miplan_viewed')).length
+  const miplanOfferViewed = data.filter((r) => hasEvent(r, '_ev_miplan_offer_viewed')).length
+  const miplanCheckoutClicked = data.filter((r) => hasEvent(r, '_ev_miplan_checkout_clicked')).length
+
+  const miplanTabCounts: Record<string, number> = {}
+  const miplanLockCounts: Record<string, number> = {}
+  const miplanUnlockReasons: Record<string, number> = {}
+  // Quantas abas ALÉM da de entrada ela abriu, distribuído em faixas. É a
+  // resposta direta pra "ela percorreu o app ou parou na primeira tela?".
+  const miplanDepth: Record<number, number> = {}
+  let miplanTappedLock = 0
+
+  for (const r of data) {
+    if (!hasEvent(r, '_ev_miplan_viewed')) continue
+
+    const tabs = eventDetails(r, '_ev_miplan_tab__')
+    for (const t of tabs) miplanTabCounts[t] = (miplanTabCounts[t] ?? 0) + 1
+    miplanDepth[Math.min(tabs.length, 5)] = (miplanDepth[Math.min(tabs.length, 5)] ?? 0) + 1
+
+    const locks = eventDetails(r, '_ev_miplan_lock_tapped__')
+    for (const l of locks) miplanLockCounts[l] = (miplanLockCounts[l] ?? 0) + 1
+    if (locks.length > 0) miplanTappedLock += 1
+
+    for (const reason of eventDetails(r, '_ev_miplan_offer_unlocked__')) {
+      miplanUnlockReasons[reason] = (miplanUnlockReasons[reason] ?? 0) + 1
+    }
+  }
 
   // Funil de ENTRADA: o trecho entre "sessão criada" e "respondeu a 1ª pergunta",
   // que é onde some a maior parte do tráfego pago e que a tabela de steps não
@@ -294,6 +341,15 @@ async function getFunnelData(sinceDate: string) {
     // é o sinal mais forte de todos (clicou pra pagar), mesmo que o evento
     // de "viu toda a oferta" também tenha disparado.
     if (sessionIdsWithOrder.has(r.id)) { lastStep = 'Foi pra Hotmart'; stepNum = VISIT_ORDER.length }
+    // App /mi-plan antes da /preview na cadeia: é o destino do quiz desde 07/08,
+    // então nas datas novas os _ev_preview_* nem existem. Ordem = do sinal mais
+    // forte pro mais fraco. QUAL cadeado ela tocou vem antes de quantas abas
+    // percorreu porque diz o que ela quis abrir, não só quanto ela navegou.
+    else if (hasEvent(r, '_ev_miplan_checkout_clicked')) { lastStep = 'Clicou em pagar (app)'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_miplan_offer_viewed')) { lastStep = 'Viu a oferta (app)'; stepNum = VISIT_ORDER.length }
+    else if (eventDetails(r, '_ev_miplan_lock_tapped__').length > 0) { lastStep = `Cadeado: ${eventDetails(r, '_ev_miplan_lock_tapped__').slice(0, 2).join(', ')}`; stepNum = VISIT_ORDER.length }
+    else if (eventDetails(r, '_ev_miplan_tab__').length > 0) { lastStep = `Percorreu ${eventDetails(r, '_ev_miplan_tab__').length + 1} abas`; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_miplan_viewed')) { lastStep = 'App: parou na 1ª tela'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_tiers_reached')) { lastStep = 'Viu os planos'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_offer_reached')) { lastStep = 'Viu a oferta'; stepNum = VISIT_ORDER.length }
@@ -367,6 +423,15 @@ async function getFunnelData(sinceDate: string) {
     let lastStep = 'Não iniciou'
     let stepNum: number | null = null
     if (sessionIdsWithOrder.has(r.id)) { lastStep = 'Foi pra Hotmart'; stepNum = VISIT_ORDER.length }
+    // App /mi-plan antes da /preview na cadeia: é o destino do quiz desde 07/08,
+    // então nas datas novas os _ev_preview_* nem existem. Ordem = do sinal mais
+    // forte pro mais fraco. QUAL cadeado ela tocou vem antes de quantas abas
+    // percorreu porque diz o que ela quis abrir, não só quanto ela navegou.
+    else if (hasEvent(r, '_ev_miplan_checkout_clicked')) { lastStep = 'Clicou em pagar (app)'; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_miplan_offer_viewed')) { lastStep = 'Viu a oferta (app)'; stepNum = VISIT_ORDER.length }
+    else if (eventDetails(r, '_ev_miplan_lock_tapped__').length > 0) { lastStep = `Cadeado: ${eventDetails(r, '_ev_miplan_lock_tapped__').slice(0, 2).join(', ')}`; stepNum = VISIT_ORDER.length }
+    else if (eventDetails(r, '_ev_miplan_tab__').length > 0) { lastStep = `Percorreu ${eventDetails(r, '_ev_miplan_tab__').length + 1} abas`; stepNum = VISIT_ORDER.length }
+    else if (hasEvent(r, '_ev_miplan_viewed')) { lastStep = 'App: parou na 1ª tela'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_page_end')) { lastStep = 'Viu toda a oferta'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_tiers_reached')) { lastStep = 'Viu os planos'; stepNum = VISIT_ORDER.length }
     else if (hasEvent(r, '_ev_offer_reached')) { lastStep = 'Viu a oferta'; stepNum = VISIT_ORDER.length }
@@ -408,7 +473,7 @@ async function getFunnelData(sinceDate: string) {
     }
   })
 
-  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals }
+  return { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, miplanViewed, miplanOfferViewed, miplanCheckoutClicked, miplanTabCounts, miplanLockCounts, miplanUnlockReasons, miplanDepth, miplanTappedLock, ordersCount: ordersCount ?? 0, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals }
 }
 
 export default async function QuizFunnelPage({
@@ -431,7 +496,7 @@ export default async function QuizFunnelPage({
     )
   }
 
-  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals } = data
+  const { total, stepCounts, previewViewed, offerReached, tiersReached, pageEnd, miplanViewed, miplanOfferViewed, miplanCheckoutClicked, miplanTabCounts, miplanLockCounts, miplanUnlockReasons, miplanDepth, miplanTappedLock, ordersCount, countryCounts, offerCounts, recentSales, adRefCounts, deviceCounts, platformCounts, browserEnvCounts, hiddenLoad, pageVisible, q1Interacted, checkoutDeviceCounts, checkoutPlatformCounts, lastStarts, allIndividuals } = data
   const firstStepCount = stepCounts[VISIT_ORDER[0]] || 1
   const countryRows = Object.entries(countryCounts).sort((a, b) => b[1] - a[1])
   const offerRows = Object.entries(offerCounts).sort((a, b) => b[1].total - a[1].total)
@@ -792,6 +857,126 @@ export default async function QuizFunnelPage({
         Steps ocultos (sem UI) aparecem esmaecidos e sem abandono calculado.
         Abandono ⚠ sinaliza queda ≥ 20% em relação ao step anterior.
       </p>
+
+      {/* ── Dentro do app /mi-plan ──────────────────────────────────────────
+          Destino único do quiz desde 07/08, então nas datas novas as linhas
+          de "Viram a preview / Viu os planos" acima ficam zeradas: aquilo mede
+          a /preview, que segue no ar mas sem tráfego.
+
+          A profundidade aqui não se mede por scroll e sim por navegação: numa
+          página de vendas ela rola até o fim, num app travado ela troca de aba.
+          Some quando não há sessão nenhuma no período (períodos antigos, de
+          antes do app existir, não ganham um bloco vazio à toa). */}
+      {miplanViewed > 0 && (() => {
+        const explored = Object.entries(miplanDepth)
+          .reduce((acc, [tabs, n]) => (Number(tabs) >= 1 ? acc + n : acc), 0)
+
+        const funnelRows = [
+          { label: 'Entraram no app', count: miplanViewed, hint: 'abriram /mi-plan ao sair do quiz' },
+          { label: 'Abriram outra aba', count: explored, hint: 'saíram da tela de entrada' },
+          { label: 'Tocaram um cadeado', count: miplanTappedLock, hint: 'é a métrica que decide o teste' },
+          { label: 'Viram a aba de oferta', count: miplanOfferViewed, hint: 'abriram a aba "Abrir"' },
+          { label: 'Clicaram em pagar', count: miplanCheckoutClicked, hint: 'saíram pro Hotmart' },
+        ]
+
+        // Listas ordenadas por volume. Rótulo cai no id cru quando não há
+        // tradução, pra evento novo nunca sumir do relatório sem avisar.
+        const breakdowns: { title: string; hint: string; rows: [string, number][]; labels: Record<string, string> }[] = [
+          {
+            title: 'Abas que ela percorreu',
+            hint: 'sessões distintas que abriram cada aba (a de entrada conta em "Entraram no app")',
+            rows: Object.entries(miplanTabCounts).sort((a, b) => b[1] - a[1]),
+            labels: MIPLAN_TAB_LABELS,
+          },
+          {
+            title: 'Cadeados que ela tocou',
+            hint: 'o que ela quis abrir. É o que ordena os blocos da aba de oferta',
+            rows: Object.entries(miplanLockCounts).sort((a, b) => b[1] - a[1]),
+            labels: {},
+          },
+          {
+            title: 'Como a aba de oferta apareceu',
+            hint: 'se relógio quase não aparece, os 35s estão sobrando',
+            rows: Object.entries(miplanUnlockReasons).sort((a, b) => b[1] - a[1]),
+            labels: MIPLAN_UNLOCK_LABELS,
+          },
+        ]
+
+        return (
+          <div className="space-y-4 rounded-xl border border-primary/25 bg-primary/[0.03] p-4">
+            <div>
+              <p className="text-sm font-semibold">Dentro do app <span className="font-mono text-xs">/mi-plan</span></p>
+              <p className="text-xs text-muted-foreground">
+                Destino do quiz desde 07/08. Percentuais sobre quem entrou no app, não sobre o início do quiz.
+              </p>
+            </div>
+
+            <div className="overflow-x-auto rounded-lg border border-border bg-background">
+              <table className="w-full text-sm">
+                <tbody className="divide-y divide-border">
+                  {funnelRows.map(({ label, count, hint }, idx) => {
+                    const pct = miplanViewed > 0 ? Math.round((count / miplanViewed) * 100) : 0
+                    const prev = idx === 0 ? miplanViewed : funnelRows[idx - 1].count
+                    const dropPct = prev > 0 ? Math.round(((prev - count) / prev) * 100) : 0
+                    return (
+                      <tr key={label} className="hover:bg-muted/30 transition-colors">
+                        <td className="px-4 py-3">
+                          <p className="font-medium">{label}</p>
+                          <p className="text-xs text-muted-foreground">{hint}</p>
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums">{count}</td>
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          <span className={['inline-block rounded-full px-2 py-0.5 text-xs font-semibold', pct >= 70 ? 'bg-green-100 text-green-700' : pct >= 40 ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'].join(' ')}>
+                            {pct}%
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right tabular-nums">
+                          {idx === 0 ? (
+                            <span className="text-muted-foreground">—</span>
+                          ) : (
+                            <span className={['text-xs font-medium', dropPct >= 20 ? 'text-red-600' : 'text-muted-foreground'].join(' ')}>
+                              {dropPct >= 20 ? '⚠ ' : ''}{dropPct}%
+                            </span>
+                          )}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="grid gap-3 md:grid-cols-3">
+              {breakdowns.map(({ title, hint, rows, labels }) => (
+                <div key={title} className="rounded-lg border border-border bg-background p-3">
+                  <p className="text-xs font-semibold">{title}</p>
+                  <p className="mb-2 text-[11px] leading-snug text-muted-foreground">{hint}</p>
+                  {rows.length === 0 ? (
+                    <p className="text-xs text-muted-foreground">Ninguém ainda.</p>
+                  ) : (
+                    <ul className="space-y-1.5">
+                      {rows.map(([key, count]) => {
+                        const pct = miplanViewed > 0 ? Math.round((count / miplanViewed) * 100) : 0
+                        return (
+                          <li key={key}>
+                            <div className="flex items-baseline justify-between gap-2 text-xs">
+                              <span className="truncate">{labels[key] ?? key}</span>
+                              <span className="shrink-0 tabular-nums text-muted-foreground">{count} · {pct}%</span>
+                            </div>
+                            <div className="mt-0.5 h-1 rounded-full bg-muted">
+                              <div className="h-1 rounded-full bg-primary" style={{ width: `${Math.min(pct, 100)}%` }} />
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )
+      })()}
 
       {/* Vendas recentes — identifica cada pedido: comprador (se já pago), país real, produto e status */}
       <div className="overflow-x-auto rounded-xl border border-border">
