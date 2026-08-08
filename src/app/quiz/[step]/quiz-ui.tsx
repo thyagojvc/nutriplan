@@ -86,7 +86,7 @@ export function NutriTagline() {
 // depois que a sessão de fato está pronta pra vender.
 const QUIZ_TABS: { id: string; label: string; Icon: typeof Utensils }[] = [
   { id: 'quiz', label: 'Quiz', Icon: Utensils },
-  { id: 'resultados', label: 'Ellas', Icon: Heart },
+  { id: 'resultados', label: 'Calibración', Icon: Heart },
   { id: 'lista', label: 'Lista', Icon: ClipboardList },
   { id: 'bonos', label: 'Bonos', Icon: Gift },
   { id: 'entreno', label: 'Entreno', Icon: Dumbbell },
