@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { Utensils, Heart, ClipboardList, Gift, Dumbbell, Lock } from 'lucide-react'
 
 const BACK_FLAG = 'nutriplan_can_go_back'
 
@@ -79,6 +80,71 @@ export function NutriTagline() {
 // Layout principal do quiz — header + fundo de marca
 // ---------------------------------------------------------------------------
 
+// Abas do quiz fingindo de app, iguais em forma às do /mi-plan (mesmo ícone,
+// mesma barra) — a primeira aparência do "app" já começa na 1ª pergunta, não
+// só depois de pagar. "Abrir" não existe aqui: essa aba só nasce no /mi-plan,
+// depois que a sessão de fato está pronta pra vender.
+const QUIZ_TABS: { id: string; label: string; Icon: typeof Utensils }[] = [
+  { id: 'quiz', label: 'Quiz', Icon: Utensils },
+  { id: 'resultados', label: 'Ellas', Icon: Heart },
+  { id: 'lista', label: 'Lista', Icon: ClipboardList },
+  { id: 'bonos', label: 'Bonos', Icon: Gift },
+  { id: 'entreno', label: 'Entreno', Icon: Dumbbell },
+]
+
+function QuizTabBar() {
+  const [toast, setToast] = useState(false)
+  useEffect(() => {
+    if (!toast) return
+    const t = setTimeout(() => setToast(false), 2200)
+    return () => clearTimeout(t)
+  }, [toast])
+
+  return (
+    <>
+      <nav
+        className="fixed inset-x-0 bottom-0 z-30 overflow-hidden border-t border-[#D8E8D4] bg-white/95 backdrop-blur-md"
+        style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <div className="mx-auto flex max-w-lg items-stretch justify-between">
+          {QUIZ_TABS.map(({ id, label, Icon }) => {
+            const isQuiz = id === 'quiz'
+            return (
+              <button
+                key={id}
+                type="button"
+                onClick={() => { if (!isQuiz) setToast(true) }}
+                aria-current={isQuiz ? 'page' : undefined}
+                className="relative flex min-w-0 flex-1 flex-col items-center gap-0.5 py-2.5"
+              >
+                <span className="relative">
+                  <Icon className={`h-[18px] w-[18px] ${isQuiz ? 'text-primary' : 'text-muted-foreground/50'}`} strokeWidth={isQuiz ? 2.5 : 2} />
+                  {!isQuiz && (
+                    <Lock className="absolute -right-1.5 -top-1 h-2.5 w-2.5 text-muted-foreground/70" strokeWidth={2.6} />
+                  )}
+                </span>
+                <span className={`w-full truncate px-0.5 text-center text-[9px] font-bold leading-none ${isQuiz ? 'text-primary' : 'text-muted-foreground/50'}`}>
+                  {label}
+                </span>
+                {isQuiz && (
+                  <span aria-hidden className="absolute inset-x-3 bottom-0 h-[2px] rounded-full bg-primary" />
+                )}
+              </button>
+            )
+          })}
+        </div>
+      </nav>
+      {toast && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-[68px] z-40 flex justify-center px-4">
+          <p className="rounded-full bg-gray-900/90 px-4 py-2 text-center text-xs font-semibold text-white shadow-lg">
+            Responde el quiz para desbloquear esta sección
+          </p>
+        </div>
+      )}
+    </>
+  )
+}
+
 export function QuizLayout({
   children,
   showTagline,
@@ -103,7 +169,7 @@ export function QuizLayout({
         <NutriWordmark size="md" />
       </header>
 
-      <main className="flex flex-col items-center p-4 pb-12 pt-6">
+      <main className="flex flex-col items-center p-4 pb-24 pt-6">
         {showTagline && (
           <div className="mb-4 quiz-enter">
             <NutriTagline />
@@ -111,6 +177,8 @@ export function QuizLayout({
         )}
         <div className="w-full max-w-lg space-y-4">{children}</div>
       </main>
+
+      <QuizTabBar />
     </div>
   )
 }
