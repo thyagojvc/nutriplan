@@ -160,13 +160,14 @@ export function Step2Goal({ stepNumber, totalSteps }: Props) {
     <QuizLayout>
       <QuizProgress step={stepNumber} total={totalSteps} pct={progress} />
 
-      {/* Message match com o criativo "orgmain1": quem clicou no anúncio já
-          leu essa frase no hook, então repeti-la aqui confirma que caiu no
-          lugar certo em vez de estranhar uma tela nova. Substituiu a pill de
-          "60 segundos" (mesma promessa de tempo, dita como headline em vez
-          de badge pequeno) — testar se sobe a taxa de interação. */}
+      {/* Promessa principal já na entrada, no lugar do message match só de
+          tempo. Mantém os "2 minutos" do criativo (é a frase que ela acabou
+          de ler no anúncio) e põe o resultado na frente, que é o que o hook
+          prometeu. O claim de kg também aparece na /preview ("hasta 4 kg en
+          1 mes"): se um dia sair de lá por compliance, tem que sair daqui
+          junto, senão o funil passa a prometer coisas diferentes. */}
       <p className="text-center font-display text-2xl font-black leading-snug text-primary">
-        Arma tu <span className="text-[#D85A30]">calibración metabólica</span> en menos de 2 minutos
+        Elimina hasta <span className="text-[#D85A30]">1 kg de grasa por semana</span> calibrando tu metabolismo en menos de 2 minutos
       </p>
 
       <QuizCard>
