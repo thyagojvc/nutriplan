@@ -1,0 +1,32 @@
+# Sem isto, a Vercel sobe TUDO que está no disco local (ao contrário do git,
+# que respeita .gitignore) — foi assim que ~1GB de vídeo/imagem bruta de
+# criativo dentro de public/ estourou o limite de 100MB por arquivo e
+# corrompeu o deploy de produção em 17/08 (deploy_failed, depois um deploy
+# "bem sucedido" só com esses arquivos soltos, sem HTML nem funções).
+# Nada em public/ é referenciado pelo site — é só biblioteca de origem pra
+# anúncio, não pertence ao deploy.
+public/
+public
+/public/
+public/**
+public/Criativos Prontos/
+public/Material para criativos/
+public/Instagram/
+public/Demonstração_uso KPL.mp4
+public/GRavação TELA - KPL.mp4
+public/GRavação pt2 TELA - KPL-cópia.mp4
+public/tabletfoto.png
+
+node_modules/
+.git/
+.env
+.env.local
+.env*.local
+
+# soltos na raiz, não usados pelo site
+demo-app-kpl.mp4
+scratch-test-q90.jpg
+sumario-check.pdf
+
+# guia de produção das fichas, não é código nem produto entregue
+PROMPTS-86-ATIVIDADES.md
