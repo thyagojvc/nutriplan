@@ -18,6 +18,7 @@
 const { fetchTransaction } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { sendCapiPurchase, resolveFbc } = require('./_fb-capi');
+const { tierFromValueCents } = require('./_catalog');
 const { redis } = require('./_kv');
 
 function readBody(req) {
@@ -65,6 +66,21 @@ async function deliverKit(transaction) {
     valueCents: transaction.value || 0,
     fbc,
   }).catch((err) => console.error('webhook: capi purchase error', err));
+
+  // Registra no painel /funil (sorted set kpl:sales) igual o deliver-kit.js já
+  // faz no fluxo normal — sem isso, TODA venda que passa pelo caminho órfão
+  // (aba fechada antes do polling confirmar) fica invisível no funil pra
+  // sempre, mesmo tendo sido entregue e cobrada certinho. Não bloqueia a
+  // resposta do webhook se o Redis falhar (é só métrica).
+  const valorCents = Number(transaction.value || 0);
+  const tierName = tierFromValueCents(valorCents).name;
+  const firstName = ((backup && backup.name) || '').trim().split(/\s+/)[0] || 'Cliente';
+  const adRef = (backup && backup.adRef) || 'Sem anúncio';
+  const now = Date.now();
+  Promise.resolve()
+    .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, ts: now })))
+    .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501))
+    .catch((err) => console.error('webhook: sales record error', err));
 
   const adminEmail = process.env.ADMIN_ALERT_EMAIL;
   if (!adminEmail) {

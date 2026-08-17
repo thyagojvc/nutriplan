@@ -18,7 +18,7 @@ const { redis } = require('./_kv');
 // da cliente, só nome e CPF do banco dela.
 // Best-effort de propósito (nunca trava o checkout): 1 escrita por cobrança
 // criada, nada parecido com o polling do painel que estourou a cota.
-async function saveCheckoutBackup(paymentId, customer, fbclid) {
+async function saveCheckoutBackup(paymentId, customer, fbclid, adRef) {
   try {
     await redis(
       'SET', `checkout:${paymentId}`,
@@ -28,6 +28,9 @@ async function saveCheckoutBackup(paymentId, customer, fbclid) {
         // órfão do webhook (ver webhook.js) não tem como o Meta ligar de volta
         // ao anúncio que trouxe a venda — vira só uma compra "solta" no total.
         fbclid: fbclid || null,
+        // Idem pro anúncio: sem isso, venda órfã aparece no funil como "Sem
+        // anúncio", escondendo de qual criativo ela veio.
+        adRef: adRef || null,
         ts: Date.now(),
       }),
       'EX', 172800, // 48h: tempo de sobra pra qualquer confirmação/reclamação chegar
@@ -124,7 +127,8 @@ module.exports = async (req, res) => {
 
     const pp = await ppRes.json();
 
-    if (pp.id) await saveCheckoutBackup(pp.id, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null);
+    const adRef = String(body.adRef || '').replace(/[^\w\s\-.|:/]/g, '').trim().slice(0, 120) || null;
+    if (pp.id) await saveCheckoutBackup(pp.id, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef);
 
     // PushInPay devolve: id, qr_code (copia e cola), qr_code_base64 (imagem), status, value
     const qrBase64 = pp.qr_code_base64 || pp.qrCodeBase64 || '';

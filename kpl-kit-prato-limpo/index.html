@@ -1988,6 +1988,7 @@ async function startCharge() {
     method: 'pix',
     tier: selectedTier,
     bumps: getSelectedBumps().map(b => b.id),
+    adRef: getAdRef(),
     ...(fbclid ? { fbclid } : {}),
   };
 
