@@ -1,0 +1,14 @@
+node_modules/
+.vercel
+.env
+.env.local
+.DS_Store
+
+# Biblioteca bruta de vídeo pra produção de anúncio (centenas de MB, não é
+# código nem o produto entregue — não pertence ao histórico do git).
+public/Criativos Prontos/
+public/Material para criativos/
+
+# Sobras de teste
+scratch-test-q90.jpg
+sumario-check.pdf

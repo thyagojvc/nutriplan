@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Meu Kit Prato Limpo</title>
+
+<link rel="icon" href="assets/favicon.png" />
+<link rel="manifest" href="/manifest.json" />
+<link rel="apple-touch-icon" href="/assets/icon-apple-touch.png" />
+<meta name="theme-color" content="#5CA741" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --cream: #FBF8F1;
+    --mint: #E8F1DD;
+    --green: #5CA741;
+    --green-hover: #4E9235;
+    --green-dark: #3C7A2C;
+    --orange: #F2911F;
+    --coral: #F0673A;
+    --coral-soft: #FBE0D5;
+    --ink: #26302A;
+    --text: #4B564E;
+    --muted: #7C857D;
+    --card: #FFFFFF;
+    --border: #E9E3D5;
+    --shadow: 0 10px 30px rgba(38, 48, 42, 0.08);
+    --radius: 20px;
+    --heading: "Baloo 2", system-ui, "Segoe UI", Roboto, sans-serif;
+    --body: "Nunito", system-ui, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--body);
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  .topbar {
+    background: var(--green);
+    color: #fff;
+    padding: 18px 20px;
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 24px 18px 60px; }
+
+  .state { display: none; }
+  .state.is-active { display: block; }
+
+  .spinner {
+    width: 34px; height: 34px; margin: 60px auto 16px;
+    border: 4px solid var(--border); border-top-color: var(--green);
+    border-radius: 50%; animation: spin 0.8s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { text-align: center; color: var(--muted); font-size: 0.95rem; }
+
+  .lock-card {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 32px 24px; text-align: center; margin-top: 40px;
+  }
+  .lock-card .emoji { font-size: 2.4rem; margin-bottom: 12px; }
+  .lock-card h1 { font-family: var(--heading); font-size: 1.3rem; color: var(--ink); margin-bottom: 10px; }
+  .lock-card p { color: var(--text); font-size: 0.95rem; margin-bottom: 22px; }
+  .btn {
+    display: inline-block; background: var(--green); color: #fff; text-decoration: none;
+    font-family: var(--heading); font-weight: 700; font-size: 1rem;
+    padding: 14px 28px; border-radius: 12px; border: none; cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .btn:hover { background: var(--green-hover); }
+
+  .hero {
+    background: var(--green); color: #fff; border-radius: var(--radius);
+    padding: 22px 20px; text-align: center; box-shadow: var(--shadow); margin-bottom: 18px;
+  }
+  .hero .badge {
+    display: inline-block; background: rgba(255,255,255,0.18); font-size: 0.72rem;
+    font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 99px; margin-bottom: 10px;
+  }
+  .hero h1 { font-family: var(--heading); font-size: 1.4rem; margin-bottom: 4px; }
+  .hero p { font-size: 0.9rem; opacity: 0.92; }
+
+  .download-card {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 22px; text-align: center; margin-bottom: 22px;
+  }
+  .download-card .btn { width: 100%; padding: 16px; font-size: 1.05rem; }
+  .download-card .hint { font-size: 0.8rem; color: var(--muted); margin-top: 12px; }
+
+  .section-title {
+    font-family: var(--heading); font-weight: 800; font-size: 1.05rem; color: var(--ink);
+    margin: 26px 0 12px;
+  }
+
+  .howto {
+    background: var(--card); border-radius: 14px; box-shadow: var(--shadow);
+    padding: 16px 18px; margin-top: 22px; font-size: 0.85rem; color: var(--text);
+  }
+  .howto b { color: var(--ink); }
+
+  .footer-support {
+    text-align: center; margin-top: 32px; font-size: 0.82rem; color: var(--muted);
+  }
+  .footer-support a { color: var(--green-dark); font-weight: 700; text-decoration: none; }
+
+  .install-card {
+    display: none;
+    background: var(--mint); border: 1px solid var(--green);
+    border-radius: 14px; padding: 16px 18px; margin-bottom: 22px;
+    text-align: center;
+  }
+  .install-card.is-visible { display: block; }
+  .install-card p { font-size: 0.85rem; color: var(--ink); margin-bottom: 10px; }
+  .install-card .btn { width: 100%; padding: 12px; font-size: 0.92rem; background: var(--green-dark); }
+  .install-card .btn:hover { background: var(--green-hover); }
+  .install-card .ios-steps { font-size: 0.82rem; color: var(--text); text-align: left; margin: 0; padding-left: 18px; }
+
+  /* ---------- ABAS ----------
+     Barra fixa embaixo: é o que faz o material comprado parecer aplicativo e
+     não PDF hospedado. Também resolve o problema real de descoberta — antes
+     tudo era uma rolagem só e os bônus ficavam soterrados no fim da página. */
+  .tabbar {
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+    background: var(--card); border-top: 1px solid var(--border);
+    display: flex; padding-bottom: env(safe-area-inset-bottom);
+    box-shadow: 0 -6px 20px rgba(38,48,42,.07);
+  }
+  .tabbar button {
+    position: relative; /* âncora da bolinha de aviso */
+    flex: 1; background: none; border: none; cursor: pointer; padding: 9px 4px 10px;
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-family: var(--body); font-size: 0.68rem; font-weight: 700; color: var(--muted);
+    -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none;
+  }
+  .tabbar button .ico { font-size: 1.3rem; line-height: 1; }
+  .tabbar button.is-active { color: var(--green-dark); }
+  .tabbar button .dot {
+    position: absolute; top: 7px; left: 50%; margin-left: 9px;
+    width: 8px; height: 8px; border-radius: 50%; background: var(--coral);
+    display: none;
+  }
+  .tabbar button.has-news .dot { display: block; }
+  .tabpanel { display: none; }
+  .tabpanel.is-active { display: block; }
+
+  /* ---------- JOGAR ---------- */
+  .streak {
+    display: flex; gap: 8px; margin-bottom: 16px;
+  }
+  .streak div {
+    flex: 1; background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 10px 8px; text-align: center;
+  }
+  .streak b { display: block; font-family: var(--heading); font-size: 1.25rem; color: var(--ink); }
+  .streak span { font-size: 0.7rem; color: var(--muted); font-weight: 700; }
+
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .chip {
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+    border-radius: 99px; padding: 7px 13px; font-size: 0.78rem; font-weight: 700;
+    font-family: var(--body); cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .chip.is-on { background: var(--green); border-color: var(--green); color: #fff; }
+
+  .wheel-wrap { text-align: center; position: relative; padding-top: 8px; }
+  .wheel-pointer {
+    position: absolute; top: -2px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0; border-left: 13px solid transparent; border-right: 13px solid transparent;
+    border-top: 20px solid var(--coral); z-index: 3;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,.18));
+  }
+  .wheel {
+    width: 250px; height: 250px; margin: 0 auto; display: block;
+    transition: transform 3.4s cubic-bezier(0.15, 0.8, 0.25, 1);
+    filter: drop-shadow(0 8px 18px rgba(38,48,42,.16));
+  }
+  .wheel-hub {
+    /* 8px do padding-top do .wheel-wrap + metade dos 250px da roleta. */
+    position: absolute; top: 133px; left: 50%; transform: translate(-50%, -50%);
+    width: 84px; height: 84px; border-radius: 50%; border: 5px solid var(--ink);
+    background: var(--coral); color: #fff; font-family: var(--heading); font-weight: 800;
+    font-size: 0.95rem; cursor: pointer; z-index: 2; -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 4px 0 rgba(0,0,0,.15);
+    /* Sem isso, o toque da criança "seleciona" a palavra GIRAR em vez de girar. */
+    user-select: none; -webkit-user-select: none;
+  }
+  .wheel-hub:disabled { opacity: .55; cursor: default; }
+  .wheel-hint { font-size: 0.82rem; color: var(--muted); margin-top: 14px; }
+
+  .mission {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    overflow: hidden; margin-top: 18px; display: none;
+  }
+  .mission.is-visible { display: block; animation: pop .35s cubic-bezier(.2,1.3,.4,1); }
+  @keyframes pop { from { transform: scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
+  .mission__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; object-position: center top; display: block; background: var(--mint); }
+  .mission__body { padding: 18px 18px 20px; }
+  .mission__tag {
+    display: inline-block; background: var(--mint); color: var(--green-dark);
+    font-size: 0.68rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 99px; margin-bottom: 8px;
+  }
+  .mission__title { font-family: var(--heading); font-size: 1.3rem; color: var(--ink); margin-bottom: 8px; line-height: 1.2; }
+  .mission__text { font-size: 0.98rem; color: var(--text); margin-bottom: 6px; }
+  .mission__note { font-size: 0.78rem; color: var(--coral); font-weight: 700; margin-bottom: 14px; }
+  .mission__actions { display: flex; gap: 8px; }
+  .mission__actions .btn { flex: 1; padding: 15px 10px; }
+  .btn-ghost {
+    background: var(--card); color: var(--green-dark); border: 2px solid var(--border);
+    flex: 0 0 auto !important; width: 54px; padding: 15px 0 !important; font-size: 1.15rem;
+  }
+  .btn-ghost:hover { background: var(--mint); }
+  .mission__done {
+    display: none; text-align: center; padding: 26px 18px;
+  }
+  .mission__done.is-visible { display: block; }
+  .mission__done .big { font-size: 2.6rem; }
+  .mission__done h3 { font-family: var(--heading); color: var(--ink); font-size: 1.2rem; margin: 6px 0 6px; }
+  .mission__done p { font-size: 0.88rem; color: var(--muted); margin-bottom: 16px; }
+
+  /* ---------- TURMA ---------- */
+  .turma-head {
+    background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
+    padding: 18px; margin-bottom: 16px; text-align: center;
+  }
+  .turma-head h2 { font-family: var(--heading); font-size: 1.15rem; color: var(--ink); margin-bottom: 4px; }
+  .turma-head p { font-size: 0.85rem; color: var(--muted); }
+  .turma-bar { height: 12px; border-radius: 99px; background: var(--mint); margin-top: 12px; overflow: hidden; }
+  .turma-bar i { display: block; height: 100%; background: var(--green); border-radius: 99px; transition: width .5s ease; }
+
+  .turma-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+  .amigo {
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 6px 4px 7px; cursor: pointer; text-align: center;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .amigo svg { width: 100%; height: auto; display: block; }
+  .amigo b { display: block; font-size: 0.6rem; font-weight: 800; color: var(--ink); margin-top: 2px; line-height: 1.15; }
+  .amigo.is-locked b { color: var(--muted); font-weight: 700; }
+  .amigo.just-won { animation: won .7s cubic-bezier(.2,1.4,.4,1); }
+  @keyframes won { 0% { transform: scale(.7) rotate(-12deg); } 60% { transform: scale(1.14) rotate(6deg); } 100% { transform: none; } }
+
+  /* ---------- MODAL ---------- */
+  .modal {
+    display: none; position: fixed; inset: 0; background: rgba(20,24,20,.6); z-index: 200;
+    align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal.is-open { display: flex; }
+  .modal__card {
+    background: var(--card); border-radius: var(--radius); padding: 24px 20px; max-width: 340px;
+    width: 100%; text-align: center; box-shadow: var(--shadow);
+    animation: pop .3s cubic-bezier(.2,1.3,.4,1);
+  }
+  .modal__card svg { width: 132px; height: 132px; margin: 0 auto 6px; display: block; }
+  .modal__card h3 { font-family: var(--heading); font-size: 1.25rem; color: var(--ink); margin-bottom: 6px; }
+  .modal__card p { font-size: 0.9rem; color: var(--text); margin-bottom: 18px; }
+  .modal__card .btn { width: 100%; margin-bottom: 8px; }
+  .modal__card .link {
+    background: none; border: none; color: var(--muted); font-family: var(--body);
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; text-decoration: underline; padding: 6px;
+  }
+
+  /* Confete: elementos soltos no body, removidos sozinhos depois da animação. */
+  .confetti-piece {
+    position: fixed; width: 9px; height: 14px; z-index: 300; pointer-events: none;
+    animation: fall linear forwards;
+  }
+  @keyframes fall {
+    to { transform: translateY(105vh) rotate(600deg); opacity: .1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .wheel { transition-duration: .6s; }
+    .confetti-piece { display: none; }
+    .mission.is-visible, .modal__card, .amigo.just-won { animation: none; }
+  }
+
+  /* ---------- FICHAS ---------- */
+  .gallery-block { margin-bottom: 12px; }
+  .gallery-block__toggle {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--card); border: 1px solid var(--border); border-radius: 14px;
+    padding: 14px 16px; box-shadow: var(--shadow); cursor: pointer; text-align: left;
+    font-family: var(--body); -webkit-tap-highlight-color: transparent;
+  }
+  .gallery-block__left { display: flex; flex-direction: column; gap: 2px; }
+  .gallery-block__num {
+    font-family: var(--heading); font-size: 0.68rem; font-weight: 800; color: var(--green-dark);
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .gallery-block__title { font-family: var(--heading); font-size: 0.95rem; color: var(--ink); }
+  .gallery-block__count { font-size: 0.76rem; color: var(--muted); }
+  .gallery-block__chevron {
+    font-size: 1.3rem; color: var(--muted); transition: transform 0.2s ease; flex: 0 0 auto;
+  }
+  .gallery-block__toggle[aria-expanded="true"] .gallery-block__chevron {
+    transform: rotate(90deg); color: var(--green-dark);
+  }
+  .gallery-block__body { display: none; padding-top: 12px; }
+  .gallery-block__body.is-open { display: block; }
+  .gallery-block__desc { font-size: 0.8rem; color: var(--muted); margin-bottom: 10px; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .gallery-thumb {
+    position: relative; aspect-ratio: 2 / 3; border-radius: 10px; overflow: hidden;
+    border: 1px solid var(--border); background: var(--card); padding: 0; cursor: pointer;
+    box-shadow: var(--shadow); -webkit-tap-highlight-color: transparent;
+  }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-loading { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 20px 0; }
+
+  /* Bônus com cara de bônus. Antes eram uma linha igual às outras, no fim da
+     lista, escrita "Materiais de apoio" — cliente reclamou que "não recebeu os
+     bônus" tendo eles em mãos, porque nunca abriu a gaveta. Agora vêm primeiro,
+     em destaque coral, cada um com o próprio nome. */
+  .bonus-box {
+    background: var(--coral-soft); border: 2px solid var(--coral);
+    border-radius: var(--radius); padding: 14px; margin-bottom: 18px;
+  }
+  .bonus-box__head { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .bonus-box__head b { font-family: var(--heading); font-size: 1rem; color: var(--ink); }
+  .bonus-box__sub { font-size: 0.78rem; color: var(--text); margin-bottom: 12px; }
+  .bonus-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; }
+  .bonus-item {
+    background: var(--card); border-radius: 12px; padding: 8px; cursor: pointer;
+    border: none; text-align: center; -webkit-tap-highlight-color: transparent;
+  }
+  .bonus-item img { width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 8px; display: block; }
+  .bonus-item b { display: block; font-size: 0.72rem; color: var(--ink); margin-top: 6px; font-weight: 800; line-height: 1.2; }
+
+  .lightbox {
+    display: none; position: fixed; inset: 0; background: rgba(20,24,20,0.94); z-index: 1000;
+    align-items: center; justify-content: center; flex-direction: column; padding: 18px;
+  }
+  .lightbox.is-open { display: flex; }
+  .lightbox__title {
+    color: #fff; font-family: var(--heading); font-size: 0.9rem; text-align: center;
+    margin-bottom: 10px; padding: 0 54px;
+  }
+  .lightbox__img { max-width: 100%; max-height: 76vh; object-fit: contain; border-radius: 10px; }
+  .lightbox__close, .lightbox__nav {
+    position: absolute; border: none; border-radius: 50%; background: rgba(255,255,255,0.16);
+    color: #fff; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .lightbox__close { top: 14px; right: 14px; width: 40px; height: 40px; font-size: 1.1rem; }
+  .lightbox__nav { top: 50%; transform: translateY(-50%); width: 46px; height: 46px; font-size: 1.6rem; }
+  .lightbox__nav--prev { left: 6px; }
+  .lightbox__nav--next { right: 6px; }
+  .lightbox__nav:disabled { opacity: 0.2; }
+</style>
+</head>
+<body>
+
+<div class="topbar">🍅 Kit Prato Limpo</div>
+
+<div class="wrap">
+
+  <!-- carregando -->
+  <div id="state-loading" class="state is-active">
+    <div class="spinner"></div>
+    <p class="loading-text">Confirmando seu acesso...</p>
+  </div>
+
+  <!-- sem token valido -->
+  <div id="state-locked" class="state">
+    <div class="lock-card">
+      <div class="emoji">🔒</div>
+      <h1>Esse link não é válido</h1>
+      <p>Se você já comprou o Kit Prato Limpo, use o link do e-mail de confirmação da sua compra. Se ainda não comprou, o kit está esperando por você.</p>
+      <a class="btn" href="/">Conhecer o Kit Prato Limpo</a>
+    </div>
+  </div>
+
+  <!-- token valido, mas do plano Essencial (app e exclusivo do Completo) -->
+  <div id="state-upsell" class="state">
+    <div class="lock-card">
+      <div class="emoji">📱</div>
+      <h1>O app é exclusivo do plano Completo</h1>
+      <p>Sua compra do Essencial está confirmada! O material é o mesmo PDF de sempre, é só baixar direto abaixo. Essa tela de app é um extra de quem levou o Completo.</p>
+      <a class="btn" id="upsell-download-btn" href="#">📥 Baixar o meu Kit Prato Limpo</a>
+    </div>
+  </div>
+
+  <!-- token valido -->
+  <div id="state-unlocked" class="state">
+
+    <!-- ABA: JOGAR -->
+    <div class="tabpanel is-active" id="tab-jogar">
+      <div class="hero">
+        <span class="badge">Missão do dia</span>
+        <h1 id="greeting">Bora jogar?</h1>
+        <p>Gire a roleta e faça a missão junto com ela.</p>
+      </div>
+
+      <div class="streak">
+        <div><b id="stat-dias">0</b><span>DIAS SEGUIDOS</span></div>
+        <div><b id="stat-estrelas">0</b><span>⭐ ESTRELAS</span></div>
+        <div><b id="stat-amigos">0</b><span>AMIGOS</span></div>
+      </div>
+
+      <div class="chips" id="chips-momento">
+        <button class="chip is-on" data-momento="todos" type="button">Tudo</button>
+        <button class="chip" data-momento="mesa" type="button">🍽️ Na mesa</button>
+        <button class="chip" data-momento="cozinha" type="button">👩‍🍳 Cozinha</button>
+        <button class="chip" data-momento="fora" type="button">🧸 Brincar</button>
+      </div>
+      <div class="chips">
+        <button class="chip" id="chip-semimprimir" type="button">🚫🖨️ Sem impressora</button>
+      </div>
+
+      <div class="wheel-wrap">
+        <div class="wheel-pointer"></div>
+        <svg class="wheel" id="wheel" viewBox="0 0 200 200" aria-hidden="true"></svg>
+        <button class="wheel-hub" id="spin-btn" type="button">GIRAR</button>
+        <p class="wheel-hint" id="wheel-hint">Deixe ela girar. A missão é sorteada.</p>
+      </div>
+
+      <div class="mission" id="mission">
+        <img class="mission__img" id="mission-img" src="" alt="" />
+        <div class="mission__body" id="mission-body">
+          <span class="mission__tag" id="mission-tag"></span>
+          <h2 class="mission__title" id="mission-title"></h2>
+          <p class="mission__text" id="mission-text"></p>
+          <p class="mission__note" id="mission-note"></p>
+          <div class="mission__actions">
+            <button class="btn" id="mission-done" type="button">✓ Fizemos!</button>
+            <button class="btn btn-ghost" id="mission-skip" type="button" aria-label="Sortear outra">🎲</button>
+          </div>
+        </div>
+        <div class="mission__done" id="mission-celebrate">
+          <div class="big">🎉</div>
+          <h3>Missão cumprida!</h3>
+          <p id="celebrate-text">+1 estrela pra vocês.</p>
+          <button class="btn" id="celebrate-next" type="button">Girar de novo</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABA: TURMA -->
+    <div class="tabpanel" id="tab-turma">
+      <div class="turma-head">
+        <h2>Amigos do Prato</h2>
+        <p id="turma-count">0 de 20 amigos na turma</p>
+        <div class="turma-bar"><i id="turma-bar" style="width:0%"></i></div>
+      </div>
+      <p class="wheel-hint" style="margin:0 0 14px; text-align:center">
+        Cada amigo entra na turma quando ela provar aquele alimento. Toque em um para marcar.
+      </p>
+      <div class="turma-grid" id="turma-grid"></div>
+    </div>
+
+    <!-- ABA: FICHAS -->
+    <div class="tabpanel" id="tab-fichas">
+      <div class="install-card" id="install-card">
+        <p id="install-text">📱 Instale como app pra abrir com um toque, sem precisar do link.</p>
+        <button class="btn" id="install-btn" type="button">Instalar app</button>
+        <ol class="ios-steps" id="install-ios-steps" style="display:none">
+          <li>Toque no ícone de compartilhar (⬆️) do Safari</li>
+          <li>Escolha "Adicionar à Tela de Início"</li>
+        </ol>
+      </div>
+
+      <div class="download-card">
+        <a class="btn" id="download-btn" href="#">📥 Baixar o kit em PDF</a>
+        <p class="hint">Pra imprimir tudo de uma vez. As fichas também ficam aqui no app, dá pra usar direto da tela.</p>
+      </div>
+
+      <div id="gallery">
+        <p class="gallery-loading">Carregando suas fichas...</p>
+      </div>
+
+      <div class="howto">
+        <b>Como usar:</b> se for imprimir, use tamanho real (100%). Mas não precisa imprimir pra começar: abra a aba Jogar e faça a missão do dia direto do celular.
+      </div>
+
+      <div class="footer-support">
+        Dúvidas ou link que não abre? Escreva pra<br>
+        <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<nav class="tabbar" id="tabbar" style="display:none">
+  <button data-tab="tab-jogar" class="is-active" type="button"><span class="ico">🎲</span>Jogar</button>
+  <button data-tab="tab-turma" type="button"><span class="ico">🏅</span>Turma<span class="dot"></span></button>
+  <button data-tab="tab-fichas" type="button"><span class="ico">📚</span>Fichas</button>
+</nav>
+
+<div class="modal" id="amigo-modal">
+  <div class="modal__card">
+    <div id="amigo-modal-art"></div>
+    <h3 id="amigo-modal-nome"></h3>
+    <p id="amigo-modal-text"></p>
+    <button class="btn" id="amigo-modal-ok" type="button"></button>
+    <button class="link" id="amigo-modal-cancel" type="button">Fechar</button>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox">
+  <button class="lightbox__close" id="lightbox-close" aria-label="Fechar">✕</button>
+  <div class="lightbox__title" id="lightbox-title"></div>
+  <img class="lightbox__img" id="lightbox-img" src="" alt="" />
+  <button class="lightbox__nav lightbox__nav--prev" id="lightbox-prev" aria-label="Ficha anterior">‹</button>
+  <button class="lightbox__nav lightbox__nav--next" id="lightbox-next" aria-label="Próxima ficha">›</button>
+</div>
+
+<script src="assets/amigos.js"></script>
+<script>
+(function () {
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function () {});
+  }
+
+  // O Chrome dispara beforeinstallprompt cedo, ainda durante o carregamento —
+  // às vezes antes do fetch de acesso terminar. Registrar o listener já de
+  // cara (não só depois de confirmar a compra), senão o evento passa batido
+  // e o botão nunca aparece, porque ele não dispara de novo na mesma visita.
+  var deferredInstallPrompt = null;
+  var installReady = false;
+  window.addEventListener('beforeinstallprompt', function (event) {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    maybeShowInstall();
+  });
+
+  function maybeShowInstall() {
+    if (!installReady) return;
+    var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isStandalone) return; // já instalado, não precisa oferecer de novo
+
+    var card = document.getElementById('install-card');
+    if (card.classList.contains('is-visible')) return;
+    var isIOS = /iphone|ipad|ipod/i.test(window.navigator.userAgent);
+
+    if (isIOS) {
+      document.getElementById('install-btn').style.display = 'none';
+      document.getElementById('install-ios-steps').style.display = 'block';
+      card.classList.add('is-visible');
+      return;
+    }
+
+    if (!deferredInstallPrompt) return; // ainda não disparou; maybeShowInstall roda de novo quando disparar
+    card.classList.add('is-visible');
+    document.getElementById('install-btn').addEventListener('click', function () {
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.finally(function () { card.classList.remove('is-visible'); });
+    }, { once: true });
+  }
+
+  function showState(id) {
+    document.querySelectorAll('.state').forEach(function (el) { el.classList.remove('is-active'); });
+    document.getElementById(id).classList.add('is-active');
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  // O manifest do PWA usa start_url fixo (/mi-kit, sem token). Sem isso,
+  // reabrir o app pelo ícone da tela de início cairia sempre em "link
+  // inválido" — então guardamos o token no aparelho na 1ª visita (a que
+  // veio do e-mail, com ?t= na URL) e reusamos depois.
+  var urlToken = new URLSearchParams(window.location.search).get('t') || '';
+  var token = urlToken || (function () {
+    try { return localStorage.getItem('kpl_token') || ''; } catch (e) { return ''; }
+  })();
+  if (urlToken) {
+    try { localStorage.setItem('kpl_token', urlToken); } catch (e) {}
+  }
+
+  if (!token) {
+    showState('state-locked');
+    return;
+  }
+
+  fetch('/api/kit-access?t=' + encodeURIComponent(token))
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      if (!data || !data.valid) {
+        showState('state-locked');
+        return;
+      }
+      if (data.appLocked) {
+        document.getElementById('upsell-download-btn').href = '/api/download?t=' + encodeURIComponent(token);
+        showState('state-upsell');
+        return;
+      }
+      document.getElementById('download-btn').href = '/api/download?t=' + encodeURIComponent(token);
+      if (data.name) {
+        document.getElementById('greeting').textContent = 'Bora jogar, ' + data.name + '?';
+      }
+      showState('state-unlocked');
+      document.getElementById('tabbar').style.display = 'flex';
+      installReady = true;
+      maybeShowInstall();
+      initGame();
+      renderTurma();
+      loadGallery();
+    })
+    .catch(function () {
+      showState('state-locked');
+    });
+
+  // ================= ABAS =================
+  document.getElementById('tabbar').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-tab]');
+    if (!btn) return;
+    document.querySelectorAll('.tabpanel').forEach(function (p) { p.classList.remove('is-active'); });
+    document.getElementById(btn.dataset.tab).classList.add('is-active');
+    document.querySelectorAll('#tabbar button').forEach(function (b) { b.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+    btn.classList.remove('has-news');
+    window.scrollTo(0, 0);
+  });
+
+  function goToTab(id) {
+    var btn = document.querySelector('#tabbar button[data-tab="' + id + '"]');
+    if (btn) btn.click();
+  }
+
+  // ================= ESTADO DO JOGO =================
+  // Tudo no aparelho (localStorage). De propósito: o jogo não precisa de conta,
+  // não precisa de servidor e não gasta cota de banco — e funciona offline
+  // depois que o app abre.
+  var STORE = 'kpl_game_v1';
+  var state = { amigos: [], feitas: [], estrelas: 0, dias: 0, ultimoDia: null };
+  try {
+    var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
+    if (saved && typeof saved === 'object') {
+      state.amigos = Array.isArray(saved.amigos) ? saved.amigos : [];
+      state.feitas = Array.isArray(saved.feitas) ? saved.feitas : [];
+      state.estrelas = Number(saved.estrelas) || 0;
+      state.dias = Number(saved.dias) || 0;
+      state.ultimoDia = saved.ultimoDia || null;
+    }
+  } catch (e) {}
+
+  function save() {
+    try { localStorage.setItem(STORE, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function hojeStr() {
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  // Sequência de dias: conta +1 se a última missão foi ONTEM, reinicia se
+  // ficou mais tempo parado. É o que traz a mãe de volta amanhã.
+  function marcarDia() {
+    var hoje = hojeStr();
+    if (state.ultimoDia === hoje) return;
+    var ontem = new Date(); ontem.setDate(ontem.getDate() - 1);
+    var ontemStr = ontem.getFullYear() + '-' + String(ontem.getMonth() + 1).padStart(2, '0') + '-' + String(ontem.getDate()).padStart(2, '0');
+    state.dias = (state.ultimoDia === ontemStr) ? state.dias + 1 : 1;
+    state.ultimoDia = hoje;
+  }
+
+  function refreshStats() {
+    document.getElementById('stat-dias').textContent = state.dias;
+    document.getElementById('stat-estrelas').textContent = state.estrelas;
+    document.getElementById('stat-amigos').textContent = state.amigos.length;
+  }
+
+  // ================= CONFETE =================
+  var CORES = ['#5CA741', '#F2911F', '#E8503A', '#F4C430', '#7B4E9E', '#F0673A'];
+  function confetti(n) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    for (var i = 0; i < (n || 34); i++) {
+      var p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = '-20px';
+      p.style.background = CORES[i % CORES.length];
+      p.style.animationDuration = (1.6 + Math.random() * 1.1) + 's';
+      p.style.animationDelay = (Math.random() * 0.35) + 's';
+      document.body.appendChild(p);
+      (function (el) { setTimeout(function () { el.remove(); }, 3200); })(p);
+    }
+  }
+
+  // ================= ROLETA + MISSÕES =================
+  var missoesTodas = [];
+  var blocosNomes = {};
+  var momentoAtivo = 'todos';
+  var semImprimir = false;
+  var girando = false;
+  var rotacao = 0;
+  var missaoAtual = null;
+
+  var SETOR_CORES = ['#5CA741', '#F2911F', '#E8503A', '#7B4E9E', '#3C7A2C', '#F0673A', '#6B4E8C', '#F4C430'];
+
+  function initGame() {
+    desenharRoleta();
+    refreshStats();
+    fetch('assets/missoes.json')
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        missoesTodas = data.missoes || [];
+        blocosNomes = data.blocos || {};
+      })
+      .catch(function () {
+        document.getElementById('wheel-hint').textContent = 'Não consegui carregar as missões. Tente abrir o app de novo com internet.';
+        document.getElementById('spin-btn').disabled = true;
+      });
+  }
+
+  function desenharRoleta() {
+    var svg = document.getElementById('wheel');
+    var html = '';
+    for (var i = 0; i < 8; i++) {
+      var a0 = (i * 45 - 90) * Math.PI / 180;
+      var a1 = ((i + 1) * 45 - 90) * Math.PI / 180;
+      var x0 = 100 + 96 * Math.cos(a0), y0 = 100 + 96 * Math.sin(a0);
+      var x1 = 100 + 96 * Math.cos(a1), y1 = 100 + 96 * Math.sin(a1);
+      html += '<path d="M100 100 L' + x0.toFixed(1) + ' ' + y0.toFixed(1)
+        + ' A96 96 0 0 1 ' + x1.toFixed(1) + ' ' + y1.toFixed(1) + ' Z"'
+        + ' fill="' + SETOR_CORES[i] + '" stroke="#26302A" stroke-width="3"/>';
+      var am = ((i + 0.5) * 45 - 90) * Math.PI / 180;
+      var tx = 100 + 68 * Math.cos(am), ty = 100 + 68 * Math.sin(am);
+      html += '<text x="' + tx.toFixed(1) + '" y="' + (ty + 7).toFixed(1) + '" text-anchor="middle"'
+        + ' font-family="Baloo 2, sans-serif" font-weight="800" font-size="22" fill="#fff">' + (i + 1) + '</text>';
+    }
+    html += '<circle cx="100" cy="100" r="96" fill="none" stroke="#26302A" stroke-width="5"/>';
+    svg.innerHTML = html;
+  }
+
+  // Blocos que valem pro filtro atual. A roleta só pode parar num deles —
+  // é o que mantém o sorteio honesto: o setor que para na seta é de verdade
+  // o bloco de onde a missão sai.
+  function blocosElegiveis() {
+    var set = {};
+    poolFiltrado().forEach(function (m) { set[m.bloco] = true; });
+    return Object.keys(set).map(Number);
+  }
+
+  function poolFiltrado() {
+    return missoesTodas.filter(function (m) {
+      if (momentoAtivo !== 'todos' && m.momento !== momentoAtivo) return false;
+      if (semImprimir && m.imprimir) return false;
+      return true;
+    });
+  }
+
+  document.getElementById('chips-momento').addEventListener('click', function (e) {
+    var btn = e.target.closest('.chip');
+    if (!btn) return;
+    momentoAtivo = btn.dataset.momento;
+    this.querySelectorAll('.chip').forEach(function (c) { c.classList.remove('is-on'); });
+    btn.classList.add('is-on');
+  });
+
+  document.getElementById('chip-semimprimir').addEventListener('click', function () {
+    semImprimir = !semImprimir;
+    this.classList.toggle('is-on', semImprimir);
+  });
+
+  document.getElementById('spin-btn').addEventListener('click', girar);
+  document.getElementById('mission-skip').addEventListener('click', girar);
+  document.getElementById('celebrate-next').addEventListener('click', girar);
+
+  function girar() {
+    if (girando) return;
+    var elegiveis = blocosElegiveis();
+    if (!elegiveis.length) {
+      document.getElementById('wheel-hint').textContent = 'Nenhuma missão com esses filtros. Tire um filtro e gire de novo.';
+      return;
+    }
+    girando = true;
+    document.getElementById('spin-btn').disabled = true;
+    document.getElementById('mission').classList.remove('is-visible');
+
+    var blocoSorteado = elegiveis[Math.floor(Math.random() * elegiveis.length)];
+    var idx = blocoSorteado - 1;
+
+    // Leva o centro do setor sorteado até a seta (topo), somando voltas
+    // inteiras pra dar a sensação de giro longo.
+    var alvo = (360 - (idx * 45 + 22.5)) % 360;
+    var atual = ((rotacao % 360) + 360) % 360;
+    rotacao += (360 * 4) + ((alvo - atual + 360) % 360);
+    document.getElementById('wheel').style.transform = 'rotate(' + rotacao + 'deg)';
+
+    setTimeout(function () {
+      girando = false;
+      document.getElementById('spin-btn').disabled = false;
+      mostrarMissao(sortearMissao(blocoSorteado));
+    }, 3500);
+  }
+
+  // Prioriza o que ainda não foi feito: sem isso o sorteio repete missão
+  // enquanto ainda tem 80 inéditas, e a mãe acha que o app é pobre.
+  function sortearMissao(bloco) {
+    var pool = poolFiltrado().filter(function (m) { return m.bloco === bloco; });
+    var ineditas = pool.filter(function (m) { return state.feitas.indexOf(m.code) === -1; });
+    var fonte = ineditas.length ? ineditas : pool;
+    return fonte[Math.floor(Math.random() * fonte.length)];
+  }
+
+  function mostrarMissao(m) {
+    if (!m) return;
+    missaoAtual = m;
+    var box = document.getElementById('mission');
+    document.getElementById('mission-body').style.display = 'block';
+    document.getElementById('mission-celebrate').classList.remove('is-visible');
+    document.getElementById('mission-tag').textContent = 'Bloco ' + m.bloco + ' · ' + (blocosNomes[m.bloco] || '');
+    document.getElementById('mission-title').textContent = m.title;
+    document.getElementById('mission-text').textContent = m.instrucao;
+    document.getElementById('mission-note').textContent = m.imprimir ? '✏️ Essa é de pintar: imprima a ficha ou desenhe junto num papel.' : '';
+    var img = document.getElementById('mission-img');
+    if (m.file) {
+      img.src = 'assets/fichas-web/' + m.file;
+      img.alt = m.title;
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+    box.classList.add('is-visible');
+    box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
+  document.getElementById('mission-done').addEventListener('click', function () {
+    if (!missaoAtual) return;
+    if (state.feitas.indexOf(missaoAtual.code) === -1) state.feitas.push(missaoAtual.code);
+    state.estrelas += 1;
+    marcarDia();
+    save();
+    refreshStats();
+    confetti(40);
+
+    var faltam = KPL_AMIGOS.list.length - state.amigos.length;
+    document.getElementById('celebrate-text').textContent = faltam > 0
+      ? 'Ela provou algum alimento novo? Marque na aba Turma, ainda faltam ' + faltam + ' amigos.'
+      : 'A turma já está completa. Continuem jogando!';
+    document.getElementById('mission-body').style.display = 'none';
+    document.getElementById('mission-celebrate').classList.add('is-visible');
+    if (faltam > 0) document.querySelector('#tabbar button[data-tab="tab-turma"]').classList.add('has-news');
+  });
+
+  // ================= TURMA =================
+  var amigoAberto = null;
+
+  function renderTurma() {
+    var grid = document.getElementById('turma-grid');
+    var lista = KPL_AMIGOS.list.slice().sort(function (a, b) { return a.dif - b.dif; });
+    grid.innerHTML = lista.map(function (a) {
+      var unlocked = state.amigos.indexOf(a.id) !== -1;
+      return '<button class="amigo' + (unlocked ? '' : ' is-locked') + '" data-id="' + a.id + '" type="button">'
+        + KPL_AMIGOS.svgFor(a, !unlocked)
+        + '<b>' + escapeHtml(unlocked ? a.nome.split(' ')[0] : a.alimento) + '</b>'
+        + '</button>';
+    }).join('');
+    var total = KPL_AMIGOS.list.length;
+    document.getElementById('turma-count').textContent = state.amigos.length + ' de ' + total + ' amigos na turma';
+    document.getElementById('turma-bar').style.width = Math.round(state.amigos.length / total * 100) + '%';
+    refreshStats();
+  }
+
+  document.getElementById('turma-grid').addEventListener('click', function (e) {
+    var btn = e.target.closest('.amigo');
+    if (!btn) return;
+    var amigo = KPL_AMIGOS.list.filter(function (a) { return a.id === btn.dataset.id; })[0];
+    if (!amigo) return;
+    abrirAmigo(amigo);
+  });
+
+  function abrirAmigo(a) {
+    amigoAberto = a;
+    var unlocked = state.amigos.indexOf(a.id) !== -1;
+    document.getElementById('amigo-modal-art').innerHTML = KPL_AMIGOS.svgFor(a, !unlocked);
+    document.getElementById('amigo-modal-nome').textContent = unlocked ? a.nome : a.alimento;
+    document.getElementById('amigo-modal-text').textContent = unlocked
+      ? a.nome + ' já faz parte da turma. Provou ' + a.alimento.toLowerCase() + '!'
+      : a.nome + ' entra na turma quando ela provar ' + a.alimento.toLowerCase() + '. Nem precisa comer tudo: provar já vale.';
+    var ok = document.getElementById('amigo-modal-ok');
+    ok.textContent = unlocked ? 'Fechar' : '⭐ Já provou!';
+    document.getElementById('amigo-modal-cancel').textContent = unlocked ? 'Tirar da turma' : 'Ainda não';
+    document.getElementById('amigo-modal').classList.add('is-open');
+  }
+
+  document.getElementById('amigo-modal-ok').addEventListener('click', function () {
+    if (!amigoAberto) return;
+    var unlocked = state.amigos.indexOf(amigoAberto.id) !== -1;
+    if (!unlocked) {
+      state.amigos.push(amigoAberto.id);
+      marcarDia();
+      save();
+      confetti(50);
+      renderTurma();
+      var el = document.querySelector('.amigo[data-id="' + amigoAberto.id + '"]');
+      if (el) el.classList.add('just-won');
+    }
+    fecharModal();
+  });
+
+  document.getElementById('amigo-modal-cancel').addEventListener('click', function () {
+    if (amigoAberto) {
+      var i = state.amigos.indexOf(amigoAberto.id);
+      if (i !== -1) { state.amigos.splice(i, 1); save(); renderTurma(); }
+    }
+    fecharModal();
+  });
+
+  document.getElementById('amigo-modal').addEventListener('click', function (e) {
+    if (e.target === this) fecharModal();
+  });
+
+  function fecharModal() {
+    document.getElementById('amigo-modal').classList.remove('is-open');
+    amigoAberto = null;
+  }
+
+  // ================= FICHAS (galeria) =================
+  var galleryFlat = [];
+
+  function loadGallery() {
+    fetch('/assets/gallery-manifest.json')
+      .then(function (r) { return r.json(); })
+      .then(renderGallery)
+      .catch(function () {
+        document.getElementById('gallery').innerHTML = '';
+      });
+  }
+
+  function renderGallery(data) {
+    var html = '';
+    galleryFlat = [];
+    var blockId = 0;
+
+    // Bônus primeiro e em destaque. Eles são argumento de venda, então o app
+    // tem que entregá-los com a mesma cara de presente que a página promete.
+    if (data.bonuses && data.bonuses.length) {
+      html += '<div class="bonus-box">'
+        + '<div class="bonus-box__head">🎁 <b>Seus ' + data.bonuses.length + ' bônus</b></div>'
+        + '<p class="bonus-box__sub">Vêm junto com o kit, prontos pra usar. Toque para abrir.</p>'
+        + '<div class="bonus-list">';
+      data.bonuses.forEach(function (f) {
+        var idx = galleryFlat.length;
+        galleryFlat.push(f);
+        html += '<button class="bonus-item" data-idx="' + idx + '">'
+          + '<img src="assets/fichas-web/' + f.file + '" loading="lazy" alt="' + escapeHtml(f.title) + '">'
+          + '<b>' + escapeHtml(f.title) + '</b>'
+          + '</button>';
+      });
+      html += '</div></div>';
+    }
+
+    function renderBlock(label, title, desc, fichas) {
+      var id = 'block-body-' + (blockId++);
+      var countLabel = fichas.length + (fichas.length === 1 ? ' ficha' : ' fichas');
+      html += '<div class="gallery-block">'
+        + '<button class="gallery-block__toggle" type="button" aria-expanded="false" aria-controls="' + id + '">'
+        + '<span class="gallery-block__left">'
+        + '<span class="gallery-block__num">' + escapeHtml(label) + '</span>'
+        + '<span class="gallery-block__title">' + escapeHtml(title) + '</span>'
+        + '<span class="gallery-block__count">' + countLabel + '</span>'
+        + '</span>'
+        + '<span class="gallery-block__chevron">›</span>'
+        + '</button>'
+        + '<div class="gallery-block__body" id="' + id + '">'
+        + '<p class="gallery-block__desc">' + escapeHtml(desc) + '</p>'
+        + '<div class="gallery-grid">';
+      fichas.forEach(function (f) {
+        var idx = galleryFlat.length;
+        galleryFlat.push(f);
+        html += '<button class="gallery-thumb" data-idx="' + idx + '">'
+          + '<img src="assets/fichas-web/' + f.file + '" loading="lazy" alt="' + escapeHtml(f.title) + '">'
+          + '</button>';
+      });
+      html += '</div></div></div>';
+    }
+
+    (data.blocks || []).forEach(function (b) {
+      renderBlock('BLOCO ' + b.n, b.title, b.desc, b.fichas);
+    });
+
+    var container = document.getElementById('gallery');
+    container.innerHTML = html;
+    container.querySelectorAll('.gallery-block__toggle').forEach(function (toggle) {
+      toggle.addEventListener('click', function () {
+        var body = document.getElementById(toggle.getAttribute('aria-controls'));
+        var isOpen = body.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+    });
+    container.querySelectorAll('.gallery-thumb, .bonus-item').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        openLightbox(parseInt(btn.getAttribute('data-idx'), 10));
+      });
+    });
+  }
+
+  var lightboxIndex = 0;
+  var lightboxEl = document.getElementById('lightbox');
+  var lightboxImg = document.getElementById('lightbox-img');
+  var lightboxTitle = document.getElementById('lightbox-title');
+  var lightboxPrev = document.getElementById('lightbox-prev');
+  var lightboxNext = document.getElementById('lightbox-next');
+
+  function openLightbox(idx) {
+    lightboxIndex = idx;
+    updateLightbox();
+    lightboxEl.classList.add('is-open');
+  }
+  function closeLightbox() {
+    lightboxEl.classList.remove('is-open');
+  }
+  function updateLightbox() {
+    var item = galleryFlat[lightboxIndex];
+    if (!item) return;
+    lightboxImg.src = 'assets/fichas-web/' + item.file;
+    lightboxImg.alt = item.title;
+    lightboxTitle.textContent = item.title;
+    lightboxPrev.disabled = lightboxIndex <= 0;
+    lightboxNext.disabled = lightboxIndex >= galleryFlat.length - 1;
+  }
+
+  lightboxEl.addEventListener('click', function (e) {
+    if (e.target === lightboxEl) closeLightbox();
+  });
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  lightboxPrev.addEventListener('click', function () {
+    if (lightboxIndex > 0) { lightboxIndex--; updateLightbox(); }
+  });
+  lightboxNext.addEventListener('click', function () {
+    if (lightboxIndex < galleryFlat.length - 1) { lightboxIndex++; updateLightbox(); }
+  });
+
+  var touchStartX = null;
+  lightboxImg.addEventListener('touchstart', function (e) {
+    touchStartX = e.touches[0].clientX;
+  });
+  lightboxImg.addEventListener('touchend', function (e) {
+    if (touchStartX === null) return;
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    touchStartX = null;
+    if (Math.abs(dx) < 40) return;
+    if (dx < 0 && lightboxIndex < galleryFlat.length - 1) { lightboxIndex++; updateLightbox(); }
+    if (dx > 0 && lightboxIndex > 0) { lightboxIndex--; updateLightbox(); }
+  });
+})();
+</script>
+
+</body>
+</html>

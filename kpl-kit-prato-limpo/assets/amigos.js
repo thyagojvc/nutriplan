@@ -1,0 +1,280 @@
+/* Amigos do Prato — os 20 personagens colecionáveis do app.
+ *
+ * São SVG desenhado à mão (não imagem) de propósito:
+ *   - pesa ~8KB no total em vez de 20 arquivos PNG;
+ *   - escala sem borrar em qualquer tela;
+ *   - a versão "bloqueada" é o MESMO desenho pintado de cinza, então a criança
+ *     reconhece a silhueta e sabe qual amigo está faltando (é isso que faz ela
+ *     querer provar o alimento).
+ *
+ * O estilo copia o das fichas impressas (PROMPTS-86-ATIVIDADES.md, seção 3):
+ * vetorial flat, contorno preto arredondado grosso, cor chapada, carinha
+ * simples de olhos redondos e sorriso pequeno. Ficar parecido com o material
+ * impresso é intencional: é o mesmo universo, não um app à parte.
+ *
+ * Paleta travada na da marca. `dif` é a dificuldade percebida pela criança
+ * seletiva, usada só pra ordenar a grade: os fáceis primeiro, pra ela ganhar
+ * os primeiros amigos rápido e entender o jogo antes de encarar o brócolis.
+ */
+(function (global) {
+  var INK = '#26302A';
+
+  // Carinha padrão. Todo personagem usa a mesma, só muda onde fica —
+  // é o que faz os 20 parecerem da mesma turma.
+  function face(cx, cy, s) {
+    s = s || 1;
+    var eye = 3.4 * s;
+    var dx = 10 * s;
+    var mw = 7 * s;
+    var md = 6 * s;
+    return ''
+      + '<circle cx="' + (cx - dx) + '" cy="' + cy + '" r="' + eye + '" fill="' + INK + '"/>'
+      + '<circle cx="' + (cx + dx) + '" cy="' + cy + '" r="' + eye + '" fill="' + INK + '"/>'
+      + '<path d="M' + (cx - mw) + ' ' + (cy + 7 * s)
+        + ' Q' + cx + ' ' + (cy + 7 * s + md) + ' ' + (cx + mw) + ' ' + (cy + 7 * s) + '"'
+        + ' fill="none" stroke="' + INK + '" stroke-width="' + (3.4 * s) + '" stroke-linecap="round"/>';
+  }
+
+  // Bochechinhas: só nos personagens onde sobra espaço claro, senão suja o desenho.
+  function blush(cx, cy, s) {
+    s = s || 1;
+    var dx = 19 * s;
+    return ''
+      + '<ellipse cx="' + (cx - dx) + '" cy="' + (cy + 6 * s) + '" rx="' + (4.5 * s) + '" ry="' + (3 * s) + '" fill="#F0673A" opacity=".35"/>'
+      + '<ellipse cx="' + (cx + dx) + '" cy="' + (cy + 6 * s) + '" rx="' + (4.5 * s) + '" ry="' + (3 * s) + '" fill="#F0673A" opacity=".35"/>';
+  }
+
+  // Folhinha verde reaproveitada por vários (tomate, maçã, pera...).
+  function leaf(x, y, flip) {
+    var d = flip
+      ? 'M' + x + ' ' + y + ' c-10 -8 -20 -6 -24 2 8 6 18 5 24 -2 z'
+      : 'M' + x + ' ' + y + ' c10 -8 20 -6 24 2 -8 6 -18 5 -24 -2 z';
+    return '<path d="' + d + '" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>';
+  }
+
+  function stem(x, yTop, yBottom) {
+    return '<path d="M' + x + ' ' + yBottom + ' V' + yTop + '" stroke="#3C7A2C" stroke-width="6" stroke-linecap="round" fill="none"/>';
+  }
+
+  var AMIGOS = [
+    {
+      id: 'banana', nome: 'Bruno Banana', alimento: 'Banana', dif: 1,
+      // Desenhada como traço grosso (contorno escuro por baixo, amarelo por
+      // cima) em vez de contorno fechado: a curva fica com espessura constante,
+      // que é o que dá espaço pro rosto caber dentro dela.
+      art:
+        // Curva em "C" na vertical + cabinho no topo. Na horizontal a silhueta
+        // cinza (estado bloqueado) ficava idêntica à do feijão, e a criança
+        // precisa reconhecer QUAL amigo está faltando só pelo contorno.
+        '<path d="M58 24 C36 34 34 64 52 80" fill="none" stroke="' + INK + '" stroke-width="38" stroke-linecap="round"/>'
+        + '<path d="M58 24 C36 34 34 64 52 80" fill="none" stroke="#F4C430" stroke-width="30" stroke-linecap="round"/>'
+        + '<path d="M60 22 L64 12" stroke="#3C7A2C" stroke-width="8" stroke-linecap="round" fill="none"/>'
+        + face(42, 52, 0.78),
+    },
+    {
+      id: 'maca', nome: 'Marina Maçã', alimento: 'Maçã', dif: 1,
+      art:
+        stem(50, 18, 32)
+        + leaf(52, 24, false)
+        + '<path d="M50 32 C36 24 22 34 22 52 C22 72 34 88 50 88 C66 88 78 72 78 52 C78 34 64 24 50 32 Z"'
+        + ' fill="#E8503A" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(50, 56) + blush(50, 56),
+    },
+    {
+      id: 'melancia', nome: 'Melissa Melancia', alimento: 'Melancia', dif: 1,
+      art:
+        '<path d="M14 38 A36 36 0 0 0 86 38 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<path d="M22 42 A28 28 0 0 0 78 42 Z" fill="#E8503A" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        // Sementes só na barriga da fatia, abaixo do sorriso — na altura do
+        // rosto elas viravam "olhos" extras e embaralhavam a carinha.
+        + '<g fill="' + INK + '"><circle cx="41" cy="65" r="2.8"/><circle cx="59" cy="65" r="2.8"/><circle cx="50" cy="69" r="2.8"/></g>'
+        + face(50, 51, 0.78),
+    },
+    {
+      id: 'uva', nome: 'Uriel Uva', alimento: 'Uva', dif: 1,
+      art:
+        stem(50, 12, 24) + leaf(52, 18, false)
+        + '<g fill="#7B4E9E" stroke="' + INK + '" stroke-width="4.5">'
+        + '<circle cx="50" cy="34" r="12"/><circle cx="34" cy="48" r="12"/><circle cx="66" cy="48" r="12"/>'
+        + '<circle cx="42" cy="64" r="12"/><circle cx="58" cy="64" r="12"/><circle cx="50" cy="79" r="12"/>'
+        + '</g>'
+        + face(50, 50, 0.8),
+    },
+    {
+      id: 'morango', nome: 'Manu Morango', alimento: 'Morango', dif: 1,
+      art:
+        stem(50, 14, 26)
+        + '<path d="M50 26 L30 32 L44 38 L26 42 L46 48 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 26 L70 32 L56 38 L74 42 L54 48 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M26 46 C26 40 36 36 50 36 C64 36 74 40 74 46 C74 66 62 88 50 88 C38 88 26 66 26 46 Z"'
+        + ' fill="#E8503A" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<g fill="#FBF8F1"><ellipse cx="35" cy="58" rx="2.4" ry="3.4"/><ellipse cx="65" cy="58" rx="2.4" ry="3.4"/>'
+        + '<ellipse cx="50" cy="74" rx="2.4" ry="3.4"/><ellipse cx="40" cy="70" rx="2.4" ry="3.4"/><ellipse cx="60" cy="70" rx="2.4" ry="3.4"/></g>'
+        + face(50, 54, 0.85),
+    },
+    {
+      id: 'laranja', nome: 'Otávio Laranja', alimento: 'Laranja', dif: 1,
+      art:
+        stem(50, 18, 30) + leaf(52, 24, false)
+        + '<circle cx="50" cy="58" r="30" fill="#F2911F" stroke="' + INK + '" stroke-width="5"/>'
+        // Gomos só na base, fora da área do rosto.
+        + '<path d="M50 76 V88 M36 74 L31 83 M64 74 L69 83" stroke="' + INK + '" stroke-width="2.5" opacity=".28" fill="none" stroke-linecap="round"/>'
+        + face(50, 54) + blush(50, 54),
+    },
+    {
+      id: 'abacaxi', nome: 'Alice Abacaxi', alimento: 'Abacaxi', dif: 2,
+      art:
+        '<path d="M50 34 L38 8 L44 32 L28 18 L36 34 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 34 L62 8 L56 32 L72 18 L64 34 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<ellipse cx="50" cy="62" rx="25" ry="29" fill="#F4C430" stroke="' + INK + '" stroke-width="5"/>'
+        // Losangos só na parte de baixo: cruzando o rosto viravam rabisco.
+        + '<path d="M34 74 L50 86 L66 74 M40 68 L50 78 L60 68" stroke="' + INK + '" stroke-width="2.4" opacity=".3" fill="none" stroke-linejoin="round"/>'
+        + face(50, 56, 0.92),
+    },
+    {
+      id: 'pera', nome: 'Pedro Pera', alimento: 'Pera', dif: 2,
+      art:
+        stem(50, 14, 28) + leaf(52, 20, false)
+        + '<path d="M50 28 C58 28 61 36 58 43 C70 49 75 60 73 70 C71 82 62 90 50 90 C38 90 29 82 27 70 C25 60 30 49 42 43 C39 36 42 28 50 28 Z"'
+        + ' fill="#A8CE96" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(50, 64) + blush(50, 64),
+    },
+    {
+      id: 'cenoura', nome: 'Cadu Cenoura', alimento: 'Cenoura', dif: 2,
+      art:
+        '<path d="M50 30 C46 18 38 12 30 12 C34 20 40 26 46 30 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 30 C54 18 62 12 70 12 C66 20 60 26 54 30 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 30 V16" stroke="#3C7A2C" stroke-width="5" stroke-linecap="round"/>'
+        + '<path d="M32 34 H68 L54 86 C52 90 48 90 46 86 Z" fill="#F2911F" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<path d="M37 50 H63 M41 64 H59" stroke="' + INK + '" stroke-width="2.6" opacity=".3" stroke-linecap="round"/>'
+        + face(50, 50, 0.86),
+    },
+    {
+      id: 'milho', nome: 'Miguel Milho', alimento: 'Milho', dif: 2,
+      art:
+        // Palha nas laterais bem coladas na espiga (soltas, pareciam asas) e
+        // grãos só no terço de baixo, longe do rosto.
+        '<path d="M30 54 C18 60 16 76 24 86 C34 80 34 64 34 56 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4.5" stroke-linejoin="round"/>'
+        + '<path d="M70 54 C82 60 84 76 76 86 C66 80 66 64 66 56 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4.5" stroke-linejoin="round"/>'
+        + '<ellipse cx="50" cy="54" rx="21" ry="32" fill="#F4C430" stroke="' + INK + '" stroke-width="5"/>'
+        + '<g fill="' + INK + '" opacity=".22"><circle cx="42" cy="70" r="2.6"/><circle cx="58" cy="70" r="2.6"/>'
+        + '<circle cx="50" cy="76" r="2.6"/><circle cx="42" cy="81" r="2.6"/><circle cx="58" cy="81" r="2.6"/></g>'
+        + face(50, 50, 0.88),
+    },
+    {
+      id: 'batata', nome: 'Bento Batata', alimento: 'Batata', dif: 2,
+      art:
+        '<path d="M24 56 C24 40 38 30 55 31 C72 32 80 44 78 59 C76 74 62 82 46 80 C32 78 24 68 24 56 Z"'
+        + ' fill="#E0B978" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<g fill="' + INK + '" opacity=".26"><ellipse cx="34" cy="44" rx="3" ry="2.2"/><ellipse cx="68" cy="70" rx="3" ry="2.2"/>'
+        + '<ellipse cx="70" cy="42" rx="2.6" ry="2"/></g>'
+        + face(50, 56, 0.94) + blush(50, 56, 0.94),
+    },
+    {
+      id: 'tomate', nome: 'Téo Tomate', alimento: 'Tomate', dif: 3,
+      art:
+        stem(50, 16, 26)
+        + '<path d="M50 36 C44 30 36 28 28 28 C32 34 38 38 46 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 36 C56 30 64 28 72 28 C68 34 62 38 54 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<circle cx="50" cy="60" r="30" fill="#E8503A" stroke="' + INK + '" stroke-width="5"/>'
+        + face(50, 58) + blush(50, 58),
+    },
+    {
+      id: 'brocolis', nome: 'Bia Brócolis', alimento: 'Brócolis', dif: 3,
+      art:
+        '<path d="M42 56 H58 V80 C58 86 54 90 50 90 C46 90 42 86 42 80 Z" fill="#A8CE96" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<g fill="#5CA741" stroke="' + INK + '" stroke-width="4.5">'
+        + '<circle cx="32" cy="42" r="15"/><circle cx="68" cy="42" r="15"/><circle cx="50" cy="30" r="17"/><circle cx="50" cy="48" r="16"/>'
+        + '</g>'
+        + face(50, 44, 0.86),
+    },
+    {
+      id: 'alface', nome: 'Aninha Alface', alimento: 'Alface', dif: 3,
+      art:
+        // Borda de cima ondulada (era um blob liso, não lia como folha) e
+        // nervura só embaixo.
+        '<path d="M20 56 C16 44 24 34 34 34 C36 26 48 24 50 32 C54 24 66 26 66 34 C78 34 84 44 80 56'
+        + ' C84 72 68 86 50 86 C32 86 16 72 20 56 Z"'
+        + ' fill="#5CA741" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<path d="M28 70 C36 66 44 68 50 72 C56 68 64 66 72 70" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
+        + face(50, 54, 0.88) + blush(50, 54, 0.88),
+    },
+    {
+      id: 'abobrinha', nome: 'Aldo Abobrinha', alimento: 'Abobrinha', dif: 3,
+      art:
+        '<path d="M70 20 C74 22 74 28 70 30" fill="none" stroke="#3C7A2C" stroke-width="6" stroke-linecap="round"/>'
+        + '<path d="M30 74 C20 64 26 44 42 34 C58 24 76 26 80 36 C84 46 76 62 60 72 C46 80 36 80 30 74 Z"'
+        + ' fill="#5CA741" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<path d="M40 62 C46 54 56 46 68 42" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
+        + face(52, 52, 0.86),
+    },
+    {
+      id: 'ervilha', nome: 'Edu Ervilha', alimento: 'Ervilha', dif: 3,
+      art:
+        // Vagem na horizontal (era diagonal, e as ervilhas subiam em cima do
+        // rosto). Rosto na parte de cima, ervilhas enfileiradas embaixo.
+        '<path d="M16 50 C16 34 32 24 50 24 C68 24 84 34 84 50 C84 66 68 76 50 76 C32 76 16 66 16 50 Z"'
+        + ' fill="#A8CE96" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + '<g fill="#5CA741" stroke="' + INK + '" stroke-width="4">'
+        + '<circle cx="33" cy="62" r="8"/><circle cx="50" cy="64" r="8"/><circle cx="67" cy="62" r="8"/>'
+        + '</g>'
+        + face(50, 42, 0.78),
+    },
+    {
+      id: 'pimentao', nome: 'Pilar Pimentão', alimento: 'Pimentão', dif: 4,
+      art:
+        stem(50, 16, 30) + leaf(52, 22, false)
+        + '<path d="M50 32 C36 32 24 44 24 60 C24 78 34 88 42 88 C46 88 48 84 50 84 C52 84 54 88 58 88 C66 88 76 78 76 60 C76 44 64 32 50 32 Z"'
+        + ' fill="#E8503A" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(50, 58) + blush(50, 58),
+    },
+    {
+      id: 'beterraba', nome: 'Bruna Beterraba', alimento: 'Beterraba', dif: 4,
+      art:
+        '<path d="M50 38 C46 26 38 18 28 16 C30 28 38 36 46 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 38 C54 26 62 18 72 16 C70 28 62 36 54 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 38 C64 38 74 48 74 62 C74 78 62 90 50 90 C38 90 26 78 26 62 C26 48 36 38 50 38 Z"'
+        + ' fill="#9C4372" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(50, 62, 0.9),
+    },
+    {
+      id: 'berinjela', nome: 'Bernardo Berinjela', alimento: 'Berinjela', dif: 4,
+      art:
+        stem(50, 14, 26)
+        + '<path d="M50 34 C42 28 34 26 26 28 C30 36 38 40 46 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<path d="M50 34 C58 28 66 26 74 28 C70 36 62 40 54 40 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>'
+        + '<ellipse cx="50" cy="64" rx="25" ry="27" fill="#6B4E8C" stroke="' + INK + '" stroke-width="5"/>'
+        + face(50, 62, 0.92),
+    },
+    {
+      id: 'feijao', nome: 'Fabi Feijão', alimento: 'Feijão', dif: 4,
+      art:
+        '<path d="M62 24 C76 30 82 48 74 62 C66 78 46 82 36 72 C28 64 32 54 40 52 C48 50 50 44 46 38 C42 30 52 20 62 24 Z"'
+        + ' fill="#C98B5E" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(58, 50, 0.82) + blush(58, 50, 0.82),
+    },
+  ];
+
+  // Silhueta do bloqueado: mesmo desenho, só que sem cor. Mantém o contorno
+  // (a criança reconhece a forma) mas deixa claro que ainda não é dela.
+  function svgFor(amigo, locked) {
+    var art = amigo.art;
+    if (locked) {
+      // Apaga a cor de fill E de stroke numa passada só. Tem que cobrir os
+      // dois: a banana é desenhada como traço grosso (não como forma
+      // preenchida), então uma regra que só olhasse `fill` deixava ela
+      // amarelinha no meio dos bloqueados.
+      // Contorno e traço escuro viram cinza médio (a silhueta continua
+      // legível); qualquer cor de alimento vira cinza claro (o "vazio").
+      art = art.replace(/(fill|stroke)="(#[0-9A-Fa-f]{3,8})"/g, function (_, attr, hex) {
+        var up = hex.toUpperCase();
+        var escuro = up === '#26302A' || up === '#3C7A2C';
+        if (attr === 'stroke') return 'stroke="' + (escuro ? '#B4BAB1' : '#DCE0D8') + '"';
+        return 'fill="' + (escuro ? '#C9CEC6' : '#DCE0D8') + '"';
+      });
+    }
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + art + '</svg>';
+  }
+
+  global.KPL_AMIGOS = { list: AMIGOS, svgFor: svgFor };
+})(window);

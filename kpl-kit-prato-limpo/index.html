@@ -1,0 +1,2285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KPL - Kit Prato Limpo | Sistema de 86 atividades para destravar a alimentação infantil</title>
+<meta name="description" content="Kit digital com 86 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático pelo WhatsApp após a compra." />
+
+<!-- Open Graph -->
+<meta property="og:type" content="website" />
+<meta property="og:title" content="KPL - Kit Prato Limpo" />
+<meta property="og:description" content="Sistema de 86 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
+<meta property="og:image" content="assets/og-image.png" />
+<meta property="og:url" content="https://kit-prato-limpo.vercel.app" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content="Kit Prato Limpo" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.png" />
+
+<!-- Fonte redonda e amigável (carrega sem bloquear; cai no fallback do sistema se falhar) -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --cream: #FBF8F1;
+    --cream-2: #F4EFE3;
+    --mint: #E8F1DD;
+    --mint-2: #DDEBCE;
+    --green: #5CA741;
+    --green-hover: #4E9235;
+    --green-dark: #3C7A2C;
+    --orange: #F2911F;
+    --orange-soft: #FDEBCF;
+    --coral: #F0673A;
+    --coral-soft: #FBE0D5;
+    --ink: #26302A;
+    --text: #4B564E;
+    --muted: #7C857D;
+    --card: #FFFFFF;
+    --border: #E9E3D5;
+    --shadow: 0 10px 30px rgba(38, 48, 42, 0.08);
+    --shadow-sm: 0 4px 14px rgba(38, 48, 42, 0.06);
+    --radius: 20px;
+    --radius-sm: 14px;
+    --heading: "Baloo 2", system-ui, "Segoe UI", Roboto, sans-serif;
+    --body: "Nunito", system-ui, "Segoe UI", Roboto, sans-serif;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    color: var(--text);
+    background: var(--cream);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, .h { font-family: var(--heading); color: var(--ink); line-height: 1.15; font-weight: 800; }
+
+  .wrap { width: 100%; max-width: 640px; margin: 0 auto; padding: 0 20px; }
+
+  .hl { color: var(--orange); }
+  .hl-green { color: var(--green-dark); }
+
+  section { padding: 48px 0; }
+
+  .eyebrow {
+    display: inline-block;
+    font-family: var(--heading);
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--green-dark);
+    background: var(--mint);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 14px;
+  }
+
+  .section-title { font-size: 1.7rem; text-align: center; margin-bottom: 10px; }
+  .section-sub { text-align: center; color: var(--muted); max-width: 30rem; margin: 0 auto 30px; }
+
+  /* Botões */
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%;
+    min-height: 56px;
+    padding: 14px 22px;
+    font-family: var(--heading);
+    font-weight: 800;
+    font-size: 1.1rem;
+    color: #fff;
+    background: linear-gradient(180deg, #67B84C, var(--green));
+    border: none;
+    border-radius: 999px;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(92, 167, 65, 0.35);
+    transition: transform .15s ease, box-shadow .15s ease, background .15s ease;
+    text-decoration: none;
+    text-align: center;
+  }
+  .btn:hover { background: var(--green-hover); transform: translateY(-1px); box-shadow: 0 10px 24px rgba(92,167,65,.4); }
+  .btn:active { transform: translateY(0); }
+  .btn:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+  .btn--coral { background: linear-gradient(180deg, #F47B52, var(--coral)); box-shadow: 0 8px 20px rgba(240,103,58,.35); }
+  .btn--coral:hover { background: #e15b2e; }
+  .btn-note { text-align: center; font-size: .9rem; color: var(--muted); margin-top: 10px; }
+
+  /* HERO */
+  .hero { background: linear-gradient(180deg, var(--cream), var(--cream-2)); padding: 30px 0 36px; text-align: center; }
+  .hero__badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--orange-soft); color: #a4610a;
+    font-family: var(--heading); font-weight: 700; font-size: .85rem;
+    padding: 8px 16px; border-radius: 999px; margin-bottom: 14px;
+  }
+  /* Marca vira lockup compacto: quem manda acima da dobra agora é a headline. */
+  .hero__brand { display: inline-flex; align-items: baseline; gap: 8px; margin-bottom: 14px; }
+  .hero__kpl {
+    font-family: var(--heading); font-weight: 800; font-size: 1.9rem; line-height: 1;
+    color: var(--green); letter-spacing: .04em;
+    text-shadow: 0 2px 0 rgba(60,122,44,.15);
+  }
+  .hero__full {
+    font-family: var(--heading); font-weight: 700; font-size: .98rem; color: var(--muted);
+    letter-spacing: .01em;
+  }
+  .hero__h1 { font-size: 1.62rem; line-height: 1.14; margin-bottom: 12px; }
+  .hero__sub { font-size: .98rem; color: var(--text); font-weight: 600; margin-bottom: 16px; }
+  .hero__promise {
+    display: flex; gap: 9px; align-items: flex-start; text-align: left;
+    background: var(--orange-soft); border: 1px solid #F6D9A8; border-radius: var(--radius-sm);
+    padding: 12px 14px; margin: 0 auto 18px; max-width: 26rem;
+  }
+  .hero__promise .ic { flex: 0 0 auto; font-size: 1.05rem; line-height: 1.35; }
+  .hero__promise p { font-size: .93rem; font-weight: 700; color: #8A5A0A; line-height: 1.35; }
+  .hero__reinforce {
+    display: flex; flex-wrap: wrap; gap: 8px 14px; justify-content: center;
+    font-size: .95rem; font-weight: 700; color: var(--green-dark); margin: 18px 0 6px;
+  }
+  .hero__reinforce span { display: inline-flex; align-items: center; gap: 6px; }
+
+  /* Mockup placeholder 4:3 */
+  .placeholder {
+    position: relative;
+    width: 100%;
+    background: repeating-linear-gradient(135deg, #fff, #fff 14px, #f6f2e8 14px, #f6f2e8 28px);
+    border: 2px dashed var(--mint-2);
+    border-radius: var(--radius);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center; padding: 18px; color: var(--muted); font-weight: 700;
+    overflow: hidden;
+  }
+  .placeholder small { font-weight: 600; font-size: .78rem; opacity: .8; margin-top: 4px; }
+  .placeholder .ph-icon { font-size: 2rem; margin-bottom: 6px; }
+  .ratio-4-3 { aspect-ratio: 4 / 3; }
+  .ratio-3-4 { aspect-ratio: 3 / 4; }
+  /* 2/3 é a proporção real das páginas do kit (1024x1536). Com 3/4 + cover o
+     navegador cortava a ficha e comia o título ou o rodapé dela. */
+  .previa-img { width: 100%; aspect-ratio: 2 / 3; object-fit: contain; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); display: block; }
+
+  .hero__mockup { margin: 6px 0 24px; box-shadow: var(--shadow); }
+
+  /* ===== APP PREVIEW (moldura de celular com telas girando) ===== */
+  .appdemo { background: var(--mint); }
+  .appdemo-wrap { display: flex; flex-direction: column; align-items: center; }
+  .appdemo-badge {
+    display: inline-flex; align-items: center; gap: 6px; background: var(--coral);
+    color: #fff; font-family: var(--heading); font-weight: 700; font-size: .8rem;
+    padding: 7px 16px; border-radius: 99px; margin-top: 22px;
+  }
+  .appdemo-video {
+    width: 100%; max-width: 300px; aspect-ratio: 9 / 16; object-fit: cover;
+    border-radius: var(--radius); box-shadow: var(--shadow); display: block;
+    flex: 0 0 auto; pointer-events: none;
+  }
+  .ps-topbar {
+    background: var(--green); color: #fff; font-family: var(--heading); font-weight: 800;
+    font-size: .68rem; text-align: center; padding: 20px 0 8px;
+  }
+  .ps-body { padding: 12px 12px 0; display: flex; flex-direction: column; gap: 8px; }
+  .ps-hero {
+    background: var(--green); color: #fff; border-radius: 12px; padding: 14px 12px;
+    text-align: center; margin-bottom: 4px;
+  }
+  .ps-hero .ps-pill {
+    display: inline-block; background: rgba(255,255,255,.2); font-size: .52rem; font-weight: 700;
+    letter-spacing: .03em; text-transform: uppercase; padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;
+  }
+  .ps-hero .ps-hero-title { font-family: var(--heading); font-weight: 800; font-size: .88rem; }
+  .ps-btn {
+    background: var(--green); color: #fff; font-family: var(--heading); font-weight: 700;
+    font-size: .68rem; text-align: center; padding: 10px; border-radius: 8px;
+  }
+  .ps-section-title { font-family: var(--heading); font-weight: 800; font-size: .72rem; color: var(--ink); margin: 2px 0; }
+  .ps-card {
+    background: var(--card); border-radius: 10px; box-shadow: var(--shadow-sm);
+    padding: 8px 10px; display: flex; align-items: center; gap: 8px;
+  }
+  .ps-card .ps-icon {
+    width: 24px; height: 24px; flex: 0 0 24px; background: var(--mint); border-radius: 6px;
+    display: flex; align-items: center; justify-content: center; font-size: .7rem;
+  }
+  .ps-card b { display: block; font-family: var(--heading); font-size: .62rem; color: var(--ink); }
+  .ps-card small { font-size: .56rem; color: var(--muted); }
+  .ps-bonus-hero {
+    background: var(--coral-soft); border-radius: 12px; padding: 14px 10px; text-align: center;
+  }
+  .ps-bonus-hero span { font-size: 1.3rem; display: block; margin-bottom: 4px; }
+  .ps-bonus-hero b { display: block; font-family: var(--heading); font-size: .7rem; color: var(--ink); }
+  .ps-bonus-hero small { font-size: .58rem; color: var(--muted); }
+  .ps-gallery-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+  .ps-gallery-grid img {
+    width: 100%; aspect-ratio: 2 / 3; object-fit: cover; border-radius: 6px;
+    box-shadow: var(--shadow-sm); display: block; background: var(--card);
+  }
+
+  /* REVEAL AO ROLAR (entrada suave conforme a seção aparece na tela) */
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 650ms ease, transform 650ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .reveal.is-visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 90ms; }
+  .reveal-delay-2 { transition-delay: 180ms; }
+  .reveal-delay-3 { transition-delay: 270ms; }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+
+  /* COMO FUNCIONA */
+  .steps { display: flex; flex-direction: column; gap: 16px; }
+  .step {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 18px; box-shadow: var(--shadow-sm);
+  }
+  .step__num {
+    flex: 0 0 auto; width: 44px; height: 44px; border-radius: 12px;
+    background: var(--mint); color: var(--green-dark);
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--heading); font-weight: 800; font-size: 1.4rem;
+  }
+  .step h3 { font-size: 1.1rem; margin-bottom: 2px; }
+  .step p { font-size: .98rem; color: var(--text); }
+
+  /* Seção de dor (agitação) */
+  .dores { background: var(--cream-2); }
+  .dor-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
+  .dor {
+    display: flex; gap: 12px; align-items: flex-start;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px 16px; box-shadow: var(--shadow-sm);
+  }
+  .dor__ic { flex: 0 0 auto; font-size: 1.2rem; line-height: 1.4; }
+  .dor p { font-size: .96rem; color: var(--text); }
+  .dor p strong { color: var(--ink); }
+  .dor-bridge {
+    text-align: center; font-family: var(--heading); font-weight: 700; color: var(--ink);
+    font-size: 1.1rem; margin-top: 22px; line-height: 1.4;
+  }
+  .dor-bridge .hl { color: var(--green-dark); }
+
+  /* Antes vs Depois */
+  .ba { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 4px; }
+  .ba__col { border-radius: var(--radius); padding: 18px 16px; border: 1px solid var(--border); }
+  .ba__col--antes { background: #fff5f2; border-color: #f4c7b8; }
+  .ba__col--depois { background: #f0f7ea; border-color: var(--mint-2); }
+  .ba__head { font-family: var(--heading); font-weight: 800; font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+  .ba__col--antes .ba__head { color: var(--coral); }
+  .ba__col--depois .ba__head { color: var(--green-dark); }
+  .ba__list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 9px; }
+  .ba__list li { font-size: .88rem; line-height: 1.35; color: var(--text); display: flex; gap: 7px; align-items: flex-start; }
+  .ba__list li .ic { flex: 0 0 auto; margin-top: 1px; }
+  @media (max-width: 440px) { .ba { grid-template-columns: 1fr; } }
+
+  /* Isso é pra você se */
+  .praquem-list { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 4px; }
+  .praquem {
+    display: flex; gap: 11px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 13px 15px; box-shadow: var(--shadow-sm);
+  }
+  .praquem .ic { flex: 0 0 auto; font-size: 1.15rem; }
+  .praquem p { font-size: .93rem; color: var(--text); }
+  @media (min-width: 560px) { .praquem-list { grid-template-columns: 1fr 1fr; } }
+
+  /* ÍNDICE DE SINTOMAS (o mecanismo: comportamento -> ficha) */
+  .indice { background: var(--mint); }
+  .indice-map { display: flex; flex-direction: column; gap: 12px; }
+  .indice-row {
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 12px; box-shadow: var(--shadow-sm);
+  }
+  .indice-sintoma { display: flex; gap: 9px; align-items: center; }
+  .indice-sintoma .ic { flex: 0 0 auto; font-size: 1.15rem; }
+  .indice-sintoma p { font-size: .93rem; color: var(--text); font-style: italic; line-height: 1.35; }
+  .indice-arrow { font-family: var(--heading); font-weight: 800; font-size: 1.3rem; color: var(--green); justify-self: center; }
+  .indice-ficha { background: var(--mint); border-radius: 10px; padding: 9px 12px; }
+  .indice-ficha__n {
+    display: block; font-family: var(--heading); font-weight: 800; font-size: .76rem;
+    letter-spacing: .05em; text-transform: uppercase; color: var(--green-dark);
+  }
+  .indice-ficha p { font-family: var(--heading); font-weight: 700; font-size: .95rem; color: var(--ink); line-height: 1.2; }
+  .indice-close { text-align: center; font-size: .96rem; color: var(--text); margin-top: 20px; line-height: 1.45; }
+  .indice-close strong { color: var(--green-dark); }
+  /* No mobile empilha, e a seta gira pra manter a relação "isto leva àquilo". */
+  @media (max-width: 480px) {
+    .indice-row { grid-template-columns: 1fr; gap: 7px; }
+    .indice-arrow { transform: rotate(90deg); font-size: 1.1rem; }
+  }
+
+  /* Banner de preço de hoje */
+  .today-banner {
+    background: var(--ink); color: #fff; border-radius: var(--radius-sm);
+    padding: 12px 16px; text-align: center; font-size: .9rem; margin-bottom: 18px; line-height: 1.4;
+  }
+  .today-banner strong { color: var(--orange); }
+
+  /* Pop-up de downsell */
+  .downsell {
+    position: fixed; inset: 0; z-index: 1000;
+    display: none; align-items: center; justify-content: center;
+    background: rgba(20, 26, 22, .6); backdrop-filter: blur(2px);
+    padding: 20px;
+  }
+  .downsell.show { display: flex; animation: downsell-fade .18s ease; }
+  @keyframes downsell-fade { from { opacity: 0; } to { opacity: 1; } }
+  .downsell__box {
+    background: var(--card); border-radius: var(--radius); width: 100%; max-width: 400px;
+    padding: 26px 22px 22px; text-align: center; position: relative;
+    box-shadow: 0 24px 60px rgba(0,0,0,.35); animation: downsell-pop .22s ease;
+  }
+  @keyframes downsell-pop { from { transform: translateY(14px) scale(.97); opacity: 0; } to { transform: none; opacity: 1; } }
+  .downsell__x {
+    position: absolute; top: 8px; right: 10px; border: none; background: none;
+    font-size: 1.6rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 8px;
+  }
+  .downsell__emoji { font-size: 2.4rem; margin-bottom: 6px; }
+  .downsell__title { font-family: var(--heading); color: var(--ink); font-size: 1.35rem; margin: 0 0 10px; }
+  .downsell__text { font-size: .98rem; color: var(--text); margin: 0 0 16px; line-height: 1.55; }
+  .downsell__price { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-bottom: 4px; }
+  .downsell__old { color: var(--muted); text-decoration: line-through; font-size: 1rem; }
+  .downsell__now { font-family: var(--heading); font-weight: 800; color: var(--green-dark); font-size: 1.7rem; }
+  .downsell__note { font-size: .86rem; color: var(--muted); margin: 0 0 18px; }
+  .downsell__accept { width: 100%; margin-bottom: 10px; }
+  .downsell__skip {
+    display: inline-block; border: none; background: none; cursor: pointer;
+    color: var(--muted); font-size: .9rem; text-decoration: underline; font-family: var(--body);
+  }
+
+  /* Autoridade */
+  .authority {
+    display: inline-flex; align-items: center; gap: 7px; margin: 14px auto 0;
+    background: #fff; border: 1px solid var(--mint-2); border-radius: 999px;
+    padding: 7px 16px; font-size: .82rem; font-weight: 700; color: var(--green-dark);
+  }
+
+  /* Stack de bônus (valores) */
+  .stack {
+    background: #fff; border: 2px dashed var(--mint-2); border-radius: var(--radius);
+    padding: 16px 18px; margin-bottom: 22px;
+  }
+  .stack__title { font-family: var(--heading); font-weight: 800; color: var(--ink); font-size: 1rem; margin-bottom: 10px; text-align: center; }
+  .stack__row { display: flex; justify-content: space-between; align-items: center; gap: 10px; font-size: .9rem; padding: 5px 0; border-bottom: 1px dashed var(--border); }
+  .stack__row:last-of-type { border-bottom: none; }
+  .stack__row .val { color: var(--muted); text-decoration: line-through; font-weight: 700; flex: 0 0 auto; }
+  .stack__sum { display: flex; justify-content: space-between; align-items: baseline; margin-top: 12px; padding-top: 12px; border-top: 2px solid var(--border); }
+  .stack__sum .old { color: var(--muted); text-decoration: line-through; font-weight: 700; font-size: .95rem; }
+  .stack__sum .now { font-family: var(--heading); font-weight: 800; color: var(--green-dark); font-size: 1.5rem; }
+
+  /* Garantia por card */
+  .plano__guarantee { margin-top: 12px; font-size: .78rem; font-weight: 700; color: var(--green-dark); display: flex; align-items: center; gap: 5px; }
+
+  /* ANATOMIA DA FICHA */
+  .anatomia { background: var(--mint); }
+  .ficha {
+    background: var(--card); border-radius: var(--radius);
+    box-shadow: var(--shadow); overflow: hidden; border: 1px solid var(--border);
+  }
+  .ficha__top { background: linear-gradient(120deg, var(--green), #6BB94F); color: #fff; padding: 18px 20px; }
+  .ficha__tag { font-family: var(--heading); font-weight: 700; font-size: .78rem; letter-spacing:.05em; text-transform: uppercase; opacity: .92; }
+  .ficha__title { font-family: var(--heading); font-weight: 800; font-size: 1.35rem; color:#fff; margin-top: 2px; }
+  .ficha__meta { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 20px 4px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--cream-2); border: 1px solid var(--border); border-radius: 999px;
+    padding: 6px 12px; font-size: .85rem; font-weight: 700; color: var(--ink);
+  }
+  .chip b { color: var(--green-dark); }
+  .ficha__body { padding: 8px 20px 22px; }
+  .ficha__block { padding: 14px 0; border-bottom: 1px dashed var(--border); }
+  .ficha__block:last-child { border-bottom: none; }
+  .ficha__label { font-family: var(--heading); font-weight: 700; font-size: .82rem; text-transform: uppercase; letter-spacing:.04em; color: var(--green-dark); margin-bottom: 6px; display: flex; align-items:center; gap:6px; }
+  .ficha__block ul, .ficha__block ol { padding-left: 20px; }
+  .ficha__block li { margin-bottom: 4px; }
+  /* Materiais e passo a passo da ficha */
+  .ficha__materiais { display: flex; flex-wrap: wrap; gap: 7px; }
+  .ficha__materiais span {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--cream-2); border: 1px solid var(--border); border-radius: 999px;
+    padding: 5px 12px; font-size: .84rem; font-weight: 700; color: var(--text);
+  }
+  .ficha__steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  .ficha__steps li { display: flex; gap: 10px; align-items: flex-start; font-size: .93rem; color: var(--text); margin: 0; line-height: 1.4; }
+  .ficha__steps li .sn {
+    flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
+    background: var(--green); color: #fff; font-family: var(--heading); font-weight: 800; font-size: .82rem;
+    display: flex; align-items: center; justify-content: center; margin-top: 1px;
+  }
+  /* Bloco de recusa: é o diferencial mais percebido do produto, então tem
+     tratamento visual próprio (etiqueta + borda forte), não é um bloco comum. */
+  .ficha__recusa {
+    position: relative;
+    background: var(--coral-soft); border: 2px solid #f4a98d; border-radius: var(--radius-sm);
+    padding: 20px 16px 14px; margin: 18px 0 4px;
+  }
+  .ficha__recusa .ficha__label { color: var(--coral); }
+  .ficha__recusa p { color: #8a3417; font-weight: 600; }
+  .ficha__recusa__flag {
+    position: absolute; top: -11px; left: 14px;
+    background: var(--coral); color: #fff; border-radius: 999px;
+    font-family: var(--heading); font-weight: 800; font-size: .7rem;
+    letter-spacing: .05em; text-transform: uppercase; padding: 3px 11px;
+  }
+  .ficha__progresso { display: flex; gap: 10px; align-items: center; background: var(--mint); border-radius: var(--radius-sm); padding: 12px 14px; }
+  .ficha__progresso .tick { flex:0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight: 800; }
+  .anatomia__note { text-align: center; color: var(--green-dark); font-weight: 700; margin-top: 20px; font-size: .98rem; }
+
+  /* Material imprimível dentro da ficha */
+  .worksheet {
+    margin: 4px 0 8px;
+    background: #fff;
+    border: 2px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: 0 8px 22px rgba(38,48,42,.10);
+    overflow: hidden;
+    position: relative;
+  }
+  .worksheet__cut {
+    height: 16px;
+    background:
+      radial-gradient(circle at 8px 16px, transparent 7px, var(--cream-2) 8px) repeat-x;
+    background-size: 16px 16px;
+    border-bottom: 1px dashed #c9cec5;
+  }
+  .worksheet__print {
+    position: absolute; top: 22px; right: 12px; z-index: 2;
+    background: var(--green); color: #fff; font-family: var(--heading); font-weight: 700;
+    font-size: .68rem; padding: 4px 10px; border-radius: 999px; box-shadow: var(--shadow-sm);
+  }
+  .worksheet__head { padding: 14px 16px 6px; }
+  .worksheet__kicker { font-family: var(--heading); font-weight: 700; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
+  .worksheet__title { font-family: var(--heading); font-weight: 800; font-size: 1.25rem; color: var(--ink); line-height: 1.1; }
+  .worksheet__instr { font-size: .9rem; color: var(--text); padding: 2px 16px 10px; }
+  .worksheet__art { padding: 0 12px 10px; }
+  .worksheet__art svg, .worksheet__art img { width: 100%; height: auto; display: block; border-radius: 8px; }
+  .worksheet__digital {
+    margin: 0 16px 14px; text-align: center; font-size: .82rem; font-weight: 700;
+    color: var(--green-dark); background: var(--mint); border-radius: 999px; padding: 8px 14px;
+  }
+  .worksheet__legend {
+    display: flex; flex-wrap: wrap; gap: 6px 10px; justify-content: center;
+    padding: 8px 12px 16px; border-top: 1px dashed var(--border);
+  }
+  .worksheet__legend .lg { display: inline-flex; align-items: center; gap: 6px; font-size: .78rem; font-weight: 700; color: var(--ink); }
+  .worksheet__legend .dot { width: 15px; height: 15px; border-radius: 50%; border: 1.5px solid rgba(0,0,0,.15); }
+  .ficha__variety {
+    display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+    margin: 6px 0 2px;
+  }
+  .ficha__variety span {
+    background: var(--mint); color: var(--green-dark); font-weight: 700; font-size: .8rem;
+    padding: 6px 12px; border-radius: 999px;
+  }
+
+  /* Trilha de progressão (reconhecer → tocar → provar) */
+  .progression { margin-top: 18px; background: var(--mint); border-radius: var(--radius-sm); padding: 16px; }
+  .progression__label { font-family: var(--heading); font-weight: 700; font-size: .85rem; color: var(--green-dark); margin-bottom: 12px; text-align: center; }
+  .progression__rail { display: flex; align-items: center; justify-content: center; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+  .prog-step { display: flex; flex-direction: column; align-items: center; gap: 5px; opacity: .5; }
+  .prog-step.is-current { opacity: 1; }
+  .prog-step__icon {
+    width: 42px; height: 42px; border-radius: 50%; background: #fff; border: 2px solid var(--border);
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem;
+  }
+  .prog-step.is-current .prog-step__icon { background: var(--green); border-color: var(--green); box-shadow: 0 4px 12px rgba(92,167,65,.35); }
+  .prog-step__name { font-family: var(--heading); font-weight: 700; font-size: .76rem; color: var(--ink); }
+  .prog-step__arrow { color: var(--muted); font-weight: 700; padding-bottom: 20px; }
+  .progression__note { font-size: .88rem; color: var(--text); text-align: center; }
+
+  /* BLOCOS */
+  .blocos-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .bloco {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 18px; box-shadow: var(--shadow-sm); position: relative;
+  }
+  .bloco__head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+  .bloco__num {
+    font-family: var(--heading); font-weight: 800; font-size: 1.1rem; color:#fff;
+    background: var(--green); width: 34px; height: 34px; border-radius: 10px;
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;
+  }
+  .bloco__name { font-family: var(--heading); font-weight: 800; font-size: 1.06rem; color: var(--ink); }
+  .bloco__count { display:inline-block; background: var(--orange-soft); color:#a4610a; font-weight:800; font-size:.78rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 8px; }
+  .bloco p { font-size: .95rem; color: var(--text); }
+  .blocos-total {
+    margin-top: 20px; text-align: center; background: var(--ink); color: #fff;
+    border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+  }
+  .blocos-total .num { font-family: var(--heading); font-weight: 800; font-size: 3rem; color: #fff; line-height: 1; }
+  .blocos-total .num .plus { color: var(--orange); }
+  .blocos-total p { color: #d7dcd6; margin-top: 4px; font-weight: 600; }
+
+  /* MATERIAIS */
+  .materiais { background: var(--mint); }
+  .mat-list { display: flex; flex-direction: column; gap: 12px; }
+  .mat {
+    display: flex; gap: 14px; align-items: flex-start;
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 16px; box-shadow: var(--shadow-sm);
+  }
+  .mat__icon { flex:0 0 auto; width: 46px; height: 46px; border-radius: 12px; background: var(--mint); display:flex; align-items:center; justify-content:center; font-size: 1.5rem; }
+  .mat h3 { font-size: 1.02rem; margin-bottom: 2px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .mat p { font-size: .92rem; color: var(--text); }
+  .mat__tag { background: var(--orange-soft); color:#a4610a; font-size:.62rem; font-weight:800; padding:2px 8px; border-radius: 999px; text-transform: uppercase; letter-spacing: .03em; }
+  .mat-subtitle { font-family: var(--heading); font-weight: 700; font-size: .95rem; color: var(--ink); margin: 22px 0 10px; }
+  /* Bônus principal: os outros bônus são material impresso, este é a coisa que
+     a criança usa. Precisa pesar mais que os vizinhos na hierarquia visual,
+     senão vira mais uma linha da lista (foi exatamente esse o problema: cliente
+     com os bônus em mãos achando que não recebeu). */
+  .mat--star {
+    display: block; background: linear-gradient(160deg, #F1F8EA, #FFF); border: 2px solid var(--green);
+    padding: 18px;
+  }
+  .mat--star .mat__top { display: flex; gap: 14px; align-items: flex-start; }
+  .mat--star .mat__icon { background: var(--green); font-size: 1.7rem; width: 52px; height: 52px; }
+  .mat--star .mat__tag { background: var(--green); color: #fff; }
+  .mat__amigos { display: flex; gap: 5px; margin-top: 12px; flex-wrap: wrap; justify-content: center; }
+  .mat__amigos svg { width: 40px; height: 40px; }
+  .mat__amigos .more { font-size: .8rem; font-weight: 800; color: var(--green-dark); align-self: center; }
+
+  /* PREVIA */
+  .previa-scroll {
+    display: flex; gap: 14px; overflow-x: auto; padding: 4px 4px 16px;
+    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+  }
+  .previa-scroll::-webkit-scrollbar { height: 6px; }
+  .previa-scroll::-webkit-scrollbar-thumb { background: var(--mint-2); border-radius: 999px; }
+  .previa-item { flex: 0 0 68%; max-width: 260px; scroll-snap-align: center; }
+  .previa-item figcaption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 8px; font-weight: 600; }
+
+  /* DEPOIMENTOS */
+  .depos { background: var(--cream-2); }
+  .stories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .story-card {
+    min-height: 260px; display: flex; flex-direction: column; justify-content: space-between;
+    padding: 24px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+  }
+  .story-featured { background: var(--coral-soft); transform: rotate(-1.5deg); }
+  .story-quote { height: 40px; color: var(--coral); font-family: Georgia, serif; font-size: 4rem; line-height: .9; }
+  .story-card p { margin: 12px 0 20px; font-size: .98rem; color: var(--text); line-height: 1.55; }
+  .story-footer {
+    display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 11px;
+    padding-top: 16px; border-top: 1px solid var(--border);
+  }
+  .story-featured .story-footer { border-top-color: rgba(38, 48, 42, 0.16); }
+  .story-footer img,
+  .story-footer .depo__avatar {
+    width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink); flex: 0 0 auto;
+  }
+  .story-footer img { object-fit: cover; }
+  .story-footer .depo__avatar {
+    display: flex; align-items: center; justify-content: center; background: var(--mint-2);
+    font-weight: 800; color: var(--green-dark);
+  }
+  .story-footer span { display: grid; }
+  .story-footer b { font-family: var(--heading); font-size: .88rem; color: var(--ink); }
+  .story-footer small { color: var(--muted); font-size: .76rem; }
+  .story-footer i { grid-column: 2; color: var(--orange); font-size: .78rem; font-style: normal; letter-spacing: .04em; }
+  @media (max-width: 640px) {
+    .stories-grid { grid-template-columns: 1fr; }
+    .story-featured { transform: none; }
+    .story-card { padding: 20px; }
+  }
+
+  /* GARANTIA */
+  .garantia-box {
+    background: var(--card); border: 2px solid var(--green); border-radius: var(--radius);
+    padding: 28px 22px; text-align: center; box-shadow: var(--shadow); position: relative;
+  }
+  .garantia-box .seal { font-size: 2.6rem; margin-bottom: 8px; }
+  .garantia-box h2 { font-size: 1.5rem; margin-bottom: 10px; }
+  .garantia-box p { color: var(--text); }
+  .garantia-box .support { margin-top: 14px; font-weight: 700; color: var(--green-dark); font-size: .95rem; }
+
+  /* CHECKOUT */
+  .checkout { background: var(--mint); }
+  .checkout-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow);
+  }
+  .field { margin-bottom: 14px; }
+  .field label { display: block; font-weight: 700; color: var(--ink); font-size: .92rem; margin-bottom: 6px; }
+  .field input {
+    width: 100%; min-height: 52px; padding: 12px 14px;
+    font-family: var(--body); font-size: 16px; color: var(--ink);
+    background: var(--cream); border: 2px solid var(--border); border-radius: 12px;
+    transition: border-color .15s ease;
+  }
+  .field input:focus { outline: none; border-color: var(--green); }
+  .field input:focus-visible { outline: 3px solid var(--orange); outline-offset: 1px; }
+  .field input[aria-invalid="true"] { border-color: var(--coral); background: #fdf3ef; }
+  .field .err { color: var(--coral); font-size: .82rem; font-weight: 700; margin-top: 5px; display: none; }
+  .field.invalid .err { display: block; }
+
+  .pay-method { display: flex; gap: 10px; margin: 4px 0 20px; }
+  .pay-opt {
+    flex: 1; border: 2px solid var(--green); background: var(--mint); border-radius: 12px;
+    padding: 12px; text-align: center; font-weight: 800; color: var(--green-dark);
+    font-family: var(--heading); display: flex; flex-direction: column; align-items: center; gap: 4px;
+  }
+  .pay-opt small { font-weight: 600; font-size: .72rem; color: var(--green-dark); }
+
+  .pay-steps { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 18px; }
+  .pay-step {
+    display: flex; align-items: center; gap: 10px; font-size: .88rem; color: var(--text);
+    background: var(--cream-2); border-radius: 10px; padding: 9px 12px;
+  }
+  .pay-step__n {
+    flex: 0 0 auto; width: 20px; height: 20px; border-radius: 50%; background: var(--green);
+    color: #fff; font-weight: 800; font-size: .75rem; display: flex; align-items: center; justify-content: center;
+  }
+
+  /* Planos (2 tiers) */
+  .planos { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 22px; }
+  .plano {
+    position: relative; border: 2px solid var(--border); border-radius: var(--radius);
+    background: #fff; padding: 20px 16px 16px; cursor: pointer; display: flex; flex-direction: column;
+    transition: border-color .15s ease, box-shadow .15s ease, transform .15s ease;
+  }
+  .plano:hover { border-color: var(--mint-2); }
+  .plano.selected { border-color: var(--green); box-shadow: 0 10px 26px rgba(92,167,65,.20); }
+  .plano.plano--premium { border-color: var(--orange); }
+  .plano.plano--premium.selected { border-color: var(--green); }
+  .plano__badge {
+    position: absolute; top: -11px; left: 50%; transform: translateX(-50%); white-space: nowrap;
+    background: var(--orange); color: #fff; font-family: var(--heading); font-weight: 800;
+    font-size: .68rem; letter-spacing: .04em; text-transform: uppercase; padding: 4px 12px; border-radius: 999px;
+  }
+  .plano__radio {
+    position: absolute; top: 14px; right: 14px; width: 22px; height: 22px; border-radius: 50%;
+    border: 2px solid var(--border); background: #fff; transition: all .15s ease;
+  }
+  .plano.selected .plano__radio { border-color: var(--green); background: var(--green); box-shadow: inset 0 0 0 4px #fff; }
+  .plano__name { font-family: var(--heading); font-weight: 800; color: var(--ink); font-size: 1.05rem; margin-bottom: 2px; }
+  .plano__tagline { font-size: .8rem; color: var(--muted); margin-bottom: 12px; min-height: 2.2em; }
+  .plano__price { font-family: var(--heading); font-weight: 800; color: var(--green-dark); font-size: 1.9rem; line-height: 1; }
+  .plano__price .cents { font-size: 1rem; }
+  .plano__price-old { color: var(--muted); text-decoration: line-through; font-size: .85rem; font-weight: 700; margin-bottom: 2px; }
+  .plano__list { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 7px; }
+  .plano__list li { font-size: .84rem; color: var(--text); display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; }
+  .plano__list li .ic { flex: 0 0 auto; margin-top: 1px; }
+  .plano__list li.off {
+    color: var(--muted); opacity: .7;
+    text-decoration: line-through; text-decoration-color: #D64545; text-decoration-thickness: 1.5px;
+  }
+  .plano__list li.off .ic { text-decoration: none; }
+  .plano__hl { background: linear-gradient(transparent 60%, var(--orange-soft) 60%); font-weight: 700; }
+  @media (max-width: 420px) {
+    .planos { grid-template-columns: 1fr; }
+    .plano__tagline { min-height: 0; }
+  }
+
+  /* Order bumps */
+  .bumps { margin: 8px 0 18px; }
+  .bumps-title { font-family: var(--heading); font-weight: 700; font-size: .95rem; color: var(--ink); margin-bottom: 10px; display:flex; align-items:center; gap: 8px; }
+  .bump {
+    display: block; position: relative; cursor: pointer;
+    border: 2px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px 14px 14px 46px; margin-bottom: 10px;
+    background: var(--cream); transition: border-color .15s ease, background .15s ease, box-shadow .15s ease;
+  }
+  .bump:hover { border-color: var(--mint-2); }
+  .bump.checked { border-color: var(--green); background: #fff; box-shadow: 0 6px 16px rgba(92,167,65,.15); }
+  .bump input { position: absolute; left: 14px; top: 16px; width: 22px; height: 22px; accent-color: var(--green); cursor: pointer; }
+  .bump__name { font-family: var(--heading); font-weight: 700; color: var(--ink); font-size: 1rem; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .bump__tag { background: var(--orange-soft); color:#a4610a; font-size:.68rem; font-weight:800; padding:2px 8px; border-radius: 999px; text-transform: uppercase; }
+  .bump__desc { font-size: .88rem; color: var(--text); margin: 3px 0 6px; }
+  .bump__price { font-weight: 800; color: var(--green-dark); font-size: .95rem; }
+  .bump__price .old { color: var(--muted); text-decoration: line-through; font-weight: 700; margin-right: 6px; }
+
+  /* Resumo */
+  .resumo { background: var(--cream-2); border-radius: var(--radius-sm); padding: 16px; margin-bottom: 16px; }
+  .resumo-line { display: flex; justify-content: space-between; font-size: .95rem; padding: 4px 0; color: var(--text); }
+  .resumo-line.total { border-top: 2px dashed var(--border); margin-top: 8px; padding-top: 12px; font-family: var(--heading); font-weight: 800; font-size: 1.25rem; color: var(--ink); }
+
+  .secure-badges { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; color: var(--muted); font-size: .82rem; font-weight: 700; }
+  .secure-badges span { display: inline-flex; align-items: center; gap: 5px; }
+  .pay-note { text-align: center; color: var(--muted); font-size: .78rem; margin: 10px auto 0; max-width: 32rem; line-height: 1.5; }
+
+  /* Selo do Pix: indica o meio de pagamento real do checkout (não é um
+     "selo de certificação" de terceiro, é a bandeira de pagamento mesmo,
+     igual mostrar Visa/Master num checkout de cartão). */
+  .pix-trust {
+    display: flex; align-items: center; gap: 10px; background: #E6F8F6;
+    border: 1px solid #B7EAE5; border-radius: var(--radius-sm);
+    padding: 10px 14px; margin-bottom: 12px;
+  }
+  .pix-trust__icon {
+    flex: 0 0 34px; width: 34px; height: 34px; border-radius: 50%;
+    background: #32BCAD; display: flex; align-items: center; justify-content: center;
+  }
+  .pix-trust__text { font-size: .8rem; color: #1F6E66; line-height: 1.4; }
+  .pix-trust__text b { color: #17504A; font-family: var(--heading); }
+
+  .api-error {
+    display: none; background: var(--coral-soft); border: 1px solid #f4a98d; color: #8a3417;
+    border-radius: 12px; padding: 12px 14px; font-size: .9rem; font-weight: 700; margin-bottom: 14px;
+  }
+  .api-error.show { display: block; }
+
+  /* PIX area */
+  .pix-area { display: none; text-align: center; }
+  .pix-area.show { display: block; }
+  .pix-qr {
+    width: 220px; height: 220px; margin: 6px auto 16px; background: #fff;
+    border: 2px solid var(--border); border-radius: 16px; padding: 10px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .pix-qr img { width: 100%; height: 100%; object-fit: contain; }
+  .pix-copy-wrap { display: flex; gap: 8px; margin: 10px 0; }
+  .pix-code {
+    flex: 1; min-width: 0; padding: 12px; font-size: .82rem; color: var(--ink);
+    background: var(--cream); border: 2px solid var(--border); border-radius: 12px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace;
+  }
+  .pix-copy-btn { flex: 0 0 auto; min-height: 48px; padding: 0 18px; }
+  .pix-status { display: inline-flex; align-items: center; gap: 8px; color: var(--green-dark); font-weight: 700; margin-top: 8px; }
+  .spinner { width: 16px; height: 16px; border: 3px solid var(--mint-2); border-top-color: var(--green); border-radius: 50%; animation: spin 1s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Success */
+  .success { display: none; text-align: center; padding: 10px 0; }
+  .success.show { display: block; }
+  .success .check { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size: 2.4rem; box-shadow: 0 8px 20px rgba(92,167,65,.35); }
+  .success h2 { font-size: 1.5rem; margin-bottom: 10px; }
+
+  /* FAQ */
+  .faq-item { border-bottom: 1px solid var(--border); }
+  .faq-q {
+    width: 100%; text-align: left; background: none; border: none; cursor: pointer;
+    padding: 18px 0; font-family: var(--heading); font-weight: 700; font-size: 1.05rem; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .faq-q:focus-visible { outline: 3px solid var(--orange); outline-offset: 2px; border-radius: 6px; }
+  .faq-q .ico { flex: 0 0 auto; width: 28px; height: 28px; border-radius: 50%; background: var(--mint); color: var(--green-dark); display:flex; align-items:center; justify-content:center; font-weight: 800; transition: transform .2s ease; }
+  .faq-item.open .faq-q .ico { transform: rotate(45deg); }
+  .faq-a { max-height: 0; overflow: hidden; transition: max-height .25s ease; }
+  .faq-a p { padding: 0 0 18px; color: var(--text); }
+
+  /* Footer */
+  footer { background: var(--ink); color: #c9cfc8; padding: 34px 0; font-size: .88rem; }
+  footer a { color: #e8ede6; text-decoration: underline; }
+  footer .foot-links { display: flex; flex-wrap: wrap; gap: 8px 18px; margin: 10px 0; }
+  footer .disclaimer { margin-top: 14px; font-size: .8rem; color: #969d95; line-height: 1.5; }
+
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  @media (min-width: 720px) {
+    .hero__kpl { font-size: 2rem; }
+    .hero__full { font-size: 1.1rem; }
+    .hero__h1 { font-size: 2.3rem; }
+    .hero__sub { font-size: 1.08rem; }
+    .section-title { font-size: 2rem; }
+    .blocos-grid { grid-template-columns: 1fr 1fr; }
+    .steps { flex-direction: row; }
+    .step { flex-direction: column; text-align: center; align-items: center; }
+    .previa-item { flex-basis: 220px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= 1. HERO ======================= -->
+<header class="hero" id="hero">
+  <div class="wrap">
+    <span class="hero__badge">🍓 Kit digital · recebimento automático no WhatsApp</span>
+    <div class="hero__brand">
+      <span class="hero__kpl">KPL</span>
+      <span class="hero__full">Kit Prato Limpo</span>
+    </div>
+    <h1 class="hero__h1">Descubra em 2 minutos qual atividade <span class="hl">destrava a alimentação</span> do seu filho hoje</h1>
+    <p class="hero__sub">86 situações catalogadas em fichas de aplicação direta. Você localiza o comportamento da sua criança e vai direto para o que fazer.</p>
+    <div class="hero__promise">
+      <span class="ic">🍽️</span>
+      <p>A primeira ficha você aplica no jantar de hoje, com o que já tem na cozinha.</p>
+    </div>
+
+    <a href="#checkout" class="btn" data-cta="hero">Quero começar agora →</a>
+    <p class="btn-note">Pagamento único · recebimento automático, sem enrolação</p>
+
+    <div class="hero__reinforce">
+      <span>🖐️ Aplicável hoje</span>
+      <span>🧩 Atividades de brincar</span>
+      <span>📱 No celular ou impresso</span>
+    </div>
+    <figure class="hero__mockup ratio-4-3">
+      <img src="assets/mockup-hero.jpg" alt="Mockup do Kit Prato Limpo: fichas de atividade, calendário, cartelas de alimentos e tablet com a versão digital" style="width:100%; height:100%; object-fit:cover; border-radius: var(--radius); display:block;" fetchpriority="high" />
+    </figure>
+  </div>
+</header>
+
+<!-- ======================= 1.2 O MECANISMO: ÍNDICE DE SINTOMAS ======================= -->
+<section id="indice" class="indice">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">O mecanismo</span>
+    </div>
+    <h2 class="section-title">Como o kit <span class="hl">encontra a ficha certa</span></h2>
+    <p class="section-sub">Você não procura no escuro. Parte do comportamento que já vê em casa.</p>
+
+    <div class="indice-map">
+      <div class="indice-row">
+        <div class="indice-sintoma">
+          <span class="ic">😝</span>
+          <p>"Ela cospe qualquer alimento novo"</p>
+        </div>
+        <span class="indice-arrow" aria-hidden="true">→</span>
+        <div class="indice-ficha">
+          <span class="indice-ficha__n">Ficha 12</span>
+          <p>Exposição sem pressão</p>
+        </div>
+      </div>
+      <div class="indice-row">
+        <div class="indice-sintoma">
+          <span class="ic">📺</span>
+          <p>"Só come se for na frente da TV"</p>
+        </div>
+        <span class="indice-arrow" aria-hidden="true">→</span>
+        <div class="indice-ficha">
+          <span class="indice-ficha__n">Ficha 34</span>
+          <p>Reconstrução do ambiente de refeição</p>
+        </div>
+      </div>
+      <div class="indice-row">
+        <div class="indice-sintoma">
+          <span class="ic">🥦</span>
+          <p>"Recusa tudo que é verde"</p>
+        </div>
+        <span class="indice-arrow" aria-hidden="true">→</span>
+        <div class="indice-ficha">
+          <span class="indice-ficha__n">Ficha 07</span>
+          <p>Dessensibilização por cor</p>
+        </div>
+      </div>
+    </div>
+
+    <p class="indice-close">O índice de consulta rápida cobre as <strong>86 situações</strong>. Você não precisa ler o kit inteiro para começar.</p>
+  </div>
+</section>
+
+<!-- ======================= 1.5 A DOR (agitação + identificação) ======================= -->
+<section id="dores" class="dores">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Talvez você se reconheça</span>
+    </div>
+    <h2 class="section-title">A hora da comida virou <span class="hl">o pior momento</span> do dia?</h2>
+    <p class="section-sub">Se a cena abaixo é a sua rotina, o problema não é o seu filho, e nem você.</p>
+
+    <div class="dor-list">
+      <div class="dor">
+        <span class="dor__ic">😮‍💨</span>
+        <p>Toda refeição vira <strong>negociação, choro e barganha</strong>, e você acaba cedendo pra criança comer qualquer coisa.</p>
+      </div>
+      <div class="dor">
+        <span class="dor__ic">🗑️</span>
+        <p>Você cozinha, ela recusa, e a comida vai <strong>direto pro lixo</strong>. É dinheiro e tempo indo embora todo dia.</p>
+      </div>
+      <div class="dor">
+        <span class="dor__ic">😟</span>
+        <p>Bate aquela <strong>culpa e o medo</strong>: "será que ele está se nutrindo? será que fiz algo errado?"</p>
+      </div>
+      <div class="dor">
+        <span class="dor__ic">⏰</span>
+        <p>Você <strong>não tem tempo</strong> de inventar uma estratégia nova a cada refeição, entre trabalho, casa e mil tarefas.</p>
+      </div>
+      <div class="dor">
+        <span class="dor__ic">🤷‍♀️</span>
+        <p>Já ouviu de tudo (<strong>"é só ter paciência", "uma hora ele come"</strong>) e nada disso resolveu de verdade.</p>
+      </div>
+    </div>
+
+    <p class="section-sub" style="margin-top:32px">E o seu filho, faz alguma coisa dessas?</p>
+    <div class="praquem-list">
+      <div class="praquem"><span class="ic">🍚</span><p>Só come um punhado de alimentos, quase sempre os brancos (arroz, pão, macarrão)</p></div>
+      <div class="praquem"><span class="ic">🥦</span><p>Recusa quase tudo que é verde ou colorido</p></div>
+      <div class="praquem"><span class="ic">😝</span><p>Cospe ou empurra pedaços com textura diferente</p></div>
+      <div class="praquem"><span class="ic">📺</span><p>Só come distraído, na frente da TV ou do celular</p></div>
+      <div class="praquem"><span class="ic">😭</span><p>Faz drama, chora ou fecha a boca na hora da comida</p></div>
+      <div class="praquem"><span class="ic">🔄</span><p>Come bem um dia e no outro rejeita tudo o que aceitava</p></div>
+    </div>
+
+    <p class="dor-bridge">A seletividade não se quebra na marra. Se quebra com <span class="hl">aproximação, no ritmo da criança</span>. E é exatamente isso que o Kit faz por você.</p>
+  </div>
+</section>
+
+<!-- ======================= 1.6 ANTES vs DEPOIS ======================= -->
+<section id="antesdepois">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">A virada</span>
+    </div>
+    <h2 class="section-title">Como a sua rotina <span class="hl">pode mudar</span></h2>
+    <p class="section-sub">Não é mágica, e não é da noite pro dia. Mas o caminho fica assim:</p>
+
+    <div class="ba">
+      <div class="ba__col ba__col--antes">
+        <div class="ba__head">😣 Hoje</div>
+        <ul class="ba__list">
+          <li><span class="ic">✗</span>Toda refeição vira briga, choro e barganha</li>
+          <li><span class="ic">✗</span>Você cozinha e a comida vai pro lixo</li>
+          <li><span class="ic">✗</span>O prato dela tem sempre os mesmos 3 ou 4 alimentos</li>
+          <li><span class="ic">✗</span>Você força, suborna, distrai, e nada dura</li>
+          <li><span class="ic">✗</span>Sobra culpa e a sensação de que nada funciona</li>
+        </ul>
+      </div>
+      <div class="ba__col ba__col--depois">
+        <div class="ba__head">🥰 Com o Kit</div>
+        <ul class="ba__list">
+          <li><span class="ic">✓</span>A criança chega perto do alimento sem crise</li>
+          <li><span class="ic">✓</span>Ela participa, brinca e experimenta no ritmo dela</li>
+          <li><span class="ic">✓</span>Alimentos novos entram no prato, de pouquinho</li>
+          <li><span class="ic">✓</span>Você tem um caminho claro pra seguir cada dia</li>
+          <li><span class="ic">✓</span>A mesa vira um momento mais leve pra todo mundo</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 2. COMO FUNCIONA ======================= -->
+<section id="como">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Como usar</span>
+    </div>
+    <h2 class="section-title">Feito para <span class="hl">usar</span>, não para ler</h2>
+    <p class="section-sub">Você não vai estudar nada. Em 3 passos já está aplicando com o seu filho.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step__num">1</div>
+        <div>
+          <h3>Abra o índice</h3>
+          <p>Encontre a situação do seu filho em segundos.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">2</div>
+        <div>
+          <h3>Escolha a ficha</h3>
+          <p>Já indicada para a idade dele.</p>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step__num">3</div>
+        <div>
+          <h3>Aplique em 10 min</h3>
+          <p>Com o que você já tem em casa.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 3. ANATOMIA DE UMA FICHA ======================= -->
+<section id="ficha" class="anatomia">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Por dentro</span>
+    </div>
+    <h2 class="section-title">Uma ficha inteira cabe em <span class="hl">uma página</span></h2>
+    <p class="section-sub">Toda ficha é padronizada. Você bate o olho e sabe exatamente o que fazer.</p>
+
+    <article class="ficha">
+      <div class="ficha__top">
+        <div class="ficha__tag">Bloco 8 · Aproximação sensorial · Ficha 02</div>
+        <div class="ficha__title">O prato que virou rosto</div>
+      </div>
+
+      <div class="ficha__meta">
+        <span class="chip">👶 <b>Idade:</b>&nbsp;3 a 7 anos</span>
+        <span class="chip">⏱️ <b>Tempo:</b>&nbsp;10 minutos</span>
+        <span class="chip">🖍️ <b>É só imprimir</b></span>
+        <span class="chip">🔍 <b>Nível 1:</b>&nbsp;reconhecimento</span>
+      </div>
+
+      <div class="ficha__body">
+        <!-- O ENTREGÁVEL: atividade pronta para imprimir -->
+        <div class="worksheet">
+          <div class="worksheet__cut"></div>
+          <div class="worksheet__print">🖨️ Pronta pra imprimir</div>
+          <div class="worksheet__head">
+            <div class="worksheet__kicker">Atividade · Kit Prato Limpo</div>
+            <div class="worksheet__title">Pinte o prato divertido</div>
+          </div>
+          <p class="worksheet__instr">Pinte cada parte do rostinho com a cor do alimento de verdade. Depois, montem juntos o mesmo rosto no prato de comer.</p>
+          <div class="worksheet__art">
+            <img src="assets/ficha-exemplo-prato.jpg" alt="Atividade para pintar: um rosto feito de alimentos em um prato" loading="lazy" />
+          </div>
+          <p class="worksheet__digital">📱 Sem impressora? Sem problema: dá pra pintar direto na tela do celular ou tablet, com o dedo mesmo.</p>
+          <div class="worksheet__legend">
+            <span class="lg"><span class="dot" style="background:#e8503a"></span>Tomate</span>
+            <span class="lg"><span class="dot" style="background:#f2911f"></span>Cenoura</span>
+            <span class="lg"><span class="dot" style="background:#5ca741"></span>Brócolis</span>
+            <span class="lg"><span class="dot" style="background:#f4c430"></span>Banana</span>
+            <span class="lg"><span class="dot" style="background:#f0a5b0"></span>Bochechas</span>
+          </div>
+        </div>
+
+        <div class="ficha__block">
+          <div class="ficha__label">🧺 Materiais necessários</div>
+          <div class="ficha__materiais">
+            <span>🖨️ A ficha impressa (ou a tela do celular)</span>
+            <span>🖍️ Lápis de cor ou canetinha</span>
+            <span>🥕 Os alimentos de verdade da atividade</span>
+          </div>
+        </div>
+
+        <div class="ficha__block">
+          <div class="ficha__label">📋 Passo a passo</div>
+          <ol class="ficha__steps">
+            <li><span class="sn">1</span>Imprima a ficha ou abra a atividade na tela do celular.</li>
+            <li><span class="sn">2</span>Deixe os alimentos de verdade na mesa, ao lado da folha, só para olhar.</li>
+            <li><span class="sn">3</span>Peça para a criança pintar cada parte do rostinho com a cor do alimento correspondente.</li>
+            <li><span class="sn">4</span>Enquanto ela pinta, pergunte o nome e a cor de cada alimento.</li>
+            <li><span class="sn">5</span>No fim, montem juntos o mesmo rostinho no prato de comer.</li>
+          </ol>
+        </div>
+
+        <p style="text-align:center; font-weight:700; color:var(--green-dark); font-size:.9rem; margin: 12px 0 2px;">E toda ficha traz uma atividade pronta assim, sempre diferente:</p>
+        <div class="ficha__variety">
+          <span>🎨 pra pintar</span>
+          <span>🧩 jogos</span>
+          <span>🔍 caça-alimentos</span>
+          <span>✂️ pra recortar</span>
+        </div>
+
+        <div class="progression">
+          <div class="progression__label">📈 Como o kit evolui</div>
+          <div class="progression__rail">
+            <div class="prog-step is-current">
+              <span class="prog-step__icon">👀</span>
+              <span class="prog-step__name">Reconhecer</span>
+            </div>
+            <span class="prog-step__arrow">→</span>
+            <div class="prog-step">
+              <span class="prog-step__icon">🖐️</span>
+              <span class="prog-step__name">Tocar</span>
+            </div>
+            <span class="prog-step__arrow">→</span>
+            <div class="prog-step">
+              <span class="prog-step__icon">👅</span>
+              <span class="prog-step__name">Provar</span>
+            </div>
+          </div>
+          <p class="progression__note">Esta ficha é a porta de entrada: só reconhecimento visual, sem nenhuma pressão. Conforme o bloco avança, as atividades passam a envolver tocar, cheirar e, no fim, provar o alimento de verdade. Tudo no ritmo da criança.</p>
+        </div>
+
+        <!-- E ainda vem com a orientação padronizada -->
+        <div class="ficha__block">
+          <div class="ficha__label">🎯 Objetivo</div>
+          <p>Fazer a criança observar e nomear a cor de cada alimento real enquanto pinta, criando familiaridade antes de provar.</p>
+        </div>
+
+        <div class="ficha__recusa">
+          <span class="ficha__recusa__flag">Toda ficha tem</span>
+          <div class="ficha__label">🚫 O que fazer se a criança recusar</div>
+          <p>Comece você. Pinte um pedacinho e pergunte "de que cor é o tomate?". Deixe os alimentos de verdade ao lado, como modelo. A curiosidade quase sempre vence em poucos minutos.</p>
+        </div>
+
+        <div class="ficha__block" style="border-bottom:none; padding-bottom: 4px;">
+          <div class="ficha__progresso">
+            <span class="tick">✓</span>
+            <div>
+              <div class="ficha__label" style="margin-bottom:2px;">Sinal de progresso</div>
+              <p style="font-size:.9rem">A criança pintou e nomeou pelo menos um alimento sem resistência. Isso já conta como avanço.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <p class="anatomia__note">✨ As 86 fichas seguem exatamente esse mesmo padrão. Todas funcionam tanto impressas quanto direto na tela do celular ou tablet.</p>
+  </div>
+</section>
+
+<!-- ======================= 4. OS 8 BLOCOS ======================= -->
+<section id="blocos">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">O sistema</span>
+    </div>
+    <h2 class="section-title">Os <span class="hl">8 blocos</span> do sistema</h2>
+    <p class="section-sub">Cada bloco ataca um lado da seletividade. Juntos, formam um caminho completo.</p>
+
+    <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
+
+    <div class="blocos-total">
+      <div class="num"><span class="plus">+</span><span id="total-atividades">86</span></div>
+      <p>atividades prontas para aplicar</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 5. MATERIAIS INCLUSOS ======================= -->
+<section id="materiais" class="materiais">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Vai muito além das fichas</span>
+    </div>
+    <h2 class="section-title">Tudo que vem <span class="hl">no kit</span></h2>
+
+    <p class="mat-subtitle">Materiais de apoio do sistema</p>
+    <div class="mat-list">
+      <div class="mat">
+        <div class="mat__icon">🔎</div>
+        <div><h3>Índice por situação</h3><p>Não come verdura, só come branco, cospe pedaço, só come na frente da TV. Vá direto ao que precisa.</p></div>
+      </div>
+      <div class="mat">
+        <div class="mat__icon">✅</div>
+        <div><h3>Guia rápido de mesa</h3><p>O que fazer e o que nunca fazer na hora da refeição, em uma página de consulta.</p></div>
+      </div>
+    </div>
+
+    <p class="mat-subtitle">De bônus, você ainda leva</p>
+    <div class="mat-list">
+      <div class="mat mat--star">
+        <div class="mat__top">
+          <div class="mat__icon">🎲</div>
+          <div>
+            <h3>O jogo do Prato Limpo <span class="mat__tag">No app</span></h3>
+            <p>A criança gira a roleta e sorteia a missão do dia, direto do celular, sem precisar imprimir nada. Cada alimento novo que ela provar liberta um personagem para a turma dela. São 20 amigos para colecionar.</p>
+          </div>
+        </div>
+        <div class="mat__amigos" id="mat-amigos"></div>
+        <script src="assets/amigos.js" defer></script>
+      </div>
+      <div class="mat">
+        <div class="mat__icon">📅</div>
+        <div><h3>Calendário de 30 dias <span class="mat__tag">Bônus</span></h3><p>Uma atividade por dia, já na ordem certa. É só imprimir e seguir.</p></div>
+      </div>
+      <div class="mat">
+        <div class="mat__icon">🃏</div>
+        <div><h3>Cartelas recortáveis <span class="mat__tag">Bônus</span></h3><p>As atividades em formato de cartão, para sortear e deixar a criança escolher.</p></div>
+      </div>
+      <div class="mat">
+        <div class="mat__icon">📈</div>
+        <div><h3>Quadro de progresso <span class="mat__tag">Bônus</span></h3><p>Marque cada alimento novo aceito e veja a evolução em uma folha só.</p></div>
+      </div>
+      <div class="mat">
+        <div class="mat__icon">💡</div>
+        <div><h3>Guias e dicas para os pais <span class="mat__tag">Bônus</span></h3><p>Ideias práticas para aplicar no dia a dia, além das fichas.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 6. PRÉVIA REAL ======================= -->
+<section id="previa">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Espia por dentro</span>
+    </div>
+    <h2 class="section-title">Prévia real <span class="hl">do kit</span></h2>
+    <p class="section-sub">Deslize para o lado e veja páginas de verdade do material.</p>
+
+    <!-- Páginas reais do PDF entregue, geradas por scripts/build-previa-imgs.js
+         a partir dos mesmos arquivos que vão dentro do kit. Se trocar as fichas
+         daqui, rode o script de novo. -->
+    <div class="previa-scroll">
+      <figure class="previa-item">
+        <img class="previa-img" src="assets/previa-real-01.jpg" alt="Ficha O sino do jantar: um sino sorridente com três quadradinhos para marcar" loading="lazy" />
+        <figcaption>O sino do jantar</figcaption>
+      </figure>
+      <figure class="previa-item">
+        <img class="previa-img" src="assets/previa-real-02.jpg" alt="Ficha A lancheira que volta vazia: alimentos para recortar e montar a lancheira" loading="lazy" />
+        <figcaption>A lancheira que volta vazia</figcaption>
+      </figure>
+      <figure class="previa-item">
+        <img class="previa-img" src="assets/previa-real-03.jpg" alt="Ficha O garfo mágico: um garfo grande em traço preto para a criança pintar" loading="lazy" />
+        <figcaption>O garfo mágico, para pintar</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 7. DEPOIMENTOS ======================= -->
+<section id="depoimentos" class="depos">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Quem já usa</span>
+    </div>
+    <h2 class="section-title">Mães que <span class="hl">destravaram</span> a mesa</h2>
+    <p class="section-sub">Depoimentos reais de quem já aplicou o kit em casa.</p>
+
+    <div class="stories-grid" id="depo-scroll"><!-- preenchido via JS a partir de DEPOIMENTOS --></div>
+  </div>
+</section>
+
+
+<!-- ======================= 8. GARANTIA ======================= -->
+<section id="garantia">
+  <div class="wrap">
+    <div class="garantia-box">
+      <div class="seal">🛡️</div>
+      <h2>Até 30 dias de garantia incondicional</h2>
+      <p>Aplique com o seu filho sem risco: <strong>30 dias de garantia no plano Completo</strong> e 7 dias no Essencial. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
+      <p class="support">Suporte pelo e-mail <a href="mailto:kitpratolimpo@gmail.com" style="color:inherit">kitpratolimpo@gmail.com</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 8.5. APP PREVIEW ======================= -->
+<section id="app-preview" class="appdemo">
+  <div class="wrap appdemo-wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Novidade</span>
+    </div>
+    <h2 class="section-title">Seu kit também vira <span class="hl">app</span></h2>
+    <p class="section-sub">Depois da compra, acesse pelo navegador do celular como um aplicativo. Sem baixar nada de loja, sem senha pra decorar.</p>
+
+    <video class="appdemo-video" src="demo-app-kpl.mp4" autoplay muted loop playsinline disablePictureInPicture controlsList="nodownload nofullscreen noplaybackrate" oncontextmenu="return false"></video>
+
+    <a href="#checkout" class="appdemo-badge">📱 Exclusivo do plano Completo</a>
+  </div>
+</section>
+
+<!-- ======================= 9. CHECKOUT ======================= -->
+<section id="checkout" class="checkout">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Garanta o seu</span>
+    </div>
+    <h2 class="section-title">Finalize seu <span class="hl">pedido</span></h2>
+
+    <div class="checkout-card">
+      <div class="today-banner" id="today-banner">
+        ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
+      </div>
+      <!-- Escolha do plano -->
+      <p id="plano-heading" style="text-align:center; font-family:var(--heading); font-weight:700; color:var(--ink); margin-bottom:14px;">Escolha o seu plano:</p>
+      <div class="planos" id="planos" role="radiogroup" aria-label="Escolha o plano">
+
+        <div class="plano" data-tier="essencial" role="radio" aria-checked="false" tabindex="0">
+          <span class="plano__radio" aria-hidden="true"></span>
+          <div class="plano__name">Essencial</div>
+          <div class="plano__tagline">O sistema completo de atividades.</div>
+          <div class="plano__price">R$ 10<span class="cents">,00</span></div>
+          <ul class="plano__list">
+            <li><span class="ic">✅</span>86 atividades em 8 blocos</li>
+            <li><span class="ic">✅</span>Cartelas recortáveis</li>
+            <li class="off"><span class="ic">➖</span>Calendário de 30 dias</li>
+            <li class="off"><span class="ic">➖</span>Quadro de progresso</li>
+            <li class="off"><span class="ic">➖</span>Cardápio de 4 semanas</li>
+            <li class="off"><span class="ic">➖</span>Áudios para a refeição</li>
+            <li class="off"><span class="ic">➖</span>Guia por textura e idade</li>
+            <li class="off"><span class="ic">➖</span>Acesso pelo app</li>
+            <li class="off"><span class="ic">➖</span>O jogo do Prato Limpo</li>
+          </ul>
+          <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
+        </div>
+
+        <div class="plano plano--premium selected" data-tier="completo" role="radio" aria-checked="true" tabindex="0">
+          <span class="plano__badge">⭐ Mais escolhido</span>
+          <span class="plano__radio" aria-hidden="true"></span>
+          <div class="plano__name">Completo</div>
+          <div class="plano__tagline">Tudo pronto pra facilitar a hora da comida.</div>
+          <div class="plano__price-old">Tudo separado: R$ 116</div>
+          <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+          <ul class="plano__list">
+            <li><span class="ic">✅</span>Tudo do Essencial, e mais:</li>
+            <li><span class="ic">📅</span><span class="plano__hl">Calendário de 30 dias</span></li>
+            <li><span class="ic">📊</span><span class="plano__hl">Quadro de progresso</span></li>
+            <li><span class="ic">🍽️</span><span class="plano__hl">Cardápio de 4 semanas antisseletividade</span></li>
+            <li><span class="ic">🎧</span><span class="plano__hl">Áudios para acalmar a refeição</span></li>
+            <li><span class="ic">📘</span><span class="plano__hl">Guia por textura e idade</span></li>
+            <li><span class="ic">📱</span><span class="plano__hl">Acesso pelo app, exclusivo</span></li>
+            <li><span class="ic">🎲</span><span class="plano__hl">O jogo do Prato Limpo, com 20 amigos pra colecionar</span></li>
+          </ul>
+          <div class="plano__guarantee">🛡️ 30 dias de garantia</div>
+        </div>
+
+      </div>
+
+      <!-- Stack de valor (só aparece pro Completo) -->
+      <div class="stack" id="stack-completo">
+        <div class="stack__title">O que você leva a mais no Completo</div>
+        <div class="stack__row"><span>🎲 O jogo do Prato Limpo, no app</span><span class="val">R$ 24</span></div>
+        <div class="stack__row"><span>📅 Calendário de 30 dias</span><span class="val">R$ 12</span></div>
+        <div class="stack__row"><span>📊 Quadro de progresso</span><span class="val">R$ 9</span></div>
+        <div class="stack__row"><span>🍽️ Cardápio de 4 semanas antisseletividade</span><span class="val">R$ 27</span></div>
+        <div class="stack__row"><span>🎧 Áudios para acalmar a refeição</span><span class="val">R$ 17</span></div>
+        <div class="stack__row"><span>📘 Guia por textura e idade</span><span class="val">R$ 17</span></div>
+        <div class="stack__row"><span>✅ Todo o sistema Essencial</span><span class="val">R$ 10</span></div>
+        <div class="stack__sum"><span class="old">Tudo separado: R$ 116</span><span class="now" id="stack-now">R$ 29,90</span></div>
+      </div>
+
+      <!-- Formulário -->
+      <form id="checkout-form" novalidate>
+        <div class="api-error" id="api-error" role="alert"></div>
+
+        <div class="field" id="f-nome">
+          <label for="nome">Nome completo</label>
+          <input type="text" id="nome" name="nome" autocomplete="name" placeholder="Seu nome" required />
+          <div class="err">Digite seu nome completo.</div>
+        </div>
+
+        <div class="field" id="f-email">
+          <label for="email">E-mail (para a confirmação da compra)</label>
+          <input type="email" id="email" name="email" autocomplete="email" inputmode="email" placeholder="seu@email.com" required />
+          <div class="err">Digite um e-mail válido.</div>
+        </div>
+
+        <div class="field" id="f-tel">
+          <label for="telefone">Telefone / WhatsApp</label>
+          <input type="tel" id="telefone" name="telefone" autocomplete="tel" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
+          <div class="err">Digite um telefone válido com DDD.</div>
+        </div>
+
+        <div class="field" id="f-cpf">
+          <label for="cpf">CPF (exigido pelo Pix pra gerar o pagamento)</label>
+          <input type="text" id="cpf" name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required />
+          <div class="err">Digite um CPF válido.</div>
+        </div>
+
+        <!-- Método (Pix único por enquanto) -->
+        <label class="sr-only">Forma de pagamento</label>
+        <div class="pay-method">
+          <div class="pay-opt" aria-current="true">
+            <span>⚡ Pix</span>
+            <small>Aprovação na hora</small>
+          </div>
+        </div>
+
+        <!-- Desmistifica o que acontece depois do clique: reduz a ansiedade de
+             quem não conhece a página e vai pagar sem redirecionar pra outro site. -->
+        <div class="pay-steps">
+          <div class="pay-step"><span class="pay-step__n">1</span>Você paga direto pelo Pix do seu próprio banco</div>
+          <div class="pay-step"><span class="pay-step__n">2</span>A confirmação é automática, na hora</div>
+          <div class="pay-step"><span class="pay-step__n">3</span>O kit chega sozinho no seu WhatsApp</div>
+        </div>
+
+        <!-- Order bumps -->
+        <div class="bumps">
+          <div class="bumps-title">🎁 Adicione ao seu pedido:</div>
+          <div id="bumps-list"><!-- preenchido via JS a partir de BUMPS --></div>
+        </div>
+
+        <!-- Resumo -->
+        <div class="resumo" id="resumo">
+          <div class="resumo-line"><span>KPL Completo</span><span>R$ 29,90</span></div>
+          <div class="resumo-line total"><span>Total</span><span id="total-valor">R$ 29,90</span></div>
+        </div>
+
+        <div class="pix-trust">
+          <span class="pix-trust__icon" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3.5c1 0 1.96.4 2.67 1.1l2.6 2.6c.3.3.7.3 1 0l.9-.9a1 1 0 0 1 1.4 1.4l-.9.9a2.3 2.3 0 0 1-3.2 0l-2.6-2.6a2.3 2.3 0 0 0-3.2 0L8 8.6a2.3 2.3 0 0 1-3.2 0l-.9-.9a1 1 0 1 1 1.4-1.4l.9.9c.3.3.7.3 1 0l2.6-2.6A3.76 3.76 0 0 1 12 3.5Z" fill="#fff"/>
+              <path d="M12 20.5c-1 0-1.96-.4-2.67-1.1l-2.6-2.6c-.3-.3-.7-.3-1 0l-.9.9a1 1 0 0 1-1.4-1.4l.9-.9a2.3 2.3 0 0 1 3.2 0l2.6 2.6c.9.9 2.3.9 3.2 0l2.6-2.6a2.3 2.3 0 0 1 3.2 0l.9.9a1 1 0 1 1-1.4 1.4l-.9-.9c-.3-.3-.7-.3-1 0l-2.6 2.6a3.76 3.76 0 0 1-2.67 1.1Z" fill="#fff"/>
+            </svg>
+          </span>
+          <span class="pix-trust__text"><b>Pagamento via Pix</b><br>Sistema de pagamento instantâneo do Banco Central. Cai na hora, direto no seu banco.</span>
+        </div>
+
+        <button type="submit" class="btn" id="pay-btn">
+          <span id="pay-btn-label">Pagar R$ 29,90 com Pix</span>
+        </button>
+
+        <div class="secure-badges">
+          <span>🔒 Site seguro (HTTPS)</span>
+          <span>🏦 Pago direto pelo seu banco via Pix</span>
+          <span id="guarantee-badge">🛡️ Garantia de 30 dias</span>
+        </div>
+        <p class="pay-note">Nunca pedimos senha, número de cartão ou dados bancários. Você só escaneia o QR Code (ou copia o código) e confirma no aplicativo do seu próprio banco.</p>
+      </form>
+
+      <!-- Área do Pix (aparece após criar cobrança) -->
+      <div class="pix-area" id="pix-area">
+        <h3 class="h" style="font-size:1.3rem; margin-bottom: 6px;">Quase lá! Pague com Pix</h3>
+        <p style="color:var(--muted); font-size:.92rem; margin-bottom:12px;">Escaneie o QR Code ou copie o código abaixo. A liberação é automática.</p>
+        <div class="pix-qr" id="pix-qr"><span style="color:var(--muted)">Gerando QR...</span></div>
+        <div class="pix-copy-wrap">
+          <div class="pix-code" id="pix-code" title="Código Pix copia e cola">—</div>
+          <button type="button" class="btn pix-copy-btn" id="pix-copy-btn">Copiar</button>
+        </div>
+        <div class="pix-status"><span class="spinner"></span> Aguardando pagamento...</div>
+        <p style="color:var(--muted); font-size:.82rem; margin-top:14px;">Assim que o pagamento cair, esta tela troca sozinha.</p>
+      </div>
+
+      <!-- Sucesso -->
+      <div class="success" id="success">
+        <div class="check">✓</div>
+        <h2>Pagamento confirmado!</h2>
+        <p>Seu <b>Kit Prato Limpo</b> chega <b>automaticamente no WhatsApp</b> que você cadastrou, em instantes. Confira também seu e-mail: acabamos de mandar a confirmação da compra.</p>
+        <p style="margin-top:12px; color: var(--muted); font-size:.9rem;">Não chegou em alguns minutos? Escreva para kitpratolimpo@gmail.com que resolvemos rapidinho.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 10. FAQ ======================= -->
+<section id="faq">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Dúvidas</span>
+    </div>
+    <h2 class="section-title">Perguntas <span class="hl">frequentes</span></h2>
+
+    <div class="faq" id="faq-list">
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Como eu recebo o kit?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>É automático: assim que o pagamento é confirmado, o kit é enviado sozinho para o WhatsApp que você cadastrar no checkout, e você também recebe um e-mail de confirmação. Se por algum motivo não chegar, é só escrever para o suporte que resolvemos rapidamente.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Em quanto tempo chega?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>O Pix é aprovado na hora e a entrega é automática: o kit cai no seu WhatsApp em seguida, junto com o e-mail de confirmação. Se demorar mais que alguns minutos, escreva para o suporte que resolvemos rapidamente.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Serve para qual idade?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>O kit foi montado para crianças de 1 a 8 anos. Cada ficha já indica a faixa de idade ideal, então você aplica sempre a atividade certa para a fase do seu filho.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>O pagamento é seguro?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>Sim. O pagamento é feito por Pix, direto no aplicativo do seu próprio banco: você escaneia o QR Code ou copia o código, e é o seu banco que processa a transação. Nós nunca vemos, pedimos ou armazenamos senha, número de cartão ou dados bancários. E se algo não sair como esperado, você tem garantia de reembolso e o suporte por e-mail responde rápido.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Preciso imprimir alguma coisa?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>Só se quiser. O calendário, as cartelas, o quadro de progresso e até as atividades de pintar ficam ótimos impressos, mas tudo funciona também direto na tela do celular ou tablet (para pintar, é só usar o dedo ou uma caneta de toque). Nada é obrigatório imprimir.</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>Como funciona a garantia?</span><span class="ico">+</span></button>
+        <div class="faq-a"><p>No plano Completo você tem 30 dias para testar, e no Essencial, 7 dias. Se não gostar, é só enviar um e-mail para o suporte e devolvemos 100% do valor, sem precisar justificar.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 11. RODAPÉ ======================= -->
+<footer>
+  <div class="wrap">
+    <strong>Kit Prato Limpo</strong> · © 2026
+    <div class="foot-links">
+      <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>
+      <a href="/termos">Termos de uso</a>
+      <a href="/privacidade">Política de privacidade</a>
+    </div>
+    <p class="disclaimer">
+      O Kit Prato Limpo tem caráter educativo e comportamental e não substitui acompanhamento nutricional
+      individualizado. Em caso de recusa alimentar persistente, perda de peso ou sinais de saúde,
+      procure um profissional de saúde.
+    </p>
+  </div>
+</footer>
+
+<!-- Pop-up de downsell: aparece quando a pessoa ia fechar no Essencial -->
+<div class="downsell" id="downsell" role="dialog" aria-modal="true" aria-labelledby="downsell-title" aria-hidden="true">
+  <div class="downsell__box">
+    <button type="button" class="downsell__x" id="downsell-decline" aria-label="Fechar">×</button>
+    <div class="downsell__emoji">🎁</div>
+    <h3 class="downsell__title" id="downsell-title">Espera! Uma condição só pra você</h3>
+    <p class="downsell__text">
+      Você ia levar só o <strong>Essencial</strong>. Que tal levar o <strong>Completo</strong>,
+      com o Cardápio de 4 semanas, os Áudios pra hora da refeição e o Guia por textura e idade?
+    </p>
+    <div class="downsell__price">
+      <span class="downsell__old">De R$ 29,90</span>
+      <span class="downsell__now">por R$ 19,90</span>
+    </div>
+    <p class="downsell__note">Só R$ 9,90 a mais que o Essencial pra levar tudo pronto.</p>
+    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 19,90</button>
+    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONFIG — edite aqui
+   ========================================================= */
+const CONFIG = {
+  META_PIXEL_ID: '2794485957574762',   // ID do Pixel do Meta
+  API_CREATE:  '/api/create-charge',
+  API_STATUS:  '/api/payment-status',
+  API_DELIVER: '/api/deliver-kit',
+  API_CAPI: '/api/capi-event',
+  API_PRESENCE: '/api/presence',
+  PRESENCE_MS: 8000,
+  POLL_MS: 5000,                         // polling a cada 5s
+};
+
+/* Planos (valores em CENTAVOS). Mantenha em sincronia com api/_catalog.js. */
+const TIERS = {
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
+  completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 2990 },
+  // Alcançável só pelo pop-up de downsell (quando a pessoa ia levar o Essencial).
+  // Mesmo produto do Completo, com desconto. O servidor também conhece esse tier.
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 1990 },
+};
+let selectedTier = 'completo'; // premium pré-selecionado (sobe o ticket médio)
+let downsellResolved = false;  // vira true depois que a pessoa aceita/recusa o pop-up
+// Compat: alguns trechos antigos ainda referenciam PRODUCT — aponta pro tier atual.
+const PRODUCT = { get id(){return TIERS[selectedTier].id;}, get name(){return TIERS[selectedTier].name;}, get priceCents(){return TIERS[selectedTier].priceCents;} };
+
+/* =========================================================
+   ORDER BUMPS — edite nome, descrição e preços aqui
+   priceCents = preço com desconto | oldCents = preço riscado
+   ========================================================= */
+// Desligado por decisão do dono (2026-07-21): validar a oferta principal
+// primeiro. Ligar de novo (true) quando quiser reativar os bumps no front.
+// Com isso false, nenhum checkbox é renderizado e getSelectedBumps() sempre
+// devolve vazio, então o checkout segue só com o produto principal.
+const BUMPS_ENABLED = false;
+const BUMPS = [
+  {
+    id: 'bump1',
+    name: 'Cardápio de 4 semanas anti-seletividade',
+    tag: 'Mais pedido',
+    desc: '28 dias de refeições montadas com os alimentos que a criança costuma recusar.',
+    priceCents: 990,
+    oldCents: 2700,
+  },
+  {
+    id: 'bump2',
+    name: 'Áudios para acalmar a hora da refeição',
+    tag: '',
+    desc: 'Faixas curtas para tocar durante a refeição e baixar a tensão à mesa.',
+    priceCents: 1490,
+    oldCents: 3700,
+  },
+];
+
+/* =========================================================
+   8 BLOCOS DO SISTEMA
+   ========================================================= */
+// Ordem por urgência: quem está em crise tem que se reconhecer no primeiro card,
+// não no sexto. A numeração 1-8 acompanha a ordem de exibição, então o kit
+// entregue precisa usar ESTA mesma numeração (a ficha de exemplo abaixo cita o
+// bloco pelo número).
+const BLOCOS = [
+  { n:1, nome:'Rituais e jogos de mesa', qtd:10, desc:'Dinâmicas de 5 minutos que mudam o clima da refeição.' },
+  { n:2, nome:'Situações difíceis', qtd:8, desc:'Festa, escola, casa de avó, viagem e criança doente.' },
+  { n:3, nome:'Progressão por textura', qtd:12, desc:'Sequência técnica de crocante para macio, de purê para pedaço.' },
+  { n:4, nome:'Apresentação do prato', qtd:8, desc:'Montagem visual, porcionamento e escolha guiada.' },
+  { n:5, nome:'Participação na cozinha', qtd:12, desc:'A criança ajuda a preparar o que vai comer.' },
+  { n:6, nome:'Brincadeiras fora da refeição', qtd:12, desc:'Quebra a associação entre comida e conflito.' },
+  { n:7, nome:'Histórias e faz de conta', qtd:10, desc:'Narrativas curtas com o alimento como personagem.' },
+  { n:8, nome:'Aproximação sensorial', qtd:14, desc:'Contato com o alimento sem obrigação de comer.' },
+];
+
+/* =========================================================
+   DEPOIMENTOS (reais, 4 mães que já usaram o kit)
+   ========================================================= */
+const DEPOIMENTOS = [
+  { nome:'Rosângela Costa', meta:'Filha de 4 anos', texto:'Minha filha só aceitava líquidos, não aguentava mais ver ela assim. Desde os 7 meses só aceitava líquidos, e só agora, com 4 anos, depois de conhecer o KPL, ela começou a aceitar comer arroz, feijão e algumas frutas. Já mudou muito a nossa vida aqui em casa, muito obrigada ❤️❤️', foto:'assets/depo-rosangela.png' },
+  { nome:'Renata Ribeiro', meta:'Filho de 3 anos', texto:'Eu vivia transformando toda refeição em negociação, isso me esgotava. Com o Kit Prato Limpo consegui apresentar a comida de um jeito bem mais tranquilo, sem tanta pressão. Meu filho começou a cheirar, tocar, dar uma provadinha nas coisas. Parece pouco escrito assim, mas pra quem vive isso todo dia, é uma virada e tanto.', foto:'assets/depo-renata.jpg' },
+  { nome:'Rayssa Valentim', meta:'Filho de 8 anos', texto:'Meu filho é bem seletivo, eu não sabia mais como apresentar comida nova sem virar drama. As atividades 🥕 são simples e bonitinhas, prendem a atenção dele numa boa. Ele acha que é só brincadeira, mas de pouquinho em pouquinho já está topando experimentar mais coisas.', foto:'assets/depo-rayssa.png' },
+  { nome:'Bianca Mello', meta:'Filha de 6 anos', texto:'Foi uma das melhores comprinhas que fiz pra hora da comida aqui de casa, sério kkkk. Fácil de imprimir, fácil de usar, e minha filha amou marcar o calendário e completar as cartelinhas. Pela primeira vez, alimento novo no prato não virou briga.', foto:'assets/depo-bianca.png' },
+];
+
+/* =========================================================
+   Helpers
+   ========================================================= */
+const $ = (s, ctx=document) => ctx.querySelector(s);
+const $$ = (s, ctx=document) => Array.from(ctx.querySelectorAll(s));
+const brl = (cents) => 'R$ ' + (cents/100).toFixed(2).replace('.', ',');
+
+/* =========================================================
+   Render dinâmico
+   ========================================================= */
+function renderBlocos() {
+  $('#blocos-grid').innerHTML = BLOCOS.map(b => `
+    <div class="bloco">
+      <div class="bloco__head"><div class="bloco__num">${b.n}</div><div class="bloco__name">${b.nome}</div></div>
+      <span class="bloco__count">${b.qtd} atividades</span>
+      <p>${b.desc}</p>
+    </div>`).join('');
+  const total = BLOCOS.reduce((s,b) => s + b.qtd, 0);
+  $('#total-atividades').textContent = total;
+}
+
+function renderDepoimentos() {
+  $('#depo-scroll').innerHTML = DEPOIMENTOS.map((d, i) => {
+    const initial = (d.nome || '?').replace(/[\[\]]/g,'').trim().charAt(0).toUpperCase() || '★';
+    const avatar = d.foto
+      ? `<img src="${d.foto}" alt="${d.nome}" loading="lazy">`
+      : `<div class="depo__avatar">${initial}</div>`;
+    const featured = i === 0 ? ' story-featured' : '';
+    return `
+      <article class="story-card${featured}">
+        <div class="story-quote" aria-hidden="true">&ldquo;</div>
+        <p>${d.texto}</p>
+        <div class="story-footer">
+          ${avatar}
+          <span><b>${d.nome}</b><small>${d.meta}</small></span>
+          <i>★★★★★</i>
+        </div>
+      </article>`;
+  }).join('');
+}
+
+function renderBumps() {
+  if (!BUMPS_ENABLED) {
+    const container = $('.bumps');
+    if (container) container.style.display = 'none';
+    return;
+  }
+  $('#bumps-list').innerHTML = BUMPS.map(b => `
+    <label class="bump" data-id="${b.id}">
+      <input type="checkbox" data-bump="${b.id}" aria-label="Adicionar ${b.name}" />
+      <div class="bump__name">${b.name} ${b.tag ? `<span class="bump__tag">${b.tag}</span>` : ''}</div>
+      <div class="bump__desc">${b.desc}</div>
+      <div class="bump__price"><span class="old">${brl(b.oldCents)}</span>${brl(b.priceCents)}</div>
+    </label>`).join('');
+
+  $$('#bumps-list input[data-bump]').forEach(input => {
+    input.addEventListener('change', () => {
+      input.closest('.bump').classList.toggle('checked', input.checked);
+      recalcTotal();
+      pixelCustom('BumpToggle', { bump_id: input.dataset.bump, checked: input.checked });
+    });
+  });
+}
+
+/* =========================================================
+   Total (resumo em tempo real)
+   ========================================================= */
+function getSelectedBumps() {
+  return BUMPS.filter(b => {
+    const el = $(`#bumps-list input[data-bump="${b.id}"]`);
+    return el && el.checked;
+  });
+}
+
+function totalCents() {
+  return TIERS[selectedTier].priceCents + getSelectedBumps().reduce((s,b) => s + b.priceCents, 0);
+}
+
+function recalcTotal() {
+  const tier = TIERS[selectedTier];
+  const selected = getSelectedBumps();
+  const total = totalCents();
+  const lines = [`<div class="resumo-line"><span>${tier.name}</span><span>${brl(tier.priceCents)}</span></div>`];
+  selected.forEach(b => lines.push(`<div class="resumo-line"><span>+ ${b.name}</span><span>${brl(b.priceCents)}</span></div>`));
+  lines.push(`<div class="resumo-line total"><span>Total</span><span id="total-valor">${brl(total)}</span></div>`);
+  $('#resumo').innerHTML = lines.join('');
+  $('#pay-btn-label').textContent = `Pagar ${brl(total)} com Pix`;
+}
+
+/* =========================================================
+   Seleção de plano (2 tiers)
+   ========================================================= */
+function initTodayDate() {
+  const el = $('#today-date');
+  if (!el) return;
+  const hoje = new Date().toLocaleDateString('pt-BR', {
+    day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'America/Sao_Paulo',
+  });
+  el.textContent = hoje;
+}
+
+// Seleciona um tier e atualiza a UI. Aceita 'completo_promo', que visualmente
+// se comporta como o Completo (mesmo card destacado, mesmo stack), só que com
+// o preço com desconto refletido no resumo/botão.
+function selectTier(tier) {
+  if (!TIERS[tier]) return;
+  selectedTier = tier;
+  const base = tier === 'completo_promo' ? 'completo' : tier;
+  $$('#planos .plano').forEach(c => {
+    const on = c.dataset.tier === base;
+    c.classList.toggle('selected', on);
+    c.setAttribute('aria-checked', on ? 'true' : 'false');
+  });
+  const stack = $('#stack-completo');
+  if (stack) stack.style.display = base === 'completo' ? '' : 'none';
+  // O preço final da caixa de valor acompanha o Completo (29,90) ou o promo (19,90).
+  const stackNow = $('#stack-now');
+  if (stackNow && base === 'completo') stackNow.textContent = brl(TIERS[tier].priceCents);
+  // Selo de garantia perto do botão precisa bater com o plano real (30d Completo / 7d Essencial).
+  const guaranteeBadge = $('#guarantee-badge');
+  if (guaranteeBadge) guaranteeBadge.textContent = base === 'completo' ? '🛡️ Garantia de 30 dias' : '🛡️ Garantia de 7 dias';
+  recalcTotal();
+  pixelCustom('PlanSelect', { tier });
+}
+
+function initPlanos() {
+  $$('#planos .plano').forEach(c => {
+    c.addEventListener('click', () => selectTier(c.dataset.tier));
+    c.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTier(c.dataset.tier); }
+    });
+  });
+}
+
+/* =========================================================
+   Máscaras e validação
+   ========================================================= */
+function maskCPF(v) {
+  v = v.replace(/\D/g,'').slice(0,11);
+  return v.replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d)/,'$1.$2').replace(/(\d{3})(\d{1,2})$/,'$1-$2');
+}
+function maskPhone(v) {
+  v = v.replace(/\D/g,'').slice(0,11);
+  if (v.length > 10) return v.replace(/(\d{2})(\d{5})(\d{0,4})/,'($1) $2-$3').trim();
+  return v.replace(/(\d{2})(\d{4})(\d{0,4})/,'($1) $2-$3').replace(/[-\s]+$/,'');
+}
+function isValidCPF(cpf) {
+  cpf = cpf.replace(/\D/g,'');
+  if (cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) return false;
+  let s = 0;
+  for (let i=0;i<9;i++) s += parseInt(cpf[i]) * (10-i);
+  let d1 = (s*10) % 11; if (d1===10) d1=0;
+  if (d1 !== parseInt(cpf[9])) return false;
+  s = 0;
+  for (let i=0;i<10;i++) s += parseInt(cpf[i]) * (11-i);
+  let d2 = (s*10) % 11; if (d2===10) d2=0;
+  return d2 === parseInt(cpf[10]);
+}
+function isValidEmail(v) { return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+function isValidPhone(v) { return v.replace(/\D/g,'').length >= 10; }
+function isValidName(v) { return v.trim().split(/\s+/).length >= 2 && v.trim().length >= 5; }
+
+function setFieldValidity(wrapId, ok) {
+  const wrap = $('#'+wrapId);
+  wrap.classList.toggle('invalid', !ok);
+  $('input', wrap).setAttribute('aria-invalid', ok ? 'false' : 'true');
+  return ok;
+}
+
+function validateForm() {
+  const okNome = setFieldValidity('f-nome', isValidName($('#nome').value));
+  const okEmail = setFieldValidity('f-email', isValidEmail($('#email').value));
+  const okTel = setFieldValidity('f-tel', isValidPhone($('#telefone').value));
+  const okCpf = setFieldValidity('f-cpf', isValidCPF($('#cpf').value));
+  return okNome && okEmail && okTel && okCpf;
+}
+
+/* =========================================================
+   Meta Pixel
+   ========================================================= */
+function initPixel() {
+  if (!CONFIG.META_PIXEL_ID || CONFIG.META_PIXEL_ID === 'SEU_PIXEL_ID_AQUI') return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.META_PIXEL_ID);
+  fbq('track', 'PageView');
+  pixel('ViewContent', {
+    content_name: PRODUCT.name, content_type: 'product',
+    value: PRODUCT.priceCents / 100, currency: 'BRL',
+  });
+  initSectionViewTracking();
+}
+
+const FBCLID_KEY = 'kpl_fbclid';
+/** Guarda o fbclid do clique do anúncio pra reusar em eventos posteriores (a URL
+ *  só o traz na landing). O servidor usa como fallback do _fbc se o cookie faltar. */
+function rememberFbclid() {
+  try {
+    const fromUrl = new URLSearchParams(window.location.search).get('fbclid');
+    if (fromUrl) { sessionStorage.setItem(FBCLID_KEY, fromUrl); return fromUrl; }
+    return sessionStorage.getItem(FBCLID_KEY) || undefined;
+  } catch (e) { return undefined; }
+}
+
+/**
+ * Dispara um evento no pixel do navegador E espelha na Conversions API (server)
+ * com o MESMO event_id, pro Meta desduplicar e a match quality subir (o servidor
+ * tem IP/user-agent/fbc confiáveis que o pixel perde com adblock/iOS).
+ * opts: { custom: bool, eventId: string (opcional, senão gera um aleatório) }
+ */
+function pixelDual(event, data, opts) {
+  opts = opts || {};
+  const eventId = opts.eventId || (
+    (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (event + '_' + Date.now() + '_' + Math.random().toString(36).slice(2))
+  );
+  if (window.fbq) {
+    try { fbq(opts.custom ? 'trackCustom' : 'track', event, data || {}, { eventID: eventId }); } catch (e) {}
+  }
+  const fbclid = rememberFbclid();
+  fetch(CONFIG.API_CAPI, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      event_name: event, event_id: eventId, is_custom: !!opts.custom,
+      data: data || {}, ...(fbclid ? { fbclid } : {}),
+    }),
+    keepalive: true,
+  }).catch(() => { /* rede/adblock derrubou o POST — o pixel client já saiu, sem prejuízo */ });
+  return eventId;
+}
+function pixel(event, data, eventId) { return pixelDual(event, data, { custom: false, eventId }); }
+function pixelCustom(event, data, eventId) { return pixelDual(event, data, { custom: true, eventId }); }
+/** Dispara um evento só uma vez por sessão (dedupe via sessionStorage). */
+function pixelOnce(key, event, data, custom) {
+  try {
+    if (sessionStorage.getItem('kpl_px_' + key)) return;
+    sessionStorage.setItem('kpl_px_' + key, '1');
+  } catch (e) { /* sessionStorage indisponível: segue sem dedupe */ }
+  if (custom) pixelCustom(event, data); else pixel(event, data);
+}
+/**
+ * Manda e-mail/nome/telefone hasheados (SHA-256) pro pixel via Advanced Matching,
+ * melhorando a correspondência dos eventos seguintes (AddPaymentInfo, Purchase)
+ * sem precisar de nenhuma credencial de servidor.
+ */
+async function setPixelAdvancedMatching(email, name, phone) {
+  if (!window.fbq || !window.crypto?.subtle) return;
+  try {
+    const normalize = (s) => String(s || '').toLowerCase().trim();
+    const sha256 = async (s) => {
+      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+      return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, '0')).join('');
+    };
+    const userData = {};
+    if (email) userData.em = await sha256(normalize(email));
+    if (name) userData.fn = await sha256(normalize(name).split(' ')[0]);
+    if (phone) userData.ph = await sha256(String(phone).replace(/\D/g, ''));
+    fbq('init', CONFIG.META_PIXEL_ID, userData);
+  } catch (e) { /* crypto indisponível (HTTP puro) ou pixel não carregado: segue sem advanced matching */ }
+}
+/** Rastreamento denso de scroll: um evento ViewSection por seção, uma vez cada. */
+function initSectionViewTracking() {
+  if (!('IntersectionObserver' in window)) return;
+  const ids = ['indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'app-preview', 'checkout', 'faq'];
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        pixelOnce('view_' + entry.target.id, 'ViewSection', { section: entry.target.id }, true);
+      }
+    });
+  }, { threshold: 0.4 });
+  ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+}
+
+/* =========================================================
+   Painel ao vivo (/funil.html) — id anônimo de visitante + heartbeat
+   de qual seção está visível agora, pra ver quantas pessoas estão na
+   página neste instante e onde cada uma parou.
+   ========================================================= */
+const VISITOR_ID_KEY = 'kpl_visitor_id';
+const AD_REF_KEY = 'kpl_ad_ref';
+
+// Criativo/anúncio de origem: captura na entrada (utm_content = {{ad.name}} do
+// Meta) e guarda first-touch, pra saber de qual anúncio veio cada visita/venda.
+function getAdRef() {
+  try {
+    const q = new URLSearchParams(location.search);
+    const fromUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
+    if (fromUrl) { const v = fromUrl.slice(0, 120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
+    return sessionStorage.getItem(AD_REF_KEY) || '';
+  } catch (e) { return ''; }
+}
+
+function getVisitorId() {
+  try {
+    let id = sessionStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+      sessionStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+  } catch (e) { return 'v_' + Date.now(); }
+}
+
+let currentSection = 'hero';
+function initPresenceTracking() {
+  // "Não me conte no painel": abra a página uma vez com ?notrack=1 pra marcar
+  // este aparelho como interno. A partir daí ele nunca mais entra na contagem
+  // de presença (nem você, nem quem for testar). Use ?track=1 pra desfazer.
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.has('track')) localStorage.removeItem('kpl_notrack');
+    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
+    if (localStorage.getItem('kpl_notrack') === '1') return;
+  } catch (e) {}
+  if (!('IntersectionObserver' in window)) return;
+  // Precisa bater exatamente com SECTIONS em api/_sections.js (ordem inclusive):
+  // o índice desta lista vira o maxSection do funil.
+  const ids = ['hero', 'indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'app-preview', 'checkout', 'faq'];
+  const ratios = {};
+  let maxIdx = 0; // seção mais profunda já alcançada (pro funil de abandono)
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => { ratios[entry.target.id] = entry.isIntersecting ? entry.intersectionRatio : 0; });
+    let best = null, bestRatio = 0;
+    for (const id of ids) { if ((ratios[id] || 0) > bestRatio) { bestRatio = ratios[id]; best = id; } }
+    if (best) {
+      currentSection = best;
+      const idx = ids.indexOf(best);
+      if (idx > maxIdx) maxIdx = idx;
+    }
+  }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+  ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+
+  const visitorId = getVisitorId();
+  const adRef = getAdRef();
+
+  // Sinais de entrada, pro painel separar "página nasceu escondida (preload do
+  // in-app do IG/FB) e ninguém viu" de "alguém viu e desistiu no topo".
+  const hiddenLoad = document.visibilityState === 'hidden';
+  let visible = document.visibilityState === 'visible';
+  let touched = false;
+  if (!visible) {
+    document.addEventListener('visibilitychange', function onVis() {
+      if (document.visibilityState !== 'visible') return;
+      visible = true;
+      document.removeEventListener('visibilitychange', onVis);
+      sendHeartbeat();
+    });
+  }
+  const markTouch = () => { touched = true; sendHeartbeat(); };
+  window.addEventListener('pointerdown', markTouch, { once: true });
+  window.addEventListener('keydown', markTouch, { once: true });
+
+  function sendHeartbeat() {
+    fetch(CONFIG.API_PRESENCE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId, section: currentSection, maxSection: ids[maxIdx] || currentSection, adRef,
+        hiddenLoad, visible, touched,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  }
+  sendHeartbeat();
+  setInterval(sendHeartbeat, CONFIG.PRESENCE_MS);
+}
+
+/* =========================================================
+   Checkout — cria cobrança e faz polling
+   ========================================================= */
+let pollTimer = null;
+let initiateFired = false;
+let currentPaymentId = null;
+let currentCustomer = null;
+
+function fireInitiate() {
+  if (initiateFired) return;
+  initiateFired = true;
+  pixel('InitiateCheckout', { value: totalCents()/100, currency: 'BRL' });
+  pixelCustom('FormStart', {});
+}
+
+async function handleSubmit(e) {
+  e.preventDefault();
+  $('#api-error').classList.remove('show');
+
+  if (!validateForm()) {
+    $('.invalid input')?.focus();
+    return;
+  }
+
+  // Downsell: se a pessoa ia fechar no Essencial, oferece o Completo com desconto
+  // uma única vez antes de gerar a cobrança. Depois que ela decide, segue direto.
+  if (selectedTier === 'essencial' && !downsellResolved) {
+    openDownsell();
+    return;
+  }
+
+  startCharge();
+}
+
+async function startCharge() {
+  setPixelAdvancedMatching($('#email').value, $('#nome').value, $('#telefone').value);
+  fireInitiate();
+
+  const btn = $('#pay-btn');
+  const originalLabel = $('#pay-btn-label').textContent;
+  btn.disabled = true;
+  $('#pay-btn-label').innerHTML = 'Gerando Pix...';
+
+  const fbclid = rememberFbclid();
+  const payload = {
+    customer: {
+      name: $('#nome').value.trim(),
+      email: $('#email').value.trim(),
+      phone: $('#telefone').value.replace(/\D/g,''),
+      cpf: $('#cpf').value.replace(/\D/g,''),
+    },
+    method: 'pix',
+    tier: selectedTier,
+    bumps: getSelectedBumps().map(b => b.id),
+    ...(fbclid ? { fbclid } : {}),
+  };
+
+  try {
+    const res = await fetch(CONFIG.API_CREATE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('Falha ao gerar a cobrança (' + res.status + ')');
+    const data = await res.json();
+    if (!data.paymentId || !data.pix) throw new Error('Resposta inválida do servidor');
+
+    currentPaymentId = data.paymentId;
+    currentCustomer = payload.customer;
+
+    showPix(data);
+    startPolling(data.paymentId);
+  } catch (err) {
+    console.error(err);
+    $('#api-error').textContent = 'Não conseguimos gerar seu Pix agora. Confira os dados e tente de novo. Se continuar, escreva para o suporte.';
+    $('#api-error').classList.add('show');
+    btn.disabled = false;
+    $('#pay-btn-label').textContent = originalLabel;
+  }
+}
+
+/* =========================================================
+   Pop-up de downsell (Essencial -> Completo com desconto)
+   ========================================================= */
+function openDownsell() {
+  const modal = $('#downsell');
+  if (!modal) { downsellResolved = true; startCharge(); return; }
+  modal.classList.add('show');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.style.overflow = 'hidden';
+  pixelCustom('DownsellView', { from: 'essencial' });
+}
+
+function closeDownsell() {
+  const modal = $('#downsell');
+  if (modal) { modal.classList.remove('show'); modal.setAttribute('aria-hidden', 'true'); }
+  document.body.style.overflow = '';
+}
+
+function acceptDownsell() {
+  downsellResolved = true;
+  closeDownsell();
+  selectTier('completo_promo');
+  pixelCustom('DownsellAccept', { to: 'completo_promo', value: TIERS.completo_promo.priceCents / 100 });
+  startCharge();
+}
+
+function declineDownsell() {
+  downsellResolved = true;
+  closeDownsell();
+  pixelCustom('DownsellDecline', { tier: 'essencial' });
+  startCharge();
+}
+
+function initDownsell() {
+  $('#downsell-accept')?.addEventListener('click', acceptDownsell);
+  $('#downsell-decline')?.addEventListener('click', declineDownsell);
+  $('#downsell-decline-2')?.addEventListener('click', declineDownsell);
+  // Fechar clicando no fundo = seguir com o Essencial (não força a compra maior).
+  $('#downsell')?.addEventListener('click', (e) => { if (e.target.id === 'downsell') declineDownsell(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && $('#downsell')?.classList.contains('show')) declineDownsell();
+  });
+}
+
+function showPix(data) {
+  $('#checkout-form').style.display = 'none';
+  // Esconde toda a área de oferta pra não sobrar preço antigo por trás do Pix.
+  ['#today-banner', '#plano-heading', '#planos', '#stack-completo'].forEach(sel => {
+    const el = $(sel);
+    if (el) el.style.display = 'none';
+  });
+  const area = $('#pix-area');
+  area.classList.add('show');
+  area.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // QR: aceita base64 (com ou sem prefixo) ou URL de imagem
+  const qr = data.pix.qrCodeImage || '';
+  const src = qr.startsWith('data:') || qr.startsWith('http') ? qr : ('data:image/png;base64,' + qr);
+  $('#pix-qr').innerHTML = qr ? `<img src="${src}" alt="QR Code Pix">` : '<span style="color:var(--muted)">Use o código copia e cola abaixo</span>';
+
+  const code = data.pix.copiaECola || '';
+  $('#pix-code').textContent = code;
+  $('#pix-code').dataset.full = code;
+
+  pixel('AddPaymentInfo', { value: totalCents()/100, currency: 'BRL' });
+}
+
+$('#pix-copy-btn')?.addEventListener('click', async () => {
+  const code = $('#pix-code').dataset.full || $('#pix-code').textContent;
+  try {
+    await navigator.clipboard.writeText(code);
+  } catch { /* fallback */
+    const t = document.createElement('textarea'); t.value = code; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove();
+  }
+  const btn = $('#pix-copy-btn');
+  const prev = btn.textContent;
+  btn.textContent = 'Copiado ✓';
+  btn.classList.add('btn--coral');
+  setTimeout(() => { btn.textContent = prev; btn.classList.remove('btn--coral'); }, 2000);
+  pixelCustom('PixCodeCopied', {});
+});
+
+function startPolling(paymentId) {
+  clearInterval(pollTimer);
+  pollTimer = setInterval(async () => {
+    try {
+      const res = await fetch(`${CONFIG.API_STATUS}?id=${encodeURIComponent(paymentId)}`);
+      if (!res.ok) return;
+      const { status } = await res.json();
+      if (status === 'paid' || status === 'approved') {
+        clearInterval(pollTimer);
+        onPaid();
+      } else if (status === 'expired' || status === 'canceled') {
+        clearInterval(pollTimer);
+        $('#pix-area').classList.remove('show');
+        $('#checkout-form').style.display = '';
+        $('#pay-btn').disabled = false;
+        $('#api-error').textContent = 'O Pix expirou. Gere um novo para concluir.';
+        $('#api-error').classList.add('show');
+      }
+    } catch (e) { /* ignora erro pontual de rede no polling */ }
+  }, CONFIG.POLL_MS);
+}
+
+function onPaid() {
+  // event_id determinístico (purchase_<paymentId>): o mesmo id que o servidor usa
+  // em sendCapiPurchase (deliver-kit.js), pro Meta desduplicar client x server.
+  pixel('Purchase', { value: totalCents()/100, currency: 'BRL', content_name: PRODUCT.name }, 'purchase_' + currentPaymentId);
+  $('#pix-area').classList.remove('show');
+  const s = $('#success');
+  s.classList.add('show');
+  s.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  deliverKit();
+}
+
+async function deliverKit() {
+  if (!currentPaymentId || !currentCustomer) return;
+  const fbclid = rememberFbclid();
+  try {
+    await fetch(CONFIG.API_DELIVER, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        paymentId: currentPaymentId,
+        name: currentCustomer.name,
+        email: currentCustomer.email,
+        phone: currentCustomer.phone,
+        adRef: getAdRef(),
+        ...(fbclid ? { fbclid } : {}),
+      }),
+    });
+  } catch (e) { /* a tela de sucesso já foi mostrada; se falhar, o webhook avisa o suporte */ }
+}
+
+/* =========================================================
+   Reveal ao rolar (fade + slide suave por seção, abaixo do hero
+   — o hero fica sempre visível de cara, sem depender de JS)
+   ========================================================= */
+function initReveal() {
+  const groups = [
+    '#indice .indice-row',
+    '#dores .dor, #dores .praquem, #dores .dor-bridge',
+    '#antesdepois .ba__col',
+    '#como .step',
+    '#ficha .ficha',
+    '#blocos .bloco',
+    '#materiais .mat',
+    '#previa .previa-item',
+    '#depoimentos .story-card',
+    '#garantia .garantia-box',
+    '#app-preview .appdemo-video',
+    '#checkout .plano, #checkout .stack',
+    '#faq .faq-item',
+    '.eyebrow, .section-title, .section-sub',
+  ];
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const observer = (!prefersReducedMotion && 'IntersectionObserver' in window)
+    ? new IntersectionObserver((entries, obs) => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add('is-visible');
+          obs.unobserve(entry.target);
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -6% 0px' })
+    : null;
+
+  groups.forEach(selector => {
+    const perParent = new Map();
+    $$(selector).forEach(el => {
+      if (el.closest('#hero')) return;
+      el.classList.add('reveal');
+      const idx = perParent.get(el.parentElement) || 0;
+      if (idx > 0) el.classList.add('reveal-delay-' + Math.min(idx, 3));
+      perParent.set(el.parentElement, idx + 1);
+      observer ? observer.observe(el) : el.classList.add('is-visible');
+    });
+  });
+}
+
+/* =========================================================
+   FAQ accordion
+   ========================================================= */
+function initFAQ() {
+  $$('.faq-q').forEach(q => {
+    q.addEventListener('click', () => {
+      const item = q.closest('.faq-item');
+      const open = item.classList.toggle('open');
+      q.setAttribute('aria-expanded', open ? 'true' : 'false');
+      const a = $('.faq-a', item);
+      a.style.maxHeight = open ? a.scrollHeight + 'px' : '0';
+      if (open) pixelCustom('FAQOpen', { question: q.querySelector('span')?.textContent || '' });
+    });
+  });
+}
+
+/* =========================================================
+   Init
+   ========================================================= */
+// Mostra alguns dos personagens colecionáveis na seção de bônus. Reaproveita
+// o MESMO arquivo que o app usa (assets/amigos.js), então a prévia da venda
+// nunca fica diferente do que a cliente recebe.
+function renderAmigosPreview() {
+  const box = document.getElementById('mat-amigos');
+  if (!box || !window.KPL_AMIGOS) return;
+  const mostrar = KPL_AMIGOS.list.slice(0, 7);
+  box.innerHTML = mostrar.map(a => KPL_AMIGOS.svgFor(a, false)).join('')
+    + '<span class="more">+' + (KPL_AMIGOS.list.length - mostrar.length) + '</span>';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderAmigosPreview();
+  renderBlocos();
+  renderDepoimentos();
+  renderBumps();
+  initTodayDate();
+  initPlanos();
+  initDownsell();
+  recalcTotal();
+  initFAQ();
+  initReveal();
+  initPixel();
+  initPresenceTracking();
+
+  // máscaras
+  $('#cpf').addEventListener('input', e => e.target.value = maskCPF(e.target.value));
+  $('#telefone').addEventListener('input', e => e.target.value = maskPhone(e.target.value));
+
+  // valida cada campo ao sair dele
+  const validators = {
+    nome: v => isValidName(v),
+    email: v => isValidEmail(v),
+    telefone: v => isValidPhone(v),
+    cpf: v => isValidCPF(v),
+  };
+  Object.keys(validators).forEach(id => {
+    $('#'+id).addEventListener('blur', () => {
+      setFieldValidity('f-'+idToWrap(id), validators[id]($('#'+id).value));
+    });
+  });
+
+  // dispara InitiateCheckout quando a pessoa começa a preencher
+  $('#nome').addEventListener('focus', fireInitiate, { once: true });
+
+  $('#checkout-form').addEventListener('submit', handleSubmit);
+});
+
+function idToWrap(id){ return id === 'telefone' ? 'tel' : id; }
+</script>
+</body>
+</html>

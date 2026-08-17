@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Funil ao vivo | Kit Prato Limpo</title>
+<meta name="robots" content="noindex" />
+<style>
+  :root {
+    --cream: #FBF8F1; --green: #5CA741; --green-dark: #3C7A2C; --orange: #F2911F;
+    --ink: #26302A; --text: #4B564E; --muted: #7C857D; --border: #E9E3D5; --card: #fff;
+    --body: "Segoe UI", system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: var(--body); background: var(--cream); color: var(--text); margin: 0; padding: 24px; }
+  .wrap { max-width: 940px; margin: 0 auto; }
+  h1 { font-size: 1.4rem; color: var(--ink); margin: 0 0 4px; }
+  h2 { font-size: 1rem; color: var(--ink); margin: 28px 0 10px; }
+  .sub { color: var(--muted); font-size: .85rem; margin-bottom: 16px; }
+  .gate { max-width: 360px; margin: 80px auto; text-align: center; }
+  .gate input { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 1rem; margin-top: 12px; }
+  .gate button { margin-top: 12px; width: 100%; padding: 10px; border: none; border-radius: 8px; background: var(--green); color: #fff; font-weight: 700; cursor: pointer; }
+
+  .ranges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+  .range-btn { border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 999px; padding: 6px 14px; font-size: .82rem; font-weight: 600; cursor: pointer; }
+  .range-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
+
+  .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
+  .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; min-width: 130px; flex: 1; }
+  .stat .n { font-size: 1.5rem; font-weight: 800; color: var(--ink); }
+  .stat .l { font-size: .72rem; text-transform: uppercase; color: var(--muted); letter-spacing: .03em; }
+  .stat.live .n { color: var(--green-dark); }
+  .dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: #2ecc71; margin-right: 6px; animation: pulse 1.4s infinite; vertical-align: middle; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card); border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 8px; }
+  th, td { padding: 8px 12px; text-align: left; font-size: .84rem; border-bottom: 1px solid var(--border); }
+  th { background: #f4efe3; color: var(--muted); font-weight: 600; text-transform: uppercase; font-size: .68rem; }
+  tr:last-child td { border-bottom: none; }
+  .bar-wrap { background: #eee; border-radius: 999px; height: 8px; width: 90px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 8px; }
+  .bar { height: 100%; background: var(--green); }
+  .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #2ecc71; margin-right: 4px; }
+  .muted { color: var(--muted); }
+  .drop-hi { color: #c0392b; font-weight: 700; }
+  /* Badge de % com semáforo: bate o olho e já sabe onde está ruim, sem ler número */
+  .pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: .76rem; font-weight: 700; }
+  .pill-ok   { background: #E4F3DC; color: #2F6B22; }
+  .pill-warn { background: #FDEBCF; color: #91560A; }
+  .pill-bad  { background: #FBE0D5; color: #A33418; }
+  .hint { display: block; color: var(--muted); font-size: .72rem; font-weight: 400; margin-top: 1px; }
+
+  /* Barra de seleção da tabela de visitantes */
+  .bulkbar { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 8px; font-size: .82rem; }
+  .chk-lbl { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; user-select: none; }
+  .chk-col { width: 34px; }
+  .btn-del {
+    margin-left: auto; border: 1px solid #E2B3A5; background: #FBE0D5; color: #A33418;
+    border-radius: 999px; padding: 6px 14px; font-size: .8rem; font-weight: 700; cursor: pointer;
+  }
+  .btn-del:hover:not(:disabled) { background: #F7CDBC; }
+  .btn-del:disabled { opacity: .45; cursor: not-allowed; }
+  tr.sel td { background: #FDF6F2; }
+  .note { color: var(--muted); font-size: .78rem; margin: 2px 0 8px; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .err { color: #c0392b; text-align: center; margin-top: 40px; }
+</style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <div class="gate" id="gate">
+      <h1>Funil ao vivo</h1>
+      <p class="sub">Digite a chave de acesso</p>
+      <input type="password" id="key-input" placeholder="Chave" />
+      <button id="gate-btn">Entrar</button>
+      <p class="err" id="gate-err" style="display:none">Chave inválida.</p>
+    </div>
+
+    <div id="dashboard" style="display:none">
+      <h1>Funil ao vivo — Kit Prato Limpo</h1>
+      <p class="sub" id="updated"></p>
+
+      <div class="ranges" id="ranges">
+        <button class="range-btn" data-range="today">Hoje</button>
+        <button class="range-btn" data-range="7d">7 dias</button>
+        <button class="range-btn" data-range="30d">30 dias</button>
+        <button class="range-btn active" data-range="all">Tudo</button>
+        <button class="range-btn" id="refresh-btn" type="button" style="margin-left:auto">↻ Atualizar</button>
+      </div>
+
+      <div class="cards">
+        <div class="stat live"><div class="n"><span class="dot"></span><span id="live-count">0</span></div><div class="l">Na página agora</div></div>
+        <div class="stat"><div class="n" id="total-count">0</div><div class="l">Visitas no período</div></div>
+        <div class="stat"><div class="n" id="sales-count">0</div><div class="l">Vendas</div></div>
+        <div class="stat"><div class="n" id="revenue">R$ 0</div><div class="l">Faturamento</div></div>
+      </div>
+
+      <h2>Últimos acessos</h2>
+      <table>
+        <thead><tr><th>Entrou</th><th>Criativo</th><th>Onde abriu</th><th>Parou em</th></tr></thead>
+        <tbody id="last-body"></tbody>
+      </table>
+      <p class="note">As 5 visitas mais recentes, com a hora exata (Brasília). É o pulso pra saber se o anúncio está entregando agora.</p>
+
+      <h2>Entrada</h2>
+      <table>
+        <thead><tr><th>Etapa</th><th class="num">Quantos</th><th class="num">% das visitas</th></tr></thead>
+        <tbody id="entrada-body"></tbody>
+      </table>
+      <p class="note">O trecho antes de a pessoa se engajar. O funil por seção abaixo não enxerga isso, porque começa contando quem já está na página.</p>
+
+      <h2>Ambiente do navegador</h2>
+      <table>
+        <thead><tr><th>Sistema · onde abriu</th><th class="num">Visitas</th><th class="num">% que passou do topo</th></tr></thead>
+        <tbody id="env-body"></tbody>
+      </table>
+      <p class="note">É o corte que separa "iPhone vai mal" de "webview do Instagram vai mal". Se uma linha destoar muito das outras, o problema é do ambiente, não do site.</p>
+
+      <h2>Funil por seção</h2>
+      <table>
+        <thead><tr><th>Seção</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <tbody id="sections-body"></tbody>
+      </table>
+      <p class="note">Abandono ⚠ = queda de 20% ou mais vs a seção anterior. É onde a página perde mais gente.</p>
+
+      <h2>Funil do quiz <span id="quiz-total" class="note" style="font-weight:400"></span></h2>
+      <table>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <tbody id="quiz-body"></tbody>
+      </table>
+      <p class="note">Contado só entre quem entrou no /quiz. Quem cai direto na página de vendas não aparece aqui.</p>
+
+      <h2>Criativos (anúncio de origem)</h2>
+      <table>
+        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
+        <tbody id="creatives-body"></tbody>
+      </table>
+      <p class="note">Configure utm_content={{ad.name}} na URL do anúncio no Meta pra cada criativo aparecer aqui.</p>
+
+      <h2>Dispositivo</h2>
+      <table>
+        <thead><tr><th>Dispositivo</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
+        <tbody id="devices-body"></tbody>
+      </table>
+
+      <h2>Sistema</h2>
+      <table>
+        <thead><tr><th>Sistema</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
+        <tbody id="platforms-body"></tbody>
+      </table>
+
+      <h2>Vendas</h2>
+      <table>
+        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>IP</th><th class="num">Valor</th></tr></thead>
+        <tbody id="sales-body"></tbody>
+      </table>
+
+      <h2>Visitantes</h2>
+      <div class="bulkbar">
+        <label class="chk-lbl"><input type="checkbox" id="sel-all" /> Selecionar todos os visíveis</label>
+        <span class="muted" id="sel-count">nenhum selecionado</span>
+        <button type="button" class="btn-del" id="del-btn" disabled>Apagar selecionados</button>
+      </div>
+      <table>
+        <thead><tr><th class="chk-col"></th><th>ID</th><th>Entrou</th><th>Dispositivo</th><th>Sistema</th><th>Onde abriu</th><th>Anúncio</th><th>IP</th><th>Parou em</th><th>Status</th></tr></thead>
+        <tbody id="individuals-body"></tbody>
+      </table>
+      <p class="note">Para limpar teste seu ou bot que passou pelo filtro. Só apaga o que estiver marcado, e não tem como desfazer (o dado mora só no Redis, sem backup).</p>
+    </div>
+  </div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+let KEY = new URLSearchParams(window.location.search).get('key') || sessionStorage.getItem('funil_key') || '';
+if (KEY) sessionStorage.setItem('funil_key', KEY);
+let RANGE = 'all';
+
+const DEVICE_LABELS = { mobile: 'Celular', tablet: 'Tablet', desktop: 'Computador' };
+const PLATFORM_LABELS = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Outro' };
+const ENV_LABELS = { instagram: 'Instagram in-app', facebook: 'Facebook in-app', 'chrome-ios': 'Chrome iOS', 'android-webview': 'WebView Android', browser: 'Navegador' };
+const SECTION_LABELS = {}; // preenchido a partir de data.sections
+
+/** Tudo que vem do visitante (nome de anúncio, IP) passa por aqui antes de
+ *  entrar no innerHTML. O servidor já limpa, isto é a segunda barreira. */
+function esc(s) {
+  return String(s ?? '').replace(/[&<>"']/g, (c) => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+function fmtTime(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+}
+function fmtBRL(cents) {
+  return 'R$ ' + ((cents || 0) / 100).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+async function loadData() {
+  try {
+    const res = await fetch('/api/funnel-data?key=' + encodeURIComponent(KEY) + '&range=' + RANGE);
+    if (res.status === 401) { showGate(true); return; }
+    const data = await res.json();
+    render(data);
+  } catch (e) { /* erro pontual de rede: mantém a última tela */ }
+}
+
+function pctRows(list, total) {
+  return list.map((r) => {
+    const pct = total > 0 ? Math.round((r.count / total) * 100) : 0;
+    return `<tr><td>${esc(r.label || r.key)}</td><td class="num">${r.count}</td><td class="num muted">${pct}%</td></tr>`;
+  }).join('');
+}
+
+/** Badge de % com semáforo (mesmos cortes do painel do NutriPlan). */
+function pill(pct) {
+  const cls = pct >= 70 ? 'pill-ok' : pct >= 40 ? 'pill-warn' : 'pill-bad';
+  return `<span class="pill ${cls}">${pct}%</span>`;
+}
+
+/** Linhas de um funil (etapa, chegaram, % do topo, abandono vs etapa anterior).
+ *  Serve tanto pro funil da página quanto pro do quiz. */
+function funnelRows(list) {
+  const top = list[0]?.count || 1;
+  return list.map((s, i) => {
+    const pct = top > 0 ? Math.round((s.count / top) * 100) : 0;
+    const prev = i === 0 ? s.count : (list[i - 1].count || 0);
+    const drop = (i > 0 && prev > 0) ? Math.round(((prev - s.count) / prev) * 100) : 0;
+    const highDrop = i > 0 && drop >= 20;
+    const dropCell = i === 0
+      ? '<span class="muted">—</span>'
+      : `<span class="${highDrop ? 'drop-hi' : 'muted'}">${highDrop ? '⚠ ' : ''}${drop}%</span>`;
+    return `<tr>
+      <td>${s.label}</td>
+      <td class="num">${s.count}</td>
+      <td><span class="bar-wrap"><span class="bar" style="width:${pct}%"></span></span>${pill(pct)}</td>
+      <td>${dropCell}</td>
+    </tr>`;
+  }).join('');
+}
+
+function fmtDateTime(ts) {
+  if (!ts) return '—';
+  return new Date(ts).toLocaleString('pt-BR', {
+    day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit',
+    timeZone: 'America/Sao_Paulo',
+  });
+}
+
+function render(data) {
+  $('#gate').style.display = 'none';
+  $('#dashboard').style.display = '';
+  $('#updated').textContent = 'Atualizado às ' + fmtTime(data.now);
+  $('#live-count').textContent = data.liveCount;
+  $('#total-count').textContent = data.total;
+  $('#sales-count').textContent = data.salesCount;
+  $('#revenue').textContent = fmtBRL(data.revenueCents);
+
+  (data.sections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
+  (data.quizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
+
+  // Últimos acessos (pulso ao vivo)
+  const last = data.lastVisits || [];
+  $('#last-body').innerHTML = last.length
+    ? last.map((v) => {
+        const parou = SECTION_LABELS[v.quizMax || v.maxSection] || v.quizMax || v.maxSection || '—';
+        const onde = [PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ') || '—';
+        const vivo = v.isLive ? '<span class="live-dot"></span>' : '';
+        return `<tr>
+          <td class="muted">${fmtDateTime(v.firstSeen)}</td>
+          <td>${esc(v.adRef)}</td>
+          <td class="muted">${esc(onde)}</td>
+          <td>${vivo}${esc(parou)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="muted">Sem visitas no período.</td></tr>';
+
+  // Entrada (antes do engajamento)
+  const entrada = data.entrada || [];
+  const base = entrada[0]?.count || 0;
+  $('#entrada-body').innerHTML = entrada.length
+    ? entrada.map((e) => {
+        const pct = base > 0 ? Math.round((e.count / base) * 100) : 0;
+        // "Carga fantasma" é ruim quanto MAIOR, então não recebe semáforo (verde
+        // em 80% de carga fantasma seria uma leitura invertida).
+        const cell = e.key === 'fantasma' ? `<span class="muted">${pct}%</span>` : pill(pct);
+        return `<tr>
+          <td>${e.label}<span class="hint">${e.hint}</span></td>
+          <td class="num">${e.count}</td>
+          <td class="num">${cell}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
+
+  // Ambiente do navegador (plataforma x onde abriu)
+  const envs = data.browserEnvs || [];
+  $('#env-body').innerHTML = envs.length
+    ? envs.map((e) => {
+        const pct = e.total > 0 ? Math.round((e.engaged / e.total) * 100) : 0;
+        return `<tr>
+          <td>${esc(e.key)}</td>
+          <td class="num muted">${e.total}</td>
+          <td class="num">${pill(pct)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
+
+  // Funil por seção + abandono
+  $('#sections-body').innerHTML = funnelRows(data.sections);
+
+  // Funil do quiz (trilha separada: só quem entrou no /quiz)
+  const quizSteps = data.quizSections || [];
+  const quizEntered = quizSteps[0]?.count || 0;
+  $('#quiz-total').textContent = quizEntered ? `· ${quizEntered} entraram` : '· ninguém entrou ainda';
+  $('#quiz-body').innerHTML = quizEntered
+    ? funnelRows(quizSteps)
+    : '<tr><td colspan="4" class="muted">Sem dados do quiz no período.</td></tr>';
+
+  // Criativos / Dispositivo / Sistema
+  const totalVisits = data.total || 1;
+  $('#creatives-body').innerHTML = data.creatives.length
+    ? pctRows(data.creatives, totalVisits)
+    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
+  $('#devices-body').innerHTML = data.devices.length
+    ? pctRows(data.devices.map((r) => ({ ...r, label: DEVICE_LABELS[r.key] || r.key })), totalVisits)
+    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
+  $('#platforms-body').innerHTML = data.platforms.length
+    ? pctRows(data.platforms.map((r) => ({ ...r, label: PLATFORM_LABELS[r.key] || r.key })), totalVisits)
+    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
+
+  // Vendas
+  $('#sales-body').innerHTML = data.sales.length
+    ? data.sales.map((s) => `<tr>
+        <td class="muted">${fmtTime(s.ts)}</td>
+        <td>${esc(s.name)}</td>
+        <td>${esc(s.tierName)}</td>
+        <td class="muted">${esc(s.adRef)}</td>
+        <td class="muted">${esc(s.ip || '—')}</td>
+        <td class="num">${fmtBRL(s.valueCents)}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="6" class="muted">Sem vendas no período.</td></tr>';
+
+  // Visitantes
+  $('#individuals-body').innerHTML = data.individuals.length
+    ? data.individuals.map((ind) => {
+        // Quem fez o quiz para numa etapa DELE, não numa seção da página.
+        const stopKey = ind.quizMax || ind.maxSection;
+        const stopLabel = SECTION_LABELS[stopKey] || stopKey || '—';
+        const dev = ind.device ? (DEVICE_LABELS[ind.device] || ind.device) : '—';
+        const plat = ind.platform ? (PLATFORM_LABELS[ind.platform] || ind.platform) : '—';
+        const env = ind.browserEnv ? (ENV_LABELS[ind.browserEnv] || ind.browserEnv) : '—';
+        return `<tr data-id="${esc(ind.id)}"${selectedIds.has(ind.id) ? ' class="sel"' : ''}>
+          <td class="chk-col"><input type="checkbox" class="row-chk" data-id="${esc(ind.id)}"${selectedIds.has(ind.id) ? ' checked' : ''} /></td>
+          <td class="muted">${esc(ind.id.slice(0, 8))}</td>
+          <td>${fmtTime(ind.firstSeen)}</td>
+          <td>${esc(dev)}</td>
+          <td>${esc(plat)}</td>
+          <td class="muted">${esc(env)}</td>
+          <td class="muted">${esc(ind.adRef)}</td>
+          <td class="muted">${esc(ind.ip || '—')}</td>
+          <td>${esc(stopLabel)}</td>
+          <td>${ind.isLive ? '<span class="live-dot"></span>Ao vivo' : '<span class="muted">Saiu</span>'}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="10" class="muted">Sem visitantes no período.</td></tr>';
+
+  // Só sobram marcados os que ainda existem na tela (mudou o período, por ex.)
+  const visiveis = new Set(data.individuals.map((i) => i.id));
+  selectedIds.forEach((id) => { if (!visiveis.has(id)) selectedIds.delete(id); });
+  bindRowChecks();
+  refreshSelUI();
+}
+
+/* =========================================================
+   Seleção + apagar sessões (teste seu / bot que passou pelo filtro)
+   ========================================================= */
+const selectedIds = new Set();
+
+function bindRowChecks() {
+  document.querySelectorAll('.row-chk').forEach((chk) => {
+    chk.addEventListener('change', () => {
+      const id = chk.dataset.id;
+      if (chk.checked) selectedIds.add(id); else selectedIds.delete(id);
+      chk.closest('tr').classList.toggle('sel', chk.checked);
+      refreshSelUI();
+    });
+  });
+}
+
+function refreshSelUI() {
+  const n = selectedIds.size;
+  const totalLinhas = document.querySelectorAll('.row-chk').length;
+  $('#sel-count').textContent = n === 0 ? 'nenhum selecionado' : `${n} selecionado${n > 1 ? 's' : ''}`;
+  $('#del-btn').disabled = n === 0;
+  $('#sel-all').checked = totalLinhas > 0 && n === totalLinhas;
+}
+
+$('#sel-all').addEventListener('change', (e) => {
+  const marcar = e.target.checked;
+  document.querySelectorAll('.row-chk').forEach((chk) => {
+    chk.checked = marcar;
+    chk.closest('tr').classList.toggle('sel', marcar);
+    if (marcar) selectedIds.add(chk.dataset.id); else selectedIds.delete(chk.dataset.id);
+  });
+  refreshSelUI();
+});
+
+$('#del-btn').addEventListener('click', async () => {
+  const ids = Array.from(selectedIds);
+  if (!ids.length) return;
+  // Sem desfazer: o dado mora só no Redis. A confirmação diz o número exato.
+  if (!confirm(`Apagar ${ids.length} sessão(ões) do painel?\n\nIsso não tem como desfazer.`)) return;
+
+  const btn = $('#del-btn');
+  btn.disabled = true;
+  btn.textContent = 'Apagando...';
+  try {
+    const res = await fetch('/api/delete-visitors', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key: KEY, visitorIds: ids }),
+    });
+    const out = await res.json().catch(() => ({}));
+    if (!res.ok) { alert(out.error || 'Erro ao apagar.'); return; }
+    selectedIds.clear();
+    await loadData();
+  } catch (e) {
+    alert('Erro de rede ao apagar.');
+  } finally {
+    btn.textContent = 'Apagar selecionados';
+    refreshSelUI();
+  }
+});
+
+function showGate(err) {
+  $('#gate').style.display = '';
+  $('#dashboard').style.display = 'none';
+  $('#gate-err').style.display = err ? '' : 'none';
+}
+
+$('#ranges').addEventListener('click', (e) => {
+  const btn = e.target.closest('.range-btn');
+  if (!btn || !btn.dataset.range) return; // ignora o botão "Atualizar", que não tem período
+  RANGE = btn.dataset.range;
+  document.querySelectorAll('.range-btn[data-range]').forEach((b) => b.classList.toggle('active', b === btn));
+  loadData();
+});
+
+$('#gate-btn').addEventListener('click', () => {
+  KEY = $('#key-input').value.trim();
+  sessionStorage.setItem('funil_key', KEY);
+  loadData();
+});
+$('#key-input').addEventListener('keydown', (e) => { if (e.key === 'Enter') $('#gate-btn').click(); });
+
+if (KEY) loadData(); else showGate(false);
+// SEM atualização automática de propósito: um poll em loop (mesmo espaçado)
+// esquecido com a aba aberta foi o que estourou as 500 mil requisições/mês
+// do Redis free duas vezes seguidas (14 e 15/08). Agora só consulta quando
+// a página abre ou quando alguém clica em "Atualizar" — consumo vira
+// proporcional a quantas vezes a pessoa realmente olha o painel, não a
+// quanto tempo a aba fica esquecida aberta.
+$('#refresh-btn').addEventListener('click', () => { if (KEY) loadData(); });
+</script>
+</body>
+</html>

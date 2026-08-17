@@ -1,0 +1,17 @@
+{
+  "name": "KPL · Kit Prato Limpo",
+  "short_name": "KPL",
+  "description": "Seu kit de fichas pra alimentação infantil, sempre à mão.",
+  "start_url": "/mi-kit",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FBF8F1",
+  "theme_color": "#5CA741",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/assets/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/assets/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "name": "kpl-kit-prato-limpo",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mini página de vendas + checkout Pix (PushInPay) do Kit Prato Limpo",
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "pdf-lib": "^1.17.1",
+    "sharp": "^0.35.3"
+  }
+}
