@@ -440,6 +440,72 @@ Contato com o alimento sem obrigação de comer. É o bloco de entrada do kit pa
 
 ---
 
+## BLOCO 9 · Vontade de experimentar (fichas 87 a 106)
+
+Diferente do Bloco 8 (que trabalha o corpo se acostumando fisicamente, passo a passo), este bloco trabalha a cabeça: curiosidade, identidade de "exploradora corajosa", escolha própria e celebração da tentativa. O alvo é o desejo dela de provar, não a tolerância física ao alimento.
+
+### B9-F87 · Ainda não conheço
+> Ficha B9-F87. MODO COLORIDO. Título: "Ainda não conheço". Instrução: "Troque 'eu não gosto' por 'eu ainda não conheço'. Marque com um X os alimentos que ela ainda está conhecendo." Arte: um balão de fala grande riscado com um X por cima escrito "Eu não gosto" e uma seta apontando pra outro balão ao lado, sem risco, escrito "Eu ainda não conheço". Embaixo, uma fileira de seis alimentos pequenos em círculos (tomate, brócolis, berinjela, cenoura, uva, banana), cada um com um quadradinho vazio ao lado para marcar.
+
+### B9-F88 · Passaporte dos sabores
+> Ficha B9-F88. RECORTAR. MODO COLORIDO. Título: "Passaporte dos sabores". Instrução: "Cada alimento novo que ela experimentar ganha um carimbo no passaporte. Não precisa comer tudo, só carimbar a viagem." Arte: uma capa de passaporte estilizada em verde escuro com o título "Passaporte dos Sabores" em letra grande e um selo redondo no centro, dentro de uma borda tracejada com ícone de tesoura. Ao lado, uma página interna com doze quadradinhos vazios em grade, cada um com bordinha tracejada esperando um carimbo.
+
+### B9-F89 · O detetive do prato
+> Ficha B9-F89. MODO COLORIDO. Título: "O detetive do prato". Instrução: "Antes de provar, investigue como um detetive: qual é a cor, o cheiro, o formato? Anote as pistas antes de decidir se vai provar." Arte: uma lupa grande fofa com carinha sorridente no canto superior, apontando para um pimentão no centro da página. Ao lado, uma ficha de investigação com três linhas rotuladas "Cor:", "Cheiro:", "Formato:", cada uma com espaço em branco.
+
+### B9-F90 · O convidado novo
+> Ficha B9-F90. MODO COLORIDO. Título: "O convidado novo". Instrução: "Trate o alimento novo como visita que chegou pra festa: dê boas-vindas antes de decidir se ele fica no seu prato." Arte: uma porta de casa fofa e grande, aberta, com uma berinjela do lado de fora carregando uma sacolinha, como se estivesse chegando pra uma festa. Confetes pequenos e uma faixa no topo escrito "Bem-vindo".
+
+### B9-F91 · Se esse alimento fosse um herói
+> Ficha B9-F91. MODO PINTAR. Título: "Se esse alimento fosse um herói". Instrução: "Desenhe o superpoder que esse alimento teria. Depois conte pra ela por que ele é um herói bom pro corpo." Arte: um brócolis grande no centro vestindo uma capa de herói, braços na cintura em pose de super-herói. Três raios de energia saindo dele, sem preenchimento. Contorno preto muito grosso, tudo vazio para colorir.
+
+### B9-F92 · Meu jeito de dizer sim
+> Ficha B9-F92. RECORTAR. MODO COLORIDO. Título: "Meu jeito de dizer sim". Instrução: "Ela escolhe uma bandeirinha para levantar quando topa tentar algo, sem precisar falar nada. Corte e guarde na gaveta da mesa." Arte: duas bandeirinhas triangulares presas cada uma num palito curto, uma verde escrito "Topo" e outra creme escrito "Ainda não", as duas dentro de uma borda tracejada com ícone de tesoura.
+
+### B9-F93 · A caixinha da coragem
+> Ficha B9-F93. RECORTAR. MODO COLORIDO. Título: "A caixinha da coragem". Instrução: "Cada vez que ela tentar algo novo — só tentar, não precisa gostar — vocês colocam uma fichinha na caixa. Ver a caixa encher já é a recompensa." Arte: uma caixinha de papelão fofa com tampa aberta e carinha sorridente, três fichinhas redondas caindo dentro dela. Ao lado, uma cartela de seis fichinhas redondas soltas, cada uma dentro de borda tracejada com ícone de tesoura.
+
+### B9-F94 · Antes eu achava, agora eu acho
+> Ficha B9-F94. MODO COLORIDO. Título: "Antes eu achava, agora eu acho". Instrução: "Preencha depois de uma semana experimentando: o que ela achava antes e o que acha agora. Às vezes muda, às vezes não — os dois são normais." Arte: página dividida ao meio por uma linha pontilhada vertical. À esquerda, uma nuvem de pensamento escrito "Antes eu achava" com espaço em branco embaixo. À direita, outra nuvem escrito "Agora eu acho" com espaço em branco. No topo, um pequeno desenho de cenoura sendo avaliada.
+
+### B9-F95 · Hoje eu sou a chef
+> Ficha B9-F95. MODO COLORIDO. Título: "Hoje eu sou a chef". Instrução: "Ela escolhe, entre três opções, qual alimento novo a família vai experimentar hoje. Escolher já é o primeiro passo de coragem." Arte: um chapéu de chef grande e fofo no topo com carinha sorridente. Embaixo, três pratinhos pequenos em fileira, cada um com um alimento diferente (cenoura, uva, pimentão) e um círculo vazio acima de cada um para marcar a escolha do dia.
+
+### B9-F96 · Como eu me sinto perto desse alimento
+> Ficha B9-F96. MODO COLORIDO. Título: "Como eu me sinto perto desse alimento". Instrução: "Antes de chegar perto, ela aponta como está se sentindo. Não tem sentimento errado, só o de hoje." Arte: quatro carinhas grandes em fileira, cada uma com expressão diferente e um rótulo embaixo: "Curioso", "Com medo", "Animado", "Não ligo". Cada carinha dentro de um círculo com contorno grosso, pra circular a que sente.
+
+### B9-F97 · De onde vem esse alimento
+> Ficha B9-F97. MODO COLORIDO. Título: "De onde vem esse alimento". Instrução: "Contem juntos de onde vem o alimento: terra, planta, árvore ou animal. Conhecer a história ajuda a perder o medo do desconhecido." Arte: uma cenoura grande saindo da terra com a raiz visível e um solzinho no céu. Ao lado, uma seta curva ligando três desenhos pequenos em sequência: uma semente, uma plantinha crescendo, e a cenoura pronta no prato.
+
+### B9-F98 · Meu prato, minhas regras
+> Ficha B9-F98. MODO COLORIDO. Título: "Meu prato, minhas regras". Instrução: "Deixe ela decidir como o alimento novo entra no prato: inteiro, cortado, ou só um pedacinho no canto. O jeito que ela escolhe já é dela." Arte: um prato redondo grande dividido em três seções vazias, cada uma com rótulo pequeno embaixo: "Inteiro", "Cortadinho", "Só uma pontinha". Um pepino desenhado três vezes fora do prato, um em cada formato correspondente, pra ela escolher.
+
+### B9-F99 · A festa de boas-vindas
+> Ficha B9-F99. MODO COLORIDO. Título: "A festa de boas-vindas". Instrução: "Na primeira vez que ela experimentar algo novo, façam uma comemoração de verdade: palma, música ou grito de festa. Marque a data aqui." Arte: confetes e serpentinas ao redor de toda a borda da página. No centro, um troféu pequeno fofo com carinha sorridente. Embaixo, uma linha em branco com o rótulo "Hoje experimentei:" e outra linha menor "Data:".
+
+### B9-F100 · O alimento tem nome
+> Ficha B9-F100. MODO PINTAR. Título: "O alimento tem nome". Instrução: "Dê um nome pro alimento novo, como se fosse um bichinho de estimação. Ficar íntimo dele é o primeiro passo pra confiar." Arte: uma batata grande e fofa com carinha simpática usando uma placa de identificação pendurada no pescoço, com uma linha em branco na placa para escrever o nome. Contorno preto muito grosso, tudo vazio para colorir.
+
+### B9-F101 · Combinado sem pressão
+> Ficha B9-F101. MODO COLORIDO. Título: "Combinado sem pressão". Instrução: "Combinem antes: ela pode parar a qualquer momento, sem explicar por quê. Isso vale mais do que parece." Arte: duas mãos fofas se apertando num aperto de mão amigável no centro, com um coração pequeno acima. Embaixo, uma faixa creme com o texto "Combinado da nossa mesa" e uma linha em branco para assinar junto.
+
+### B9-F102 · O cheiro me lembra
+> Ficha B9-F102. MODO COLORIDO. Título: "O cheiro me lembra". Instrução: "Cheire o alimento e diga do que ele lembra: um lugar, uma cor, uma sensação. Não precisa ser 'gostoso' ou 'ruim', só o que vier na cabeça." Arte: um nariz fofo grande com ondinhas de cheiro subindo até um balão de pensamento vazio. Embaixo, três alimentos pequenos em fileira pra escolher qual cheirar primeiro.
+
+### B9-F103 · A cor mais corajosa
+> Ficha B9-F103. MODO COLORIDO. Título: "A cor mais corajosa". Instrução: "Sorteiem uma cor da semana. Todo alimento novo daquela cor ganha uma estrela extra de coragem só por aparecer no prato." Arte: uma roda giratória dividida em seis fatias coloridas (vermelho, laranja, amarelo, verde, roxo, branco) com uma estrela grande no centro. Ao redor, seis alimentos pequenos correspondentes a cada cor, cada um com espaço vazio pra marcar quando aparecer no prato.
+
+### B9-F104 · Meu álbum de gostos
+> Ficha B9-F104. MODO COLORIDO. Título: "Meu álbum de gostos". Instrução: "Cada alimento novo experimentado ganha uma figurinha no álbum. Ela mesma decide se cola de cabeça pra cima (adorei) ou de lado (mais ou menos)." Arte: página de álbum com dezesseis quadradinhos vazios em grade, cada um com bordinha pontilhada estilo espaço de figurinha. No topo, o título "Meu álbum de gostos" em letra grande e uma figurinha de exemplo já colada no primeiro quadrado.
+
+### B9-F105 · O mapa da coragem
+> Ficha B9-F105. MODO COLORIDO. Título: "O mapa da coragem". Instrução: "Desenhe um caminho com estações, uma pra cada alimento que ela quer tentar esse mês. Cada vitória avança uma casa no mapa." Arte: um caminho sinuoso desenhado como trilha de tabuleiro, com oito casas numeradas em formato de círculo ligadas por linha pontilhada, começando numa bandeirinha de largada e terminando num troféu. Cada casa vazia pronta pra receber um adesivo ou desenho pequeno.
+
+### B9-F106 · Diário de descobertas
+> Ficha B9-F106. MODO COLORIDO. Título: "Diário de descobertas". Instrução: "Uma vez por semana, ela desenha ou cola algo sobre o alimento novo da semana. Em um mês, vocês têm um diário de coragem pra folhear juntos." Arte: página de diário com quatro linhas horizontais no topo escrito "Semana 1" a "Semana 4", cada uma com quadrado grande vazio ao lado pra desenhar. Título "Diário de Descobertas" no topo e um caderninho de espiral desenhado na lateral.
+
+---
+
 # 7. Depois que as 86 estiverem prontas
 
 ## 7.1 Quatro números do site que precisam bater

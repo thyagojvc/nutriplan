@@ -34,6 +34,7 @@ const MOMENTO_POR_BLOCO = {
   6: 'fora',    // Brincadeiras fora da refeição
   7: 'fora',    // Histórias e faz de conta
   8: 'mesa',    // Aproximação sensorial
+  9: 'mesa',    // Vontade de experimentar
 };
 
 function parseMissoes() {
@@ -67,8 +68,8 @@ function parseMissoes() {
 
 function main() {
   const missoes = parseMissoes();
-  if (missoes.length !== 86) {
-    console.warn(`Atenção: ${missoes.length} missões extraídas (esperado 86).`);
+  if (missoes.length !== 106) {
+    console.warn(`Atenção: ${missoes.length} missões extraídas (esperado 106).`);
   }
 
   // Casa a arte pelo código. Sem a arte a missão ainda funciona (o card mostra

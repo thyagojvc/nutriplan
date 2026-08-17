@@ -18,6 +18,7 @@ const BLOCKS = [
   { n: 6, title: 'Brincadeiras fora da refeição', desc: 'Quebra a associação entre comida e conflito.' },
   { n: 7, title: 'Histórias e faz de conta', desc: 'Narrativas curtas com o alimento como personagem.' },
   { n: 8, title: 'Aproximação sensorial', desc: 'Contato com o alimento sem obrigação de comer.' },
+  { n: 9, title: 'Vontade de experimentar', desc: 'Curiosidade e coragem de dentro pra fora, sem depender de pressão.' },
 ];
 
 // Título de verdade (com acento) vem de PROMPTS-86-ATIVIDADES.md — o nome do

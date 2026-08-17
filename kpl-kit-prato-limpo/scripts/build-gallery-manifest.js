@@ -30,8 +30,16 @@ async function main() {
 
   const allFiles = fs
     .readdirSync(FICHAS_DIR)
-    .filter((f) => /^B\d-F\d{2}-.+\.png$/i.test(f))
-    .sort();
+    // \d+ nos dois números: com o Bloco 9 as fichas passaram de 2 pra 3
+    // dígitos (F100+), \d{2} fixo as excluía em silêncio da galeria.
+    .filter((f) => /^B\d+-F\d+-.+\.png$/i.test(f))
+    // .sort() puro é lexicográfico: "F100" vem ANTES de "F99" (compara
+    // caractere a caractere, "1" < "9"). Ordena pelos números de verdade.
+    .sort((a, b) => {
+      const na = a.match(/^B(\d+)-F(\d+)-/);
+      const nb = b.match(/^B(\d+)-F(\d+)-/);
+      return Number(na[1]) - Number(nb[1]) || Number(na[2]) - Number(nb[2]);
+    });
 
   if (!allFiles.length) {
     console.error('Nenhuma ficha encontrada em ' + FICHAS_DIR);

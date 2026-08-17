@@ -342,8 +342,16 @@ async function buildPdf(variant, allFiles, blocksWithFiles, bonusesReady) {
 async function main() {
   const allFiles = fs
     .readdirSync(FICHAS_DIR)
-    .filter((f) => /^B\d-F\d{2}-.+\.png$/i.test(f))
-    .sort();
+    // \d+ nos dois números: com o Bloco 9 as fichas passaram de 2 pra 3
+    // dígitos (F100+), \d{2} fixo as excluía em silêncio do PDF.
+    .filter((f) => /^B\d+-F\d+-.+\.png$/i.test(f))
+    // .sort() puro é lexicográfico: "F100" vem ANTES de "F99". Ordena pelos
+    // números de verdade, senão a ordem impressa sai errada a partir daqui.
+    .sort((a, b) => {
+      const na = a.match(/^B(\d+)-F(\d+)-/);
+      const nb = b.match(/^B(\d+)-F(\d+)-/);
+      return Number(na[1]) - Number(nb[1]) || Number(na[2]) - Number(nb[2]);
+    });
 
   if (!allFiles.length) {
     console.error('Nenhuma ficha encontrada em ' + FICHAS_DIR);
