@@ -1914,11 +1914,12 @@ function initPresenceTracking() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         visitorId, section: currentSection, maxSection: ids[maxIdx] || currentSection, adRef,
-        hiddenLoad, visible, touched,
+        hiddenLoad, visible, touched, checkoutStarted: checkoutStartedFlag,
       }),
       keepalive: true,
     }).catch(() => {});
   }
+  triggerHeartbeat = sendHeartbeat; // deixa fireInitiate() disparar um beat imediato
   sendHeartbeat();
   setInterval(sendHeartbeat, CONFIG.PRESENCE_MS);
 }
@@ -1931,11 +1932,21 @@ let initiateFired = false;
 let currentPaymentId = null;
 let currentCustomer = null;
 
+// Sinaliza pro painel /funil quem começou o checkout de verdade (nome
+// preenchido + avançou pro e-mail), não só quem rolou até a seção. Reaproveita
+// o heartbeat de presença que já existe (ver initPresenceTracking) em vez de
+// criar uma chamada nova ao servidor: mesmo request, um campo a mais no corpo,
+// custo extra no Redis é só 1 HSET condicional (igual o padrão de `touched`).
+let checkoutStartedFlag = false;
+let triggerHeartbeat = null;
+
 function fireInitiate() {
   if (initiateFired) return;
   initiateFired = true;
   pixel('InitiateCheckout', { value: totalCents()/100, currency: 'BRL' });
   pixelCustom('FormStart', {});
+  checkoutStartedFlag = true;
+  if (triggerHeartbeat) triggerHeartbeat();
 }
 
 async function handleSubmit(e) {

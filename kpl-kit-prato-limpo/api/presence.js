@@ -124,6 +124,10 @@ module.exports = async (req, res) => {
     if (body.hiddenLoad) cmds.push(['HSETNX', `visitor:${visitorId}`, 'hiddenLoad', '1']);
     if (body.visible)    cmds.push(['HSET',   `visitor:${visitorId}`, 'visible', '1']);
     if (body.touched)    cmds.push(['HSET',   `visitor:${visitorId}`, 'touched', '1']);
+    // Nome preenchido + avançou pro e-mail (ver fireInitiate em index.html) —
+    // sinal mais forte que "rolou até a seção checkout", que só mostra que
+    // passou os olhos, não que começou a preencher.
+    if (body.checkoutStarted) cmds.push(['HSET', `visitor:${visitorId}`, 'checkoutStarted', '1']);
 
     await redisPipeline(cmds);
 

@@ -90,6 +90,7 @@
       <div class="cards">
         <div class="stat live"><div class="n"><span class="dot"></span><span id="live-count">0</span></div><div class="l">Na página agora</div></div>
         <div class="stat"><div class="n" id="total-count">0</div><div class="l">Visitas no período</div></div>
+        <div class="stat"><div class="n" id="checkout-started-count">0</div><div class="l">Iniciaram checkout</div></div>
         <div class="stat"><div class="n" id="sales-count">0</div><div class="l">Vendas</div></div>
         <div class="stat"><div class="n" id="revenue">R$ 0</div><div class="l">Faturamento</div></div>
       </div>
@@ -147,6 +148,13 @@
         <thead><tr><th>Sistema</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
         <tbody id="platforms-body"></tbody>
       </table>
+
+      <h2>Iniciaram o checkout</h2>
+      <table>
+        <thead><tr><th>Quando</th><th>Anúncio</th><th>Onde abriu</th><th>Parou em</th></tr></thead>
+        <tbody id="checkout-started-body"></tbody>
+      </table>
+      <p class="note">Nome preenchido + avançou pro e-mail. Mais forte que "chegou na seção checkout" (que só mostra que rolou até lá) — mas não cruza com quem já comprou, então tem gente aqui que já está na lista de Vendas.</p>
 
       <h2>Vendas</h2>
       <table>
@@ -252,6 +260,7 @@ function render(data) {
   $('#updated').textContent = 'Atualizado às ' + fmtTime(data.now);
   $('#live-count').textContent = data.liveCount;
   $('#total-count').textContent = data.total;
+  $('#checkout-started-count').textContent = data.checkoutStartedCount || 0;
   $('#sales-count').textContent = data.salesCount;
   $('#revenue').textContent = fmtBRL(data.revenueCents);
 
@@ -273,6 +282,22 @@ function render(data) {
         </tr>`;
       }).join('')
     : '<tr><td colspan="4" class="muted">Sem visitas no período.</td></tr>';
+
+  // Iniciaram o checkout
+  const starts = data.checkoutStarts || [];
+  $('#checkout-started-body').innerHTML = starts.length
+    ? starts.map((v) => {
+        const parou = SECTION_LABELS[v.maxSection] || v.maxSection || '—';
+        const onde = [PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ') || '—';
+        const vivo = v.isLive ? '<span class="live-dot"></span>' : '';
+        return `<tr>
+          <td class="muted">${fmtDateTime(v.lastSeen)}</td>
+          <td>${esc(v.adRef)}</td>
+          <td class="muted">${esc(onde)}</td>
+          <td>${vivo}${esc(parou)}</td>
+        </tr>`;
+      }).join('')
+    : '<tr><td colspan="4" class="muted">Ninguém iniciou o checkout no período.</td></tr>';
 
   // Entrada (antes do engajamento)
   const entrada = data.entrada || [];

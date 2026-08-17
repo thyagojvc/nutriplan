@@ -127,6 +127,7 @@ module.exports = async (req, res) => {
         hiddenLoad: h.hiddenLoad === '1',
         visible: h.visible === '1',
         touched: h.touched === '1',
+        checkoutStarted: h.checkoutStarted === '1',
         isLive: !!presence[i],
       };
     });
@@ -198,6 +199,20 @@ module.exports = async (req, res) => {
       isLive: v.isLive,
     }));
 
+    // INICIARAM CHECKOUT: nome preenchido + avançou pro e-mail (sinal mais forte
+    // que só ter rolado até a seção). `rows` já vem do mais recente pro mais
+    // antigo, então os primeiros 30 já são os mais recentes.
+    const checkoutStarts = rows.filter((v) => v.checkoutStarted).slice(0, 30).map((v) => ({
+      id: v.id,
+      lastSeen: v.lastSeen,
+      adRef: v.adRef,
+      platform: v.platform,
+      browserEnv: v.browserEnv ? (BROWSER_ENV_LABELS[v.browserEnv] || v.browserEnv) : null,
+      maxSection: v.maxSection,
+      isLive: v.isLive,
+    }));
+    const checkoutStartedCount = rows.filter((v) => v.checkoutStarted).length;
+
     // Vendas (member = JSON, score = timestamp). Filtra pelo período.
     const salesRaw = await redis('ZREVRANGE', 'kpl:sales', 0, 199, 'WITHSCORES');
     const sales = parseSales(salesRaw)
@@ -216,6 +231,8 @@ module.exports = async (req, res) => {
       entrada,
       browserEnvs,
       lastVisits,
+      checkoutStarts,
+      checkoutStartedCount,
       creatives,
       devices,
       platforms,
