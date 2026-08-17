@@ -185,6 +185,10 @@ module.exports = async (req, res) => {
         to: email,
         subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
         html: confirmationEmailHtml({ name, tierName, downloadUrl }),
+        // Cliente costuma responder o e-mail de entrega em vez de escrever pro
+        // suporte. Sem reply_to, essa resposta cai na caixa do remetente
+        // técnico (entrega@nutriplan.email) e ninguém vê.
+        replyTo: 'kitpratolimpo@gmail.com',
       }),
       process.env.ADMIN_ALERT_EMAIL
         ? sendEmail({
