@@ -164,12 +164,26 @@ module.exports = async (req, res) => {
 
     // Registra a venda no painel /funil (sorted set por tempo). Não bloqueia a
     // entrega se o Redis falhar — é só métrica.
+    //
+    // Trava `sale-logged:<id>` própria, além da `delivered:<id>` acima: aquela
+    // trava impede reentrega, mas não fecha a corrida com o webhook.js (rede
+    // de segurança do pagamento órfão), que faz sua PRÓPRIA leitura de
+    // `delivered:id` antes de decidir se grava em kpl:sales. Se os dois
+    // caminhos chegarem quase juntos pro mesmo pagamento, ambos podem passar
+    // pelo check antes de qualquer um marcar `delivered:id` — e cada um grava
+    // sua própria linha (uma com IP de verdade, outra com `i: null`, a
+    // assinatura do webhook). Com essa trava extra, só quem chegar primeiro
+    // grava a venda; o outro vê o lock já tomado e não duplica.
     const now = Date.now();
     const adRef = String(body.adRef || '').replace(/[^\w\s\-.|:/]/g, '').trim().slice(0, 120) || 'Sem anúncio';
     const firstName = (name || '').trim().split(/\s+/)[0] || 'Cliente';
-    Promise.resolve()
-      .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: clientIpAddress, ts: now })))
-      .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501))
+    redis('SET', `sale-logged:${paymentId}`, '1', 'NX', 'EX', 86400)
+      .then((lock) => {
+        if (lock !== 'OK') return null;
+        return Promise.resolve()
+          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: clientIpAddress, ts: now })))
+          .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
+      })
       .catch((err) => console.error('sales record error', err));
 
     const cookies = parseCookies(req);

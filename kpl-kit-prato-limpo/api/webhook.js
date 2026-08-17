@@ -77,14 +77,29 @@ async function deliverKit(transaction) {
   // (aba fechada antes do polling confirmar) fica invisível no funil pra
   // sempre, mesmo tendo sido entregue e cobrada certinho. Não bloqueia a
   // resposta do webhook se o Redis falhar (é só métrica).
+  //
+  // Trava `sale-logged:<id>` (SET...NX), separada da `delivered:<id>`: o
+  // check de `jaEntregue` acima é uma LEITURA, não reivindica nada, então se
+  // este webhook e o deliver-kit.js (polling do navegador) chegarem quase
+  // juntos pro MESMO pagamento, os dois podem passar pelo check antes de
+  // qualquer um escrever `delivered:id` — e cada um grava sua própria linha
+  // em kpl:sales. Foi exatamente isso que fez a venda da Tamires (17/08)
+  // aparecer 2x no funil com o mesmo valor, 4 segundos de diferença e uma
+  // das linhas sem IP (a `i: null` daqui embaixo é a assinatura do webhook).
+  // Não foi cobrança duplicada, foi o painel contando a mesma venda 2x.
+  // Com esta trava, só quem chegar primeiro (webhook OU deliver-kit) grava.
   const valorCents = Number(transaction.value || 0);
   const tierName = tierFromValueCents(valorCents).name;
   const firstName = ((backup && backup.name) || transaction.payer_name || '').trim().split(/\s+/)[0] || 'Cliente';
   const adRef = (backup && backup.adRef) || 'Sem anúncio';
   const now = Date.now();
-  Promise.resolve()
-    .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, ts: now })))
-    .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501))
+  redis('SET', `sale-logged:${paymentId}`, '1', 'NX', 'EX', 86400)
+    .then((lock) => {
+      if (lock !== 'OK') return null;
+      return Promise.resolve()
+        .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, ts: now })))
+        .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
+    })
     .catch((err) => console.error('webhook: sales record error', err));
 
   const adminEmail = process.env.ADMIN_ALERT_EMAIL;
