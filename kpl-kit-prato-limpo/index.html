@@ -170,19 +170,6 @@
 
   .hero__mockup { margin: 6px 0 24px; box-shadow: var(--shadow); }
 
-  /* ===== APP PREVIEW (moldura de celular com telas girando) ===== */
-  .appdemo { background: var(--mint); }
-  .appdemo-wrap { display: flex; flex-direction: column; align-items: center; }
-  .appdemo-badge {
-    display: inline-flex; align-items: center; gap: 6px; background: var(--coral);
-    color: #fff; font-family: var(--heading); font-weight: 700; font-size: .8rem;
-    padding: 7px 16px; border-radius: 99px; margin-top: 22px;
-  }
-  .appdemo-video {
-    width: 100%; max-width: 300px; aspect-ratio: 9 / 16; object-fit: cover;
-    border-radius: var(--radius); box-shadow: var(--shadow); display: block;
-    flex: 0 0 auto; pointer-events: none;
-  }
   .ps-topbar {
     background: var(--green); color: #fff; font-family: var(--heading); font-weight: 800;
     font-size: .68rem; text-align: center; padding: 20px 0 8px;
@@ -1234,21 +1221,6 @@
   </div>
 </section>
 
-<!-- ======================= 8.5. APP PREVIEW ======================= -->
-<section id="app-preview" class="appdemo">
-  <div class="wrap appdemo-wrap">
-    <div style="text-align:center">
-      <span class="eyebrow">Novidade</span>
-    </div>
-    <h2 class="section-title">Seu kit também vira <span class="hl">app</span></h2>
-    <p class="section-sub">Depois da compra, acesse pelo navegador do celular como um aplicativo. Sem baixar nada de loja, sem senha pra decorar.</p>
-
-    <video class="appdemo-video" src="demo-app-kpl.mp4" autoplay muted loop playsinline disablePictureInPicture controlsList="nodownload nofullscreen noplaybackrate" oncontextmenu="return false"></video>
-
-    <a href="#checkout" class="appdemo-badge">📱 Exclusivo do plano Completo</a>
-  </div>
-</section>
-
 <!-- ======================= 9. CHECKOUT ======================= -->
 <section id="checkout" class="checkout">
   <div class="wrap">
@@ -1846,7 +1818,7 @@ async function setPixelAdvancedMatching(email, name, phone) {
 /** Rastreamento denso de scroll: um evento ViewSection por seção, uma vez cada. */
 function initSectionViewTracking() {
   if (!('IntersectionObserver' in window)) return;
-  const ids = ['indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'app-preview', 'checkout', 'faq'];
+  const ids = ['indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'checkout', 'faq'];
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -1901,7 +1873,7 @@ function initPresenceTracking() {
   if (!('IntersectionObserver' in window)) return;
   // Precisa bater exatamente com SECTIONS em api/_sections.js (ordem inclusive):
   // o índice desta lista vira o maxSection do funil.
-  const ids = ['hero', 'indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'app-preview', 'checkout', 'faq'];
+  const ids = ['hero', 'indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'checkout', 'faq'];
   const ratios = {};
   let maxIdx = 0; // seção mais profunda já alcançada (pro funil de abandono)
   const obs = new IntersectionObserver((entries) => {
@@ -2182,7 +2154,6 @@ function initReveal() {
     '#previa .previa-item',
     '#depoimentos .story-card',
     '#garantia .garantia-box',
-    '#app-preview .appdemo-video',
     '#checkout .plano, #checkout .stack',
     '#faq .faq-item',
     '.eyebrow, .section-title, .section-sub',
@@ -2273,8 +2244,15 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // dispara InitiateCheckout quando a pessoa começa a preencher
-  $('#nome').addEventListener('focus', fireInitiate, { once: true });
+  // Dispara InitiateCheckout só quando o nome já está preenchido E a pessoa
+  // avançou pro e-mail — quem só tocou no campo nome e saiu não confunde a
+  // otimização do Meta com intenção de compra. Sem { once: true } de propósito:
+  // se o foco no e-mail acontecer com o nome ainda vazio, o listener continua
+  // vivo pra tentar de novo (ex.: ela volta e preenche o nome depois); o guard
+  // dentro de fireInitiate() já impede disparo duplicado quando funcionar.
+  $('#email').addEventListener('focus', () => {
+    if ($('#nome').value.trim()) fireInitiate();
+  });
 
   $('#checkout-form').addEventListener('submit', handleSubmit);
 });
