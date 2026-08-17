@@ -399,6 +399,93 @@
           "title": "Diploma do provador corajoso"
         }
       ]
+    },
+    {
+      "n": 9,
+      "title": "Vontade de experimentar",
+      "desc": "Curiosidade e coragem de dentro pra fora, sem depender de pressão.",
+      "fichas": [
+        {
+          "file": "B9-F87-ainda-nao-conheco.jpg",
+          "title": "Ainda não conheço"
+        },
+        {
+          "file": "B9-F88-passaporte-dos-sabores.jpg",
+          "title": "Passaporte dos sabores"
+        },
+        {
+          "file": "B9-F89-o-detetive-do-prato.jpg",
+          "title": "O detetive do prato"
+        },
+        {
+          "file": "B9-F90-o-convidado-novo.jpg",
+          "title": "O convidado novo"
+        },
+        {
+          "file": "B9-F91-se-esse-alimento-fosse-um-heroi.jpg",
+          "title": "Se esse alimento fosse um herói"
+        },
+        {
+          "file": "B9-F92-meu-jeito-de-dizer-sim.jpg",
+          "title": "Meu jeito de dizer sim"
+        },
+        {
+          "file": "B9-F93-a-caixinha-da-coragem.jpg",
+          "title": "A caixinha da coragem"
+        },
+        {
+          "file": "B9-F94-antes-eu-achava-agora-eu-acho.jpg",
+          "title": "Antes eu achava, agora eu acho"
+        },
+        {
+          "file": "B9-F95-hoje-eu-sou-a-chef.jpg",
+          "title": "Hoje eu sou a chef"
+        },
+        {
+          "file": "B9-F96-como-eu-me-sinto-perto-desse-alimento.jpg",
+          "title": "Como eu me sinto perto desse alimento"
+        },
+        {
+          "file": "B9-F97-de-onde-vem-esse-alimento.jpg",
+          "title": "De onde vem esse alimento"
+        },
+        {
+          "file": "B9-F98-meu-prato-minhas-regras.jpg",
+          "title": "Meu prato, minhas regras"
+        },
+        {
+          "file": "B9-F99-a-festa-de-boas-vindas.jpg",
+          "title": "A festa de boas-vindas"
+        },
+        {
+          "file": "B9-F100-o-alimento-tem-nome.jpg",
+          "title": "O alimento tem nome"
+        },
+        {
+          "file": "B9-F101-ligue-os-pontos-ate-a-coragem.jpg",
+          "title": "Ligue os pontos até a coragem"
+        },
+        {
+          "file": "B9-F102-baralho-do-cheiro.jpg",
+          "title": "Baralho do cheiro"
+        },
+        {
+          "file": "B9-F103-roleta-da-coragem.jpg",
+          "title": "Roleta da coragem"
+        },
+        {
+          "file": "B9-F104-meu-album-de-gostos.jpg",
+          "title": "Meu álbum de gostos"
+        },
+        {
+          "file": "B9-F105-o-mapa-da-coragem.jpg",
+          "title": "O mapa da coragem"
+        },
+        {
+          "file": "B9-F106-livrinho-de-descobertas.jpg",
+          "title": "Livrinho de descobertas"
+        }
+      ]
     }
   ],
   "bonuses": [

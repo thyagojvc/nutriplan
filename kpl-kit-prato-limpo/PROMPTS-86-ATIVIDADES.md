@@ -486,14 +486,14 @@ Diferente do Bloco 8 (que trabalha o corpo se acostumando fisicamente, passo a p
 ### B9-F100 · O alimento tem nome
 > Ficha B9-F100. MODO PINTAR. Título: "O alimento tem nome". Instrução: "Dê um nome pro alimento novo, como se fosse um bichinho de estimação. Ficar íntimo dele é o primeiro passo pra confiar." Arte: uma batata grande e fofa com carinha simpática usando uma placa de identificação pendurada no pescoço, com uma linha em branco na placa para escrever o nome. Contorno preto muito grosso, tudo vazio para colorir.
 
-### B9-F101 · Combinado sem pressão
-> Ficha B9-F101. MODO COLORIDO. Título: "Combinado sem pressão". Instrução: "Combinem antes: ela pode parar a qualquer momento, sem explicar por quê. Isso vale mais do que parece." Arte: duas mãos fofas se apertando num aperto de mão amigável no centro, com um coração pequeno acima. Embaixo, uma faixa creme com o texto "Combinado da nossa mesa" e uma linha em branco para assinar junto.
+### B9-F101 · Ligue os pontos até a coragem
+> Ficha B9-F101. MODO COLORIDO. Título: "Ligue os pontos até a coragem". Instrução: "Ligue os pontos na ordem dos números. Quando terminar, descubra quem apareceu e decida se quer conhecer ele de verdade." Arte: doze pontos numerados de 1 a 12 espalhados formando o contorno de um personagem-alimento fofo (um pimentão), números grandes e bem espaçados, fundo limpo sem outros elementos pra não confundir o traçado.
 
-### B9-F102 · O cheiro me lembra
-> Ficha B9-F102. MODO COLORIDO. Título: "O cheiro me lembra". Instrução: "Cheire o alimento e diga do que ele lembra: um lugar, uma cor, uma sensação. Não precisa ser 'gostoso' ou 'ruim', só o que vier na cabeça." Arte: um nariz fofo grande com ondinhas de cheiro subindo até um balão de pensamento vazio. Embaixo, três alimentos pequenos em fileira pra escolher qual cheirar primeiro.
+### B9-F102 · Baralho do cheiro
+> Ficha B9-F102. RECORTAR. MODO COLORIDO. Título: "Baralho do cheiro". Instrução: "Recorte as cartas, embaralhe, feche os olhos e cheire o alimento de verdade. Vire a carta e veja se acertou." Arte: seis cartas quadradas idênticas em grade 3x2, cada uma com um alimento cheiroso diferente (limão, canela, hortelã, café, morango, alho), cada carta dentro de borda tracejada com ícone de tesoura, todas do mesmo tamanho.
 
-### B9-F103 · A cor mais corajosa
-> Ficha B9-F103. MODO COLORIDO. Título: "A cor mais corajosa". Instrução: "Sorteiem uma cor da semana. Todo alimento novo daquela cor ganha uma estrela extra de coragem só por aparecer no prato." Arte: uma roda giratória dividida em seis fatias coloridas (vermelho, laranja, amarelo, verde, roxo, branco) com uma estrela grande no centro. Ao redor, seis alimentos pequenos correspondentes a cada cor, cada um com espaço vazio pra marcar quando aparecer no prato.
+### B9-F103 · Roleta da coragem
+> Ficha B9-F103. RECORTAR. MODO COLORIDO. Título: "Roleta da coragem". Instrução: "Recorte o disco e a seta, prenda o centro com um prendedor de papel ou clipe e gire pra sortear o desafio de hoje." Arte: um disco circular grande dividido em três fatias coloridas com os rótulos "Cheirar", "Tocar" e "Provar", com um furinho marcado no centro. Ao lado, uma seta triangular separada com outro furinho na base. Disco e seta, cada um dentro de sua borda tracejada com ícone de tesoura.
 
 ### B9-F104 · Meu álbum de gostos
 > Ficha B9-F104. MODO COLORIDO. Título: "Meu álbum de gostos". Instrução: "Cada alimento novo experimentado ganha uma figurinha no álbum. Ela mesma decide se cola de cabeça pra cima (adorei) ou de lado (mais ou menos)." Arte: página de álbum com dezesseis quadradinhos vazios em grade, cada um com bordinha pontilhada estilo espaço de figurinha. No topo, o título "Meu álbum de gostos" em letra grande e uma figurinha de exemplo já colada no primeiro quadrado.
@@ -501,8 +501,8 @@ Diferente do Bloco 8 (que trabalha o corpo se acostumando fisicamente, passo a p
 ### B9-F105 · O mapa da coragem
 > Ficha B9-F105. MODO COLORIDO. Título: "O mapa da coragem". Instrução: "Desenhe um caminho com estações, uma pra cada alimento que ela quer tentar esse mês. Cada vitória avança uma casa no mapa." Arte: um caminho sinuoso desenhado como trilha de tabuleiro, com oito casas numeradas em formato de círculo ligadas por linha pontilhada, começando numa bandeirinha de largada e terminando num troféu. Cada casa vazia pronta pra receber um adesivo ou desenho pequeno.
 
-### B9-F106 · Diário de descobertas
-> Ficha B9-F106. MODO COLORIDO. Título: "Diário de descobertas". Instrução: "Uma vez por semana, ela desenha ou cola algo sobre o alimento novo da semana. Em um mês, vocês têm um diário de coragem pra folhear juntos." Arte: página de diário com quatro linhas horizontais no topo escrito "Semana 1" a "Semana 4", cada uma com quadrado grande vazio ao lado pra desenhar. Título "Diário de Descobertas" no topo e um caderninho de espiral desenhado na lateral.
+### B9-F106 · Livrinho de descobertas
+> Ficha B9-F106. RECORTAR. MODO COLORIDO. Título: "Livrinho de descobertas". Instrução: "Recorte as quatro páginas, dobre ao meio e grampeie formando um livrinho. A cada alimento novo, desenhe ou cole uma página." Arte: quatro retângulos idênticos em grade 2x2, cada um com uma linha pontilhada de dobra vertical no meio, um espaço grande vazio pra desenhar, e um rótulo pequeno "Página 1" a "Página 4". Cada retângulo dentro de borda tracejada com ícone de tesoura.
 
 ---
 
