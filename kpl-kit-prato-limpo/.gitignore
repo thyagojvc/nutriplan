@@ -12,3 +12,6 @@ public/Material para criativos/
 # Sobras de teste
 scratch-test-q90.jpg
 sumario-check.pdf
+
+.vercel
+.env*
