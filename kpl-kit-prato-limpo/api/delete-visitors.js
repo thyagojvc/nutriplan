@@ -9,7 +9,12 @@
 // no Redis, sem backup. Se um dia precisar zerar tudo, é seleção explícita no
 // painel, ciente do que está indo embora.
 
-const { redisPipeline } = require('./_kv');
+const { redis, redisPipeline } = require('./_kv');
+
+// funnel-data.js cacheia o payload por 60s (funnel-cache:<range>). Sem limpar
+// aqui, quem apaga um visitante e recarrega a lista na hora ainda vê a versão
+// em cache, com o registro "de volta" — parece que o botão não funcionou.
+const CACHE_RANGES = ['today', '7d', '30d', 'all'];
 
 const MAX_POR_VEZ = 200; // trava de segurança contra um payload absurdo
 
@@ -55,6 +60,9 @@ module.exports = async (req, res) => {
       cmds.push(['ZREM', 'individuals', id]);
     }
     await redisPipeline(cmds);
+    await Promise.all(CACHE_RANGES.map((r) => redis('DEL', `funnel-cache:${r}`))).catch((err) => {
+      console.error('delete-visitors: cache invalidation error', err);
+    });
 
     return res.status(200).json({ ok: true, deleted: limpos.length });
   } catch (err) {
