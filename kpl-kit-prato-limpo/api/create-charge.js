@@ -8,6 +8,7 @@
 //   PUBLIC_BASE_URL     -> ex.: https://seu-dominio.vercel.app (para montar o webhook_url)
 
 const { computeOrder } = require('./_catalog');
+const { normalizeId } = require('./_pushinpay');
 const { redis } = require('./_kv');
 
 // Guarda nome/e-mail/telefone ANTES do pagamento confirmar, como rede de
@@ -128,12 +129,17 @@ module.exports = async (req, res) => {
     const pp = await ppRes.json();
 
     const adRef = String(body.adRef || '').replace(/[^\w\s\-.|:/]/g, '').trim().slice(0, 120) || null;
-    if (pp.id) await saveCheckoutBackup(pp.id, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef);
+    // normalizeId: a chave tem que casar com a que o webhook procura depois.
+    const paymentId = normalizeId(pp.id);
+    if (paymentId) await saveCheckoutBackup(paymentId, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef);
 
     // PushInPay devolve: id, qr_code (copia e cola), qr_code_base64 (imagem), status, value
     const qrBase64 = pp.qr_code_base64 || pp.qrCodeBase64 || '';
     return res.status(200).json({
-      paymentId: pp.id,
+      // Devolve o id JÁ normalizado: é o que o front reusa pro polling, pro
+      // deliver-kit e pro event_id do pixel, então tem que ser a mesma caixa
+      // usada nas chaves do Redis.
+      paymentId,
       amountCents: totalCents,
       tierId,
       tierName,

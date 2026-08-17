@@ -93,6 +93,16 @@ async function sendCapiPurchase({ paymentId, email, name, phone, valueCents, fbc
   if (clientIpAddress) userData.client_ip_address = clientIpAddress;
   if (clientUserAgent) userData.client_user_agent = clientUserAgent;
 
+  // O Meta REJEITA (HTTP 400, subcode 2804050) evento sem nenhum dado de
+  // cliente. Sem este aviso a venda sumia calada: a chamada saía, voltava erro,
+  // e o `.catch()` de quem chama engolia tudo — o Purchase nunca era contado e
+  // nada aparecia como problema. Se cair aqui, o dado que falta é upstream
+  // (backup do checkout não encontrado), e é isso que precisa ser investigado.
+  if (Object.keys(userData).length === 0) {
+    console.error(`[fb-capi] Purchase ${paymentId} SEM dado de cliente: o Meta rejeitaria. Venda NÃO reportada.`);
+    return;
+  }
+
   await postToMeta([
     {
       event_name: 'Purchase',

@@ -29,7 +29,7 @@
 //   ADMIN_ALERT_EMAIL -> para onde vai o registro de venda confirmada
 
 const crypto = require('crypto');
-const { fetchTransaction } = require('./_pushinpay');
+const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
 const { tierFromValueCents } = require('./_catalog');
@@ -114,7 +114,10 @@ module.exports = async (req, res) => {
 
   try {
     const body = await readBody(req);
-    const paymentId = String(body.paymentId || '').trim();
+    // normalizeId: mesma caixa das chaves do Redis (`delivered:`, `dltok:`) e do
+    // event_id `purchase_<id>` que o webhook usa, senão a trava de idempotência
+    // e a desduplicação do Meta não casam entre os dois caminhos.
+    const paymentId = normalizeId(body.paymentId);
     const name = String(body.name || '').trim();
     const email = String(body.email || '').trim();
     const phone = String(body.phone || '').trim();
