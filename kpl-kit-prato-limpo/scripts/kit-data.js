@@ -19,6 +19,7 @@ const BLOCKS = [
   { n: 7, title: 'Histórias e faz de conta', desc: 'Narrativas curtas com o alimento como personagem.' },
   { n: 8, title: 'Aproximação sensorial', desc: 'Contato com o alimento sem obrigação de comer.' },
   { n: 9, title: 'Vontade de experimentar', desc: 'Curiosidade e coragem de dentro pra fora, sem depender de pressão.' },
+  { n: 10, title: 'Folhas para colorir', desc: 'Uma folha por amigo do prato. Só imprimir e deixar a criança colorir do jeito dela.' },
 ];
 
 // Título de verdade (com acento) vem de PROMPTS-86-ATIVIDADES.md — o nome do

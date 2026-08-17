@@ -68,8 +68,8 @@ function parseMissoes() {
 
 function main() {
   const missoes = parseMissoes();
-  if (missoes.length !== 106) {
-    console.warn(`Atenção: ${missoes.length} missões extraídas (esperado 106).`);
+  if (missoes.length !== 116) {
+    console.warn(`Atenção: ${missoes.length} missões extraídas (esperado 116).`);
   }
 
   // Casa a arte pelo código. Sem a arte a missão ainda funciona (o card mostra

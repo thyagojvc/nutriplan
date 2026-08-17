@@ -506,6 +506,42 @@ Diferente do Bloco 8 (que trabalha o corpo se acostumando fisicamente, passo a p
 
 ---
 
+## BLOCO 10 · Folhas para colorir (fichas 01 a 10)
+
+Bônus criado pra cobrir "atividades de pintura" de verdade (não um detalhe dentro de outra ficha): uma folha por amigo do prato, personagem grande ocupando quase a página inteira, só contorno preto grosso pra colorir. Personagens vêm do próprio jogo "Amigos do Prato" (`assets/amigos.js`), então a mãe reconhece quem é de lá pro cá. Cada instrução é a mesma frase simples, só troca o nome.
+
+### B10-F01 · Bruno Banana
+> Ficha B10-F01. MODO PINTAR. Título: "Bruno Banana". Instrução: "Pinte o Bruno Banana do jeito que você quiser!" Arte: o personagem Bruno Banana ocupando quase toda a página, corpo em formato de banana curva e comprida com um cabinho pequeno no topo, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F02 · Marina Maçã
+> Ficha B10-F02. MODO PINTAR. Título: "Marina Maçã". Instrução: "Pinte a Marina Maçã do jeito que você quiser!" Arte: a personagem Marina Maçã ocupando quase toda a página, corpo redondo de maçã com leve reentrância no topo, uma folha e um cabinho curto saindo de cima, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F03 · Melissa Melancia
+> Ficha B10-F03. MODO PINTAR. Título: "Melissa Melancia". Instrução: "Pinte a Melissa Melancia do jeito que você quiser!" Arte: a personagem Melissa Melancia ocupando quase toda a página, corpo grande e redondo de melancia inteira com algumas linhas curvas simples marcando as listras (só linha, sem preenchimento), carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F04 · Manu Morango
+> Ficha B10-F04. MODO PINTAR. Título: "Manu Morango". Instrução: "Pinte a Manu Morango do jeito que você quiser!" Arte: a personagem Manu Morango ocupando quase toda a página, corpo em formato de coração invertido de morango, uma folhagem pequena em coroa no topo e alguns pontinhos redondos soltos marcando as sementinhas (só contorno, sem preenchimento), carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F05 · Otávio Laranja
+> Ficha B10-F05. MODO PINTAR. Título: "Otávio Laranja". Instrução: "Pinte o Otávio Laranja do jeito que você quiser!" Arte: o personagem Otávio Laranja ocupando quase toda a página, corpo redondo de laranja com uma folha e um cabinho curto no topo, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F06 · Cadu Cenoura
+> Ficha B10-F06. MODO PINTAR. Título: "Cadu Cenoura". Instrução: "Pinte o Cadu Cenoura do jeito que você quiser!" Arte: o personagem Cadu Cenoura ocupando quase toda a página, corpo alongado em formato de cone de cenoura com uma folhagem grande e frondosa saindo do topo, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F07 · Miguel Milho
+> Ficha B10-F07. MODO PINTAR. Título: "Miguel Milho". Instrução: "Pinte o Miguel Milho do jeito que você quiser!" Arte: o personagem Miguel Milho ocupando quase toda a página, corpo alongado em formato de espiga com fileiras de pequenos círculos marcando os grãos (só contorno, sem preenchimento) e folhas de palha abertas na base como se fossem os pés, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos curtos. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F08 · Téo Tomate
+> Ficha B10-F08. MODO PINTAR. Título: "Téo Tomate". Instrução: "Pinte o Téo Tomate do jeito que você quiser!" Arte: o personagem Téo Tomate ocupando quase toda a página, corpo redondo de tomate com um cabinho e folhinhas em estrela no topo, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F09 · Bia Brócolis
+> Ficha B10-F09. MODO PINTAR. Título: "Bia Brócolis". Instrução: "Pinte a Bia Brócolis do jeito que você quiser!" Arte: a personagem Bia Brócolis ocupando quase toda a página, corpo com um talo curto embaixo e uma copa grande e fofa feita de vários montinhos redondos agrupados no topo, carinha fofa com olhos redondos simples e sorriso pequeno no talo, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+### B10-F10 · Pilar Pimentão
+> Ficha B10-F10. MODO PINTAR. Título: "Pilar Pimentão". Instrução: "Pinte o Pilar Pimentão do jeito que você quiser!" Arte: o personagem Pilar Pimentão ocupando quase toda a página, corpo largo e ondulado de pimentão com três ou quatro lóbulos arredondados e um cabinho curto com folhinhas no topo, carinha fofa com olhos redondos simples e sorriso pequeno, bracinhos e perninhas curtas. Contorno preto muito grosso e uniforme, nenhuma área preenchida, todo o corpo vazio para colorir.
+
+---
+
 # 7. Depois que as 86 estiverem prontas
 
 ## 7.1 Quatro números do site que precisam bater

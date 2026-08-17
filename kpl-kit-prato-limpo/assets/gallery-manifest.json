@@ -486,6 +486,53 @@
           "title": "Livrinho de descobertas"
         }
       ]
+    },
+    {
+      "n": 10,
+      "title": "Folhas para colorir",
+      "desc": "Uma folha por amigo do prato. Só imprimir e deixar a criança colorir do jeito dela.",
+      "fichas": [
+        {
+          "file": "B10-F01-bruno-banana.jpg",
+          "title": "Bruno Banana"
+        },
+        {
+          "file": "B10-F02-marina-maca.jpg",
+          "title": "Marina Maçã"
+        },
+        {
+          "file": "B10-F03-melissa-melancia.jpg",
+          "title": "Melissa Melancia"
+        },
+        {
+          "file": "B10-F04-manu-morango.jpg",
+          "title": "Manu Morango"
+        },
+        {
+          "file": "B10-F05-otavio-laranja.jpg",
+          "title": "Otávio Laranja"
+        },
+        {
+          "file": "B10-F06-cadu-cenoura.jpg",
+          "title": "Cadu Cenoura"
+        },
+        {
+          "file": "B10-F07-miguel-milho.jpg",
+          "title": "Miguel Milho"
+        },
+        {
+          "file": "B10-F08-teo-tomate.jpg",
+          "title": "Téo Tomate"
+        },
+        {
+          "file": "B10-F09-bia-brocolis.jpg",
+          "title": "Bia Brócolis"
+        },
+        {
+          "file": "B10-F10-pilar-pimentao.jpg",
+          "title": "Pilar Pimentão"
+        }
+      ]
     }
   ],
   "bonuses": [
