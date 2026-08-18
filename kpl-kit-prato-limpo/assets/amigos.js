@@ -276,5 +276,133 @@
     return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + art + '</svg>';
   }
 
-  global.KPL_AMIGOS = { list: AMIGOS, svgFor: svgFor };
+  /* ---------- MODO PINTAR (colorir na tela) ----------
+   * A mesma arte virada folha de colorir em branco, pra criança pintar com o
+   * dedo por cima. Existe porque as folhas impressas do Bloco 10 só servem
+   * com impressora, e boa parte das mães não tem uma em casa.
+   *
+   * São três peças empilhadas pelo mi-kit.html, nesta ordem:
+   *   paintSvgFor   -> a folha em branco (miolo branco), lá embaixo;
+   *   [canvas]      -> a tinta do dedo, recortada por maskSvgFor;
+   *   lineArtSvgFor -> só o traço preto, com o miolo VAZADO, por cima de tudo.
+   *
+   * A tinta passar por BAIXO do traço é o que mantém o contorno intacto. A
+   * primeira versão fazia o contrário (canvas por cima em multiply) e o preto
+   * do desenho encardia: contorno aqui é #26302A, não preto puro, então
+   * multiply tingia ele da cor da tinta (verde deixava a linha esverdeada).
+   *
+   * maskSvgFor recorta a tinta na silhueta, então rabisco nenhum escapa pro
+   * fundo da página. Pintar de branco continua funcionando como borracha,
+   * porque branco é a cor da própria folha.
+   */
+
+  // Traço fino colorido (o cabinho) é linha de desenho e vira preto. Traço
+  // GROSSO é a própria silhueta: a banana é desenhada como traço, não como
+  // forma preenchida, então ali o branco tem que ir pro stroke.
+  var TRACO_SILHUETA = 20;
+
+  function paraFolha(tag) {
+    // Bochecha já vem pintada de fábrica; folha de colorir não tem isso.
+    if (/opacity=/.test(tag)) return '';
+
+    var fill = (tag.match(/fill="(#[0-9A-Fa-f]{3,8})"/) || [])[1];
+    var stroke = (tag.match(/stroke="(#[0-9A-Fa-f]{3,8})"/) || [])[1];
+    var largura = Number((tag.match(/stroke-width="([\d.]+)"/) || [])[1] || 0);
+    var fillColorido = !!fill && fill.toUpperCase() !== INK;
+    var strokeColorido = !!stroke && stroke.toUpperCase() !== INK;
+    var alvo = fillColorido ? 'fill' : (strokeColorido && largura >= TRACO_SILHUETA ? 'stroke' : null);
+
+    var out = tag;
+    if (strokeColorido && alvo !== 'stroke') {
+      out = out.replace(/stroke="#[0-9A-Fa-f]{3,8}"/, 'stroke="' + INK + '"');
+    }
+    if (!alvo) return out;
+    return out.replace(new RegExp(alvo + '="#[0-9A-Fa-f]{3,8}"'), alvo + '="#FFFFFF"');
+  }
+
+  function paintSvgFor(amigo) {
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+      + amigo.art.replace(/<[a-z]+[^>]*>/gi, paraFolha) + '</svg>';
+  }
+
+  // Silhueta cheia (tudo preto opaco, fundo transparente). Vira máscara do
+  // canvas: onde é preto a tinta aparece, fora dali some. `fill="none"` fica
+  // como está de propósito — na banana é o traço grosso que forma o corpo.
+  function maskSvgFor(amigo) {
+    var art = amigo.art
+      .replace(/<[a-z]+[^>]*>/gi, function (tag) { return /opacity=/.test(tag) ? '' : tag; })
+      .replace(/(fill|stroke)="#[0-9A-Fa-f]{3,8}"/g, '$1="#000000"');
+    return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">' + art + '</svg>';
+  }
+
+  function atributos(tag) {
+    return {
+      fill: (tag.match(/fill="(#[0-9A-Fa-f]{3,8})"/) || [])[1],
+      stroke: (tag.match(/stroke="(#[0-9A-Fa-f]{3,8})"/) || [])[1],
+      largura: Number((tag.match(/stroke-width="([\d.]+)"/) || [])[1] || 0),
+      d: (tag.match(/\sd="([^"]+)"/) || [])[1],
+    };
+  }
+
+  // É silhueta feita de traço (e não de forma preenchida)? Só a banana é assim.
+  function ehTracoSilhueta(a) {
+    return !a.fill && !!a.stroke && a.stroke.toUpperCase() !== INK && a.largura >= TRACO_SILHUETA;
+  }
+
+  // Contador global das máscaras. Cada chamada gera ids novos porque o mesmo
+  // amigo aparece mais de uma vez na tela (miniatura + palco): com id repetido
+  // o navegador resolve pela PRIMEIRA ocorrência, que pode estar dentro de um
+  // container display:none, e aí a máscara não aplica e o desenho vira uma
+  // mancha preta sólida.
+  var seqMascara = 0;
+
+  // Só as linhas pretas, com todo miolo colorido vazado, pra tinta de baixo
+  // aparecer pelos buracos. Fica POR CIMA do canvas.
+  function lineArtSvgFor(amigo) {
+    var vazados = {};
+    amigo.art.replace(/<[a-z]+[^>]*>/gi, function (tag) {
+      var a = atributos(tag);
+      if (a.d && !/opacity=/.test(tag) && ehTracoSilhueta(a)) {
+        vazados[a.d] = { largura: a.largura, id: 'kplm' + (seqMascara++) };
+      }
+      return tag;
+    });
+
+    var defs = '';
+    var art = amigo.art.replace(/<[a-z]+[^>]*>/gi, function (tag) {
+      if (/opacity=/.test(tag)) return '';
+      var a = atributos(tag);
+      // O traço colorido grosso É o corpo: some daqui, quem preenche é a tinta.
+      if (ehTracoSilhueta(a)) return '';
+
+      var out = tag;
+      if (a.stroke && a.stroke.toUpperCase() !== INK) {
+        out = out.replace(/stroke="#[0-9A-Fa-f]{3,8}"/, 'stroke="' + INK + '"');
+      }
+      if (a.fill && a.fill.toUpperCase() !== INK) {
+        out = out.replace(/fill="#[0-9A-Fa-f]{3,8}"/, 'fill="none"');
+      }
+
+      // Sob o traço colorido da banana existe um traço preto MAIS grosso, que
+      // é o contorno dela. Sozinho ele vira uma mancha preta sólida, então
+      // vaza-se o meio dele pra sobrar só a borda.
+      var vazado = a.d && vazados[a.d];
+      if (vazado && a.stroke && a.stroke.toUpperCase() === INK) {
+        defs += '<mask id="' + vazado.id + '" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">'
+          + '<rect x="0" y="0" width="100" height="100" fill="#FFFFFF"/>'
+          + '<path d="' + a.d + '" fill="none" stroke="#000000" stroke-width="' + vazado.largura + '" stroke-linecap="round"/>'
+          + '</mask>';
+        out = out.replace(/^<([a-z]+)/i, '<$1 mask="url(#' + vazado.id + ')"');
+      }
+      return out;
+    });
+
+    return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
+      + (defs ? '<defs>' + defs + '</defs>' : '') + art + '</svg>';
+  }
+
+  global.KPL_AMIGOS = {
+    list: AMIGOS, svgFor: svgFor,
+    paintSvgFor: paintSvgFor, maskSvgFor: maskSvgFor, lineArtSvgFor: lineArtSvgFor,
+  };
 })(window);

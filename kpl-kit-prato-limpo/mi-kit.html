@@ -251,6 +251,64 @@
   .amigo.just-won { animation: won .7s cubic-bezier(.2,1.4,.4,1); }
   @keyframes won { 0% { transform: scale(.7) rotate(-12deg); } 60% { transform: scale(1.14) rotate(6deg); } 100% { transform: none; } }
 
+  /* ---------- PINTAR NA TELA ---------- */
+  .pintar-voltar {
+    background: none; border: none; padding: 4px 0 10px; cursor: pointer;
+    font-family: var(--body); font-size: 0.86rem; font-weight: 800; color: var(--green-dark);
+    -webkit-tap-highlight-color: transparent;
+  }
+  /* O palco é quadrado pra folha nunca mudar de tamanho ao trocar de amigo. */
+  .pintar-palco {
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px; max-width: 420px; margin: 0 auto; box-shadow: var(--shadow);
+  }
+  /* Folha e tinta ocupam exatamente a mesma caixa quadrada, senão o desenho e
+     o traço do dedo saem desalinhados. */
+  /* Empilhadas na mesma caixa quadrada: folha branca, tinta, e o traço preto
+     por cima com o miolo vazado. Só o canvas recebe o dedo. */
+  .pintar-folha { position: relative; width: 100%; aspect-ratio: 1 / 1; }
+  .pintar-folha > * { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .pintar-folha svg { display: block; }
+  #pintar-art, #pintar-traco { pointer-events: none; }
+  /* touch-action: none impede a página de rolar enquanto a criança pinta. */
+  #pintar-canvas { touch-action: none; cursor: crosshair; }
+  .pintar-dica { text-align: center; font-size: 0.8rem; color: var(--muted); margin: 12px 0 8px; }
+
+  .paleta { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 420px; margin: 0 auto; }
+  .paleta button {
+    aspect-ratio: 1 / 1; border-radius: 50%; border: 2px solid var(--border); cursor: pointer;
+    -webkit-tap-highlight-color: transparent; padding: 0;
+  }
+  /* Anel de fora em vez de borda mais grossa: a cor escolhida cresce sem
+     empurrar as vizinhas de lugar. */
+  .paleta button.is-on { border-color: var(--ink); box-shadow: 0 0 0 3px var(--card), 0 0 0 5px var(--ink); }
+
+  .pinceis { display: flex; justify-content: center; gap: 10px; margin: 14px 0 0; }
+  .pinceis button {
+    width: 46px; height: 38px; border: 1px solid var(--border); border-radius: 12px;
+    background: var(--card); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    -webkit-tap-highlight-color: transparent; padding: 0;
+  }
+  .pinceis button i { display: block; border-radius: 50%; background: var(--ink); }
+  .pinceis button.is-on { border-color: var(--ink); background: var(--bg); }
+
+  /* Miniatura repete a pilha do palco: folha (svg em fluxo, é ela que dá a
+     altura do card), pintura salva, e o traço por cima.
+     Largura explícita, não left+right: em <img>, largura automática vale o
+     tamanho real do arquivo (600px) e o desenho estoura o card. */
+  .amigo { position: relative; overflow: hidden; }
+  .amigo .previa, .amigo .tracos {
+    position: absolute; left: 4px; top: 6px; width: calc(100% - 8px); height: auto;
+    pointer-events: none;
+  }
+  .amigo .tracos svg { width: 100%; height: auto; display: block; }
+  .pintar-limpar {
+    display: block; margin: 16px auto 0; background: none; border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 18px; cursor: pointer;
+    font-family: var(--body); font-size: 0.8rem; font-weight: 700; color: var(--muted);
+    -webkit-tap-highlight-color: transparent;
+  }
+
   /* ---------- MODAL ---------- */
   .modal {
     display: none; position: fixed; inset: 0; background: rgba(20,24,20,.6); z-index: 200;
@@ -458,6 +516,32 @@
       <div class="turma-grid" id="turma-grid"></div>
     </div>
 
+    <!-- ABA: PINTAR -->
+    <div class="tabpanel" id="tab-pintar">
+      <div id="pintar-lista">
+        <div class="turma-head">
+          <h2>Pintar na tela</h2>
+          <p>Escolha um amigo e pinte com o dedo, sem precisar de impressora.</p>
+        </div>
+        <div class="turma-grid" id="pintar-grid"></div>
+      </div>
+
+      <div id="pintar-tela" style="display:none">
+        <button class="pintar-voltar" id="pintar-voltar" type="button">← Escolher outro</button>
+        <div class="pintar-palco">
+          <div class="pintar-folha">
+            <div id="pintar-art"></div>
+            <canvas id="pintar-canvas"></canvas>
+            <div id="pintar-traco"></div>
+          </div>
+        </div>
+        <p class="pintar-dica">Escolha uma cor e arraste o dedo pra pintar.</p>
+        <div class="paleta" id="pintar-paleta"></div>
+        <div class="pinceis" id="pintar-pinceis"></div>
+        <button class="pintar-limpar" id="pintar-limpar" type="button">Começar de novo</button>
+      </div>
+    </div>
+
     <!-- ABA: FICHAS -->
     <div class="tabpanel" id="tab-fichas">
       <div class="install-card" id="install-card">
@@ -495,6 +579,7 @@
 <nav class="tabbar" id="tabbar" style="display:none">
   <button data-tab="tab-jogar" class="is-active" type="button"><span class="ico">🎲</span>Jogar</button>
   <button data-tab="tab-turma" type="button"><span class="ico">🏅</span>Turma<span class="dot"></span></button>
+  <button data-tab="tab-pintar" type="button"><span class="ico">🎨</span>Pintar</button>
   <button data-tab="tab-fichas" type="button"><span class="ico">📚</span>Fichas</button>
 </nav>
 
@@ -609,6 +694,7 @@
       maybeShowInstall();
       initGame();
       renderTurma();
+      renderPintar();
       loadGallery();
     })
     .catch(function () {
@@ -637,7 +723,10 @@
   // não precisa de servidor e não gasta cota de banco — e funciona offline
   // depois que o app abre.
   var STORE = 'kpl_game_v1';
-  var state = { amigos: [], feitas: [], estrelas: 0, dias: 0, ultimoDia: null };
+  // pinturas: { <id do amigo>: ['#hex', ...] } — uma cor por região da arte,
+  // na ordem em que aparecem. Guarda a lista de cores em vez da imagem, então
+  // as 20 pinturas juntas não passam de uns poucos KB.
+  var state = { amigos: [], feitas: [], estrelas: 0, dias: 0, ultimoDia: null, pinturas: {} };
   try {
     var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
     if (saved && typeof saved === 'object') {
@@ -646,6 +735,7 @@
       state.estrelas = Number(saved.estrelas) || 0;
       state.dias = Number(saved.dias) || 0;
       state.ultimoDia = saved.ultimoDia || null;
+      if (saved.pinturas && typeof saved.pinturas === 'object') state.pinturas = saved.pinturas;
     }
   } catch (e) {}
 
@@ -921,6 +1011,184 @@
     document.getElementById('amigo-modal').classList.remove('is-open');
     amigoAberto = null;
   }
+
+  // ================= PINTAR NA TELA =================
+  // Colorir sem impressora: a mesma arte dos Amigos do Prato, só que sem cor e
+  // com cada área tocável (paintSvgFor, em assets/amigos.js).
+  //
+  // Vale pros 20, inclusive os que ainda não entraram na turma. Pintar aqui é
+  // atividade, não prêmio: travar atrás do "já provou" tiraria justamente da
+  // criança que ainda não provou nada a única parte que ela faz sozinha.
+  var TINTAS = [
+    '#E8503A', '#F0673A', '#F2911F', '#F4C430', '#5CA741', '#3C7A2C', '#4EA8DE',
+    '#2E5FAA', '#7B4E9E', '#C9679B', '#C98B5E', '#8B5E3C', '#26302A', '#FFFFFF'
+  ];
+  // O branco é a borracha: por causa do multiply, branco não pinta nada, só
+  // devolve o que estava na folha embaixo.
+  var PINCEIS = [26, 46, 78];
+  // Resolução da tinta. Fixa e independente da tela: é ela que é salva, então
+  // a pintura feita no celular precisa reabrir igual no tablet.
+  var LADO = 600;
+
+  var tintaAtual = TINTAS[0];
+  var pincelAtual = PINCEIS[1];
+  var pintando = null;
+  var traco = false;
+
+  var cv = document.getElementById('pintar-canvas');
+  var ctx = cv.getContext('2d');
+  cv.width = LADO;
+  cv.height = LADO;
+
+  function mascaraDe(amigo) {
+    return 'url("data:image/svg+xml,' + encodeURIComponent(KPL_AMIGOS.maskSvgFor(amigo)) + '")';
+  }
+
+  // A máscara é o que segura a tinta dentro do personagem: o dedo passa por
+  // fora, mas só aparece o que cai em cima do desenho.
+  function aplicarMascara(el, amigo) {
+    var m = mascaraDe(amigo);
+    el.style.webkitMaskImage = m;
+    el.style.maskImage = m;
+    el.style.webkitMaskSize = '100% 100%';
+    el.style.maskSize = '100% 100%';
+  }
+
+  function renderPintar() {
+    var lista = KPL_AMIGOS.list.slice().sort(function (a, b) { return a.dif - b.dif; });
+    document.getElementById('pintar-grid').innerHTML = lista.map(function (a) {
+      var feita = state.pinturas[a.id];
+      return '<button class="amigo" data-id="' + a.id + '" type="button">'
+        + KPL_AMIGOS.paintSvgFor(a)
+        + (typeof feita === 'string' ? '<img class="previa" alt="" src="' + feita + '">' : '')
+        + '<span class="tracos">' + KPL_AMIGOS.lineArtSvgFor(a) + '</span>'
+        + '<b>' + escapeHtml(a.nome.split(' ')[0]) + '</b>'
+        + '</button>';
+    }).join('');
+    // A prévia é o bitmap cru, então precisa da mesma máscara do palco.
+    document.querySelectorAll('#pintar-grid .previa').forEach(function (img) {
+      var a = KPL_AMIGOS.list.filter(function (x) { return x.id === img.closest('.amigo').dataset.id; })[0];
+      if (a) aplicarMascara(img, a);
+    });
+  }
+
+  function renderPaleta() {
+    document.getElementById('pintar-paleta').innerHTML = TINTAS.map(function (c) {
+      return '<button type="button" data-cor="' + c + '" style="background:' + c + '"'
+        + (c === tintaAtual ? ' class="is-on"' : '') + ' aria-label="Cor"></button>';
+    }).join('');
+    document.getElementById('pintar-pinceis').innerHTML = PINCEIS.map(function (p) {
+      var d = Math.round(p / 4);
+      return '<button type="button" data-pincel="' + p + '"' + (p === pincelAtual ? ' class="is-on"' : '')
+        + ' aria-label="Espessura"><i style="width:' + d + 'px;height:' + d + 'px"></i></button>';
+    }).join('');
+  }
+
+  function abrirPintura(a) {
+    pintando = a;
+    document.getElementById('pintar-lista').style.display = 'none';
+    document.getElementById('pintar-tela').style.display = '';
+    document.getElementById('pintar-art').innerHTML = KPL_AMIGOS.paintSvgFor(a);
+    document.getElementById('pintar-traco').innerHTML = KPL_AMIGOS.lineArtSvgFor(a);
+    aplicarMascara(cv, a);
+    renderPaleta();
+
+    ctx.clearRect(0, 0, LADO, LADO);
+    var feita = state.pinturas[a.id];
+    if (typeof feita === 'string') {
+      var img = new Image();
+      // A pintura pode chegar depois: só desenha se ainda for esse o amigo
+      // aberto, senão pinta por cima de quem a criança já trocou.
+      img.onload = function () { if (pintando === a) ctx.drawImage(img, 0, 0, LADO, LADO); };
+      img.src = feita;
+    }
+    window.scrollTo(0, 0);
+  }
+
+  function fecharPintura() {
+    pintando = null;
+    document.getElementById('pintar-tela').style.display = 'none';
+    document.getElementById('pintar-lista').style.display = '';
+    renderPintar(); // a grade volta mostrando a pintura como ela ficou
+  }
+
+  function guardarPintura() {
+    if (!pintando) return;
+    // webp deixa o desenho bem menor que png; navegador que não conhecer
+    // devolve png sozinho, e aí é png mesmo.
+    var url = cv.toDataURL('image/webp', 0.8);
+    if (url.indexOf('data:image/webp') !== 0) url = cv.toDataURL('image/png');
+    state.pinturas[pintando.id] = url;
+    save();
+  }
+
+  function pontoDo(e) {
+    var r = cv.getBoundingClientRect();
+    return { x: (e.clientX - r.left) / r.width * LADO, y: (e.clientY - r.top) / r.height * LADO };
+  }
+
+  cv.addEventListener('pointerdown', function (e) {
+    if (!pintando) return;
+    traco = true;
+    cv.setPointerCapture(e.pointerId);
+    ctx.strokeStyle = tintaAtual;
+    ctx.lineWidth = pincelAtual;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    var p = pontoDo(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+    ctx.lineTo(p.x, p.y); // um toque parado também pinta, não só o arrasto
+    ctx.stroke();
+  });
+
+  cv.addEventListener('pointermove', function (e) {
+    if (!traco) return;
+    e.preventDefault();
+    var p = pontoDo(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(function (ev) {
+    cv.addEventListener(ev, function () {
+      if (!traco) return;
+      traco = false;
+      guardarPintura(); // salva ao levantar o dedo, não a cada pixel
+    });
+  });
+
+  document.getElementById('pintar-grid').addEventListener('click', function (e) {
+    var btn = e.target.closest('.amigo');
+    if (!btn) return;
+    var a = KPL_AMIGOS.list.filter(function (x) { return x.id === btn.dataset.id; })[0];
+    if (a) abrirPintura(a);
+  });
+
+  document.getElementById('pintar-voltar').addEventListener('click', fecharPintura);
+
+  document.getElementById('pintar-paleta').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-cor]');
+    if (!btn) return;
+    tintaAtual = btn.dataset.cor;
+    this.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-on'); });
+    btn.classList.add('is-on');
+  });
+
+  document.getElementById('pintar-pinceis').addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-pincel]');
+    if (!btn) return;
+    pincelAtual = Number(btn.dataset.pincel);
+    this.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-on'); });
+    btn.classList.add('is-on');
+  });
+
+  document.getElementById('pintar-limpar').addEventListener('click', function () {
+    if (!pintando) return;
+    ctx.clearRect(0, 0, LADO, LADO);
+    delete state.pinturas[pintando.id];
+    save();
+  });
 
   // ================= FICHAS (galeria) =================
   var galleryFlat = [];
