@@ -91,6 +91,24 @@
   .hero h1 { font-family: var(--heading); font-size: 1.4rem; margin-bottom: 4px; }
   .hero p { font-size: 0.9rem; opacity: 0.92; }
 
+  /* Nome de quem joga. Tracejado embaixo porque a mãe precisa PERCEBER que dá
+     pra trocar: quem compra é ela, quem usa é a criança. */
+  .nome-edit {
+    font: inherit; color: inherit; background: none; border: 0; padding: 0 2px;
+    border-bottom: 2px dashed rgba(255,255,255,.6); cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .nome-edit.is-vazio { font-size: 0.95rem; opacity: .9; }
+  .nome-input {
+    font: inherit; font-size: 1.1rem; text-align: center; max-width: 190px;
+    border: 0; border-radius: 10px; padding: 6px 10px; color: var(--ink);
+  }
+  .nome-ok {
+    font: inherit; font-size: 0.9rem; font-weight: 700; margin-left: 6px;
+    background: rgba(255,255,255,.22); color: #fff; border: 0; border-radius: 10px;
+    padding: 7px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+
   .download-card {
     background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow);
     padding: 22px; text-align: center; margin-bottom: 22px;
@@ -685,14 +703,14 @@
         return;
       }
       document.getElementById('download-btn').href = '/api/download?t=' + encodeURIComponent(token);
-      if (data.name) {
-        document.getElementById('greeting').textContent = 'Bora jogar, ' + data.name + '?';
-      }
+      // De propósito NÃO usa data.name (o nome de quem comprou) aqui: a
+      // saudação é de quem joga, e quem preenche isso é a própria família.
       showState('state-unlocked');
       document.getElementById('tabbar').style.display = 'flex';
       installReady = true;
       maybeShowInstall();
       initGame();
+      renderSaudacao();
       renderTurma();
       renderPintar();
       loadGallery();
@@ -726,7 +744,10 @@
   // pinturas: { <id do amigo>: ['#hex', ...] } — uma cor por região da arte,
   // na ordem em que aparecem. Guarda a lista de cores em vez da imagem, então
   // as 20 pinturas juntas não passam de uns poucos KB.
-  var state = { amigos: [], feitas: [], estrelas: 0, dias: 0, ultimoDia: null, pinturas: {} };
+  // nome: quem JOGA, não quem comprou. Fica em branco de propósito até alguém
+  // preencher — puxar o nome do checkout coloca a mãe na saudação e ela nem
+  // percebe que era pra ser o nome da criança.
+  var state = { amigos: [], feitas: [], estrelas: 0, dias: 0, ultimoDia: null, pinturas: {}, nome: '' };
   try {
     var saved = JSON.parse(localStorage.getItem(STORE) || 'null');
     if (saved && typeof saved === 'object') {
@@ -736,6 +757,7 @@
       state.dias = Number(saved.dias) || 0;
       state.ultimoDia = saved.ultimoDia || null;
       if (saved.pinturas && typeof saved.pinturas === 'object') state.pinturas = saved.pinturas;
+      state.nome = typeof saved.nome === 'string' ? saved.nome : '';
     }
   } catch (e) {}
 
@@ -758,6 +780,43 @@
     state.dias = (state.ultimoDia === ontemStr) ? state.dias + 1 : 1;
     state.ultimoDia = hoje;
   }
+
+  // ================= NOME DE QUEM JOGA =================
+  function renderSaudacao() {
+    var el = document.getElementById('greeting');
+    if (!el) return;
+    el.innerHTML = state.nome
+      ? 'Bora jogar, <button class="nome-edit" type="button">' + escapeHtml(state.nome) + '</button>?'
+      : 'Bora jogar! <button class="nome-edit is-vazio" type="button">Quem vai jogar?</button>';
+  }
+
+  function editarNome() {
+    var el = document.getElementById('greeting');
+    el.innerHTML = '<input class="nome-input" type="text" maxlength="18" placeholder="Nome da criança">'
+      + '<button class="nome-ok" type="button">OK</button>';
+    var input = el.querySelector('.nome-input');
+    input.value = state.nome || '';
+    input.focus();
+    input.select();
+
+    function salvar() {
+      var novo = input.value.trim().slice(0, 18);
+      if (novo !== state.nome) { state.nome = novo; save(); }
+      renderSaudacao();
+    }
+    el.querySelector('.nome-ok').addEventListener('click', salvar);
+    input.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') salvar();
+      if (e.key === 'Escape') renderSaudacao();
+    });
+    // Sai do modo edição ao tocar fora, senão o campo fica aberto pra sempre
+    // se a mãe simplesmente rolar a tela.
+    input.addEventListener('blur', function () { setTimeout(salvar, 120); });
+  }
+
+  document.getElementById('greeting').addEventListener('click', function (e) {
+    if (e.target.closest('.nome-edit')) editarNome();
+  });
 
   function refreshStats() {
     document.getElementById('stat-dias').textContent = state.dias;

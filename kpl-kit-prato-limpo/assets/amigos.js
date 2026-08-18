@@ -59,17 +59,25 @@
   var AMIGOS = [
     {
       id: 'banana', nome: 'Bruno Banana', alimento: 'Banana', dif: 1,
-      // Desenhada como traço grosso (contorno escuro por baixo, amarelo por
-      // cima) em vez de contorno fechado: a curva fica com espessura constante,
-      // que é o que dá espaço pro rosto caber dentro dela.
+      // Forma fechada, não traço grosso. A versão antiga era um traço de
+      // espessura constante com outro por baixo fazendo de contorno: rendia as
+      // duas pontas arredondadas (parecia feijão) e o cabinho, desenhado por
+      // cima, virava um risco preto dentro do corpo.
+      // Agora é um "C" vertical com as duas pontas em BICO, como banana de
+      // verdade. Vertical de propósito: deitada, a silhueta cinza do estado
+      // bloqueado ficava igual à do feijão, e a criança precisa reconhecer
+      // qual amigo está faltando só pelo contorno.
       art:
-        // Curva em "C" na vertical + cabinho no topo. Na horizontal a silhueta
-        // cinza (estado bloqueado) ficava idêntica à do feijão, e a criança
-        // precisa reconhecer QUAL amigo está faltando só pelo contorno.
-        '<path d="M58 24 C36 34 34 64 52 80" fill="none" stroke="' + INK + '" stroke-width="38" stroke-linecap="round"/>'
-        + '<path d="M58 24 C36 34 34 64 52 80" fill="none" stroke="#F4C430" stroke-width="30" stroke-linecap="round"/>'
-        + '<path d="M60 22 L64 12" stroke="#3C7A2C" stroke-width="8" stroke-linecap="round" fill="none"/>'
-        + face(42, 52, 0.78),
+        // Contorno calculado (espinha em arco + espessura que afina nas duas
+        // pontas), não desenhado no olho: à mão saía fina em cima e gorda
+        // embaixo, o que lê como lua e não como banana.
+        '<path d="M70.3 14.4 Q58.7 12.6 53.5 14.7 Q48.2 16.8 43.8 20.6 Q39.3 24.3 36.1 29.3 Q32.8 34.3 31.1 40.1'
+        + ' Q29.4 45.9 29.4 52 Q29.4 58.1 31.1 63.9 Q32.8 69.7 36.1 74.7 Q39.3 79.7 43.8 83.5 Q48.2 87.2 53.5 89.3'
+        + ' Q58.7 91.4 64.5 90.5 L70.3 89.6 Q66.1 79.9 64.4 76.4 Q62.8 72.9 61.8 69.7 Q60.7 66.4 60.2 63.5'
+        + ' Q59.6 60.5 59.4 57.7 Q59.1 54.8 59.1 52 Q59.1 49.2 59.4 46.4 Q59.6 43.5 60.2 40.6 Q60.7 37.6 61.8 34.4'
+        + ' Q62.8 31.1 64.4 27.6 Q66.1 24.1 68.2 19.3 L70.3 14.4 Z"'
+        + ' fill="#F4C430" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(44, 52, 0.78),
     },
     {
       id: 'maca', nome: 'Marina Maçã', alimento: 'Maçã', dif: 1,
@@ -261,9 +269,9 @@
     var art = amigo.art;
     if (locked) {
       // Apaga a cor de fill E de stroke numa passada só. Tem que cobrir os
-      // dois: a banana é desenhada como traço grosso (não como forma
-      // preenchida), então uma regra que só olhasse `fill` deixava ela
-      // amarelinha no meio dos bloqueados.
+      // dois porque nem todo personagem tem a cor no `fill`: uma regra que só
+      // olhasse fill deixaria um desenho feito de traço colorido aceso no meio
+      // dos bloqueados.
       // Contorno e traço escuro viram cinza médio (a silhueta continua
       // legível); qualquer cor de alimento vira cinza claro (o "vazio").
       art = art.replace(/(fill|stroke)="(#[0-9A-Fa-f]{3,8})"/g, function (_, attr, hex) {
@@ -297,8 +305,13 @@
    */
 
   // Traço fino colorido (o cabinho) é linha de desenho e vira preto. Traço
-  // GROSSO é a própria silhueta: a banana é desenhada como traço, não como
-  // forma preenchida, então ali o branco tem que ir pro stroke.
+  // GROSSO seria a própria silhueta (corpo desenhado como traço, não como
+  // forma preenchida), e aí o branco tem que ir pro stroke.
+  //
+  // Hoje NENHUM dos 20 é assim: a banana era, e virou forma preenchida quando
+  // ganhou pontas em bico. O tratamento continua aqui como rede de segurança
+  // — sem ele, um personagem novo desenhado a traço grosso viraria uma mancha
+  // preta sólida na folha de colorir, em silêncio.
   var TRACO_SILHUETA = 20;
 
   // Enfeite que já vem pintado de fábrica (bochecha, grãos do milho,
@@ -338,7 +351,8 @@
 
   // Silhueta cheia (tudo preto opaco, fundo transparente). Vira máscara do
   // canvas: onde é preto a tinta aparece, fora dali some. `fill="none"` fica
-  // como está de propósito — na banana é o traço grosso que forma o corpo.
+  // como está de propósito, senão um corpo desenhado a traço grosso sumiria
+  // da máscara e não daria pra pintar.
   function maskSvgFor(amigo) {
     var art = semEnfeites(amigo.art).replace(/(fill|stroke)="#[0-9A-Fa-f]{3,8}"/g, '$1="#000000"');
     return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">' + art + '</svg>';
@@ -353,7 +367,8 @@
     };
   }
 
-  // É silhueta feita de traço (e não de forma preenchida)? Só a banana é assim.
+  // É silhueta feita de traço (e não de forma preenchida)? Nenhum dos 20 é
+  // assim hoje; ver a nota em TRACO_SILHUETA.
   function ehTracoSilhueta(a) {
     return !a.fill && !!a.stroke && a.stroke.toUpperCase() !== INK && a.largura >= TRACO_SILHUETA;
   }
@@ -392,9 +407,10 @@
         out = out.replace(/fill="#[0-9A-Fa-f]{3,8}"/, 'fill="none"');
       }
 
-      // Sob o traço colorido da banana existe um traço preto MAIS grosso, que
-      // é o contorno dela. Sozinho ele vira uma mancha preta sólida, então
-      // vaza-se o meio dele pra sobrar só a borda.
+      // Corpo feito de traço vem em dupla: um traço preto mais grosso por
+      // baixo fazendo de contorno, o colorido por cima. Sem o colorido, o
+      // preto sozinho vira mancha sólida, então vaza-se o meio dele pra
+      // sobrar só a borda.
       var vazado = a.d && vazados[a.d];
       if (vazado && a.stroke && a.stroke.toUpperCase() === INK) {
         defs += '<mask id="' + vazado.id + '" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100">'
