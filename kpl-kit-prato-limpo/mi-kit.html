@@ -265,6 +265,10 @@
   }
   .amigo svg { width: 100%; height: auto; display: block; }
   .amigo b { display: block; font-size: 0.6rem; font-weight: 800; color: var(--ink); margin-top: 2px; line-height: 1.15; }
+  /* Qual alimento é, discreto. O personagem tem nome próprio, mas nem sempre
+     dá pra reconhecer a comida só pelo desenho, e o nome do alimento é o que
+     liga o amigo ao que está no prato. Cinza pra não competir com o nome. */
+  .amigo .alim { display: block; font-size: 0.53rem; font-weight: 600; color: var(--muted); line-height: 1.2; }
   .amigo.is-locked b { color: var(--muted); font-weight: 700; }
   .amigo.just-won { animation: won .7s cubic-bezier(.2,1.4,.4,1); }
   @keyframes won { 0% { transform: scale(.7) rotate(-12deg); } 60% { transform: scale(1.14) rotate(6deg); } 100% { transform: none; } }
@@ -290,6 +294,11 @@
   #pintar-art, #pintar-traco { pointer-events: none; }
   /* touch-action: none impede a página de rolar enquanto a criança pinta. */
   #pintar-canvas { touch-action: none; cursor: crosshair; }
+  .pintar-nome {
+    text-align: center; font-family: var(--heading); font-size: 1.05rem;
+    color: var(--ink); margin: 0 0 8px;
+  }
+  .pintar-nome span { font-family: var(--body); font-size: 0.82rem; font-weight: 600; color: var(--muted); }
   .pintar-dica { text-align: center; font-size: 0.8rem; color: var(--muted); margin: 12px 0 8px; }
 
   .paleta { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 420px; margin: 0 auto; }
@@ -546,6 +555,7 @@
 
       <div id="pintar-tela" style="display:none">
         <button class="pintar-voltar" id="pintar-voltar" type="button">← Escolher outro</button>
+        <p class="pintar-nome" id="pintar-nome"></p>
         <div class="pintar-palco">
           <div class="pintar-folha">
             <div id="pintar-art"></div>
@@ -1009,6 +1019,8 @@
       return '<button class="amigo' + (unlocked ? '' : ' is-locked') + '" data-id="' + a.id + '" type="button">'
         + KPL_AMIGOS.svgFor(a, !unlocked)
         + '<b>' + escapeHtml(unlocked ? a.nome.split(' ')[0] : a.alimento) + '</b>'
+        // Bloqueado já mostra o alimento no lugar do nome; repetir seria eco.
+        + (unlocked ? '<span class="alim">(' + escapeHtml(a.alimento) + ')</span>' : '')
         + '</button>';
     }).join('');
     var total = KPL_AMIGOS.list.length;
@@ -1122,6 +1134,7 @@
         + (typeof feita === 'string' ? '<img class="previa" alt="" src="' + feita + '">' : '')
         + '<span class="tracos">' + KPL_AMIGOS.lineArtSvgFor(a) + '</span>'
         + '<b>' + escapeHtml(a.nome.split(' ')[0]) + '</b>'
+        + '<span class="alim">(' + escapeHtml(a.alimento) + ')</span>'
         + '</button>';
     }).join('');
     // A prévia é o bitmap cru, então precisa da mesma máscara do palco.
@@ -1147,6 +1160,10 @@
     pintando = a;
     document.getElementById('pintar-lista').style.display = 'none';
     document.getElementById('pintar-tela').style.display = '';
+    // Só o primeiro nome: o nome completo já é "Miguel Milho", e junto com o
+    // parêntese viraria "Miguel Milho (Milho)".
+    document.getElementById('pintar-nome').innerHTML =
+      escapeHtml(a.nome.split(' ')[0]) + ' <span>(' + escapeHtml(a.alimento) + ')</span>';
     document.getElementById('pintar-art').innerHTML = KPL_AMIGOS.paintSvgFor(a);
     document.getElementById('pintar-traco').innerHTML = KPL_AMIGOS.lineArtSvgFor(a);
     aplicarMascara(cv, a);

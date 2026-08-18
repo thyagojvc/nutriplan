@@ -52,6 +52,24 @@
     return '<path d="' + d + '" fill="#5CA741" stroke="' + INK + '" stroke-width="4" stroke-linejoin="round"/>';
   }
 
+  // Grãos da espiga em fileiras alternadas. Gerado em vez de escrito à mão
+  // porque são 18 círculos, e é a REPETIÇÃO em fileira que faz ler como milho:
+  // com meia dúzia de pontinhos soltos o desenho vira um ovo com folhas.
+  // Deixa livre a faixa do rosto de propósito (na altura dos olhos, grão vira
+  // olho extra). Contornados, não manchas: assim dá pra pintar grão a grão.
+  function graosMilho() {
+    var fileiras = [
+      [25, [46, 54]], [32, [42, 50, 58]],
+      [62, [36, 44, 52, 60]], [69, [40, 48, 56, 64]],
+      [75, [43, 51, 59]], [81, [47, 53]],
+    ];
+    return fileiras.map(function (f) {
+      return f[1].map(function (x) {
+        return '<circle cx="' + x + '" cy="' + f[0] + '" r="3.6" fill="#F4C430" stroke="' + INK + '" stroke-width="2.5"/>';
+      }).join('');
+    }).join('');
+  }
+
   function stem(x, yTop, yBottom) {
     return '<path d="M' + x + ' ' + yBottom + ' V' + yTop + '" stroke="#3C7A2C" stroke-width="6" stroke-linecap="round" fill="none"/>';
   }
@@ -164,10 +182,9 @@
         // grãos só no terço de baixo, longe do rosto.
         '<path d="M30 54 C18 60 16 76 24 86 C34 80 34 64 34 56 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4.5" stroke-linejoin="round"/>'
         + '<path d="M70 54 C82 60 84 76 76 86 C66 80 66 64 66 56 Z" fill="#5CA741" stroke="' + INK + '" stroke-width="4.5" stroke-linejoin="round"/>'
-        + '<ellipse cx="50" cy="54" rx="21" ry="32" fill="#F4C430" stroke="' + INK + '" stroke-width="5"/>'
-        + '<g fill="' + INK + '" opacity=".22"><circle cx="42" cy="70" r="2.6"/><circle cx="58" cy="70" r="2.6"/>'
-        + '<circle cx="50" cy="76" r="2.6"/><circle cx="42" cy="81" r="2.6"/><circle cx="58" cy="81" r="2.6"/></g>'
-        + face(50, 50, 0.88),
+        + '<ellipse cx="50" cy="52" rx="21" ry="32" fill="#F4C430" stroke="' + INK + '" stroke-width="5"/>'
+        + graosMilho()
+        + face(50, 45, 0.88),
     },
     {
       id: 'batata', nome: 'Bento Batata', alimento: 'Batata', dif: 2,
