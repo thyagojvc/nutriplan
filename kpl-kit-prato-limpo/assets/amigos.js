@@ -190,11 +190,14 @@
     {
       id: 'brocolis', nome: 'Bia Brócolis', alimento: 'Brócolis', dif: 3,
       art:
+        // Copa em peça ÚNICA recortada, não círculos sobrepostos. Sobrepostos
+        // funcionavam só preenchidos (um tampava o outro); na folha de colorir
+        // o miolo é vazado e todos os cruzamentos apareciam, virando emaranhado.
         '<path d="M42 56 H58 V80 C58 86 54 90 50 90 C46 90 42 86 42 80 Z" fill="#A8CE96" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
-        + '<g fill="#5CA741" stroke="' + INK + '" stroke-width="4.5">'
-        + '<circle cx="32" cy="42" r="15"/><circle cx="68" cy="42" r="15"/><circle cx="50" cy="30" r="17"/><circle cx="50" cy="48" r="16"/>'
-        + '</g>'
-        + face(50, 44, 0.86),
+        + '<path d="M24 58 Q14 50 20 40 Q16 28 30 26 Q34 14 46 20 Q52 12 60 20 Q72 15 76 27'
+        + ' Q88 30 82 42 Q88 52 76 58 Z"'
+        + ' fill="#5CA741" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
+        + face(50, 42, 0.86),
     },
     {
       id: 'alface', nome: 'Aninha Alface', alimento: 'Alface', dif: 3,
@@ -204,7 +207,13 @@
         '<path d="M20 56 C16 44 24 34 34 34 C36 26 48 24 50 32 C54 24 66 26 66 34 C78 34 84 44 80 56'
         + ' C84 72 68 86 50 86 C32 86 16 72 20 56 Z"'
         + ' fill="#5CA741" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
-        + '<path d="M28 70 C36 66 44 68 50 72 C56 68 64 66 72 70" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
+        // Duas folhas de fora envolvendo o miolo, uma de cada lado, mais a
+        // dobra de baixo. Sem isso sobra uma bolha redonda que, sem cor, vira
+        // nuvem. São traço (não mancha), então sobrevivem à folha de colorir
+        // de propósito: é o que faz a criança reconhecer que é alface.
+        + '<path d="M30 38 C25 54 29 70 37 80" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
+        + '<path d="M70 38 C75 54 71 70 63 80" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
+        + '<path d="M32 72 C38 68 44 70 50 74 C56 70 62 68 68 72" fill="none" stroke="' + INK + '" stroke-width="3" opacity=".3" stroke-linecap="round"/>'
         + face(50, 54, 0.88) + blush(50, 54, 0.88),
     },
     {
@@ -221,12 +230,14 @@
       art:
         // Vagem na horizontal (era diagonal, e as ervilhas subiam em cima do
         // rosto). Rosto na parte de cima, ervilhas enfileiradas embaixo.
-        '<path d="M16 50 C16 34 32 24 50 24 C68 24 84 34 84 50 C84 66 68 76 50 76 C32 76 16 66 16 50 Z"'
+        // Vagem com as duas pontas em bico. Era um oval de cantos redondos, que
+        // sem cor lia como pãozinho; vagem é pontuda nas pontas.
+        '<path d="M10 52 C20 34 36 28 50 28 C64 28 80 34 90 52 C80 70 64 76 50 76 C36 76 20 70 10 52 Z"'
         + ' fill="#A8CE96" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>'
         + '<g fill="#5CA741" stroke="' + INK + '" stroke-width="4">'
-        + '<circle cx="33" cy="62" r="8"/><circle cx="50" cy="64" r="8"/><circle cx="67" cy="62" r="8"/>'
+        + '<circle cx="34" cy="62" r="8"/><circle cx="50" cy="63" r="8"/><circle cx="66" cy="62" r="8"/>'
         + '</g>'
-        + face(50, 42, 0.78),
+        + face(50, 43, 0.78),
     },
     {
       id: 'pimentao', nome: 'Pilar Pimentão', alimento: 'Pimentão', dif: 4,
@@ -322,10 +333,19 @@
   // URI é XML de verdade, e uma tag sobrando invalida o arquivo inteiro — foi
   // assim que a máscara do Miguel Milho e do Bento Batata parou de carregar,
   // o canvas ficou recortado a nada e os dois ficaram impossíveis de pintar.
+  //
+  // Sai só o que é PINTADO. Linha translúcida fica: na alface é a textura que
+  // faz ela parecer alface, e sem ela sobra uma bolha sem identidade nenhuma.
   function semEnfeites(art) {
-    return art
-      .replace(/<g\b[^>]*\bopacity=[^>]*>[\s\S]*?<\/g>/gi, '')
-      .replace(/<[a-z]+\b[^>]*\bopacity=[^>]*?>/gi, '');
+    // Translúcido em COR (a bochecha) é enfeite de rosto e sai.
+    // Translúcido em tom de traço é textura do próprio alimento (grãos do
+    // milho, marquinhas da batata) e FICA: sem eles o milho vira um ovo com
+    // folhas e a batata vira uma bolha, nenhum dos dois reconhecível.
+    // Traço puro (fill="none") também fica: gomos da laranja, riscos do
+    // abacaxi e da abobrinha, folhas da alface.
+    var grupoEnfeite = new RegExp('<g\\b(?![^>]*fill="' + INK + '")[^>]*\\bopacity=[^>]*>[\\s\\S]*?</g>', 'gi');
+    var soltoEnfeite = new RegExp('<[a-z]+\\b(?![^>]*fill="none")(?![^>]*fill="' + INK + '")[^>]*\\bopacity=[^>]*?>', 'gi');
+    return art.replace(grupoEnfeite, '').replace(soltoEnfeite, '');
   }
 
   function paraFolha(tag) {
@@ -395,6 +415,11 @@
 
     var defs = '';
     var art = base.replace(/<[a-z]+[^>]*>/gi, function (tag) {
+      // A textura translúcida existe pra dar sombreado no desenho colorido, e
+      // nessa opacidade quase some no branco da folha. Aqui ela é justamente o
+      // que identifica o alimento (grão do milho, gomo da laranja), então
+      // aparece mais forte.
+      tag = tag.replace(/opacity="0?\.[0-3]\d*"/, 'opacity=".45"');
       var a = atributos(tag);
       // O traço colorido grosso É o corpo: some daqui, quem preenche é a tinta.
       if (ehTracoSilhueta(a)) return '';
@@ -405,6 +430,12 @@
       }
       if (a.fill && a.fill.toUpperCase() !== INK) {
         out = out.replace(/fill="#[0-9A-Fa-f]{3,8}"/, 'fill="none"');
+        // Detalhe pintado que não tinha contorno próprio sumiria ao ser
+        // vazado: as sementinhas do morango eram da cor do fundo, então
+        // viravam nada. Ganham traço pra criança pintar ou deixar em branco.
+        if (!a.stroke) {
+          out = out.replace(/^<([a-z]+)/i, '<$1 stroke="' + INK + '" stroke-width="3"');
+        }
       }
 
       // Corpo feito de traço vem em dupla: um traço preto mais grosso por
