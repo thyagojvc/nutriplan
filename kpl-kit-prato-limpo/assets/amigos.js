@@ -301,10 +301,21 @@
   // forma preenchida, então ali o branco tem que ir pro stroke.
   var TRACO_SILHUETA = 20;
 
-  function paraFolha(tag) {
-    // Bochecha já vem pintada de fábrica; folha de colorir não tem isso.
-    if (/opacity=/.test(tag)) return '';
+  // Enfeite que já vem pintado de fábrica (bochecha, grãos do milho,
+  // marquinhas da batata) não existe em folha de colorir e sai antes de tudo.
+  //
+  // Tem que sair o GRUPO INTEIRO quando o opacity está num <g>: apagar só a
+  // tag de abertura deixa os filhos soltos e um </g> órfão. SVG dentro de data
+  // URI é XML de verdade, e uma tag sobrando invalida o arquivo inteiro — foi
+  // assim que a máscara do Miguel Milho e do Bento Batata parou de carregar,
+  // o canvas ficou recortado a nada e os dois ficaram impossíveis de pintar.
+  function semEnfeites(art) {
+    return art
+      .replace(/<g\b[^>]*\bopacity=[^>]*>[\s\S]*?<\/g>/gi, '')
+      .replace(/<[a-z]+\b[^>]*\bopacity=[^>]*?>/gi, '');
+  }
 
+  function paraFolha(tag) {
     var fill = (tag.match(/fill="(#[0-9A-Fa-f]{3,8})"/) || [])[1];
     var stroke = (tag.match(/stroke="(#[0-9A-Fa-f]{3,8})"/) || [])[1];
     var largura = Number((tag.match(/stroke-width="([\d.]+)"/) || [])[1] || 0);
@@ -322,16 +333,14 @@
 
   function paintSvgFor(amigo) {
     return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">'
-      + amigo.art.replace(/<[a-z]+[^>]*>/gi, paraFolha) + '</svg>';
+      + semEnfeites(amigo.art).replace(/<[a-z]+[^>]*>/gi, paraFolha) + '</svg>';
   }
 
   // Silhueta cheia (tudo preto opaco, fundo transparente). Vira máscara do
   // canvas: onde é preto a tinta aparece, fora dali some. `fill="none"` fica
   // como está de propósito — na banana é o traço grosso que forma o corpo.
   function maskSvgFor(amigo) {
-    var art = amigo.art
-      .replace(/<[a-z]+[^>]*>/gi, function (tag) { return /opacity=/.test(tag) ? '' : tag; })
-      .replace(/(fill|stroke)="#[0-9A-Fa-f]{3,8}"/g, '$1="#000000"');
+    var art = semEnfeites(amigo.art).replace(/(fill|stroke)="#[0-9A-Fa-f]{3,8}"/g, '$1="#000000"');
     return '<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100">' + art + '</svg>';
   }
 
@@ -359,18 +368,18 @@
   // Só as linhas pretas, com todo miolo colorido vazado, pra tinta de baixo
   // aparecer pelos buracos. Fica POR CIMA do canvas.
   function lineArtSvgFor(amigo) {
+    var base = semEnfeites(amigo.art);
     var vazados = {};
-    amigo.art.replace(/<[a-z]+[^>]*>/gi, function (tag) {
+    base.replace(/<[a-z]+[^>]*>/gi, function (tag) {
       var a = atributos(tag);
-      if (a.d && !/opacity=/.test(tag) && ehTracoSilhueta(a)) {
+      if (a.d && ehTracoSilhueta(a)) {
         vazados[a.d] = { largura: a.largura, id: 'kplm' + (seqMascara++) };
       }
       return tag;
     });
 
     var defs = '';
-    var art = amigo.art.replace(/<[a-z]+[^>]*>/gi, function (tag) {
-      if (/opacity=/.test(tag)) return '';
+    var art = base.replace(/<[a-z]+[^>]*>/gi, function (tag) {
       var a = atributos(tag);
       // O traço colorido grosso É o corpo: some daqui, quem preenche é a tinta.
       if (ehTracoSilhueta(a)) return '';
