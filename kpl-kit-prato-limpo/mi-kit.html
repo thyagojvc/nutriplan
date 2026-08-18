@@ -222,7 +222,16 @@
   }
   .mission.is-visible { display: block; animation: pop .35s cubic-bezier(.2,1.3,.4,1); }
   @keyframes pop { from { transform: scale(.9); opacity: 0; } to { transform: none; opacity: 1; } }
-  .mission__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; object-position: center top; display: block; background: var(--mint); }
+  /* A ficha é retrato 2:3. O container forçava 3/2 com object-fit: cover, ou
+     seja, mostrava só a tarja do título e cortava a atividade inteira fora.
+     Agora ela aparece completa. max-height segura a altura pra não empurrar o
+     "Fizemos!" pra fora da tela, e a sobra das laterais usa o mesmo creme do
+     fundo da ficha, então não aparece moldura em volta. */
+  .mission__img {
+    width: 100%; display: block; cursor: zoom-in;
+    aspect-ratio: 2 / 3; max-height: 46vh; object-fit: contain;
+    background: #FBF8F1;
+  }
   .mission__body { padding: 18px 18px 20px; }
   .mission__tag {
     display: inline-block; background: var(--mint); color: var(--green-dark);
@@ -989,6 +998,15 @@
     box.classList.add('is-visible');
     box.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
+
+  // Tocar na ficha abre ela em tela cheia. Cabendo inteira no card ela fica
+  // pequena, e a arte impressa tem detalhe que a mãe vai querer ver de perto.
+  // Reaproveita o visualizador da aba Fichas, casando pelo nome do arquivo.
+  document.getElementById('mission-img').addEventListener('click', function () {
+    if (!missaoAtual || !missaoAtual.file) return;
+    var i = galleryFlat.map(function (f) { return f.file; }).indexOf(missaoAtual.file);
+    if (i !== -1) openLightbox(i); // -1 = galeria ainda carregando
+  });
 
   document.getElementById('mission-done').addEventListener('click', function () {
     if (!missaoAtual) return;
