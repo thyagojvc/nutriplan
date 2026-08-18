@@ -20,6 +20,9 @@ const { sendEmail } = require('./_resend');
 const { sendCapiPurchase, resolveFbc } = require('./_fb-capi');
 const { tierFromValueCents } = require('./_catalog');
 const { redis } = require('./_kv');
+const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
+
+const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
@@ -44,8 +47,9 @@ async function lookupCheckoutBackup(paymentId) {
   }
 }
 
-// Rede de segurança: avisa o suporte para conferir/entregar manualmente.
-// Não é a entrega ao cliente (isso é o api/deliver-kit.js).
+// Caminho órfão: a cliente fechou a aba antes de a tela de sucesso confirmar,
+// então o api/deliver-kit.js nunca rodou. Aqui a gente ENTREGA pra ela (o
+// backup do checkout guarda o e-mail) e avisa o suporte.
 async function deliverKit(transaction) {
   const paymentId = normalizeId(transaction.id);
   const backup = await lookupCheckoutBackup(paymentId);
@@ -102,6 +106,37 @@ async function deliverKit(transaction) {
     })
     .catch((err) => console.error('webhook: sales record error', err));
 
+  // ENTREGA PRA CLIENTE. Antes este caminho só avisava o admin, então quem
+  // fechava a aba antes da tela de sucesso não recebia e-mail nenhum e só era
+  // atendida se reclamasse (foi o que aconteceu em 18/08 com uma compra do
+  // Completo). O e-mail dela vem do backup gravado no create-charge.
+  let entregaUrl = null;
+  if (backup && isEmail(backup.email)) {
+    // Reivindica a MESMA trava do deliver-kit. Aqui a entrega é de verdade,
+    // então precisa impedir o outro caminho de mandar um segundo e-mail se a
+    // cliente reabrir a página depois. Fail-OPEN: e-mail repetido é chato mas
+    // recuperável, ficar sem acesso tendo pago não é.
+    let podeEntregar = true;
+    try {
+      podeEntregar = (await redis('SET', `delivered:${paymentId}`, '1', 'NX', 'EX', 86400)) === 'OK';
+    } catch (err) {
+      console.error('webhook: trava de entrega falhou (entregando mesmo assim)', err);
+    }
+    if (podeEntregar) {
+      entregaUrl = await createDownloadLink(paymentId, backup.email, backup.name, tierFromValueCents(valorCents).id);
+      try {
+        await sendEmail({
+          to: backup.email,
+          subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
+          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl }),
+          replyTo: 'kitpratolimpo@gmail.com',
+        });
+      } catch (err) {
+        console.error('webhook: falha ao enviar e-mail pra cliente', err);
+      }
+    }
+  }
+
   const adminEmail = process.env.ADMIN_ALERT_EMAIL;
   if (!adminEmail) {
     console.log('[WEBHOOK] pagamento aprovado, sem ADMIN_ALERT_EMAIL configurado', transaction.id);
@@ -121,11 +156,21 @@ async function deliverKit(transaction) {
        WhatsApp: ${backup.phone || '(não informado)'}</p>`
     : `${dadosPixHtml}
        <p style="color:#c0392b"><strong>Não achei o backup do checkout desta transação</strong>, então não tenho e-mail nem WhatsApp dela. Use o nome e o CPF acima para localizar a cliente e entregar manualmente.</p>`;
+  // Diz se a cliente JÁ foi atendida ou se sobrou trabalho manual. Sem isso o
+  // alerta fica ambíguo e dá pra achar que toda venda por aqui precisa de ação.
+  const statusEntregaHtml = entregaUrl
+    ? `<p style="color:#2F6B22"><strong>Acesso enviado automaticamente para ${backup.email}.</strong><br>
+       Link dela: <a href="${entregaUrl}">${entregaUrl}</a></p>`
+    : backup && isEmail(backup.email)
+      ? `<p style="color:#c0392b"><strong>NÃO consegui enviar o acesso automaticamente</strong> (ou já tinha sido entregue por outro caminho). Confira antes de mandar na mão.</p>`
+      : `<p style="color:#c0392b"><strong>Sem e-mail da cliente, nada foi enviado.</strong> Entregue manualmente.</p>`;
+
   await sendEmail({
     to: adminEmail,
     subject: `Pix aprovado via webhook: ${paymentId}`,
     html: `<p>Pagamento aprovado direto pelo webhook da PushInPay (fora do fluxo normal de tela de sucesso).</p>
            <p>ID da transação: ${paymentId}<br>Valor: R$ ${valor}</p>
+           ${statusEntregaHtml}
            ${dadosClienteHtml}`,
   });
 }

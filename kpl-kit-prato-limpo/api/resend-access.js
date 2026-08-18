@@ -18,15 +18,11 @@
 // (o dono decide entregar mesmo assim). Quem autoriza aqui é a chave do
 // painel, mesma proteção do /funil e do delete-visitors.
 
-const crypto = require('crypto');
-const { redis } = require('./_kv');
 const { sendEmail } = require('./_resend');
 const { TIERS } = require('./_catalog');
+const { createDownloadLink } = require('./_entrega');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
-
-// Mesmo prazo do deliver-kit: a cliente pode querer reimprimir daqui a meses.
-const TTL_SEGUNDOS = 365 * 24 * 60 * 60;
 
 function readBody(req) {
   if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
@@ -75,16 +71,10 @@ module.exports = async (req, res) => {
     // como reenvio manual em vez de se passar por uma venda comum.
     const paymentId = String(body.paymentId || '').trim() || `manual-${Date.now()}`;
 
-    const token = crypto.randomBytes(24).toString('hex');
-    await redis(
-      'SET', `dl:${token}`,
-      JSON.stringify({ paymentId, email, name, tierId, ts: Date.now(), reenvio: true }),
-      'EX', TTL_SEGUNDOS,
-    );
-    await redis('SET', `dltok:${paymentId}`, token, 'EX', TTL_SEGUNDOS);
-
-    const base = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
-    const url = tierId === 'essencial' ? `${base}/api/download?t=${token}` : `${base}/mi-kit?t=${token}`;
+    // Mesma criação de acesso da entrega normal (api/_entrega.js), pra o link
+    // reenviado nunca divergir do que a compra gera.
+    const url = await createDownloadLink(paymentId, email, name, tierId, { reenvio: true });
+    if (!url) return res.status(503).json({ error: 'Não consegui criar o acesso agora. Tente de novo.' });
 
     const enviado = await sendEmail({
       to: email,
