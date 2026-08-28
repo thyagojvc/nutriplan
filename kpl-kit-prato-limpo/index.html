@@ -253,6 +253,23 @@
   .step h3 { font-size: 1.1rem; margin-bottom: 2px; }
   .step p { font-size: .98rem; color: var(--text); }
 
+  /* Fotos de contexto. São DUAS coisas diferentes e a legenda existe pra manter
+     a diferença de pé: a de casa ILUSTRA o uso (imagem produzida) e a da escola
+     é PROVA (foto real). Foto sem legenda o leitor lê como quiser, e a da
+     escola não pode ser lida como "o kit sendo usado em casa". */
+  .foto figure { margin: 0; }
+  .foto img {
+    display: block; width: 100%; height: auto;
+    border-radius: var(--radius-sm); border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm); background: var(--card);
+  }
+  .foto figcaption {
+    margin-top: 10px; font-size: .92rem; color: var(--muted);
+    text-align: center; line-height: 1.45;
+  }
+  .foto--casa { max-width: 420px; margin: 26px auto 0; }
+  .foto--prova { max-width: 720px; margin: 0 auto; }
+
   /* Seção de dor (agitação) */
   .dores { background: var(--cream-2); }
   .dor-list { display: flex; flex-direction: column; gap: 10px; margin-top: 4px; }
@@ -1040,6 +1057,17 @@
         </div>
       </div>
     </div>
+
+    <!-- Ilustra a cena que os 3 passos descrevem. Fica aqui e NÃO perto dos
+         depoimentos de propósito: é imagem produzida, não serve como prova, e
+         encostada na prova real ela contamina a leitura da prova. -->
+    <div class="foto foto--casa">
+      <figure>
+        <img src="assets/foto-uso-casa.jpg" width="820" height="1025" loading="lazy" decoding="async"
+             alt="Mãe sentada ao lado da filha enquanto a menina resolve a ficha do labirinto do lanche com lápis de cor" />
+        <figcaption>Uma ficha, um lápis e você do lado. O alimento fica na mesa sem ninguém pedir pra ela comer.</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
 
@@ -1243,6 +1271,29 @@
     </div>
   </div>
 </section>
+
+<!-- =============== 6.5 APLICAÇÃO REAL (foto de prova) ===============
+     Fora da lista de api/_sections.js de propósito, igual à seção "pintar": o
+     índice daquela lista vira o maxSection gravado por visitante, então incluir
+     esta seção lá remontaria o significado de todo o dado já coletado. -->
+<section id="aplicacao">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Aplicação real</span>
+    </div>
+    <h2 class="section-title">Isso já roda com <span class="hl">criança de verdade</span></h2>
+    <p class="section-sub">Não é teoria montada na frente de uma tela. Atividades como as do kit já foram aplicadas com crianças, em grupo e em sala.</p>
+
+    <div class="foto foto--prova">
+      <figure>
+        <img src="assets/foto-aplicacao-escola.jpg" width="1200" height="796" loading="lazy" decoding="async"
+             alt="Profissional de jaleco aplicando atividades com cartelas de alimentos junto com um grupo de crianças em uma escola" />
+        <figcaption>Atividades sendo aplicadas com crianças em uma escola. Os rostos foram borrados para preservar a identidade delas.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 
 <!-- ======================= 7. DEPOIMENTOS ======================= -->
 <section id="depoimentos" class="depos">
