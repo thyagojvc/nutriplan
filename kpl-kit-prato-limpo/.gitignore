@@ -4,10 +4,11 @@ node_modules/
 .env.local
 .DS_Store
 
-# Biblioteca bruta de vídeo pra produção de anúncio (centenas de MB, não é
-# código nem o produto entregue — não pertence ao histórico do git).
-public/Criativos Prontos/
-public/Material para criativos/
+# public/ inteiro é biblioteca bruta de anúncio: vídeo, print, foto de origem,
+# centenas de MB. NADA ali é referenciado pelo site (o .vercelignore barra a
+# pasta do deploy pelo mesmo motivo). Antes só duas subpastas estavam ignoradas
+# e o resto entrava de carona em qualquer `git add .`.
+public/
 
 # Sobras de teste
 scratch-test-q90.jpg
@@ -15,3 +16,13 @@ sumario-check.pdf
 
 .vercel
 .env*
+
+# CREDENCIAL. Keys/funneldashkey.txt é a chave do painel /funil e estava fora
+# do ignore: qualquer `git add .` a mandava pro histórico, de onde não sai mais.
+Keys/
+
+# PDFs de entrega são SAÍDA de build (scripts/build-kit-pdf.js), não fonte.
+# São 132MB e o nome muda de hash a cada rebuild, então cada build empilharia
+# outros 132MB no histórico pra sempre. Quem sobe pra produção é o Vercel CLI,
+# que lê do disco e não do git, então nada quebra por eles não estarem aqui.
+entrega/*.pdf

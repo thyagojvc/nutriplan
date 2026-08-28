@@ -30,3 +30,25 @@ sumario-check.pdf
 
 # guia de produção das fichas, não é código nem produto entregue
 PROMPTS-86-ATIVIDADES.md
+
+# PNG DE ORIGEM DAS FICHAS (23/08). São insumo do build local: quem monta os
+# PDFs é scripts/build-kit-pdf.js, que roda aqui na máquina e cospe o
+# resultado pronto em entrega/. Em produção nada referencia estas pastas.
+#
+# Estavam indo pro deploy e ficavam PÚBLICAS: com o nome do arquivo (padrão
+# previsível, B<bloco>-F<num>-<slug>.png) dava pra baixar o produto inteiro
+# sem pagar, em /assets/fichas-geradas/. São 178MB do kit de R$10 e 58MB da
+# edição profissional de R$97 abertos, mais 236MB subindo a cada deploy à toa.
+#
+# O que continua no ar é assets/fichas-consultorio-web/ (as 4 amostras
+# reduzidas que a página de vendas mostra de propósito) e entrega/, que só
+# responde com token válido conferido no Redis por api/download.js.
+assets/fichas-geradas/
+assets/fichas-consultorio/
+
+# CREDENCIAL (23/08). Keys/funneldashkey.txt é a chave do painel /funil e
+# estava sendo servida como arquivo estático: um GET em
+# /Keys/funneldashkey.txt devolvia 200 em produção, sem senha nenhuma.
+# Este deploy tira o arquivo do ar, mas ele ficou aberto por um tempo, então
+# a chave em si tem que ser TROCADA — arquivo removido não desfaz quem já leu.
+Keys/

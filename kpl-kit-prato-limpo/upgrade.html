@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Complete o seu Kit Prato Limpo</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
+    --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
+    --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A;
+    --ink:#26302A; --text:#4B564E; --muted:#7C857D; --card:#FFFFFF; --border:#E9E3D5;
+    --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
+    --radius:20px; --radius-sm:14px;
+    --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
+    --body:"Nunito",system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--text);font-family:var(--body);line-height:1.55}
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
+  section{padding:38px 0}
+  h1,h2{font-family:var(--heading);color:var(--ink);margin:0 0 10px;line-height:1.15;text-wrap:balance}
+  h1{font-size:1.9rem} h2{font-size:1.4rem}
+  .hl{color:var(--orange)}
+  .eyebrow{display:inline-block;background:var(--mint);color:var(--green-dark);font-family:var(--heading);
+    font-weight:800;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;padding:5px 13px;border-radius:999px;margin-bottom:12px}
+  .sub{color:var(--muted);font-size:.95rem;margin:0 0 20px}
+
+  .topo{background:var(--mint);text-align:center}
+  .demo{display:grid;grid-template-columns:1fr;gap:20px;justify-items:center;align-items:center;margin-top:8px}
+  @media(min-width:560px){.demo{grid-template-columns:230px 1fr;justify-items:start;gap:26px}}
+  /* height:auto obrigatorio: o atributo height="1280" do <video> vira altura
+     fixa em px e o aspect-ratio abaixo nao tem efeito (ele so age quando uma
+     das dimensoes e auto). Sem isso o video renderiza 230x1280 e engole a
+     pagina. Estava assim desde 21/08, nesta pagina que ja estava no ar. */
+  .demo video{width:100%;max-width:230px;height:auto;aspect-ratio:9/16;background:var(--ink);object-fit:cover;
+    border-radius:var(--radius);box-shadow:var(--shadow);display:block}
+  .lista{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:12px;text-align:left}
+  .lista li{display:flex;align-items:flex-start;gap:9px;font-size:.92rem;color:var(--text)}
+  .lista b{color:var(--ink);font-weight:800}
+
+  .preco{background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:22px 18px;text-align:center;box-shadow:var(--shadow-sm)}
+  .preco .ja{color:var(--muted);font-size:.9rem}
+  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.6rem;line-height:1;margin:6px 0}
+  .preco .valor small{font-size:1.1rem}
+  .preco .comp{color:var(--muted);font-size:.85rem;margin-top:6px}
+  .preco .comp s{color:var(--muted)}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
+  .field input{width:100%;padding:13px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
+    background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);outline:none}
+  .field input:focus{border-color:var(--green)}
+  .field .err{display:none;color:#D64545;font-size:.8rem;margin-top:4px}
+  .field.invalid input{border-color:#D64545}
+  .field.invalid .err{display:block}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:14px 22px;
+    font-family:var(--heading);font-weight:800;font-size:1.1rem;color:#fff;
+    background:linear-gradient(180deg,#67B84C,var(--green));border:none;border-radius:999px;cursor:pointer;
+    box-shadow:var(--shadow);transition:filter .15s}
+  .btn:hover{filter:brightness(1.05)} .btn:disabled{opacity:.65;cursor:default}
+
+  .aviso{display:none;background:#FDECEC;border:2px solid #F3B4B4;color:#8a2b2b;border-radius:var(--radius-sm);
+    padding:12px 14px;font-size:.9rem;margin-bottom:14px}
+  .aviso.show{display:block}
+
+  .pix{display:none;background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:22px 18px;text-align:center}
+  .pix.show{display:block}
+  .pix-qr img{width:100%;max-width:260px;border-radius:12px}
+  .pix-copy{display:flex;gap:8px;margin:12px 0}
+  .pix-code{flex:1;min-width:0;padding:12px;font-size:.82rem;color:var(--ink);background:var(--cream);
+    border:2px solid var(--border);border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+  /* width:auto obrigatorio: .btn tem width:100% e com flex-basis auto o botao
+     esmagaria o campo do codigo ate sobrar dois caracteres (mesmo bug do index) */
+  .pix-copy .btn{flex:0 0 auto;width:auto;min-height:48px;padding:0 18px;font-size:1rem}
+  .status{display:inline-flex;align-items:center;gap:8px;color:var(--green-dark);font-weight:700;margin-top:8px}
+  .spin{width:15px;height:15px;border:2px solid var(--mint-2);border-top-color:var(--green);border-radius:50%;animation:g .8s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+
+  .ok{display:none;background:var(--mint);border:2px solid var(--green);border-radius:var(--radius);padding:24px 18px;text-align:center}
+  .ok.show{display:block}
+  .rodape{text-align:center;color:var(--muted);font-size:.8rem;padding:26px 0 40px}
+</style>
+</head>
+<body>
+
+<section class="topo">
+  <div class="wrap">
+    <span class="eyebrow">Só para quem já tem o kit</span>
+    <h1 id="titulo">Você já tem as fichas. <span class="hl">Falta o app.</span></h1>
+    <p class="sub" id="subtitulo">O Essencial que você comprou traz todas as atividades para imprimir. O Completo abre o aplicativo, onde a criança pinta na tela com o dedo e coleciona os personagens.</p>
+
+    <div class="demo">
+      <video id="video" poster="assets/pintar-poster.webp" width="720" height="1280"
+             muted loop playsinline preload="none" data-src="assets/pintar-video.mp4"
+             aria-label="Criança pintando a laranja no aplicativo e depois comendo uma laranja de verdade"></video>
+      <ul class="lista">
+        <li><span>📱</span><span><b>O aplicativo</b>, com as atividades na tela do celular</span></li>
+        <li><span>🎨</span><span><b>20 personagens</b> pra pintar com o dedo, sem impressora</span></li>
+        <li><span>🎲</span><span><b>O jogo do Prato Limpo</b>, que destrava um amigo a cada alimento provado</span></li>
+        <li><span>🍽️</span><span><b>Cardápio de 4 semanas</b> antisseletividade</span></li>
+        <li><span>📅</span><span><b>Calendário, cartelas e quadro de progresso</b></span></li>
+        <li><span>🆕</span><span><b>Atualizações semanais</b> do kit, sem pagar de novo</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="preco">
+      <div class="ja">Você já pagou <b>R$ 19,90</b> no Essencial</div>
+      <div class="valor">+ R$ 15<small>,90</small></div>
+      <div class="comp">Fica <b>R$ 35,80</b> no total. Quem compra o Completo direto paga <s>R$ 47,00</s>.</div>
+    </div>
+
+    <h2 style="margin-top:28px">Complete o seu kit</h2>
+    <p class="sub">Use o mesmo e-mail da sua compra, assim tudo fica junto.</p>
+
+    <div class="aviso" id="erro"></div>
+
+    <form id="form" novalidate>
+      <div class="field" id="f-nome">
+        <label for="nome">Seu nome completo</label>
+        <input type="text" id="nome" autocomplete="name" required />
+        <div class="err">Digite seu nome completo.</div>
+      </div>
+      <div class="field" id="f-email">
+        <label for="email">Seu melhor e-mail</label>
+        <input type="email" id="email" autocomplete="email" required />
+        <div class="err">Digite um e-mail válido.</div>
+      </div>
+      <div class="field" id="f-tel">
+        <label for="telefone">WhatsApp com DDD</label>
+        <input type="tel" id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
+        <div class="err">Digite um WhatsApp válido.</div>
+      </div>
+      <button type="submit" class="btn" id="btn"><span id="btn-label">Completar por R$ 15,90 com Pix</span></button>
+    </form>
+
+    <div class="pix" id="pix">
+      <h2>Quase lá! Pague com Pix</h2>
+      <p class="sub">Escaneie o QR Code ou copie o código. A liberação é automática.</p>
+      <div class="pix-qr" id="qr"></div>
+      <div class="pix-copy">
+        <div class="pix-code" id="codigo">—</div>
+        <button type="button" class="btn" id="copiar">Copiar</button>
+      </div>
+      <div class="status"><span class="spin"></span> Aguardando pagamento...</div>
+      <p class="sub" style="margin-top:12px">Assim que o pagamento cair, esta tela troca sozinha.</p>
+    </div>
+
+    <div class="ok" id="ok">
+      <h2>Pronto! Seu kit está completo 🎉</h2>
+      <p style="margin:8px 0 0">Enviamos o acesso ao aplicativo para o seu e-mail. Se não achar, olhe em Promoções e Spam.</p>
+    </div>
+  </div>
+</section>
+
+<p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
+
+<script>
+const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit' };
+const POLL_MS = 5000;
+const $ = s => document.querySelector(s);
+let timer=null, paymentId=null, cliente=null;
+
+/* ---- token opcional (?t=). Vem do e-mail de acompanhamento: serve pra
+   cumprimentar pelo nome e confirmar que é mesmo compradora do Essencial.
+   Sem token a página funciona igual, só mais impessoal. ---- */
+const token = new URLSearchParams(location.search).get('t');
+if (token) {
+  fetch('/api/kit-access?t=' + encodeURIComponent(token))
+    .then(r => r.json())
+    .then(d => {
+      if (!d || !d.valid) return;
+      if (d.name) {
+        $('#titulo').innerHTML = d.name + ', você já tem as fichas. <span class="hl">Falta o app.</span>';
+      }
+    })
+    .catch(()=>{});
+}
+
+/* ---- validação (mesmas regras do checkout principal, sem CPF) ---- */
+const okNome = v => v.trim().split(/\s+/).filter(Boolean).length >= 2 && v.trim().length >= 5;
+const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const okTel = v => v.replace(/\D/g,'').length >= 10;
+function marca(id, ok){ $(id).classList.toggle('invalid', !ok); return ok; }
+function valida(){
+  const a=marca('#f-nome',okNome($('#nome').value));
+  const b=marca('#f-email',okEmail($('#email').value));
+  const c=marca('#f-tel',okTel($('#telefone').value));
+  return a&&b&&c;
+}
+function mascaraTel(v){
+  v=v.replace(/\D/g,'').slice(0,11);
+  if(v.length<=10) return v.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:b?`(${a}) ${b}`:`(${a}`);
+  return v.replace(/(\d{2})(\d{5})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:`(${a}) ${b}`);
+}
+$('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
+['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
+
+/* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
+   arquivo junto com a página (mesma pegadinha corrigida no index) ---- */
+(function(){
+  const v=$('#video'); if(!v||!v.dataset.src) return;
+  const carregar=()=>{ if(v.dataset.on) return; v.dataset.on='1';
+    v.src=v.dataset.src; v.play().catch(()=>{ v.controls=true; }); };
+  const perto=()=>v.getBoundingClientRect().top < innerHeight+400;
+  const aoRolar=()=>{ if(v.dataset.on){remover();return;} if(perto()){carregar();remover();} };
+  const remover=()=>{ removeEventListener('scroll',aoRolar); document.removeEventListener('scroll',aoRolar,true); };
+  addEventListener('scroll',aoRolar,{passive:true});
+  document.addEventListener('scroll',aoRolar,{passive:true,capture:true});
+  if('IntersectionObserver' in window){
+    const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){carregar();o.disconnect();remover();} }),{rootMargin:'400px 0px'});
+    o.observe(v);
+  }
+  if(perto()) carregar();
+})();
+
+/* ---- checkout ---- */
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#erro').classList.remove('show');
+  if(!valida()){ $('.invalid input')?.focus(); return; }
+
+  const btn=$('#btn'), rotulo=$('#btn-label').textContent;
+  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
+
+  cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
+
+  try{
+    const r = await fetch(API.criar, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      // tier 'upgrade' (R$ 15,90): o servidor recalcula o valor pelo _catalog,
+      // nunca confia em preço vindo daqui.
+      body: JSON.stringify({ customer: cliente, method:'pix', tier:'upgrade', adRef:'upgrade' + (token?'-email':'-pdf') })
+    });
+    if(!r.ok) throw new Error('status '+r.status);
+    const d = await r.json();
+    if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
+
+    paymentId = d.paymentId;
+    $('#form').style.display='none';
+    $('#pix').classList.add('show');
+    const qr=d.pix.qrCodeImage||'';
+    $('#qr').innerHTML = qr ? `<img src="${qr.startsWith('data:')||qr.startsWith('http')?qr:'data:image/png;base64,'+qr}" alt="QR Code Pix">` : '';
+    $('#codigo').textContent = d.pix.copiaECola||'';
+    $('#codigo').dataset.full = d.pix.copiaECola||'';
+    $('#pix').scrollIntoView({behavior:'smooth',block:'start'});
+    poll();
+  }catch(err){
+    console.error(err);
+    $('#erro').textContent='Não conseguimos gerar seu Pix agora. Confira os dados e tente de novo. Se continuar, responda o e-mail da sua compra que a gente resolve.';
+    $('#erro').classList.add('show');
+    btn.disabled=false; $('#btn-label').textContent=rotulo;
+  }
+});
+
+$('#copiar').addEventListener('click', async () => {
+  const c = $('#codigo').dataset.full || $('#codigo').textContent;
+  try{ await navigator.clipboard.writeText(c); }
+  catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  const b=$('#copiar'), o=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=o,1800);
+});
+
+function poll(){
+  clearInterval(timer);
+  timer = setInterval(async () => {
+    try{
+      const r = await fetch(`${API.status}?id=${encodeURIComponent(paymentId)}`);
+      if(!r.ok) return;
+      const { status } = await r.json();
+      if(status==='paid'||status==='approved'){ clearInterval(timer); pago(); }
+      else if(status==='expired'||status==='canceled'){
+        clearInterval(timer);
+        $('#pix').classList.remove('show'); $('#form').style.display='';
+        $('#btn').disabled=false;
+        $('#erro').textContent='O Pix expirou. Gere um novo para concluir.';
+        $('#erro').classList.add('show');
+      }
+    }catch(e){}
+  }, POLL_MS);
+}
+
+function pago(){
+  $('#pix').classList.remove('show');
+  $('#ok').classList.add('show');
+  $('#ok').scrollIntoView({behavior:'smooth',block:'center'});
+  // mesma chamada do checkout principal: é ela que gera o acesso e manda o
+  // e-mail. Se falhar, o webhook é a rede de segurança.
+  fetch(API.entregar, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone, adRef:'upgrade' })
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>

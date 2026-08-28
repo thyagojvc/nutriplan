@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Kit Prato Limpo · Edição Profissional para nutricionistas</title>
+<meta name="description" content="O kit completo para nutricionista que atende seletividade infantil: 60 fichas para aplicar na sessão, 129 para a família levar pra casa, o aplicativo para a criança usar entre as consultas e licença de uso com seus pacientes." />
+
+<!-- SAIU DA RAIZ EM 27/08 e passou a morar em /profissional. A raiz voltou a
+     ser a página das mães (R$ 19,90 / R$ 47). Aqui não mudou nada além deste bloco e do
+     noindex: checkout, pixel e o funil de seções continuam idênticos, e
+     /profissional vende normalmente pra quem chegar.
+     Os criativos de nutricionista mostram kitpratolimpo.com.br no botão, então
+     o link do anúncio precisa apontar pra /profissional. -->
+<meta name="robots" content="noindex, nofollow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kit Prato Limpo · Edição Profissional" />
+<meta property="og:description" content="189 fichas, o aplicativo e licença de uso com seus pacientes. Para nutricionistas que atendem seletividade alimentar infantil." />
+<!-- 1200x630 (1.91:1). O gerador entrega 3:2, então a arte foi encaixada
+     inteira sobre o creme da marca em vez de cortada: crop central comeria
+     21% da altura, e a linha de baixo do texto ia junto. -->
+<meta property="og:image" content="https://kitpratolimpo.com.br/assets/og-profissional.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://kitpratolimpo.com.br/profissional" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content="Kit Prato Limpo" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
+    --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
+    --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A; --coral-soft:#FBE0D5;
+    --ink:#26302A; --text:#4B564E; --muted:#7C857D; --card:#FFFFFF; --border:#E9E3D5;
+    --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
+    --radius:20px; --radius-sm:14px;
+    --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
+    --body:"Nunito",system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6}
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
+  section{padding:38px 0}
+  h1,h2,h3{font-family:var(--heading);color:var(--ink);line-height:1.15;text-wrap:balance}
+  p{margin-bottom:14px}
+  p:last-child{margin-bottom:0}
+  .hl{color:var(--orange)}
+  a{color:var(--green-dark)}
+
+  /* Cabeçalho de seção centralizado, igual ao da /mae. Era isso que fazia a
+     página parecer documento: títulos pequenos e alinhados à esquerda. */
+  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:700;font-size:.8rem;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
+    padding:6px 14px;border-radius:999px;margin-bottom:12px}
+  .section-head{text-align:center;margin-bottom:24px}
+  .section-title{font-size:1.7rem;text-align:center;margin-bottom:10px}
+  .section-sub{text-align:center;color:var(--muted);max-width:30rem;margin:0 auto;font-size:.97rem}
+
+  /* ---------- hero ---------- */
+  .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 34px;text-align:center}
+  .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
+    font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
+  .hero__brand{display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px}
+  .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
+    letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
+  .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
+  .hero__h1{font-size:1.62rem;line-height:1.14;margin-bottom:12px}
+  .hero__sub{font-size:.98rem;color:var(--text);font-weight:600;margin-bottom:16px}
+  .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
+    border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
+  .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
+  .hero__promise p{font-size:.94rem;margin:0}
+  .btn-note{text-align:center;font-size:.9rem;color:var(--muted);margin:10px auto 0;max-width:22rem}
+  .hero__reinforce{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.95rem;
+    font-weight:700;color:var(--green-dark);margin:18px 0 6px}
+  /* height:auto é OBRIGATÓRIO em toda imagem com os atributos width/height no
+     HTML: sem ele o `height` vira altura fixa em px, `aspect-ratio` não tem
+     efeito (só age quando uma dimensão é auto) e a imagem estica na vertical.
+     Foi o que deformou as fichas, o mockup e o vídeo. */
+  .hero__mockup{width:100%;height:auto;display:block;margin-top:10px}
+
+  /* ---------- cartões de dor ---------- */
+  .dor-list{display:flex;flex-direction:column;gap:10px}
+  .dor{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm)}
+  .dor__ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
+  .dor p{font-size:.96rem;margin:0}
+  .dor strong{color:var(--ink)}
+
+  /* ---------- os 3 pilares ---------- */
+  .pilares{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:620px){.pilares{grid-template-columns:repeat(3,1fr);gap:14px}}
+  .pilar{background:var(--card);border:1px solid var(--border);border-top:5px solid var(--green);
+    border-radius:var(--radius-sm);padding:18px 16px;text-align:center;box-shadow:var(--shadow-sm)}
+  .pilar:nth-child(2){border-top-color:var(--orange)}
+  .pilar:nth-child(3){border-top-color:var(--coral)}
+  .pilar .ic{font-size:1.7rem;line-height:1}
+  .pilar .num{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1;color:var(--ink);margin:6px 0 2px}
+  .pilar .num--palavra{font-size:1.42rem}
+  .pilar .rot{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:.98rem;margin-bottom:6px}
+  .pilar p{font-size:.89rem;color:var(--muted);margin:0}
+  .tudo-junto{background:var(--green-dark);color:#fff;border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px}
+  .tudo-junto b{font-family:var(--heading);font-size:1.1rem;display:block;margin-bottom:6px}
+  .tudo-junto p{color:var(--mint-2);font-size:.92rem;margin:0}
+
+  /* ---------- trilha das etapas ---------- */
+  /* Eram 12 itens com título e descrição: virava parede de texto e a pessoa
+     pulava a seção inteira. Agora são só as letras, e o que se lê é o começo
+     e o fim do caminho. */
+  .trilha{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;max-width:305px;margin:0 auto}
+  .trilha b{width:40px;height:40px;border-radius:50%;background:var(--mint);color:var(--green-dark);
+    font-family:var(--heading);font-weight:800;font-size:1.02rem;display:flex;align-items:center;justify-content:center}
+  /* tom escurece da esquerda pra direita: le como caminho que avanca */
+  .trilha b:nth-child(n+5){background:#BFE0B0}
+  .trilha b:nth-child(n+9){background:var(--green);color:#fff}
+  .trilha__pontas{display:flex;justify-content:space-between;gap:16px;max-width:430px;margin:16px auto 0;
+    font-size:.84rem;color:var(--muted);text-align:center}
+  .trilha__pontas span{flex:1}
+  .trilha__pontas b{display:block;color:var(--ink);font-family:var(--heading);font-size:.95rem}
+  /* ---------- ficha em destaque ---------- */
+  .ficha-destaque{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:12px;box-shadow:var(--shadow-sm)}
+  .ficha-destaque img{width:100%;height:auto;display:block;border-radius:10px}
+  .anatomia{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .anatomia li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
+  .anatomia .tag{flex:0 0 auto;font-family:var(--heading);font-weight:800;font-size:.66rem;letter-spacing:.05em;
+    text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-top:3px;background:var(--mint);color:var(--green-dark)}
+  .anatomia .tag.so{background:var(--orange-soft);color:#8a5410}
+  .anatomia b{color:var(--ink);font-weight:800}
+  .grade-fichas{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+  .grade-fichas img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+  .legenda{text-align:center;color:var(--muted);font-size:.83rem;margin-top:10px}
+
+  /* ---------- app ---------- */
+  .app-bloco{display:grid;grid-template-columns:1fr;gap:18px;align-items:center}
+  @media(min-width:600px){.app-bloco{grid-template-columns:210px 1fr;gap:24px}}
+  /* height:auto pelo mesmo motivo do .hero__mockup: o atributo height="1280"
+     do <video> vira altura fixa e o vídeo renderiza 210x1280. O aspect-ratio
+     segue útil pra reservar o espaço antes do arquivo carregar. */
+  .app-bloco video{width:100%;max-width:210px;height:auto;aspect-ratio:9/16;background:var(--ink);object-fit:cover;
+    border-radius:var(--radius);box-shadow:var(--shadow);display:block;margin:0 auto}
+  .lista{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .lista li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
+  .lista .ic{flex:0 0 auto;font-size:1.05rem;line-height:1.4}
+  .lista b{color:var(--ink);font-weight:800}
+  .personagens{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .personagens img{width:58px;height:58px;border-radius:50%;border:2px solid var(--mint-2);background:var(--card);object-fit:cover}
+
+  /* ---------- licença ---------- */
+  .licenca{background:var(--mint);border:1px solid var(--mint-2);border-radius:var(--radius);padding:22px 20px}
+  .licenca .eyebrow{background:var(--green-dark);color:#fff}
+  .licenca .section-title{font-size:1.4rem}
+  .licenca ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px}
+  .licenca li{display:flex;gap:9px;align-items:flex-start;font-size:.93rem}
+  .licenca .tick{color:var(--green-dark);font-weight:800;flex:0 0 auto}
+  .licenca .no{color:var(--coral);font-weight:800;flex:0 0 auto}
+  .conta{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+
+  /* ---------- preço e checkout ---------- */
+  .preco{background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:24px 18px;
+    text-align:center;box-shadow:var(--shadow)}
+  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.9rem;line-height:1;margin:4px 0 6px}
+  .preco .valor small{font-size:1.1rem}
+  .preco .comp{color:var(--muted);font-size:.88rem;margin:0}
+  .resumo{list-style:none;text-align:left;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
+  .resumo li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
+  .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
+  .field input{width:100%;padding:13px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
+    background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);outline:none}
+  .field input:focus{border-color:var(--green)}
+  .field .err{display:none;color:#D64545;font-size:.8rem;margin-top:4px}
+  .field.invalid input{border-color:#D64545}
+  .field.invalid .err{display:block}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:14px 22px;
+    font-family:var(--heading);font-weight:800;font-size:1.1rem;color:#fff;text-decoration:none;
+    background:linear-gradient(180deg,#67B84C,var(--green));border:none;border-radius:999px;cursor:pointer;
+    box-shadow:var(--shadow);transition:filter .15s}
+  .btn:hover{filter:brightness(1.05)} .btn:disabled{opacity:.65;cursor:default}
+
+  .aviso{display:none;background:#FDECEC;border:2px solid #F3B4B4;color:#8a2b2b;border-radius:var(--radius-sm);
+    padding:12px 14px;font-size:.9rem;margin-bottom:14px}
+  .aviso.show{display:block}
+  .pix{display:none;background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:22px 18px;text-align:center}
+  .pix.show{display:block}
+  .pix h3{font-size:1.05rem;margin-bottom:4px}
+  .pix-qr img{width:100%;max-width:260px;border-radius:12px}
+  .pix-copy{display:flex;gap:8px;margin:12px 0}
+  .pix-code{flex:1;min-width:0;padding:12px;font-size:.82rem;color:var(--ink);background:var(--cream);
+    border:2px solid var(--border);border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+  /* width:auto obrigatorio: .btn tem width:100% e com flex-basis auto o botao
+     esmagaria o campo do codigo (mesmo bug ja corrigido na /mae e no /upgrade) */
+  .pix-copy .btn{flex:0 0 auto;width:auto;min-height:48px;padding:0 18px;font-size:1rem}
+  .status{display:inline-flex;align-items:center;gap:8px;color:var(--green-dark);font-weight:700;margin-top:8px}
+  .spin{width:15px;height:15px;border:2px solid var(--mint-2);border-top-color:var(--green);border-radius:50%;animation:g .8s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+  .ok{display:none;background:var(--mint);border:2px solid var(--green);border-radius:var(--radius);padding:24px 18px;text-align:center}
+  .ok.show{display:block}
+  .ok h2{font-size:1.3rem;margin-bottom:10px}
+  .garantia{display:flex;gap:11px;align-items:flex-start;background:var(--orange-soft);border:1px solid #F6D9A8;
+    border-radius:var(--radius-sm);padding:14px 16px;font-size:.92rem;margin-top:16px}
+  .garantia .ic{flex:0 0 auto;font-size:1.3rem;line-height:1.3}
+
+  /* ---------- faq ---------- */
+  .faq details{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:14px 16px;margin-bottom:9px;box-shadow:var(--shadow-sm)}
+  .faq summary{font-family:var(--heading);font-weight:700;color:var(--ink);cursor:pointer;font-size:.97rem;list-style:none}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";float:right;color:var(--green);font-weight:800;margin-left:10px}
+  .faq details[open] summary::after{content:"−"}
+  .faq p{font-size:.92rem;margin:10px 0 0}
+
+  .rodape{text-align:center;color:var(--muted);font-size:.8rem;padding:26px 0 40px}
+
+  /* Mesma quebra da /mae: o tipo cresce junto com a tela, senão o desktop fica
+     com cara de página de celular esticada. */
+  @media(min-width:640px){ .trilha{max-width:none}
+    .hero__kpl{font-size:1.24rem}
+    .hero__full{font-size:1.1rem}
+    .hero__h1{font-size:2.3rem}
+    .hero__sub{font-size:1.08rem}
+    .section-title{font-size:2rem}
+    section{padding:46px 0}
+  }
+</style>
+</head>
+<body>
+
+<!-- ======================= HERO ======================= -->
+<header class="hero">
+  <div class="wrap">
+    <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
+    <div class="hero__brand">
+      <span class="hero__kpl">Kit Prato Limpo</span>
+      <span class="hero__full">Edição Profissional</span>
+    </div>
+    <h1 class="hero__h1">189 atividades prontas <span class="hl">pro seu consultório</span></h1>
+    <p class="hero__sub">60 fichas para aplicar na sessão, 129 para a família levar pra casa e o aplicativo para a criança usar entre as consultas.</p>
+
+    <div class="hero__promise">
+      <span class="ic">🍽️</span>
+      <p>A ficha de avaliação você aplica já no próximo atendimento, com alimento de verdade na mesa.</p>
+    </div>
+
+    <a href="#checkout" class="btn">Quero as 189 atividades →</a>
+    <p class="btn-note">Pagamento único · sem mensalidade</p>
+
+    <div class="hero__reinforce">
+      <span>🍎 Aplique na sessão</span>
+      <span>🏠 Entregue pra família</span>
+      <span>📱 Sem impressora</span>
+    </div>
+
+    <picture>
+      <source srcset="assets/mockup-pro-transp.webp" type="image/webp" />
+      <img class="hero__mockup" src="assets/mockup-pro.jpg" width="1536" height="1024" fetchpriority="high"
+           alt="Seis fichas do kit espalhadas e o aplicativo aberto num celular, na turma de amigos" />
+    </picture>
+  </div>
+</header>
+
+<!-- ======================= A DOR ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Talvez você reconheça</span>
+      <h2 class="section-title">Sua orientação morre <span class="hl">no caminho de casa</span></h2>
+      <p class="section-sub">A mãe sai da consulta convencida. Na terça já esqueceu metade, e volta em 30 dias sem nada aplicado.</p>
+    </div>
+
+    <div class="dor-list">
+      <div class="dor"><span class="dor__ic">⏰</span><p>Você monta atividade <strong>do zero, paciente por paciente</strong>. Meia hora de preparo que não entra na sua agenda nem na sua nota fiscal.</p></div>
+      <div class="dor"><span class="dor__ic">😮‍💨</span><p>Não existe <strong>nada tangível pra entregar</strong> no fim da sessão. O pediatra entrega receita. Você entrega uma lista e a esperança de que a mãe lembre.</p></div>
+      <div class="dor"><span class="dor__ic">😟</span><p>Sem tarefa entre consultas, <strong>o retorno esfria</strong>. Seletividade é acompanhamento longo, e a família some no meio do processo.</p></div>
+      <div class="dor"><span class="dor__ic">🤷‍♀️</span><p>A mãe volta dizendo que <strong>não deu certo</strong>, e você não tem como saber o que ela fez de fato em casa.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= OS 3 PILARES ======================= -->
+<section style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">O que você recebe</span>
+      <h2 class="section-title">Três peças que <span class="hl">trabalham juntas</span></h2>
+      <p class="section-sub">Uma para a sessão, uma para a casa, e uma para os dias entre uma consulta e outra.</p>
+    </div>
+
+    <div class="pilares">
+      <div class="pilar">
+        <div class="ic">🍎</div>
+        <div class="num">60</div>
+        <div class="rot">Fichas de consultório</div>
+        <p>Para aplicar na sessão, com alimento de verdade. Em 12 etapas, do mapeamento até a alta.</p>
+      </div>
+      <div class="pilar">
+        <div class="ic">🏠</div>
+        <div class="num">129</div>
+        <div class="rot">Fichas para casa</div>
+        <p>Em 11 blocos. Você imprime e entrega conforme a etapa da criança, sem preparar nada.</p>
+      </div>
+      <div class="pilar">
+        <div class="ic">📱</div>
+        <div class="num num--palavra">O aplicativo</div>
+        <div class="rot">no celular da família</div>
+        <p>A criança pinta na tela com o dedo e destrava um personagem a cada alimento que prova.</p>
+      </div>
+    </div>
+
+    <div class="tudo-junto">
+      <b>Não é um dos três. São os três juntos.</b>
+      <p>O kit completo, do jeito que a família recebe, mais o protocolo de sessão que só existe nesta edição.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= O PROTOCOLO ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">O protocolo</span>
+      <h2 class="section-title">Um caminho de <span class="hl">12 etapas</span></h2>
+      <p class="section-sub">Cada ficha cabe em 10 a 20 minutos de consulta e usa alimento de verdade.</p>
+    </div>
+
+    <div class="trilha">
+      <b>A</b>
+      <b>B</b>
+      <b>C</b>
+      <b>D</b>
+      <b>E</b>
+      <b>F</b>
+      <b>G</b>
+      <b>H</b>
+      <b>I</b>
+      <b>J</b>
+      <b>K</b>
+      <b>L</b>
+    </div>
+    <div class="trilha__pontas">
+      <span><b>Começa na avaliação</b>o que ela come de verdade</span>
+      <span><b>Termina na alta</b>com plano de 90 dias</span>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= POR DENTRO DA FICHA ======================= -->
+<section style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Por dentro</span>
+      <h2 class="section-title">Uma ficha inteira cabe <span class="hl">em uma página</span></h2>
+      <p class="section-sub">Você bate o olho e já sabe o que fazer. Sem estudar nada antes.</p>
+    </div>
+
+    <div class="ficha-destaque">
+      <img src="assets/fichas-consultorio-web/C27.webp" alt="Ficha O júri do sabor, da etapa de prova" loading="lazy" />
+    </div>
+
+    <ul class="anatomia">
+      <li><span class="tag">1 e 2</span><span><b>Por que funciona</b> e <b>material</b>: o racional em duas linhas e a lista do que separar antes.</span></li>
+      <li><span class="tag">3</span><span><b>Como fazer</b>: passo a passo numerado, sem preparo prévio.</span></li>
+      <li><span class="tag so">4</span><span><b>O que observar</b>: o que olhar enquanto a criança brinca. É leitura clínica, vai direto pro prontuário.</span></li>
+      <li><span class="tag so">5</span><span><b>O que dizer e o que evitar</b>: a fala pronta, e a frase que costuma estragar a sessão.</span></li>
+      <li><span class="tag so">6</span><span><b>Leva para casa</b>: a tarefa da família até a próxima consulta.</span></li>
+    </ul>
+    <p class="legenda" style="margin-top:14px">Os três em laranja não existem em material feito para os pais. São eles que transformam a atividade em atendimento.</p>
+
+    <div class="grade-fichas">
+      <img src="assets/fichas-consultorio-web/C01.webp" alt="Ficha O mapa do prato, da etapa de avaliação" loading="lazy" />
+      <img src="assets/fichas-consultorio-web/C11.webp" alt="Ficha Carimbo de pimentão, da etapa de toque" loading="lazy" />
+      <img src="assets/fichas-consultorio-web/C24.webp" alt="Ficha A lambida secreta, da etapa de aproximação da boca" loading="lazy" />
+    </div>
+    <p class="legenda">Três das 60 fichas de consultório.</p>
+  </div>
+</section>
+
+<!-- ======================= O APP ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Entre as consultas</span>
+      <h2 class="section-title">O aplicativo trabalha <span class="hl">quando você não está lá</span></h2>
+      <p class="section-sub">A criança já ia pedir o celular. Aqui ele passa a jogar a favor da comida em vez de contra.</p>
+    </div>
+
+    <div class="app-bloco">
+      <video class="app-video" data-src="assets/pintar-video.mp4" data-poster="assets/pintar-poster.webp"
+             width="720" height="1280" muted loop playsinline preload="none"
+             aria-label="Criança pinta uma laranja na tela do tablet e depois come uma laranja de verdade"></video>
+      <ul class="lista">
+        <li><span class="ic">🖐️</span><span><b>Pinta com o dedo, sem impressora.</b> A família que não tem impressora deixa de ser um problema seu.</span></li>
+        <li><span class="ic">🧩</span><span><b>Um personagem por alimento provado.</b> São 20 para colecionar, e é a criança que decide quando provar.</span></li>
+        <li><span class="ic">🎲</span><span><b>Roleta de missões.</b> A tarefa do dia sai sorteada, então não vira mais uma cobrança da mãe.</span></li>
+        <li><span class="ic">💾</span><span><b>O progresso fica salvo.</b> Dá pra retomar na consulta seguinte e ver o que andou.</span></li>
+      </ul>
+    </div>
+
+    <div class="personagens">
+      <img src="assets/colorir-thumb/marina-maca.webp" alt="Personagem Marina, a maçã" loading="lazy" />
+      <img src="assets/colorir-thumb/bia-brocolis.webp" alt="Personagem Bia, o brócolis" loading="lazy" />
+      <img src="assets/colorir-thumb/cadu-cenoura.webp" alt="Personagem Cadu, a cenoura" loading="lazy" />
+      <img src="assets/colorir-thumb/bruno-banana.webp" alt="Personagem Bruno, a banana" loading="lazy" />
+      <img src="assets/colorir-thumb/manu-morango.webp" alt="Personagem Manu, o morango" loading="lazy" />
+    </div>
+    <p class="legenda">5 dos 20 amigos do prato.</p>
+  </div>
+</section>
+
+<!-- ======================= LICENÇA ======================= -->
+<section style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="licenca">
+      <div style="text-align:center"><span class="eyebrow">Licença de uso</span></div>
+      <h2 class="section-title">Pode usar com <span class="hl">seus pacientes</span></h2>
+      <p class="section-sub">Está escrito dentro do material, na terceira página.</p>
+      <ul>
+        <li><span class="tick">✓</span><span>Imprimir quantas cópias precisar</span></li>
+        <li><span class="tick">✓</span><span>Entregar as fichas impressas ao paciente</span></li>
+        <li><span class="tick">✓</span><span>Passar o link do aplicativo para a família instalar no celular</span></li>
+        <li><span class="tick">✓</span><span>Aplicar em atendimento individual ou em grupo</span></li>
+        <li><span class="tick">✓</span><span>Usar em oficinas e palestras que você conduzir</span></li>
+        <li><span class="tick">✓</span><span>Sem limite de pacientes e sem prazo de validade</span></li>
+        <li><span class="no">✕</span><span>Revender, compartilhar o arquivo ou publicar as fichas</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= A CONTA ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vale a pena?</span>
+      <h2 class="section-title">Quanto custa o <span class="hl">seu tempo de preparo</span></h2>
+    </div>
+    <div class="conta">
+      <p>Montar uma atividade do zero para um paciente leva entre 20 e 30 minutos. Você não fatura esse tempo.</p>
+      <p>No primeiro paciente o kit já se pagou. E ele não acaba: são 189 fichas e um aplicativo para atender quantas crianças aparecerem, por quantos anos você quiser.</p>
+      <p style="color:var(--muted);font-size:.9rem">Uma consulta paga o kit inteiro e ainda sobra.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHECKOUT ======================= -->
+<section id="checkout" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Garanta o seu</span>
+      <h2 class="section-title">Finalize seu pedido</h2>
+    </div>
+
+    <div class="preco">
+      <div class="valor"><small>R$</small> 67<small>,00</small></div>
+      <p class="comp">Pagamento único, sem mensalidade.</p>
+      <ul class="resumo">
+        <li><span class="tick">✓</span><span>60 fichas de consultório, em 12 etapas</span></li>
+        <li><span class="tick">✓</span><span>129 fichas para a família levar pra casa</span></li>
+        <li><span class="tick">✓</span><span>O aplicativo, com as atividades na tela e o jogo dos 20 personagens</span></li>
+        <li><span class="tick">✓</span><span>Calendário, cartelas e quadro de progresso</span></li>
+        <li><span class="tick">✓</span><span>Licença de uso com seus pacientes</span></li>
+        <li><span class="tick">✓</span><span>Atualizações incluídas, sem pagar de novo</span></li>
+      </ul>
+    </div>
+
+    <div class="garantia">
+      <span class="ic">🛡️</span>
+      <p><b>7 dias de garantia.</b> Abriu, não era o que você esperava, devolvemos o valor. Sem pergunta e sem burocracia.</p>
+    </div>
+
+    <h2 class="section-title" style="margin-top:26px;font-size:1.3rem">Seus dados</h2>
+    <div class="aviso" id="erro"></div>
+
+    <form id="form" novalidate>
+      <div class="field" id="f-nome">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" autocomplete="name" required />
+        <div class="err">Escreva seu nome e sobrenome.</div>
+      </div>
+      <div class="field" id="f-email">
+        <label for="email">E-mail (o acesso chega aqui)</label>
+        <input type="email" id="email" autocomplete="email" required />
+        <div class="err">Confira o e-mail digitado.</div>
+      </div>
+      <div class="field" id="f-tel">
+        <label for="telefone">WhatsApp</label>
+        <input type="tel" id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
+        <div class="err">Digite um número com DDD.</div>
+      </div>
+      <button type="submit" class="btn" id="btn"><span id="btn-label">Gerar Pix de R$ 67,00</span></button>
+    </form>
+
+    <div class="pix" id="pix">
+      <h3>Escaneie o QR Code</h3>
+      <p class="section-sub">Ou copie o código abaixo no app do seu banco.</p>
+      <div class="pix-qr" id="qr"></div>
+      <div class="pix-copy">
+        <div class="pix-code" id="codigo">—</div>
+        <button type="button" class="btn" id="copiar">Copiar</button>
+      </div>
+      <div class="status"><span class="spin"></span> Aguardando o pagamento...</div>
+      <p class="section-sub" style="margin-top:12px">Assim que o Pix cair, o acesso é liberado nesta tela e enviado por e-mail.</p>
+    </div>
+
+    <div class="ok" id="ok">
+      <h2>Pagamento confirmado 🎉</h2>
+      <p>O acesso à Edição Profissional foi enviado para o seu e-mail. Se não aparecer em alguns minutos, confira o spam ou escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dúvidas</span>
+      <h2 class="section-title">Antes de decidir</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Posso mesmo entregar as fichas para os meus pacientes?</summary>
+        <p>Pode. É exatamente pra isso que existe a licença de uso profissional, e ela vem escrita dentro do material. Imprima quantas cópias precisar, entregue ao paciente, use em grupo e em oficina, sem limite e sem prazo. O que não pode é revender ou publicar as fichas.</p>
+      </details>
+      <details>
+        <summary>Como recebo, e quanto tempo demora?</summary>
+        <p>Logo depois do Pix confirmado, chega no seu e-mail o link do aplicativo, que já é seu acesso. Dentro dele tem o botão para baixar o kit completo em PDF. Leva alguns minutos, não é entrega manual.</p>
+      </details>
+      <details>
+        <summary>Preciso de impressora?</summary>
+        <p>Não. Tudo pode ser impresso, e tudo pode ser usado direto na tela do celular ou do tablet. As atividades de pintar funcionam com o dedo.</p>
+      </details>
+      <details>
+        <summary>Serve para criança com autismo?</summary>
+        <p>As atividades trabalham aproximação sensorial em ritmo respeitado, sem pressão para comer, que é uma abordagem comum no acompanhamento de crianças autistas com seletividade. Mas quem decide o que cabe em cada caso é você, dentro da sua conduta e do seu plano terapêutico.</p>
+      </details>
+      <details>
+        <summary>É assinatura?</summary>
+        <p>Não. É pagamento único de R$ 67,00. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
+      </details>
+    </div>
+
+    <a class="btn" href="#checkout" style="margin-top:22px">Quero o kit completo →</a>
+  </div>
+</section>
+
+<p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
+
+<script>
+const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
+const POLL_MS = 5000;
+const PIXEL_ID = '2794485957574762';
+const PRECO_CENTS = 6700;
+const $ = s => document.querySelector(s);
+let timer=null, paymentId=null, cliente=null;
+
+/* =========================================================
+   Meta Pixel
+   Mesmo pixel da página das mães de propósito: é a mesma conta de anúncio, e
+   separar públicos se faz por evento e por campanha, não por pixel novo (pixel
+   zerado começa sem nenhum aprendizado).
+   Sem o rastreamento de seção que a /mae tem: a lista de seções de
+   api/_sections.js descreve a /mae, e mexer nela remontaria o significado do
+   `maxSection` já coletado.
+   ========================================================= */
+function idEvento(){ return 'kpl_' + Date.now() + '_' + Math.random().toString(36).slice(2,10); }
+
+/** Dispara no pixel do navegador E na CAPI com o MESMO event_id, pra o Meta
+ *  desduplicar em vez de contar duas vezes. Se o adblock derrubar o client, o
+ *  servidor ainda entrega o evento. */
+function pixel(evento, dados, eventId){
+  const id = eventId || idEvento();
+  try { if (window.fbq) fbq('track', evento, dados || {}, { eventID: id }); } catch(e){}
+  fetch(API.capi, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ event_name: evento, event_id: id, data: dados || {} }),
+    keepalive: true,
+  }).catch(()=>{});
+  return id;
+}
+
+(function initPixel(){
+  if (!PIXEL_ID) return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', PIXEL_ID);
+  fbq('track', 'PageView');
+  pixel('ViewContent', {
+    content_name: 'KPL Edição Profissional', content_type: 'product',
+    value: PRECO_CENTS/100, currency: 'BRL',
+  });
+})();
+
+/* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
+   arquivo junto com a página (mesma pegadinha já corrigida na /mae) ---- */
+(function(){
+  const v=document.querySelector('.app-video'); if(!v||!v.dataset.src) return;
+  const carregar=()=>{ if(v.dataset.on) return; v.dataset.on='1';
+    v.poster=v.dataset.poster; v.src=v.dataset.src; v.play().catch(()=>{ v.controls=true; }); };
+  const perto=()=>v.getBoundingClientRect().top < innerHeight+400;
+  const aoRolar=()=>{ if(v.dataset.on){remover();return;} if(perto()){carregar();remover();} };
+  const remover=()=>{ removeEventListener('scroll',aoRolar); document.removeEventListener('scroll',aoRolar,true); };
+  addEventListener('scroll',aoRolar,{passive:true});
+  // Em captura no document também: quando o body é o container de rolagem, o
+  // evento não sobe pra window.
+  document.addEventListener('scroll',aoRolar,{passive:true,capture:true});
+  if('IntersectionObserver' in window){
+    const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){carregar();o.disconnect();remover();} }),{rootMargin:'400px 0px'});
+    o.observe(v);
+  }
+  if(perto()) carregar();
+  // Rede de segurança: se nem o observer nem o scroll dispararem (já vi os dois
+  // falharem juntos em navegador automatizado, e basta o body virar o container
+  // de rolagem pra o evento não subir), o vídeo carregaria nunca e a seção
+  // ficaria com um retângulo escuro vazio. 5s é depois da página já ter pintado,
+  // então não disputa banda com o topo, que era o motivo do lazy-load.
+  setTimeout(carregar, 5000);
+})();
+
+/* ---- validação: mesmas regras do checkout principal, sem CPF ---- */
+const okNome = v => v.trim().split(/\s+/).filter(Boolean).length >= 2 && v.trim().length >= 5;
+const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const okTel = v => v.replace(/\D/g,'').length >= 10;
+function marca(id, ok){ $(id).classList.toggle('invalid', !ok); return ok; }
+function valida(){
+  const a=marca('#f-nome',okNome($('#nome').value));
+  const b=marca('#f-email',okEmail($('#email').value));
+  const c=marca('#f-tel',okTel($('#telefone').value));
+  return a&&b&&c;
+}
+function mascaraTel(v){
+  v=v.replace(/\D/g,'').slice(0,11);
+  if(v.length<=10) return v.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:b?`(${a}) ${b}`:`(${a}`);
+  return v.replace(/(\d{2})(\d{5})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:`(${a}) ${b}`);
+}
+$('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
+['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
+
+/* ---- checkout ---- */
+$('#form').addEventListener('submit', async e => {
+  e.preventDefault();
+  $('#erro').classList.remove('show');
+  if(!valida()){ $('.invalid input')?.focus(); return; }
+
+  const btn=$('#btn'), rotulo=$('#btn-label').textContent;
+  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
+
+  cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
+  pixel('InitiateCheckout', { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' });
+
+  try{
+    const r = await fetch(API.criar, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      // tier 'profissional': o servidor recalcula o valor pelo _catalog e grava
+      // esse tierId no token, que é o que faz o download.js entregar o PDF
+      // profissional em vez do kit das mães.
+      body: JSON.stringify({ customer: cliente, method:'pix', tier:'profissional', adRef:'profissional' })
+    });
+    if(!r.ok) throw new Error('status '+r.status);
+    const d = await r.json();
+    if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
+
+    paymentId = d.paymentId;
+    $('#form').style.display='none';
+    $('#pix').classList.add('show');
+    const qr=d.pix.qrCodeImage||'';
+    $('#qr').innerHTML = qr ? `<img src="${qr.startsWith('data:')||qr.startsWith('http')?qr:'data:image/png;base64,'+qr}" alt="QR Code Pix">` : '';
+    $('#codigo').textContent = d.pix.copiaECola||'';
+    $('#codigo').dataset.full = d.pix.copiaECola||'';
+    $('#pix').scrollIntoView({behavior:'smooth',block:'start'});
+    poll();
+  }catch(err){
+    console.error(err);
+    $('#erro').textContent='Não conseguimos gerar seu Pix agora. Confira os dados e tente de novo. Se continuar, escreva para kitpratolimpo@gmail.com.';
+    $('#erro').classList.add('show');
+    btn.disabled=false; $('#btn-label').textContent=rotulo;
+  }
+});
+
+$('#copiar').addEventListener('click', async () => {
+  const c = $('#codigo').dataset.full || $('#codigo').textContent;
+  try{ await navigator.clipboard.writeText(c); }
+  catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  const b=$('#copiar'), o=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=o,1800);
+});
+
+function poll(){
+  clearInterval(timer);
+  timer = setInterval(async () => {
+    try{
+      const r = await fetch(`${API.status}?id=${encodeURIComponent(paymentId)}`);
+      if(!r.ok) return;
+      const { status } = await r.json();
+      if(status==='paid'||status==='approved'){ clearInterval(timer); pago(); }
+      else if(status==='expired'||status==='canceled'){
+        clearInterval(timer);
+        $('#pix').classList.remove('show'); $('#form').style.display='';
+        $('#btn').disabled=false;
+        $('#erro').textContent='O Pix expirou. Gere um novo para concluir.';
+        $('#erro').classList.add('show');
+      }
+    }catch(e){}
+  }, POLL_MS);
+}
+
+function pago(){
+  $('#pix').classList.remove('show');
+  $('#ok').classList.add('show');
+  $('#ok').scrollIntoView({behavior:'smooth',block:'center'});
+
+  // Purchase só no pixel do navegador. O event_id 'purchase_<paymentId>' é o
+  // MESMO que api/deliver-kit.js usa na CAPI logo abaixo, então o Meta conta
+  // uma venda só. Não mandar por /api/capi-event: Purchase nem está na lista
+  // de eventos de lá, e o deliver-kit manda a versão com e-mail e telefone
+  // hasheados, que casa muito melhor.
+  try { if (window.fbq) fbq('track', 'Purchase',
+    { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' },
+    { eventID: 'purchase_' + paymentId }); } catch(e){}
+
+  // mesma chamada do checkout principal: é ela que gera o acesso e manda o
+  // e-mail. Se falhar aqui, o webhook da PushInPay é a rede de segurança.
+  fetch(API.entregar, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone, adRef:'profissional' })
+  }).catch(()=>{});
+}
+</script>
+</body>
+</html>

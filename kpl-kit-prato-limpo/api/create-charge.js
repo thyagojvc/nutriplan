@@ -86,10 +86,15 @@ module.exports = async (req, res) => {
     // --- Validação do cliente ---
     const name = String(customer.name || '').trim();
     const email = String(customer.email || '').trim();
-    const cpf = String(customer.cpf || '').replace(/\D/g, '');
     const phone = String(customer.phone || '').replace(/\D/g, '');
 
-    if (name.length < 5 || !isEmail(email) || !isValidCPF(cpf) || phone.length < 10) {
+    // CPF saiu da exigência em 21/08. Ele nunca era usado: a chamada abaixo à
+    // PushInPay só manda `value` e `webhook_url`, e o backup do checkout guarda
+    // nome, e-mail e telefone. O CPF do aviso do webhook é o
+    // `payer_national_registration`, capturado pela PushInPay direto do banco do
+    // pagador. Ou seja, era um campo a mais no formulário sem nenhuma função,
+    // num checkout de R$ 19,90 comprado por impulso.
+    if (name.length < 5 || !isEmail(email) || phone.length < 10) {
       return res.status(400).json({ error: 'Dados do cliente inválidos.' });
     }
 

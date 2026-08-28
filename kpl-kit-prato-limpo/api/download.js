@@ -106,6 +106,11 @@ module.exports = async (req, res) => {
   try {
     const parsed = JSON.parse(record);
     if (parsed.tierId === 'essencial') tierId = 'essencial';
+    // Edição profissional (22/08): PDF próprio, com as 30 fichas de consultório
+    // na frente e a licença de uso. Só entra se o build já tiver gerado o
+    // arquivo — sem isso o `||` abaixo entregaria o Completo em silêncio, que é
+    // material de outro público e sem a licença que ela pagou pra ter.
+    if (parsed.tierId === 'profissional' && KIT_FILE.profissional) tierId = 'profissional';
   } catch {}
   const fileName = KIT_FILE[tierId] || KIT_FILE.completo;
 

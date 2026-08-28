@@ -3,13 +3,22 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KPL - Kit Prato Limpo | Sistema de 86 atividades para destravar a alimentação infantil</title>
-<meta name="description" content="Kit digital com 86 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático pelo WhatsApp após a compra." />
+<title>KPL - Kit Prato Limpo | Sistema de 149 atividades para destravar a alimentação infantil</title>
+<meta name="description" content="Kit digital com 149 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
+
+<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 19,90,
+     Completo R$ 47) é de novo o
+     destino de kitpratolimpo.com.br. A Edição Profissional (nutricionistas,
+     R$ 67) continua inteira e funcionando em /profissional, escondida da busca.
+     PRA TROCAR DE NOVO: `git mv index.html mae.html && git mv profissional.html
+     index.html`, mexer no noindex das duas e nos og:url. Nada mais depende disso.
+     ATENÇÃO: os criativos de nutricionista mostram kitpratolimpo.com.br no botão;
+     se rodar aquele tráfego, o destino tem que ser /profissional. -->
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="KPL - Kit Prato Limpo" />
-<meta property="og:description" content="Sistema de 86 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
+<meta property="og:description" content="Sistema de 149 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
 <meta property="og:image" content="assets/og-image.png" />
 <meta property="og:url" content="https://kitpratolimpo.com.br" />
 <meta property="og:locale" content="pt_BR" />
@@ -164,11 +173,15 @@
   .placeholder .ph-icon { font-size: 2rem; margin-bottom: 6px; }
   .ratio-4-3 { aspect-ratio: 4 / 3; }
   .ratio-3-4 { aspect-ratio: 3 / 4; }
+  /* 3/2 é a proporção real do mockup-hero (1200x800). Estava em 4/3 com
+     `cover`, o que cortava ~66px de cada lado e comia as fichas das pontas. */
+  .ratio-3-2 { aspect-ratio: 3 / 2; }
   /* 2/3 é a proporção real das páginas do kit (1024x1536). Com 3/4 + cover o
      navegador cortava a ficha e comia o título ou o rodapé dela. */
-  .previa-img { width: 100%; aspect-ratio: 2 / 3; object-fit: contain; background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow-sm); display: block; }
 
-  .hero__mockup { margin: 6px 0 24px; box-shadow: var(--shadow); }
+  /* sem box-shadow: com o PNG transparente a sombra desenharia um retângulo
+     em volta de nada. A sombra agora é a que já vem pintada nas fichas. */
+  .hero__mockup { margin: 6px 0 24px; }
 
   .ps-topbar {
     background: var(--green); color: #fff; font-family: var(--heading); font-weight: 800;
@@ -420,6 +433,15 @@
     font-family: var(--heading); font-weight: 800; font-size: .7rem;
     letter-spacing: .05em; text-transform: uppercase; padding: 3px 11px;
   }
+  /* Explicação de POR QUE a atividade funciona. Verde pra não brigar com o
+     coral do bloco de recusa, que é o outro bloco destacado da ficha. */
+  .ficha__ciencia {
+    background: var(--mint); border: 2px solid var(--mint-2); border-radius: var(--radius-sm);
+    padding: 16px 16px 12px; margin: 18px 0 4px;
+  }
+  .ficha__ciencia .ficha__label { color: var(--green-dark); }
+  .ficha__ciencia p { color: #2f4a26; font-size: .92rem; line-height: 1.55; margin: 0 0 10px; }
+  .ficha__ciencia p:last-child { margin-bottom: 0; }
   .ficha__progresso { display: flex; gap: 10px; align-items: center; background: var(--mint); border-radius: var(--radius-sm); padding: 12px 14px; }
   .ficha__progresso .tick { flex:0 0 auto; width: 30px; height: 30px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight: 800; }
   .anatomia__note { text-align: center; color: var(--green-dark); font-weight: 700; margin-top: 20px; font-size: .98rem; }
@@ -490,8 +512,9 @@
   .blocos-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
   .bloco {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
-    padding: 18px; box-shadow: var(--shadow-sm); position: relative;
+    box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
   }
+  .bloco__texto { padding: 16px 18px 18px; }
   .bloco__head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
   .bloco__num {
     font-family: var(--heading); font-weight: 800; font-size: 1.1rem; color:#fff;
@@ -501,6 +524,19 @@
   .bloco__name { font-family: var(--heading); font-weight: 800; font-size: 1.06rem; color: var(--ink); }
   .bloco__count { display:inline-block; background: var(--orange-soft); color:#a4610a; font-weight:800; font-size:.78rem; padding: 3px 10px; border-radius: 999px; margin-bottom: 8px; }
   .bloco p { font-size: .95rem; color: var(--text); }
+  /* Uma ficha de exemplo por bloco, em faixa no topo do card. Existe pra a mãe
+     VER que o material existe, não pra ela usar: mostra o topo da ficha (o
+     título) e nada mais. Ao lado do texto não funcionou, a coluna da página é
+     estreita e a descrição virava 4 linhas espremidas. */
+  .bloco__thumb {
+    display: block; width: 100%; height: 108px; object-fit: cover; object-position: top;
+    background: #fff;
+    /* A faixa corta a ficha no meio de uma frase. Sem o esmaecido isso lê como
+       imagem quebrada; com ele, lê como espiada. O fundo da ficha é branco e o
+       do card também, então some sem emenda. */
+    -webkit-mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+    mask-image: linear-gradient(to bottom, #000 58%, transparent 100%);
+  }
   .blocos-total {
     margin-top: 20px; text-align: center; background: var(--ink); color: #fff;
     border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
@@ -538,14 +574,24 @@
   .mat__amigos .more { font-size: .8rem; font-weight: 800; color: var(--green-dark); align-self: center; }
 
   /* PREVIA */
-  .previa-scroll {
-    display: flex; gap: 14px; overflow-x: auto; padding: 4px 4px 16px;
-    scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch;
+
+  /* PINTAR (papel ou tela, logo antes da oferta) */
+  .pintar { background: var(--cream-2); }
+  .pintar-demo { display: grid; grid-template-columns: 1fr; gap: 22px; justify-items: center; align-items: center; }
+  @media (min-width: 560px) {
+    .pintar-demo { grid-template-columns: 230px 1fr; justify-items: start; gap: 26px; }
   }
-  .previa-scroll::-webkit-scrollbar { height: 6px; }
-  .previa-scroll::-webkit-scrollbar-thumb { background: var(--mint-2); border-radius: 999px; }
-  .previa-item { flex: 0 0 68%; max-width: 260px; scroll-snap-align: center; }
-  .previa-item figcaption { font-size: .85rem; color: var(--muted); text-align: center; margin-top: 8px; font-weight: 600; }
+  .pintar-video {
+    width: 100%; max-width: 230px; height: auto; display: block;
+    aspect-ratio: 9 / 16;   /* reserva o espaço antes do vídeo carregar */
+    background: var(--ink); object-fit: cover;
+    border-radius: var(--radius); box-shadow: var(--shadow);
+  }
+  .pintar-lista { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 13px; }
+  .pintar-lista li { display: flex; align-items: flex-start; gap: 9px; font-size: .9rem; color: var(--text); line-height: 1.4; }
+  .pintar-lista .ic { flex: 0 0 auto; }
+  .pintar-lista b { color: var(--ink); font-weight: 800; }
+
 
   /* DEPOIMENTOS */
   .depos { background: var(--cream-2); }
@@ -576,10 +622,21 @@
   .story-footer b { font-family: var(--heading); font-size: .88rem; color: var(--ink); }
   .story-footer small { color: var(--muted); font-size: .76rem; }
   .story-footer i { grid-column: 2; color: var(--orange); font-size: .78rem; font-style: normal; letter-spacing: .04em; }
+  /* 2x2 também no celular (21/08): empilhado em 1 coluna, os 4 depoimentos
+     comiam quase duas telas de rolagem. Como o card fica com ~160px de largura
+     nessa grade, texto e respiros encolhem junto, senão vira coluna estreita e
+     altíssima, que é pior que o problema original. */
   @media (max-width: 640px) {
-    .stories-grid { grid-template-columns: 1fr; }
+    .stories-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .story-featured { transform: none; }
-    .story-card { padding: 20px; }
+    .story-card { padding: 12px 11px; min-height: 0; }
+    .story-quote { height: 22px; font-size: 2.2rem; }
+    .story-card p { font-size: .78rem; line-height: 1.4; margin: 4px 0 12px; }
+    .story-footer { grid-template-columns: 32px 1fr; gap: 7px; padding-top: 8px; }
+    .story-footer .depo__avatar { width: 32px; height: 32px; border-width: 1.5px; }
+    .story-footer b { font-size: .74rem; }
+    .story-footer small { font-size: .66rem; }
+    .story-footer i { font-size: .66rem; }
   }
 
   /* GARANTIA */
@@ -733,7 +790,11 @@
     background: var(--cream); border: 2px solid var(--border); border-radius: 12px;
     overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: monospace;
   }
-  .pix-copy-btn { flex: 0 0 auto; min-height: 48px; padding: 0 18px; }
+  /* `width: auto` é obrigatório aqui: .btn define width:100%, e com
+     `flex: 0 0 auto` o flex-basis resolve pra ESSA largura. O botão passava a
+     exigir a linha inteira sem encolher, e o campo do código era espremido até
+     sobrar "00" na tela de pagamento. */
+  .pix-copy-btn { flex: 0 0 auto; width: auto; min-height: 48px; padding: 0 18px; font-size: 1rem; }
   .pix-status { display: inline-flex; align-items: center; gap: 8px; color: var(--green-dark); font-weight: 700; margin-top: 8px; }
   .spinner { width: 16px; height: 16px; border: 3px solid var(--mint-2); border-top-color: var(--green); border-radius: 50%; animation: spin 1s linear infinite; }
   @keyframes spin { to { transform: rotate(360deg); } }
@@ -774,7 +835,6 @@
     .blocos-grid { grid-template-columns: 1fr 1fr; }
     .steps { flex-direction: row; }
     .step { flex-direction: column; text-align: center; align-items: center; }
-    .previa-item { flex-basis: 220px; }
   }
 </style>
 </head>
@@ -783,13 +843,13 @@
 <!-- ======================= 1. HERO ======================= -->
 <header class="hero" id="hero">
   <div class="wrap">
-    <span class="hero__badge">🍓 Kit digital · recebimento automático no WhatsApp</span>
+    <span class="hero__badge">🍓 Kit digital · recebimento automático no e-mail</span>
     <div class="hero__brand">
       <span class="hero__kpl">KPL</span>
       <span class="hero__full">Kit Prato Limpo</span>
     </div>
     <h1 class="hero__h1">Descubra em 2 minutos qual atividade <span class="hl">destrava a alimentação</span> do seu filho hoje</h1>
-    <p class="hero__sub">86 situações catalogadas em fichas de aplicação direta. Você localiza o comportamento da sua criança e vai direto para o que fazer.</p>
+    <p class="hero__sub">São 149 atividades prontas. Você procura o que o seu filho faz na hora da comida e já vê qual delas usar.</p>
     <div class="hero__promise">
       <span class="ic">🍽️</span>
       <p>A primeira ficha você aplica no jantar de hoje, com o que já tem na cozinha.</p>
@@ -803,8 +863,16 @@
       <span>🧩 Atividades de brincar</span>
       <span>📱 No celular ou impresso</span>
     </div>
-    <figure class="hero__mockup ratio-4-3">
-      <img src="assets/mockup-hero.jpg" alt="Mockup do Kit Prato Limpo: fichas de atividade, calendário, cartelas de alimentos e tablet com a versão digital" style="width:100%; height:100%; object-fit:cover; border-radius: var(--radius); display:block;" fetchpriority="high" />
+    <figure class="hero__mockup ratio-3-2">
+      <!-- Fundo transparente: as fichas flutuam sobre o creme da página em vez de
+           ficarem dentro de um retângulo mais claro. `contain` em vez de `cover`
+           pra nunca mais cortar as fichas das pontas.
+           O .png é só rede de segurança pra navegador sem WebP (raríssimo hoje);
+           ele pesa 415 KB e o WebP 144 KB, então quem manda é o <source>. -->
+      <picture>
+        <source srcset="assets/mockup-hero-transp.webp" type="image/webp" />
+        <img src="assets/mockup-hero-transp.png" alt="Mockup do Kit Prato Limpo: fichas de atividade, calendário, cartelas de alimentos e tablet com a versão digital" style="width:100%; height:100%; object-fit:contain; display:block;" fetchpriority="high" />
+      </picture>
     </figure>
   </div>
 </header>
@@ -854,7 +922,7 @@
       </div>
     </div>
 
-    <p class="indice-close">O índice de consulta rápida cobre as <strong>86 situações</strong>. Você não precisa ler o kit inteiro para começar.</p>
+    <p class="indice-close">O índice de consulta rápida cobre as <strong>149 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
   </div>
 </section>
 
@@ -892,7 +960,9 @@
 
     <p class="section-sub" style="margin-top:32px">E o seu filho, faz alguma coisa dessas?</p>
     <div class="praquem-list">
-      <div class="praquem"><span class="ic">🍚</span><p>Só come um punhado de alimentos, quase sempre os brancos (arroz, pão, macarrão)</p></div>
+      <!-- "os brancos" é a palavra do estudo, não a da mãe: ela pensa "só come
+           arroz e macarrão". Concreto primeiro, categoria depois. -->
+      <div class="praquem"><span class="ic">🍚</span><p>Come sempre a mesma coisa: arroz, macarrão, pão, e pouco mais que isso</p></div>
       <div class="praquem"><span class="ic">🥦</span><p>Recusa quase tudo que é verde ou colorido</p></div>
       <div class="praquem"><span class="ic">😝</span><p>Cospe ou empurra pedaços com textura diferente</p></div>
       <div class="praquem"><span class="ic">📺</span><p>Só come distraído, na frente da TV ou do celular</p></div>
@@ -984,14 +1054,18 @@
 
     <article class="ficha">
       <div class="ficha__top">
-        <div class="ficha__tag">Bloco 8 · Aproximação sensorial · Ficha 02</div>
-        <div class="ficha__title">O prato que virou rosto</div>
+        <!-- É uma atividade de PINTURA e só. A versão antiga mandava a mãe montar
+             o mesmo rostinho no prato com alimentos de verdade, o que exigia ter
+             4 alimentos em casa e lia como trabalho. Nada aqui depende de ter
+             comida na mesa: imprime ou pinta na tela, e acabou. -->
+        <div class="ficha__tag">Bloco 4 · Aproximação sensorial · Ficha 02</div>
+        <div class="ficha__title">Pinte o prato divertido</div>
       </div>
 
       <div class="ficha__meta">
         <span class="chip">👶 <b>Idade:</b>&nbsp;3 a 7 anos</span>
         <span class="chip">⏱️ <b>Tempo:</b>&nbsp;10 minutos</span>
-        <span class="chip">🖍️ <b>É só imprimir</b></span>
+        <span class="chip">🖍️ <b>Imprima ou pinte na tela</b></span>
         <span class="chip">🔍 <b>Nível 1:</b>&nbsp;reconhecimento</span>
       </div>
 
@@ -1004,7 +1078,7 @@
             <div class="worksheet__kicker">Atividade · Kit Prato Limpo</div>
             <div class="worksheet__title">Pinte o prato divertido</div>
           </div>
-          <p class="worksheet__instr">Pinte cada parte do rostinho com a cor do alimento de verdade. Depois, montem juntos o mesmo rosto no prato de comer.</p>
+          <p class="worksheet__instr">Pinte cada parte do rostinho com a cor do alimento de verdade.</p>
           <div class="worksheet__art">
             <img src="assets/ficha-exemplo-prato.jpg" alt="Atividade para pintar: um rosto feito de alimentos em um prato" loading="lazy" />
           </div>
@@ -1014,7 +1088,6 @@
             <span class="lg"><span class="dot" style="background:#f2911f"></span>Cenoura</span>
             <span class="lg"><span class="dot" style="background:#5ca741"></span>Brócolis</span>
             <span class="lg"><span class="dot" style="background:#f4c430"></span>Banana</span>
-            <span class="lg"><span class="dot" style="background:#f0a5b0"></span>Bochechas</span>
           </div>
         </div>
 
@@ -1022,8 +1095,7 @@
           <div class="ficha__label">🧺 Materiais necessários</div>
           <div class="ficha__materiais">
             <span>🖨️ A ficha impressa (ou a tela do celular)</span>
-            <span>🖍️ Lápis de cor ou canetinha</span>
-            <span>🥕 Os alimentos de verdade da atividade</span>
+            <span>🖍️ Lápis de cor, canetinha ou o dedo na tela</span>
           </div>
         </div>
 
@@ -1031,11 +1103,17 @@
           <div class="ficha__label">📋 Passo a passo</div>
           <ol class="ficha__steps">
             <li><span class="sn">1</span>Imprima a ficha ou abra a atividade na tela do celular.</li>
-            <li><span class="sn">2</span>Deixe os alimentos de verdade na mesa, ao lado da folha, só para olhar.</li>
-            <li><span class="sn">3</span>Peça para a criança pintar cada parte do rostinho com a cor do alimento correspondente.</li>
-            <li><span class="sn">4</span>Enquanto ela pinta, pergunte o nome e a cor de cada alimento.</li>
-            <li><span class="sn">5</span>No fim, montem juntos o mesmo rostinho no prato de comer.</li>
+            <li><span class="sn">2</span>Peça pra criança pintar cada parte do rostinho com a cor do alimento.</li>
+            <li><span class="sn">3</span>Enquanto ela pinta, fale o nome de cada alimento em voz alta.</li>
+            <li><span class="sn">4</span>Deixe ela pintar do jeito dela. Se quiser o brócolis roxo, tudo bem.</li>
+            <li><span class="sn">5</span>No fim, <b>elogie o desenho</b>. Não fale em comer.</li>
           </ol>
+        </div>
+
+        <div class="ficha__ciencia">
+          <div class="ficha__label">🔬 Por que pintar ajuda na hora de comer</div>
+          <p>Criança não prova o que não conhece, e conhecer não começa pela boca. Pintando, ela passa minutos com o alimento na frente sem ninguém pedir pra comer.</p>
+          <p>As pesquisas mostram que aceitar um alimento novo costuma exigir <b>vários encontros</b> com ele, e que esses encontros <b>não precisam ser comendo</b>. Já a cobrança afasta.</p>
         </div>
 
         <p style="text-align:center; font-weight:700; color:var(--green-dark); font-size:.9rem; margin: 12px 0 2px;">E toda ficha traz uma atividade pronta assim, sempre diferente:</p>
@@ -1064,19 +1142,19 @@
               <span class="prog-step__name">Provar</span>
             </div>
           </div>
-          <p class="progression__note">Esta ficha é a porta de entrada: só reconhecimento visual, sem nenhuma pressão. Conforme o bloco avança, as atividades passam a envolver tocar, cheirar e, no fim, provar o alimento de verdade. Tudo no ritmo da criança.</p>
+          <p class="progression__note">Esta ficha é a porta de entrada: só reconhecer o alimento no papel ou na tela, sem nenhuma pressão. Conforme o bloco avança, as atividades passam a envolver tocar, cheirar e, no fim, provar o alimento de verdade. Tudo no ritmo da criança.</p>
         </div>
 
         <!-- E ainda vem com a orientação padronizada -->
         <div class="ficha__block">
           <div class="ficha__label">🎯 Objetivo</div>
-          <p>Fazer a criança observar e nomear a cor de cada alimento real enquanto pinta, criando familiaridade antes de provar.</p>
+          <p>Fazer a criança olhar e nomear o alimento com calma, criando familiaridade antes de qualquer expectativa de comer.</p>
         </div>
 
         <div class="ficha__recusa">
           <span class="ficha__recusa__flag">Toda ficha tem</span>
           <div class="ficha__label">🚫 O que fazer se a criança recusar</div>
-          <p>Comece você. Pinte um pedacinho e pergunte "de que cor é o tomate?". Deixe os alimentos de verdade ao lado, como modelo. A curiosidade quase sempre vence em poucos minutos.</p>
+          <p>Comece você. Pinte um pedacinho e pergunte "de que cor é o tomate?". Se ela pintar tudo da mesma cor ou rabiscar por cima, deixe. O que conta aqui é o tempo que ela passa com o alimento na frente, não o capricho do desenho.</p>
         </div>
 
         <div class="ficha__block" style="border-bottom:none; padding-bottom: 4px;">
@@ -1091,23 +1169,23 @@
       </div>
     </article>
 
-    <p class="anatomia__note">✨ As 86 fichas seguem exatamente esse mesmo padrão. Todas funcionam tanto impressas quanto direto na tela do celular ou tablet.</p>
+    <p class="anatomia__note">✨ Toda ficha de orientação segue exatamente esse mesmo padrão. E todas, sem exceção, funcionam tanto impressas quanto direto na tela do celular ou tablet.</p>
   </div>
 </section>
 
-<!-- ======================= 4. OS 8 BLOCOS ======================= -->
+<!-- ======================= 4. OS 11 BLOCOS ======================= -->
 <section id="blocos">
   <div class="wrap">
     <div style="text-align:center">
       <span class="eyebrow">O sistema</span>
     </div>
-    <h2 class="section-title">Os <span class="hl">8 blocos</span> do sistema</h2>
+    <h2 class="section-title">Os <span class="hl">11 blocos</span> do sistema</h2>
     <p class="section-sub">Cada bloco ataca um lado da seletividade. Juntos, formam um caminho completo.</p>
 
     <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
 
     <div class="blocos-total">
-      <div class="num"><span class="plus">+</span><span id="total-atividades">86</span></div>
+      <div class="num"><span class="plus">+</span><span id="total-atividades">149</span></div>
       <p>atividades prontas para aplicar</p>
     </div>
   </div>
@@ -1166,35 +1244,6 @@
   </div>
 </section>
 
-<!-- ======================= 6. PRÉVIA REAL ======================= -->
-<section id="previa">
-  <div class="wrap">
-    <div style="text-align:center">
-      <span class="eyebrow">Espia por dentro</span>
-    </div>
-    <h2 class="section-title">Prévia real <span class="hl">do kit</span></h2>
-    <p class="section-sub">Deslize para o lado e veja páginas de verdade do material.</p>
-
-    <!-- Páginas reais do PDF entregue, geradas por scripts/build-previa-imgs.js
-         a partir dos mesmos arquivos que vão dentro do kit. Se trocar as fichas
-         daqui, rode o script de novo. -->
-    <div class="previa-scroll">
-      <figure class="previa-item">
-        <img class="previa-img" src="assets/previa-real-01.jpg" alt="Ficha O sino do jantar: um sino sorridente com três quadradinhos para marcar" loading="lazy" />
-        <figcaption>O sino do jantar</figcaption>
-      </figure>
-      <figure class="previa-item">
-        <img class="previa-img" src="assets/previa-real-02.jpg" alt="Ficha A lancheira que volta vazia: alimentos para recortar e montar a lancheira" loading="lazy" />
-        <figcaption>A lancheira que volta vazia</figcaption>
-      </figure>
-      <figure class="previa-item">
-        <img class="previa-img" src="assets/previa-real-03.jpg" alt="Ficha O garfo mágico: um garfo grande em traço preto para a criança pintar" loading="lazy" />
-        <figcaption>O garfo mágico, para pintar</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= 7. DEPOIMENTOS ======================= -->
 <section id="depoimentos" class="depos">
   <div class="wrap">
@@ -1208,6 +1257,41 @@
   </div>
 </section>
 
+
+<!-- =============== 7.5 PINTAR (último argumento antes da oferta) ===============
+     Fora das listas de tracking de propósito: o índice
+     da lista em _sections.js vira o `maxSection` gravado por visitante, então
+     inserir seção no meio remontaria o significado do dado já coletado. -->
+<section id="pintar" class="pintar">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Na prática</span>
+    </div>
+    <h2 class="section-title">Pinta primeiro, <span class="hl">prova depois</span></h2>
+    <p class="section-sub">O alimento vira brincadeira antes de virar comida. É por aí que a aproximação começa, sem cobrança e sem "só mais uma colherada".</p>
+
+    <div class="pintar-demo">
+      <!-- PEGADINHA (corrigida 19/08): `autoplay` no HTML ANULA o preload="metadata".
+           O navegador baixava os 681 KB do vídeo + 72 KB do poster no
+           carregamento INICIAL da página, mesmo essa seção estando lá embaixo,
+           competindo por banda com o hero em 4G. Mesma classe de problema que o
+           mockup de 2 MB já tinha causado aqui em julho.
+           Agora src e poster só entram quando a seção chega perto da tela, e o
+           autoplay é dado no play() do JS, não no atributo. Sem JS o vídeo
+           simplesmente não aparece, que é melhor que atrasar a página toda. -->
+      <video class="pintar-video" data-src="assets/pintar-video.mp4" data-poster="assets/pintar-poster.webp"
+             width="720" height="1280" muted loop playsinline preload="none"
+             aria-label="Menina pinta a laranja no tablet do Kit Prato Limpo e depois come uma laranja de verdade"></video>
+      <ul class="pintar-lista">
+        <li><span class="ic">📱</span><span><b>Sem impressora?</b> As folhas de colorir abrem no celular</span></li>
+        <li><span class="ic">👆</span><span>Pinta <b>arrastando o dedo</b>, e o contorno preto não borra</span></li>
+        <li><span class="ic">🎨</span><span><b>20 personagens</b> pra pintar, um pra cada alimento</span></li>
+        <li><span class="ic">💾</span><span>O desenho <b>fica salvo</b>, ela volta e continua depois</span></li>
+      </ul>
+    </div>
+
+  </div>
+</section>
 
 <!-- ======================= 8. GARANTIA ======================= -->
 <section id="garantia">
@@ -1241,17 +1325,17 @@
           <span class="plano__radio" aria-hidden="true"></span>
           <div class="plano__name">Essencial</div>
           <div class="plano__tagline">O sistema completo de atividades.</div>
-          <div class="plano__price">R$ 10<span class="cents">,00</span></div>
+          <div class="plano__price">R$ 19<span class="cents">,90</span></div>
           <ul class="plano__list">
-            <li><span class="ic">✅</span>86 atividades em 8 blocos</li>
+            <li><span class="ic">✅</span>149 atividades em 11 blocos</li>
             <li><span class="ic">✅</span>Cartelas recortáveis</li>
-            <li class="off"><span class="ic">➖</span>Calendário de 30 dias</li>
-            <li class="off"><span class="ic">➖</span>Quadro de progresso</li>
-            <li class="off"><span class="ic">➖</span>Cardápio de 4 semanas</li>
-            <li class="off"><span class="ic">➖</span>Atualizações semanais do kit</li>
-            <li class="off"><span class="ic">➖</span>Guia por textura e idade</li>
             <li class="off"><span class="ic">➖</span>Acesso pelo app</li>
             <li class="off"><span class="ic">➖</span>O jogo do Prato Limpo</li>
+            <li class="off"><span class="ic">➖</span>Atualizações semanais do kit</li>
+            <li class="off"><span class="ic">➖</span>Cardápio de 4 semanas</li>
+            <li class="off"><span class="ic">➖</span>Calendário de 30 dias</li>
+            <li class="off"><span class="ic">➖</span>Quadro de progresso</li>
+            <li class="off"><span class="ic">➖</span>Guia por textura e idade</li>
           </ul>
           <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
         </div>
@@ -1261,17 +1345,25 @@
           <span class="plano__radio" aria-hidden="true"></span>
           <div class="plano__name">Completo</div>
           <div class="plano__tagline">Tudo pronto pra facilitar a hora da comida.</div>
-          <div class="plano__price-old">Tudo separado: R$ 116</div>
-          <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+          <div class="plano__price-old">Tudo separado: R$ 126</div>
+          <div class="plano__price">R$ 47<span class="cents">,00</span></div>
           <ul class="plano__list">
             <li><span class="ic">✅</span>Tudo do Essencial, e mais:</li>
-            <li><span class="ic">📅</span><span class="plano__hl">Calendário de 30 dias</span></li>
-            <li><span class="ic">📊</span><span class="plano__hl">Quadro de progresso</span></li>
-            <li><span class="ic">🍽️</span><span class="plano__hl">Cardápio de 4 semanas antisseletividade</span></li>
-            <li><span class="ic">🆕</span><span class="plano__hl">Atualizações semanais do kit</span> (já passou de 86 para mais de 110 atividades)</li>
-            <li><span class="ic">📘</span><span class="plano__hl">Guia por textura e idade</span></li>
+            <!-- ORDEM (27/08): app, jogo e atualizações vêm primeiro porque são os
+                 três de maior valor percebido, e eram justamente os três que estavam
+                 no fim da lista, onde quase ninguém lê. O resto segue depois, em
+                 ordem indiferente. A lista do Essencial espelha ESTA ordem: com as
+                 duas em ordens diferentes, comparar os planos vira trabalho. -->
             <li><span class="ic">📱</span><span class="plano__hl">Acesso pelo app, exclusivo</span></li>
             <li><span class="ic">🎲</span><span class="plano__hl">O jogo do Prato Limpo, com 20 amigos pra colecionar</span></li>
+            <!-- o texto solto ao lado do <span> virava um TERCEIRO item do flex do <li>
+                 (uma coluna própria), quebrando "Atualizações semanais do kit" em 3 linhas.
+                 Envolvido num span só pro parêntese fluir inline com o destaque. -->
+            <li><span class="ic">🆕</span><span><span class="plano__hl">Atualizações semanais do kit</span> (já passou de 86 para 149 atividades)</span></li>
+            <li><span class="ic">🍽️</span><span class="plano__hl">Cardápio de 4 semanas antisseletividade</span></li>
+            <li><span class="ic">📅</span><span class="plano__hl">Calendário de 30 dias</span></li>
+            <li><span class="ic">📊</span><span class="plano__hl">Quadro de progresso</span></li>
+            <li><span class="ic">📘</span><span class="plano__hl">Guia por textura e idade</span></li>
           </ul>
           <div class="plano__guarantee">🛡️ 30 dias de garantia</div>
         </div>
@@ -1287,8 +1379,8 @@
         <div class="stack__row"><span>🍽️ Cardápio de 4 semanas antisseletividade</span><span class="val">R$ 27</span></div>
         <div class="stack__row"><span>🆕 Atualizações semanais do kit</span><span class="val">R$ 17</span></div>
         <div class="stack__row"><span>📘 Guia por textura e idade</span><span class="val">R$ 17</span></div>
-        <div class="stack__row"><span>✅ Todo o sistema Essencial</span><span class="val">R$ 10</span></div>
-        <div class="stack__sum"><span class="old">Tudo separado: R$ 116</span><span class="now" id="stack-now">R$ 29,90</span></div>
+        <div class="stack__row"><span>✅ Todo o sistema Essencial</span><span class="val">R$ 20</span></div>
+        <div class="stack__sum"><span class="old">Tudo separado: R$ 126</span><span class="now" id="stack-now">R$ 47,00</span></div>
       </div>
 
       <!-- Formulário -->
@@ -1313,11 +1405,12 @@
           <div class="err">Digite um telefone válido com DDD.</div>
         </div>
 
-        <div class="field" id="f-cpf">
-          <label for="cpf">CPF (exigido pelo Pix pra gerar o pagamento)</label>
-          <input type="text" id="cpf" name="cpf" inputmode="numeric" placeholder="000.000.000-00" maxlength="14" required />
-          <div class="err">Digite um CPF válido.</div>
-        </div>
+        <!-- CPF REMOVIDO (21/08). Ele era validado e jogado fora: o corpo enviado
+             pra PushInPay leva só `value` e `webhook_url`, e o backup do checkout
+             guarda nome, e-mail e telefone. O CPF que aparece no aviso do webhook
+             é o `payer_national_registration`, que a própria PushInPay captura do
+             banco do pagador na hora do pagamento. Ou seja, o campo era atrito
+             puro, e o rótulo ("exigido pelo Pix") era falso. -->
 
         <!-- Método (Pix único por enquanto) -->
         <label class="sr-only">Forma de pagamento</label>
@@ -1333,7 +1426,7 @@
         <div class="pay-steps">
           <div class="pay-step"><span class="pay-step__n">1</span>Você paga direto pelo Pix do seu próprio banco</div>
           <div class="pay-step"><span class="pay-step__n">2</span>A confirmação é automática, na hora</div>
-          <div class="pay-step"><span class="pay-step__n">3</span>O kit chega sozinho no seu WhatsApp</div>
+          <div class="pay-step"><span class="pay-step__n">3</span>O kit chega sozinho no seu e-mail</div>
         </div>
 
         <!-- Order bumps -->
@@ -1344,8 +1437,8 @@
 
         <!-- Resumo -->
         <div class="resumo" id="resumo">
-          <div class="resumo-line"><span>KPL Completo</span><span>R$ 29,90</span></div>
-          <div class="resumo-line total"><span>Total</span><span id="total-valor">R$ 29,90</span></div>
+          <div class="resumo-line"><span>KPL Completo</span><span>R$ 47,00</span></div>
+          <div class="resumo-line total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
         </div>
 
         <div class="pix-trust">
@@ -1359,7 +1452,7 @@
         </div>
 
         <button type="submit" class="btn" id="pay-btn">
-          <span id="pay-btn-label">Pagar R$ 29,90 com Pix</span>
+          <span id="pay-btn-label">Pagar R$ 47,00 com Pix</span>
         </button>
 
         <div class="secure-badges">
@@ -1387,7 +1480,7 @@
       <div class="success" id="success">
         <div class="check">✓</div>
         <h2>Pagamento confirmado!</h2>
-        <p>Seu <b>Kit Prato Limpo</b> chega <b>automaticamente no WhatsApp</b> que você cadastrou, em instantes. Confira também seu e-mail: acabamos de mandar a confirmação da compra.</p>
+        <p>Seu <b>Kit Prato Limpo</b> chega <b>automaticamente no e-mail</b> que você cadastrou, em instantes. Também mandamos o acesso no seu WhatsApp.</p>
         <p style="margin-top:12px; color: var(--muted); font-size:.9rem;">Não chegou em alguns minutos? Escreva para kitpratolimpo@gmail.com que resolvemos rapidinho.</p>
       </div>
     </div>
@@ -1405,11 +1498,11 @@
     <div class="faq" id="faq-list">
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false"><span>Como eu recebo o kit?</span><span class="ico">+</span></button>
-        <div class="faq-a"><p>É automático: assim que o pagamento é confirmado, o kit é enviado sozinho para o WhatsApp que você cadastrar no checkout, e você também recebe um e-mail de confirmação. Se por algum motivo não chegar, é só escrever para o suporte que resolvemos rapidamente.</p></div>
+        <div class="faq-a"><p>É automático: assim que o pagamento é confirmado, o kit é enviado sozinho para o e-mail que você cadastrar no checkout. Também mandamos o acesso no seu WhatsApp. Se por algum motivo não chegar, é só escrever para o suporte que resolvemos rapidamente.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false"><span>Em quanto tempo chega?</span><span class="ico">+</span></button>
-        <div class="faq-a"><p>O Pix é aprovado na hora e a entrega é automática: o kit cai no seu WhatsApp em seguida, junto com o e-mail de confirmação. Se demorar mais que alguns minutos, escreva para o suporte que resolvemos rapidamente.</p></div>
+        <div class="faq-a"><p>O Pix é aprovado na hora e a entrega é automática: o kit cai no seu e-mail em seguida. Também mandamos o acesso no seu WhatsApp. Se demorar mais que alguns minutos, escreva para o suporte que resolvemos rapidamente.</p></div>
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false"><span>Serve para qual idade?</span><span class="ico">+</span></button>
@@ -1459,12 +1552,12 @@
       com o app, o Cardápio de 4 semanas e as atualizações semanais do kit?
     </p>
     <div class="downsell__price">
-      <span class="downsell__old">De R$ 29,90</span>
-      <span class="downsell__now">por R$ 19,90</span>
+      <span class="downsell__old">De R$ 47,00</span>
+      <span class="downsell__now">por R$ 29,90</span>
     </div>
-    <p class="downsell__note">Só R$ 9,90 a mais que o Essencial pra levar tudo pronto.</p>
-    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 19,90</button>
-    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10</button>
+    <p class="downsell__note">Só R$ 10 a mais que o Essencial pra levar tudo pronto.</p>
+    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 29,90</button>
+    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 19,90</button>
   </div>
 </div>
 
@@ -1485,11 +1578,11 @@ const CONFIG = {
 
 /* Planos (valores em CENTAVOS). Mantenha em sincronia com api/_catalog.js. */
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
-  completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 2990 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
+  completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 4700 },
   // Alcançável só pelo pop-up de downsell (quando a pessoa ia levar o Essencial).
   // Mesmo produto do Completo, com desconto. O servidor também conhece esse tier.
-  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 1990 },
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2990 },
 };
 let selectedTier = 'completo'; // premium pré-selecionado (sobe o ticket médio)
 let downsellResolved = false;  // vira true depois que a pessoa aceita/recusa o pop-up
@@ -1525,21 +1618,31 @@ const BUMPS = [
 ];
 
 /* =========================================================
-   8 BLOCOS DO SISTEMA
+   OS BLOCOS DO SISTEMA
    ========================================================= */
-// Ordem por urgência: quem está em crise tem que se reconhecer no primeiro card,
-// não no sexto. A numeração 1-8 acompanha a ordem de exibição, então o kit
-// entregue precisa usar ESTA mesma numeração (a ficha de exemplo abaixo cita o
-// bloco pelo número).
+// Ordem (27/08): por quanto a CRIANÇA faz sozinha, do mais interativo pro mais
+// conduzido pelo adulto. Folha que ela preenche vale mais aos olhos da mãe que
+// cartão de instrução pro adulto, então o que ela faz sozinha abre a página.
+// A ordem anterior era por urgência (quem estava em crise se reconhecia no
+// primeiro card); "Situações difíceis" caiu do 2º pro último lugar por causa
+// dessa troca.
+//
+// `n` aqui é a posição de exibição e precisa bater com a numeração do kit
+// entregue (a ficha de exemplo mais acima cita o bloco pelo número). Quem
+// manda na ordem é o array BLOCKS de scripts/kit-data.js: mudou lá, muda aqui.
+// `qtd` sai da contagem real dos PNGs em assets/fichas-geradas.
 const BLOCOS = [
-  { n:1, nome:'Rituais e jogos de mesa', qtd:10, desc:'Dinâmicas de 5 minutos que mudam o clima da refeição.' },
-  { n:2, nome:'Situações difíceis', qtd:8, desc:'Festa, escola, casa de avó, viagem e criança doente.' },
-  { n:3, nome:'Progressão por textura', qtd:12, desc:'Sequência técnica de crocante para macio, de purê para pedaço.' },
-  { n:4, nome:'Apresentação do prato', qtd:8, desc:'Montagem visual, porcionamento e escolha guiada.' },
-  { n:5, nome:'Participação na cozinha', qtd:12, desc:'A criança ajuda a preparar o que vai comer.' },
-  { n:6, nome:'Brincadeiras fora da refeição', qtd:12, desc:'Quebra a associação entre comida e conflito.' },
-  { n:7, nome:'Histórias e faz de conta', qtd:10, desc:'Narrativas curtas com o alimento como personagem.' },
-  { n:8, nome:'Aproximação sensorial', qtd:14, desc:'Contato com o alimento sem obrigação de comer.' },
+  { n:1,  nome:'Folhas de brincar', qtd:33, desc:'Labirinto, caça-palavras, ligar e contar. A criança faz sozinha, com lápis.', thumb:'B11-F107-o-caminho-da-cenoura.jpg' },
+  { n:2,  nome:'Folhas para colorir', qtd:10, desc:'Uma folha por amigo do prato. Só imprimir e deixar ela colorir do jeito dela.', thumb:'B10-F06-cadu-cenoura.jpg' },
+  { n:3,  nome:'Participação na cozinha', qtd:12, desc:'A criança ajuda a preparar o que vai comer.', thumb:'B5-F43-monte-o-seu-sanduiche.jpg' },
+  { n:4,  nome:'Aproximação sensorial', qtd:14, desc:'Contato com o alimento sem obrigação de comer.', thumb:'B8-F76-so-cheirar-nao-precisa-comer.jpg' },
+  { n:5,  nome:'Vontade de experimentar', qtd:20, desc:'Curiosidade e coragem de dentro pra fora, sem depender de pressão.', thumb:'B9-F88-passaporte-dos-sabores.jpg' },
+  { n:6,  nome:'Brincadeiras fora da refeição', qtd:12, desc:'Quebra a associação entre comida e conflito.', thumb:'B6-F52-memoria-dos-alimentos.jpg' },
+  { n:7,  nome:'Rituais e jogos de mesa', qtd:10, desc:'Dinâmicas de 5 minutos que mudam o clima da refeição.', thumb:'B1-F05-a-mesa-sem-tela.jpg' },
+  { n:8,  nome:'Histórias e faz de conta', qtd:10, desc:'Narrativas curtas com o alimento como personagem.', thumb:'B7-F63-o-tomate-que-tinha-medo.jpg' },
+  { n:9,  nome:'Progressão por textura', qtd:12, desc:'Sequência técnica de crocante para macio, de purê para pedaço.', thumb:'B3-F19-a-escada-da-textura.jpg' },
+  { n:10, nome:'Apresentação do prato', qtd:8, desc:'Montagem visual, porcionamento e escolha guiada.', thumb:'B4-F32-arco-iris-no-prato.jpg' },
+  { n:11, nome:'Situações difíceis', qtd:8, desc:'Festa, escola, casa de avó, viagem e criança doente.', thumb:'B2-F12-o-prato-da-casa-da-vovo.jpg' },
 ];
 
 /* =========================================================
@@ -1565,9 +1668,13 @@ const brl = (cents) => 'R$ ' + (cents/100).toFixed(2).replace('.', ',');
 function renderBlocos() {
   $('#blocos-grid').innerHTML = BLOCOS.map(b => `
     <div class="bloco">
-      <div class="bloco__head"><div class="bloco__num">${b.n}</div><div class="bloco__name">${b.nome}</div></div>
-      <span class="bloco__count">${b.qtd} atividades</span>
-      <p>${b.desc}</p>
+      <img class="bloco__thumb" src="assets/blocos-thumb/${b.thumb}" width="520" height="230"
+           loading="lazy" decoding="async" alt="Exemplo de ficha do bloco ${b.nome}">
+      <div class="bloco__texto">
+        <div class="bloco__head"><div class="bloco__num">${b.n}</div><div class="bloco__name">${b.nome}</div></div>
+        <span class="bloco__count">${b.qtd} atividades</span>
+        <p>${b.desc}</p>
+      </div>
     </div>`).join('');
   const total = BLOCOS.reduce((s,b) => s + b.qtd, 0);
   $('#total-atividades').textContent = total;
@@ -1725,8 +1832,7 @@ function validateForm() {
   const okNome = setFieldValidity('f-nome', isValidName($('#nome').value));
   const okEmail = setFieldValidity('f-email', isValidEmail($('#email').value));
   const okTel = setFieldValidity('f-tel', isValidPhone($('#telefone').value));
-  const okCpf = setFieldValidity('f-cpf', isValidCPF($('#cpf').value));
-  return okNome && okEmail && okTel && okCpf;
+  return okNome && okEmail && okTel;
 }
 
 /* =========================================================
@@ -1818,7 +1924,7 @@ async function setPixelAdvancedMatching(email, name, phone) {
 /** Rastreamento denso de scroll: um evento ViewSection por seção, uma vez cada. */
 function initSectionViewTracking() {
   if (!('IntersectionObserver' in window)) return;
-  const ids = ['indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'checkout', 'faq'];
+  const ids = ['indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'depoimentos', 'garantia', 'checkout', 'faq'];
   const obs = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting) {
@@ -1873,7 +1979,7 @@ function initPresenceTracking() {
   if (!('IntersectionObserver' in window)) return;
   // Precisa bater exatamente com SECTIONS em api/_sections.js (ordem inclusive):
   // o índice desta lista vira o maxSection do funil.
-  const ids = ['hero', 'indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'previa', 'depoimentos', 'garantia', 'checkout', 'faq'];
+  const ids = ['hero', 'indice', 'dores', 'antesdepois', 'como', 'ficha', 'blocos', 'materiais', 'depoimentos', 'garantia', 'checkout', 'faq'];
   const ratios = {};
   let maxIdx = 0; // seção mais profunda já alcançada (pro funil de abandono)
   const obs = new IntersectionObserver((entries) => {
@@ -1983,7 +2089,6 @@ async function startCharge() {
       name: $('#nome').value.trim(),
       email: $('#email').value.trim(),
       phone: $('#telefone').value.replace(/\D/g,''),
-      cpf: $('#cpf').value.replace(/\D/g,''),
     },
     method: 'pix',
     tier: selectedTier,
@@ -2163,7 +2268,6 @@ function initReveal() {
     '#ficha .ficha',
     '#blocos .bloco',
     '#materiais .mat',
-    '#previa .previa-item',
     '#depoimentos .story-card',
     '#garantia .garantia-box',
     '#checkout .plano, #checkout .stack',
@@ -2225,8 +2329,54 @@ function renderAmigosPreview() {
     + '<span class="more">+' + (KPL_AMIGOS.list.length - mostrar.length) + '</span>';
 }
 
+// Só carrega o vídeo quando a seção dele chega perto da tela. Sem isso o
+// navegador baixa o arquivo inteiro junto com o hero (ver o comentário no
+// <video>). rootMargin generoso pra ele já estar pronto quando a mãe chegar,
+// em vez de mostrar poster parado por um segundo.
+function initVideoSobDemanda() {
+  const v = document.querySelector('.pintar-video');
+  if (!v || !v.dataset.src) return;
+
+  const carregar = () => {
+    if (v.dataset.carregado) return;
+    v.dataset.carregado = '1';
+    if (v.dataset.poster) v.poster = v.dataset.poster;
+    v.src = v.dataset.src;
+    // play() pode ser recusado (economia de bateria, autoplay bloqueado). Se
+    // for, fica o poster e o controle nativo, em vez de quebrar a seção.
+    v.play().catch(() => { v.controls = true; });
+  };
+
+  // Rede de segurança: se o IntersectionObserver não existir ou simplesmente
+  // não disparar (já vi acontecer em WebView), o vídeo nunca carregaria e a
+  // seção ficaria um retângulo escuro pra sempre. O listener de rolagem cobre
+  // isso sem voltar a baixar tudo no carregamento inicial, que é o que
+  // importa. Passive porque só lê posição, nunca cancela a rolagem.
+  const perto = () => v.getBoundingClientRect().top < window.innerHeight + 400;
+  const aoRolar = () => {
+    if (v.dataset.carregado) { remover(); return; }
+    if (perto()) { carregar(); remover(); }
+  };
+  const remover = () => {
+    window.removeEventListener('scroll', aoRolar);
+    document.removeEventListener('scroll', aoRolar, true);
+  };
+  window.addEventListener('scroll', aoRolar, { passive: true });
+  // Em captura no document também: quando o body é o container de rolagem
+  // (é o caso aqui, body tem overflow-y auto), o evento não sobe pra window.
+  document.addEventListener('scroll', aoRolar, { passive: true, capture: true });
+
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) { carregar(); obs.disconnect(); remover(); } });
+    }, { rootMargin: '400px 0px' });
+    obs.observe(v);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   renderAmigosPreview();
+  initVideoSobDemanda();
   renderBlocos();
   renderDepoimentos();
   renderBumps();
@@ -2240,7 +2390,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initPresenceTracking();
 
   // máscaras
-  $('#cpf').addEventListener('input', e => e.target.value = maskCPF(e.target.value));
   $('#telefone').addEventListener('input', e => e.target.value = maskPhone(e.target.value));
 
   // valida cada campo ao sair dele
@@ -2248,7 +2397,6 @@ document.addEventListener('DOMContentLoaded', () => {
     nome: v => isValidName(v),
     email: v => isValidEmail(v),
     telefone: v => isValidPhone(v),
-    cpf: v => isValidCPF(v),
   };
   Object.keys(validators).forEach(id => {
     $('#'+id).addEventListener('blur', () => {

@@ -4,11 +4,33 @@
 
 // Dois planos: Essencial (barato, atrai) e Completo (premium, sobe o ticket).
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
-  completo: { id: 'completo', name: 'KPL Completo', priceCents: 2990 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
+  completo: { id: 'completo', name: 'KPL Completo', priceCents: 4700 },
   // Mesmo produto do Completo, com desconto. Só é enviado pelo front quando a
   // pessoa aceita o pop-up de downsell (ia levar o Essencial e sobe pro Completo).
-  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 1990 },
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2990 },
+  // UPGRADE (21/08, repreçado em 27/08): quem já comprou o Essencial por
+  // R$ 19,90 completa por R$ 15,90 e passa a ter tudo do Completo, inclusive o
+  // app. Total pago vira R$ 35,80, contra R$ 47 de quem compra o Completo
+  // direto: a diferença é de propósito, pra ela sentir que ganhou por ter
+  // começado pequeno, e não que foi punida.
+  //
+  // O valor ACOMPANHA o Completo, não é solto: 35,80 é 76% de 47, a mesma
+  // proporção que 22,70 era de 29,90. Se o upgrade tivesse ficado nos R$ 12,70
+  // antigos, o caminho Essencial + upgrade sairia por R$ 32,60 contra R$ 47 no
+  // direto, e ninguém escolheria o Completo de primeira.
+  // Entregue como Completo sem precisar de mais nada: download.js e kit-access.js
+  // só desviam pro Essencial quando o tier é literalmente 'essencial'.
+  upgrade: { id: 'upgrade', name: 'KPL Upgrade (Essencial -> Completo)', priceCents: 1590 },
+  // EDIÇÃO PROFISSIONAL (22/08): outro público (nutricionista que atende
+  // infantil), outro material (30 fichas de consultório na frente + licença de
+  // uso com pacientes) e outro PDF. Vendida em /profissional, que hoje está
+  // FORA DO AR de propósito: a página existe pronta mas não é linkada em lugar
+  // nenhum e tem noindex, esperando a validação da oferta com as seguidoras.
+  //
+  // Fica acima de qualquer preço de mãe de propósito: preço baixo em material
+  // clínico soa amador, e o teto de CPA aqui é ~10x o do produto de R$ 10.
+  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 6700 },
 };
 const DEFAULT_TIER = 'completo';
 
@@ -36,6 +58,12 @@ function computeOrder(tierId, bumpIds = []) {
 
 // Dado um valor em centavos, descobre qual plano foi (usado na entrega/aviso,
 // pra o admin saber o que mandar por WhatsApp). Casa pelo preço base do tier.
+//
+// CUIDADO com pagamento ANTIGO (anterior a 27/08): os preços mudaram e os
+// valores se cruzaram. R$ 19,90 era completo_promo e hoje casa com essencial;
+// R$ 29,90 era completo e hoje casa com completo_promo. Só importa se você
+// reenviar o POST de uma venda velha na PushInPay: reconferir o tier na mão
+// antes, senão quem pagou R$ 19,90 pelo Completo recebe o Essencial.
 function tierFromValueCents(valueCents) {
   for (const t of Object.values(TIERS)) {
     if (t.priceCents === valueCents) return t;

@@ -29,7 +29,8 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="back" href="/">← Voltar para a página do kit</a>
+    <!-- volta pra pagina de onde veio: / (maes) e /profissional sao publicos diferentes -->
+    <a class="back" href="/" onclick="if(document.referrer&&history.length>1){history.back();return false}">← Voltar para a página do kit</a>
     <h1>Termos de uso</h1>
     <p class="updated">Última atualização: julho de 2026</p>
 

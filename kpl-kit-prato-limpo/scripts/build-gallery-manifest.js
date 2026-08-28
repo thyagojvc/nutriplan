@@ -57,7 +57,9 @@ async function main() {
       await toWebJpg(path.join(FICHAS_DIR, file), path.join(WEB_DIR, webName));
       fichas.push({ file: webName, title: titleFromFile(file) });
     }
-    blocksOut.push({ n: b.n, title: b.title, desc: b.desc, fichas });
+    // n = o número que aparece no app, pela posição. `arquivo` guarda a chave
+    // de arquivo (o B<n> do PNG) pra quem precisar cruzar com as missões.
+    blocksOut.push({ n: blocksOut.length + 1, arquivo: b.n, title: b.title, desc: b.desc, fichas });
   }
 
   const bonusFiles = fs.existsSync(BONUS_DIR) ? fs.readdirSync(BONUS_DIR) : [];
@@ -80,6 +82,35 @@ async function main() {
 
   const totalFichas = blocksOut.reduce((n, b) => n + b.fichas.length, 0);
   console.log(`OK galeria: ${totalFichas} ficha(s) em ${blocksOut.length} bloco(s) + ${bonusesOut.length} bônus -> ${WEB_DIR}`);
+
+  conferePagina(blocksOut, totalFichas);
+}
+
+// A página de vendas tem a própria cópia dos blocos (o array BLOCOS dentro do
+// index.html, que não passa por build nenhum). Se ela sair de sincronia com o
+// kit, a mãe lê "Bloco 4 · Aproximação sensorial" na página e abre um PDF em
+// que aquilo é outro número. Isso quebra em silêncio, então o build avisa.
+function conferePagina(blocksOut, totalFichas) {
+  const html = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const trecho = html.match(/const BLOCOS = \[[\s\S]*?\n\];/);
+  if (!trecho) { console.warn('AVISO: não achei o array BLOCOS no index.html'); return; }
+
+  const nomes = [...trecho[0].matchAll(/nome:'([^']+)'/g)].map((m) => m[1]);
+  const qtds = [...trecho[0].matchAll(/qtd:(\d+)/g)].map((m) => Number(m[1]));
+  const problemas = [];
+
+  blocksOut.forEach((b, i) => {
+    if (nomes[i] !== b.title) problemas.push(`posição ${i + 1}: página diz "${nomes[i] || '(vazio)'}", kit diz "${b.title}"`);
+    if (qtds[i] !== b.fichas.length) problemas.push(`"${b.title}": página diz ${qtds[i]} fichas, kit tem ${b.fichas.length}`);
+  });
+  if (nomes.length !== blocksOut.length) problemas.push(`página lista ${nomes.length} blocos, kit tem ${blocksOut.length}`);
+
+  const totalNaPagina = qtds.reduce((a, n) => a + n, 0);
+  if (totalNaPagina !== totalFichas) problemas.push(`total: página soma ${totalNaPagina}, kit tem ${totalFichas}`);
+
+  if (!problemas.length) { console.log('OK index.html: mesma ordem, mesmos números do kit.'); return; }
+  console.warn('\nAVISO: index.html está fora de sincronia com o kit:');
+  problemas.forEach((p) => console.warn('  - ' + p));
 }
 
 main();

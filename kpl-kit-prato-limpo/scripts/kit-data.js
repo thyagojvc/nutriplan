@@ -10,17 +10,63 @@ const BONUSES = [
 ];
 
 const BLOCKS = [
-  { n: 1, title: 'Rituais e jogos de mesa', desc: 'Dinâmicas de 5 minutos que mudam o clima da refeição.' },
-  { n: 2, title: 'Situações difíceis', desc: 'Festa, escola, casa de avó, viagem e criança doente.' },
-  { n: 3, title: 'Progressão por textura', desc: 'De crocante para macio, de purê para pedaço.' },
-  { n: 4, title: 'Apresentação do prato', desc: 'Montagem visual, porcionamento e escolha guiada.' },
+  // ORDEM (27/08): por quanto a CRIANÇA faz sozinha, do mais interativo pro
+  // mais conduzido pelo adulto. Ver [[kpl_ficha_interativa_vale_mais]]: folha
+  // que a criança preenche tem valor percebido maior que cartão de instrução
+  // pro adulto, então o que ela faz sozinha abre o kit e abre a página.
+  //
+  // O que isso custou: "Situações difíceis" (festa, escola, casa de avó) saiu
+  // do 2º lugar pro último, e era o bloco em que a mãe em crise se reconhecia
+  // de cara. A troca foi deliberada, valor percebido na frente do espelho.
+  //
+  // `n` é CHAVE DE ARQUIVO, não posição: é o que casa `B11-F120-*.png` com o
+  // bloco em build-gallery-manifest.js, build-kit-pdf.js e build-missoes.js.
+  // Nunca renumere. O número que aparece pro comprador é a posição no array,
+  // e quem calcula isso são os builds.
+  { n: 11, title: 'Folhas de brincar', desc: 'Labirinto, caça-palavras, ligar e contar. A criança faz sozinha, com lápis.' },
+  { n: 10, title: 'Folhas para colorir', desc: 'Uma folha por amigo do prato. Só imprimir e deixar a criança colorir do jeito dela.' },
   { n: 5, title: 'Participação na cozinha', desc: 'A criança ajuda a preparar o que vai comer.' },
-  { n: 6, title: 'Brincadeiras fora da refeição', desc: 'Quebra a associação entre comida e conflito.' },
-  { n: 7, title: 'Histórias e faz de conta', desc: 'Narrativas curtas com o alimento como personagem.' },
   { n: 8, title: 'Aproximação sensorial', desc: 'Contato com o alimento sem obrigação de comer.' },
   { n: 9, title: 'Vontade de experimentar', desc: 'Curiosidade e coragem de dentro pra fora, sem depender de pressão.' },
-  { n: 10, title: 'Folhas para colorir', desc: 'Uma folha por amigo do prato. Só imprimir e deixar a criança colorir do jeito dela.' },
+  { n: 6, title: 'Brincadeiras fora da refeição', desc: 'Quebra a associação entre comida e conflito.' },
+  { n: 1, title: 'Rituais e jogos de mesa', desc: 'Dinâmicas de 5 minutos que mudam o clima da refeição.' },
+  { n: 7, title: 'Histórias e faz de conta', desc: 'Narrativas curtas com o alimento como personagem.' },
+  { n: 3, title: 'Progressão por textura', desc: 'De crocante para macio, de purê para pedaço.' },
+  { n: 4, title: 'Apresentação do prato', desc: 'Montagem visual, porcionamento e escolha guiada.' },
+  { n: 2, title: 'Situações difíceis', desc: 'Festa, escola, casa de avó, viagem e criança doente.' },
 ];
+
+
+// ETAPAS DA EDIÇÃO PROFISSIONAL (22/08) — as fichas de consultório, feitas pra
+// a nutricionista aplicar NA SESSÃO, com alimento de verdade na mesa. São outra
+// categoria das fichas de casa: cada uma traz "o que observar" (leitura
+// clínica), "o que dizer e o que evitar" (fala pronta, pra mãe repetir certo em
+// casa) e "leva para casa" (a ponte que faz a orientação sobreviver até a
+// próxima consulta). Ficam ANTES dos blocos caseiros no PDF profissional.
+//
+// Os arquivos são assets/fichas-consultorio/C<NN>-<slug>.png, e `range` é a
+// faixa de NN de cada etapa — é isso que agrupa ficha em etapa, não o nome.
+const PRO_STAGES = [
+  { code: 'A', title: 'Avaliação inicial', desc: 'Mapear o repertório real e a raiz da recusa antes de intervir.', range: [1, 5] },
+  { code: 'B', title: 'Aproximação sem contato', desc: 'Olhar e cheirar. A criança conhece o alimento sem precisar tocar.', range: [6, 10] },
+  { code: 'C', title: 'Toque e manipulação', desc: 'A mão entra no alimento dentro de um jogo, sem expectativa de comer.', range: [11, 16] },
+  { code: 'D', title: 'Som, corte e transformação', desc: 'O alimento muda de forma na frente dela e deixa de ser imprevisível.', range: [17, 21] },
+  { code: 'E', title: 'Aproximação da boca', desc: 'Lábio, língua e mordida sem o contrato de engolir.', range: [22, 26] },
+  { code: 'F', title: 'Prova e registro', desc: 'Provar com direito de recusa, e registrar o avanço entre as sessões.', range: [27, 30] },
+  { code: 'G', title: 'Recusa e crise', desc: 'O que fazer quando o único repertório da criança é dizer não.', range: [31, 35] },
+  { code: 'H', title: 'A ficha do adulto', desc: 'Aplicadas com o cuidador, não com a criança. É ele que muda primeiro.', range: [36, 40] },
+  { code: 'I', title: 'Rotina e ambiente', desc: 'Horário, líquido, tela e lugar à mesa. O prato é só o fim da linha.', range: [41, 45] },
+  { code: 'J', title: 'Casos difíceis', desc: 'Repertório mínimo, só triturado, medo depois do engasgo e náusea antecipatória.', range: [46, 50] },
+  { code: 'K', title: 'Expansão do repertório', desc: 'Depois que ela prova: como virar hábito, volume e comida fora de casa.', range: [51, 55] },
+  { code: 'L', title: 'Manutenção e alta', desc: 'Provar a evolução, sobreviver à recaída e dar alta com plano.', range: [56, 60] },
+];
+
+// "C11-carimbo-de-pimentao.png" -> "Carimbo de pimentao"
+function titleFromProFile(file) {
+  const slug = file.replace(/^C\d+-/, '').replace(/\.(png|jpe?g)$/i, '');
+  const text = slug.split('-').filter(Boolean).join(' ');
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
 
 // Título de verdade (com acento) vem de PROMPTS-86-ATIVIDADES.md — o nome do
 // arquivo perdeu acentuação na hora de salvar (ex: "o-garfo-magico.png" em
@@ -57,4 +103,4 @@ function titleFromFile(file) {
   return (code && map[code]) || titleFromSlug(file);
 }
 
-module.exports = { BLOCKS, BONUSES, titleFromFile };
+module.exports = { BLOCKS, BONUSES, PRO_STAGES, titleFromFile, titleFromProFile };

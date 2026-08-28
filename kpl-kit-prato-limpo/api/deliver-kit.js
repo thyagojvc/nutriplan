@@ -51,7 +51,7 @@ function adminAlertHtml({ name, email, phone, paymentId, valor, tierName, downlo
     ? ''
     : '<p style="color:#c0392b"><strong>ATENÇÃO: não foi possível gerar o link de download desta compra (Redis falhou). O e-mail saiu sem botão. Envie o material manualmente.</strong></p>';
   return `
-    <p><strong>Venda confirmada (${tierName}) — entrega automática pelo WhatsApp.</strong></p>
+    <p><strong>Venda confirmada (${tierName}). O e-mail com o acesso saiu automático. Falta você mandar no WhatsApp.</strong></p>
     ${linkWarning}
     <p>Registro do pedido (a automação já dispara o envio; confira se caiu):</p>
     <p>Plano: ${tierName}<br>

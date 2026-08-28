@@ -29,14 +29,15 @@
 </head>
 <body>
   <div class="wrap">
-    <a class="back" href="/">← Voltar para a página do kit</a>
+    <!-- volta pra pagina de onde veio: / (maes) e /profissional sao publicos diferentes -->
+    <a class="back" href="/" onclick="if(document.referrer&&history.length>1){history.back();return false}">← Voltar para a página do kit</a>
     <h1>Política de privacidade</h1>
     <p class="updated">Última atualização: julho de 2026</p>
 
     <p>Esta página explica quais dados o <strong>Kit Prato Limpo</strong> coleta durante a compra e como eles são usados.</p>
 
     <h2>Quais dados coletamos</h2>
-    <p>No checkout, pedimos nome completo, e-mail, telefone e CPF. Esses dados são necessários para gerar a cobrança Pix e para entregar o kit no e-mail certo.</p>
+    <p>No checkout, pedimos nome completo, e-mail e telefone. Esses dados são necessários para gerar a cobrança Pix e para entregar o kit no e-mail certo. Não pedimos CPF.</p>
 
     <h2>Para que usamos</h2>
     <ul>

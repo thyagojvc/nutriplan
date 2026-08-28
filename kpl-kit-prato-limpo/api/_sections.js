@@ -1,6 +1,8 @@
 // Lista única das seções da página, na ordem em que aparecem (usada pelo
 // heartbeat de presença e pelo funil do painel). Atualize aqui se adicionar
-// ou remover uma seção do index.html.
+// ou remover uma seção da página das mães.
+// (27/08: a página das mães voltou a ser a raiz. A Edição Profissional foi
+// pra /profissional e continua sem rastreamento de seção.)
 const SECTIONS = [
   { id: 'hero', label: 'Topo (hero)' },
   { id: 'indice', label: 'Índice de sintomas' },
@@ -10,7 +12,6 @@ const SECTIONS = [
   { id: 'ficha', label: 'Ficha de exemplo' },
   { id: 'blocos', label: '8 blocos do sistema' },
   { id: 'materiais', label: 'Materiais e bônus' },
-  { id: 'previa', label: 'Prévia real' },
   { id: 'depoimentos', label: 'Depoimentos' },
   { id: 'garantia', label: 'Garantia' },
   { id: 'checkout', label: 'Checkout' },

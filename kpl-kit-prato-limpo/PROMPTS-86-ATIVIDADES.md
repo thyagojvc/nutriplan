@@ -570,3 +570,47 @@ Antes de começar, crie uma planilha simples com quatro colunas: `código`, `nom
 5. Não apareceu marca d'água, logo estranho ou texto que você não pediu?
 
 Se falhar em qualquer um, é mais rápido regerar do que consertar. Mas atenção: regerar gasta uma das 3 da conta.
+
+---
+
+## BLOCO 11 · Folhas de brincar
+
+Primeiro bloco em que a CRIANÇA preenche a folha com lápis, em vez de o adulto
+conduzir a atividade. Decisão do dono em 19/08: o valor percebido é maior assim.
+Os títulos abaixo são a fonte que `titleFromFile` lê para nomear cada ficha na
+galeria do app e no PDF.
+
+### B11-F107 · O caminho da cenoura
+### B11-F108 · Cada um com sua sombra
+### B11-F109 · Caça-palavras dos alimentos
+### B11-F110 · Ligue os pontos
+### B11-F111 · Cartelas dos alimentos
+### B11-F112 · Siga o tracejado
+### B11-F113 · Conte e circule
+### B11-F114 · Ache as diferenças
+### B11-F115 · Monte o seu prato
+### B11-F116 · Pinte o morango
+### B11-F117 · Quebra-cabeça da abóbora
+### B11-F118 · Ligue os iguais
+### B11-F119 · O meu prato favorito
+
+### B11-F120 · Labirinto do lanche
+### B11-F121 · Ache o intruso
+### B11-F122 · Do menor pro maior
+### B11-F123 · Complete a sequência
+### B11-F124 · Colorir por números
+### B11-F125 · Desenhe a outra metade
+### B11-F126 · De quem é este pedacinho?
+### B11-F127 · Copie na grade
+### B11-F128 · Cada um com sua cor
+### B11-F129 · Onde nasce cada alimento?
+### B11-F130 · Fruta ou verdura?
+### B11-F131 · Desenhe o rosto do alimento
+### B11-F132 · Ache e conte
+### B11-F133 · Escreva o nome
+### B11-F134 · Some as frutas
+### B11-F135 · Circule a letra
+### B11-F136 · Eu provei!
+### B11-F137 · Na ordem certa
+### B11-F138 · Como foi provar hoje?
+### B11-F139 · O meu cardápio de hoje
