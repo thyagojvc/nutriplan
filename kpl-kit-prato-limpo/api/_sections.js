@@ -5,8 +5,11 @@
 // pra /profissional e continua sem rastreamento de seção.)
 const SECTIONS = [
   { id: 'hero', label: 'Topo (hero)' },
-  { id: 'indice', label: 'Índice de sintomas' },
+  // 30/08: a dor passou a vir ANTES do índice na página (agitar o problema
+  // antes de mostrar o mecanismo). A ordem aqui acompanha, então dado anterior
+  // a essa data tem esses dois índices trocados em relação ao que a pessoa viu.
   { id: 'dores', label: 'A dor (agitação)' },
+  { id: 'indice', label: 'Índice de sintomas' },
   { id: 'antesdepois', label: 'Antes vs Depois' },
   { id: 'como', label: 'Como funciona' },
   { id: 'ficha', label: 'Ficha de exemplo' },
