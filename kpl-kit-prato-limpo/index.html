@@ -137,6 +137,7 @@
      continuam na seção de depoimentos lá embaixo. */
   .prova-cedo { background: var(--cream-2); }
 
+
   /* HERO */
   .hero { background: linear-gradient(180deg, var(--cream), var(--cream-2)); padding: 30px 0 36px; text-align: center; }
   .hero__badge {
@@ -866,6 +867,17 @@
     .steps { flex-direction: row; }
     .step { flex-direction: column; text-align: center; align-items: center; }
   }
+
+  /* Vazio entre o hero e a seção de dor. Eram 132px empilhados: 24px de margem
+     da figura do mockup (que virou o último elemento do hero), 36px de padding
+     de baixo do hero e 48px de padding de cima da seção. Não incomodava
+     enquanto o botão e a nota ficavam ali; quando o CTA saiu do hero (30/08),
+     sobrou o buraco. Fica no FIM da folha de propósito: as regras originais de
+     .hero aparecem depois do topo do arquivo e venciam na cascata. Mexe só
+     nesta transição, não no ritmo das outras seções. */
+  .hero__mockup { margin-bottom: 0; }
+  .hero { padding-bottom: 14px; }
+  #dores { padding-top: 30px; }
 </style>
 </head>
 <body>
