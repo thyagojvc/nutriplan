@@ -6,8 +6,8 @@
 <title>KPL - Kit Prato Limpo | Sistema de 149 atividades para destravar a alimentação infantil</title>
 <meta name="description" content="Kit digital com 149 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
 
-<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 19,90,
-     Completo R$ 47) é de novo o
+<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 10,00,
+     Completo R$ 37) é de novo o
      destino de kitpratolimpo.com.br. A Edição Profissional (nutricionistas,
      R$ 67) continua inteira e funcionando em /profissional, escondida da busca.
      PRA TROCAR DE NOVO: `git mv index.html mae.html && git mv profissional.html
@@ -1426,7 +1426,7 @@
           <span class="plano__radio" aria-hidden="true"></span>
           <div class="plano__name">Essencial</div>
           <div class="plano__tagline">O sistema completo de atividades.</div>
-          <div class="plano__price">R$ 19<span class="cents">,90</span></div>
+          <div class="plano__price">R$ 10<span class="cents">,00</span></div>
           <ul class="plano__list">
             <li><span class="ic">✅</span>149 atividades em 11 blocos</li>
             <li><span class="ic">✅</span>Cartelas recortáveis</li>
@@ -1447,7 +1447,7 @@
           <div class="plano__name">Completo</div>
           <div class="plano__tagline">Tudo pronto pra facilitar a hora da comida.</div>
           <div class="plano__price-old">Tudo separado: R$ 126</div>
-          <div class="plano__price">R$ 47<span class="cents">,00</span></div>
+          <div class="plano__price">R$ 37<span class="cents">,00</span></div>
           <ul class="plano__list">
             <li><span class="ic">✅</span>Tudo do Essencial, e mais:</li>
             <!-- ORDEM (27/08): app, jogo e atualizações vêm primeiro porque são os
@@ -1481,7 +1481,7 @@
         <div class="stack__row"><span>🆕 Atualizações semanais do kit</span><span class="val">R$ 17</span></div>
         <div class="stack__row"><span>📘 Guia por textura e idade</span><span class="val">R$ 17</span></div>
         <div class="stack__row"><span>✅ Todo o sistema Essencial</span><span class="val">R$ 20</span></div>
-        <div class="stack__sum"><span class="old">Tudo separado: R$ 126</span><span class="now" id="stack-now">R$ 47,00</span></div>
+        <div class="stack__sum"><span class="old">Tudo separado: R$ 126</span><span class="now" id="stack-now">R$ 37,00</span></div>
       </div>
 
       <!-- Formulário -->
@@ -1538,8 +1538,8 @@
 
         <!-- Resumo -->
         <div class="resumo" id="resumo">
-          <div class="resumo-line"><span>KPL Completo</span><span>R$ 47,00</span></div>
-          <div class="resumo-line total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
+          <div class="resumo-line"><span>KPL Completo</span><span>R$ 37,00</span></div>
+          <div class="resumo-line total"><span>Total</span><span id="total-valor">R$ 37,00</span></div>
         </div>
 
         <div class="pix-trust">
@@ -1553,7 +1553,7 @@
         </div>
 
         <button type="submit" class="btn" id="pay-btn">
-          <span id="pay-btn-label">Pagar R$ 47,00 com Pix</span>
+          <span id="pay-btn-label">Pagar R$ 37,00 com Pix</span>
         </button>
 
         <div class="secure-badges">
@@ -1660,12 +1660,12 @@
       com o app, o Cardápio de 4 semanas e as atualizações semanais do kit?
     </p>
     <div class="downsell__price">
-      <span class="downsell__old">De R$ 47,00</span>
-      <span class="downsell__now">por R$ 29,90</span>
+      <span class="downsell__old">De R$ 37,00</span>
+      <span class="downsell__now">por R$ 23,90</span>
     </div>
     <p class="downsell__note">Só R$ 10 a mais que o Essencial pra levar tudo pronto.</p>
-    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 29,90</button>
-    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 19,90</button>
+    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 23,90</button>
+    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10,00</button>
   </div>
 </div>
 
@@ -1686,11 +1686,11 @@ const CONFIG = {
 
 /* Planos (valores em CENTAVOS). Mantenha em sincronia com api/_catalog.js. */
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
-  completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 4700 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
+  completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 3700 },
   // Alcançável só pelo pop-up de downsell (quando a pessoa ia levar o Essencial).
   // Mesmo produto do Completo, com desconto. O servidor também conhece esse tier.
-  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2990 },
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2390 },
 };
 let selectedTier = 'completo'; // premium pré-selecionado (sobe o ticket médio)
 let downsellResolved = false;  // vira true depois que a pessoa aceita/recusa o pop-up
@@ -1892,7 +1892,7 @@ function selectTier(tier) {
   });
   const stack = $('#stack-completo');
   if (stack) stack.style.display = base === 'completo' ? '' : 'none';
-  // O preço final da caixa de valor acompanha o Completo (29,90) ou o promo (19,90).
+  // O preço final da caixa de valor acompanha o Completo (37,00) ou o promo (23,90).
   const stackNow = $('#stack-now');
   if (stackNow && base === 'completo') stackNow.textContent = brl(TIERS[tier].priceCents);
   // Selo de garantia perto do botão precisa bater com o plano real (30d Completo / 7d Essencial).

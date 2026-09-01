@@ -315,11 +315,11 @@ async function buildPdf(variant, allFiles, blocksWithFiles, bonusesReady) {
     });
 
     y -= 18;
-    drawCentered(page, 'Você já pagou R$ 19,90. Complete por:', { font: regular, size: 11, color: COLOR.muted, y });
+    drawCentered(page, 'Você já pagou R$ 10,00. Complete por:', { font: regular, size: 11, color: COLOR.muted, y });
     y -= 40;
-    drawCentered(page, 'R$ 15,90', { font: bold, size: 40, color: COLOR.greenDark, y });
+    drawCentered(page, 'R$ 17,90', { font: bold, size: 40, color: COLOR.greenDark, y });
     y -= 24;
-    drawCentered(page, 'No site, o Completo sai por R$ 47,00.', { font: regular, size: 10, color: COLOR.muted, y });
+    drawCentered(page, 'No site, o Completo sai por R$ 37,00.', { font: regular, size: 10, color: COLOR.muted, y });
 
     y -= 44;
     drawPill(page, 'kitpratolimpo.com.br/upgrade', { font: bold, size: 13, x: PAGE_WIDTH / 2, y, padX: 18, padY: 12, bg: COLOR.green, color: COLOR.white });

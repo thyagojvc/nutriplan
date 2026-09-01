@@ -115,9 +115,9 @@
 <section>
   <div class="wrap">
     <div class="preco">
-      <div class="ja">Você já pagou <b>R$ 19,90</b> no Essencial</div>
+      <div class="ja">Você já pagou <b>R$ 10,00</b> no Essencial</div>
       <div class="valor">+ R$ 15<small>,90</small></div>
-      <div class="comp">Fica <b>R$ 35,80</b> no total. Quem compra o Completo direto paga <s>R$ 47,00</s>.</div>
+      <div class="comp">Fica <b>R$ 27,90</b> no total. Quem compra o Completo direto paga <s>R$ 37,00</s>.</div>
     </div>
 
     <h2 style="margin-top:28px">Complete o seu kit</h2>
@@ -141,7 +141,7 @@
         <input type="tel" id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
         <div class="err">Digite um WhatsApp válido.</div>
       </div>
-      <button type="submit" class="btn" id="btn"><span id="btn-label">Completar por R$ 15,90 com Pix</span></button>
+      <button type="submit" class="btn" id="btn"><span id="btn-label">Completar por R$ 17,90 com Pix</span></button>
     </form>
 
     <div class="pix" id="pix">
@@ -238,7 +238,7 @@ $('#form').addEventListener('submit', async e => {
   try{
     const r = await fetch(API.criar, {
       method:'POST', headers:{'Content-Type':'application/json'},
-      // tier 'upgrade' (R$ 15,90): o servidor recalcula o valor pelo _catalog,
+      // tier 'upgrade' (R$ 17,90): o servidor recalcula o valor pelo _catalog,
       // nunca confia em preço vindo daqui.
       body: JSON.stringify({ customer: cliente, method:'pix', tier:'upgrade', adRef:'upgrade' + (token?'-email':'-pdf') })
     });
