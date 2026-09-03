@@ -14,7 +14,9 @@ const SECTIONS = [
   { id: 'como', label: 'Como funciona' },
   { id: 'ficha', label: 'Ficha de exemplo' },
   { id: 'blocos', label: '8 blocos do sistema' },
-  { id: 'materiais', label: 'Materiais e bônus' },
+  // 03/09: a seção "Tudo que vem no kit" saiu da página, então sai daqui
+  // também. Dado anterior a essa data tem um índice a mais nesse ponto: o que
+  // era 'materiais' virou 'depoimentos' na leitura do painel.
   { id: 'depoimentos', label: 'Depoimentos' },
   { id: 'garantia', label: 'Garantia' },
   { id: 'checkout', label: 'Checkout' },
