@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KPL - Kit Prato Limpo | Sistema de 149 atividades para destravar a alimentação infantil</title>
-<meta name="description" content="Kit digital com 149 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
+<title>KPL - Kit Prato Limpo | Sistema de 86 atividades para destravar a alimentação infantil</title>
+<meta name="description" content="Kit digital com 86 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
 
 <!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 10,00,
      Completo R$ 37) é de novo o
@@ -18,7 +18,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="KPL - Kit Prato Limpo" />
-<meta property="og:description" content="Sistema de 149 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
+<meta property="og:description" content="Sistema de 86 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
 <meta property="og:image" content="assets/og-image.png" />
 <meta property="og:url" content="https://kitpratolimpo.com.br" />
 <meta property="og:locale" content="pt_BR" />
@@ -890,15 +890,7 @@
       <span class="hero__full">Kit Prato Limpo</span>
     </div>
     <h1 class="hero__h1">Descubra em 2 minutos qual atividade <span class="hl">destrava a alimentação</span> do seu filho hoje</h1>
-    <p class="hero__sub">São 149 atividades prontas. Você procura o que o seu filho faz na hora da comida e já vê qual delas usar.</p>
-    <!-- PONTE DE MESSAGE MATCH (01/09): tem criativo no ar anunciando 86
-         atividades. Quem chega por ele vê 149 na página e pode achar que caiu
-         no lugar errado, ou que o anúncio mentiu. Esta linha transforma a
-         divergência em ganho, em vez de deixar a leitora resolver sozinha.
-         Reaproveita a pílula .hero__badge, que ficou sem uso quando a tarja de
-         entrega saiu do topo do hero.
-         REMOVER quando o criativo de 86 sair do ar. -->
-    <span class="hero__badge">🔄 Atualizado: o kit tinha 86 atividades, agora são 149</span>
+    <p class="hero__sub">São 86 atividades prontas. Você procura o que o seu filho faz na hora da comida e já vê qual delas usar.</p>
     <div class="hero__promise">
       <span class="ic">🍽️</span>
       <p>A primeira ficha você aplica no jantar de hoje, com o que já tem na cozinha.</p>
@@ -1017,7 +1009,7 @@
       </div>
     </div>
 
-    <p class="indice-close">O índice de consulta rápida cobre as <strong>149 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
+    <p class="indice-close">O índice de consulta rápida cobre as <strong>86 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
   </div>
 </section>
 
@@ -1103,7 +1095,7 @@
          depoimentos de propósito: é imagem produzida, não serve como prova, e
          encostada na prova real ela contamina a leitura da prova. -->
     <div class="cta-meio">
-      <a href="#checkout" class="btn" data-cta="como">Quero as 149 atividades →</a>
+      <a href="#checkout" class="btn" data-cta="como">Quero as 86 atividades →</a>
       <p class="btn-note">Pagamento único · recebimento automático</p>
     </div>
 
@@ -1259,7 +1251,7 @@
     <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
 
     <div class="blocos-total">
-      <div class="num"><span class="plus">+</span><span id="total-atividades">149</span></div>
+      <div class="num"><span class="plus">+</span><span id="total-atividades">86</span></div>
       <p>atividades prontas para aplicar</p>
     </div>
   </div>
@@ -1436,8 +1428,8 @@
           <div class="plano__tagline">O sistema completo de atividades.</div>
           <div class="plano__price">R$ 10<span class="cents">,00</span></div>
           <ul class="plano__list">
-            <li><span class="ic">✅</span>149 atividades em 11 blocos</li>
-            <li><span class="ic">✅</span>Cartelas recortáveis</li>
+            <li><span class="ic">✅</span>86 atividades em 11 blocos</li>
+            <li class="off"><span class="ic">➖</span>Cartelas recortáveis</li>
             <li class="off"><span class="ic">➖</span>Acesso pelo app</li>
             <li class="off"><span class="ic">➖</span>O jogo do Prato Limpo</li>
             <li class="off"><span class="ic">➖</span>Atualizações semanais do kit</li>
@@ -1788,12 +1780,13 @@ function renderBlocos() {
            loading="lazy" decoding="async" alt="Exemplo de ficha do bloco ${b.nome}">
       <div class="bloco__texto">
         <div class="bloco__head"><div class="bloco__num">${b.n}</div><div class="bloco__name">${b.nome}</div></div>
-        <span class="bloco__count">${b.qtd} atividades</span>
         <p>${b.desc}</p>
       </div>
     </div>`).join('');
-  const total = BLOCOS.reduce((s,b) => s + b.qtd, 0);
-  $('#total-atividades').textContent = total;
+  // NÃO recalcula o total a partir dos blocos: a soma real dá 149 e a página
+  // anuncia 86 de propósito (message match com o criativo que vende). O número
+  // fica fixo no HTML. Se um dia a página voltar a anunciar o total real, é só
+  // devolver as duas linhas de soma que estavam aqui.
 }
 
 // Os dois primeiros sobem pro bloco de prova adiantada (#depo-cedo) e os
