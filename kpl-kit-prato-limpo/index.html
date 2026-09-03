@@ -30,7 +30,7 @@
 <!-- Fonte redonda e amigável (carrega sem bloquear; cai no fallback do sistema se falhar) -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
 <style>
   :root {
@@ -64,7 +64,10 @@
 
   body {
     font-family: var(--body);
-    font-size: 17px;
+    font-size: 18px;
+    /* 500 em vez do 400 padrao: o texto corrido estava fino demais na tela do
+       celular. Titulos e componentes que definem o proprio peso nao mudam. */
+    font-weight: 500;
     line-height: 1.6;
     color: var(--text);
     background: var(--cream);
@@ -122,7 +125,7 @@
   .btn:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
   .btn--coral { background: linear-gradient(180deg, #F47B52, var(--coral)); box-shadow: 0 8px 20px rgba(240,103,58,.35); }
   .btn--coral:hover { background: #e15b2e; }
-  .btn-note { text-align: center; font-size: .9rem; color: var(--muted); margin-top: 10px; }
+  .btn-note { text-align: center; font-size: .95rem; color: var(--muted); margin-top: 10px; }
 
   /* CTA intermediário. A página tinha UM botão só, no hero, e oito seções sem
      nenhum jeito de comprar até o checkout: quem se convencia no meio tinha que
@@ -666,7 +669,7 @@
     .story-featured { transform: none; }
     .story-card { padding: 12px 11px; min-height: 0; }
     .story-quote { height: 22px; font-size: 2.2rem; }
-    .story-card p { font-size: .78rem; line-height: 1.4; margin: 4px 0 12px; }
+    .story-card p { font-size: .92rem; line-height: 1.5; margin: 6px 0 14px; }
     .story-footer { grid-template-columns: 32px 1fr; gap: 7px; padding-top: 8px; }
     .story-footer .depo__avatar { width: 32px; height: 32px; border-width: 1.5px; }
     .story-footer b { font-size: .74rem; }
@@ -744,12 +747,12 @@
   }
   .plano.selected .plano__radio { border-color: var(--green); background: var(--green); box-shadow: inset 0 0 0 4px #fff; }
   .plano__name { font-family: var(--heading); font-weight: 800; color: var(--ink); font-size: 1.05rem; margin-bottom: 2px; }
-  .plano__tagline { font-size: .8rem; color: var(--muted); margin-bottom: 12px; min-height: 2.2em; }
+  .plano__tagline { font-size: .9rem; color: var(--muted); margin-bottom: 12px; min-height: 2.2em; }
   .plano__price { font-family: var(--heading); font-weight: 800; color: var(--green-dark); font-size: 1.9rem; line-height: 1; }
   .plano__price .cents { font-size: 1rem; }
   .plano__price-old { color: var(--muted); text-decoration: line-through; font-size: .85rem; font-weight: 700; margin-bottom: 2px; }
   .plano__list { list-style: none; padding: 0; margin: 14px 0 0; display: flex; flex-direction: column; gap: 7px; }
-  .plano__list li { font-size: .84rem; color: var(--text); display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; }
+  .plano__list li { font-size: .95rem; color: var(--text); display: flex; align-items: flex-start; gap: 6px; line-height: 1.35; }
   .plano__list li .ic { flex: 0 0 auto; margin-top: 1px; }
   .plano__list li.off {
     color: var(--muted); opacity: .7;
@@ -757,7 +760,7 @@
   }
   .plano__list li.off .ic { text-decoration: none; }
   .plano__hl { background: linear-gradient(transparent 60%, var(--orange-soft) 60%); font-weight: 700; }
-  @media (max-width: 420px) {
+  @media (max-width: 560px) {
     .planos { grid-template-columns: 1fr; }
     .plano__tagline { min-height: 0; }
   }
@@ -776,7 +779,7 @@
   .bump input { position: absolute; left: 14px; top: 16px; width: 22px; height: 22px; accent-color: var(--green); cursor: pointer; }
   .bump__name { font-family: var(--heading); font-weight: 700; color: var(--ink); font-size: 1rem; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .bump__tag { background: var(--orange-soft); color:#a4610a; font-size:.68rem; font-weight:800; padding:2px 8px; border-radius: 999px; text-transform: uppercase; }
-  .bump__desc { font-size: .88rem; color: var(--text); margin: 3px 0 6px; }
+  .bump__desc { font-size: .93rem; color: var(--text); margin: 3px 0 6px; }
   .bump__price { font-weight: 800; color: var(--green-dark); font-size: .95rem; }
   .bump__price .old { color: var(--muted); text-decoration: line-through; font-weight: 700; margin-right: 6px; }
 
