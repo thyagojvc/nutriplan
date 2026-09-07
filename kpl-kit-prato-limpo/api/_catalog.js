@@ -4,18 +4,22 @@
 
 // Dois planos: Essencial (barato, atrai) e Completo (premium, sobe o ticket).
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
   completo: { id: 'completo', name: 'KPL Completo', priceCents: 3700 },
   // Mesmo produto do Completo, com desconto. Só é enviado pelo front quando a
   // pessoa aceita o pop-up de downsell (ia levar o Essencial e sobe pro Completo).
   completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2390 },
   // UPGRADE (21/08, repreçado em 27/08 e em 01/09): quem já comprou o
-  // Essencial por R$ 10,00 completa por R$ 17,90 e passa a ter tudo do
-  // Completo, inclusive o app. Total pago vira R$ 27,90, contra R$ 37 de quem
+  // Essencial por R$ 19,90 completa por R$ 8,90 e passa a ter tudo do
+  // Completo, inclusive o app. Total pago vira R$ 28,80, contra R$ 37 de quem
   // compra o Completo direto: a diferença é de propósito, pra ela sentir que
   // ganhou por ter começado pequeno, e não que foi punida.
   //
-  // O valor ACOMPANHA o Completo, não é solto: 27,90 é 75% de 37, a mesma
+  // 07/09: quando o Essencial subiu pra 19,90, manter o upgrade em 17,90 faria
+  // o caminho Essencial + upgrade custar 37,80, MAIS CARO que o Completo
+  // direto. Este valor NUNCA pode ficar parado quando um dos dois muda.
+  //
+  // O valor ACOMPANHA o Completo, não é solto: 28,80 é 78% de 37, a mesma
   // proporção que 35,80 era de 47. Ele NÃO pode ficar parado quando o Completo
   // muda. Se tivesse continuado em R$ 15,90 agora que o Essencial caiu pra
   // R$ 10, o caminho Essencial + upgrade sairia por R$ 25,90 contra R$ 37 no
@@ -23,7 +27,7 @@ const TIERS = {
   // escolheria o Completo de primeira.
   // Entregue como Completo sem precisar de mais nada: download.js e kit-access.js
   // só desviam pro Essencial quando o tier é literalmente 'essencial'.
-  upgrade: { id: 'upgrade', name: 'KPL Upgrade (Essencial -> Completo)', priceCents: 1790 },
+  upgrade: { id: 'upgrade', name: 'KPL Upgrade (Essencial -> Completo)', priceCents: 890 },
   // EDIÇÃO PROFISSIONAL (22/08): outro público (nutricionista que atende
   // infantil), outro material (30 fichas de consultório na frente + licença de
   // uso com pacientes) e outro PDF. Vendida em /profissional, que hoje está

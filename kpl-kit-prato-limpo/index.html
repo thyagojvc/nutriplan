@@ -6,7 +6,7 @@
 <title>KPL - Kit Prato Limpo | Sistema de 86 atividades para destravar a alimentação infantil</title>
 <meta name="description" content="Kit digital com 86 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
 
-<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 10,00,
+<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 19,90,
      Completo R$ 37) é de novo o
      destino de kitpratolimpo.com.br. A Edição Profissional (nutricionistas,
      R$ 67) continua inteira e funcionando em /profissional, escondida da busca.
@@ -136,6 +136,25 @@
      já herdam o padding de baixo da seção anterior, então a margem própria
      deles só empilharia mais vazio. */
   .cta-meio--solo { margin-top: 2px; margin-bottom: 26px; }
+
+  /* Bloco do autor. A página dizia "aprovado por nutricionistas infantis" no
+     plural e sem ninguém: o dono É nutricionista e a credencial estava
+     anônima na própria página. */
+  .autor { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm); padding: 18px; margin-bottom: 22px; }
+  .autor__topo { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .autor__foto { flex: 0 0 auto; width: 84px; height: 84px; border-radius: 50%; object-fit: cover;
+    object-position: 50% 22%; border: 3px solid var(--mint); }
+  .autor__nome { font-family: var(--heading); font-weight: 800; color: var(--ink); font-size: 1.15rem; line-height: 1.2; }
+  .autor__cargo { font-size: .9rem; color: var(--green-dark); font-weight: 700; }
+  .autor p { font-size: .95rem; color: var(--text); margin-bottom: 10px; }
+  .autor p:last-child { margin-bottom: 0; }
+  .autor__frase { font-family: var(--heading); font-weight: 700; color: var(--ink);
+    border-left: 3px solid var(--orange); padding-left: 12px; }
+
+  /* Qualificação da MÃE (a lista de sintomas da criança já existe lá em cima,
+     na seção de dor). Esta fica colada na decisão de propósito. */
+  .praquem--voce { background: var(--mint); border-color: #BFE0C4; }
   .cta-meio .btn-note { margin-top: 8px; }
 
   /* Prova social adiantada: dois depoimentos na 4ª dobra, logo depois da dor e
@@ -1102,7 +1121,7 @@
          depoimentos de propósito: é imagem produzida, não serve como prova, e
          encostada na prova real ela contamina a leitura da prova. -->
     <div class="cta-meio">
-      <a href="#checkout" class="btn" data-cta="como">Quero as 86 atividades →</a>
+      <a href="#checkout" class="btn" data-cta="como">Quero aplicar a primeira ficha hoje →</a>
       <p class="btn-note">Pagamento único · recebimento automático</p>
     </div>
 
@@ -1266,7 +1285,7 @@
 
 <div class="wrap">
   <div class="cta-meio cta-meio--solo">
-    <a href="#checkout" class="btn" data-cta="blocos">Quero o kit completo →</a>
+    <a href="#checkout" class="btn" data-cta="blocos">Quero as 86 atividades prontas →</a>
     <p class="btn-note">Acesso imediato, pelo Pix</p>
   </div>
 </div>
@@ -1282,6 +1301,19 @@
     </div>
     <h2 class="section-title">Testado e aprovado por <span class="hl">nutricionistas infantis</span></h2>
     <p class="section-sub">Não é teoria montada na frente de uma tela. As mesmas atividades do kit já foram aplicadas com crianças que têm seletividade alimentar, em escolas.</p>
+
+    <div class="autor">
+      <div class="autor__topo">
+        <img class="autor__foto" src="assets/autor-thyago.jpg" width="640" height="800"
+             loading="lazy" decoding="async" alt="Thyago Vieira, nutricionista, de jaleco branco" />
+        <div>
+          <div class="autor__nome">Thyago Vieira</div>
+          <div class="autor__cargo">Nutricionista · UFF</div>
+        </div>
+      </div>
+      <p>Sou formado pela Universidade Federal Fluminense, já atuei em escolas por várias cidades do estado do Rio de Janeiro e atendi mais de 60 crianças com seletividade alimentar. Nesses anos desenvolvi vários materiais de alimentação infantil.</p>
+      <p class="autor__frase">O Kit Prato Limpo é o material que eu queria ter tido pronto pra colocar na mão de cada mãe que saía do meu atendimento sem saber o que fazer no jantar daquele dia.</p>
+    </div>
 
     <div class="foto foto--prova">
       <figure>
@@ -1306,7 +1338,7 @@
     <div class="stories-grid" id="depo-scroll"><!-- preenchido via JS a partir de DEPOIMENTOS --></div>
 
     <div class="cta-meio">
-      <a href="#checkout" class="btn" data-cta="depoimentos">Quero começar hoje →</a>
+      <a href="#checkout" class="btn" data-cta="depoimentos">Quero isso na minha casa também →</a>
       <p class="btn-note">30 dias de garantia</p>
     </div>
   </div>
@@ -1348,6 +1380,31 @@
   </div>
 </section>
 
+<!-- =============== 7.7 QUALIFICAÇÃO DA MÃE ===============
+     Fora da lista de api/_sections.js de propósito, igual a "pintar",
+     "aplicacao" e "prova-cedo": o índice daquela lista vira o maxSection
+     gravado por visitante.
+     A seção de dor já tem uma lista que qualifica o SINTOMA DA CRIANÇA. Esta
+     qualifica A MÃE e o que ela quer, e fica colada na decisão em vez de logo
+     depois da outra, pra a página não ter duas listas seguidas. -->
+<section id="praquem">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Pra quem é</span>
+    </div>
+    <h2 class="section-title">Esse kit é pra você <span class="hl">se alguma dessas é a sua casa</span></h2>
+
+    <div class="praquem-list">
+      <div class="praquem praquem--voce"><span class="ic">🍚</span><p>Você já escondeu comida no arroz, fez aviãozinho e prometeu sobremesa</p></div>
+      <div class="praquem praquem--voce"><span class="ic">🍳</span><p>Você cozinha duas vezes: a comida da casa e a comida dele</p></div>
+      <div class="praquem praquem--voce"><span class="ic">🙄</span><p>Você já ouviu que é fase, que é manha ou que falta pulso</p></div>
+      <div class="praquem praquem--voce"><span class="ic">📋</span><p>Você quer um passo a passo pronto, não mais um conselho</p></div>
+      <div class="praquem praquem--voce"><span class="ic">⏱️</span><p>Você tem poucos minutos por dia, não uma tarde livre pra preparar nada</p></div>
+      <div class="praquem praquem--voce"><span class="ic">🖨️</span><p>Você quer imprimir quantas vezes quiser, hoje e com o próximo filho, sem pagar de novo</p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= 8. GARANTIA ======================= -->
 <section id="garantia">
   <div class="wrap">
@@ -1380,7 +1437,7 @@
           <span class="plano__radio" aria-hidden="true"></span>
           <div class="plano__name">Essencial</div>
           <div class="plano__tagline">O sistema completo de atividades.</div>
-          <div class="plano__price">R$ 10<span class="cents">,00</span></div>
+          <div class="plano__price">R$ 19<span class="cents">,90</span></div>
           <ul class="plano__list">
             <li><span class="ic">✅</span>86 atividades em 11 blocos</li>
             <li class="off"><span class="ic">➖</span>Cartelas recortáveis</li>
@@ -1602,11 +1659,11 @@
     </p>
     <div class="downsell__price">
       <span class="downsell__old">De R$ 37,00</span>
-      <span class="downsell__now">por R$ 19,90</span>
+      <span class="downsell__now">por R$ 23,90</span>
     </div>
-    <p class="downsell__note">Só R$ 9,90 a mais que o Essencial pra levar tudo pronto.</p>
-    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 19,90</button>
-    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10,00</button>
+    <p class="downsell__note">Só R$ 4 a mais que o Essencial pra levar tudo pronto.</p>
+    <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 23,90</button>
+    <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 19,90</button>
   </div>
 </div>
 
@@ -1627,11 +1684,11 @@ const CONFIG = {
 
 /* Planos (valores em CENTAVOS). Mantenha em sincronia com api/_catalog.js. */
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
   completo:  { id: 'completo',  name: 'KPL Completo',  priceCents: 3700 },
   // Alcançável só pelo pop-up de downsell (quando a pessoa ia levar o Essencial).
   // Mesmo produto do Completo, com desconto. O servidor também conhece esse tier.
-  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 1990 },
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2390 },
 };
 let selectedTier = 'completo'; // premium pré-selecionado (sobe o ticket médio)
 let downsellResolved = false;  // vira true depois que a pessoa aceita/recusa o pop-up
@@ -1834,7 +1891,7 @@ function selectTier(tier) {
   });
   const stack = $('#stack-completo');
   if (stack) stack.style.display = base === 'completo' ? '' : 'none';
-  // O preço final da caixa de valor acompanha o Completo (37,00) ou o promo (19,90).
+  // O preço final da caixa de valor acompanha o Completo (37,00) ou o promo (23,90).
   const stackNow = $('#stack-now');
   if (stackNow && base === 'completo') stackNow.textContent = brl(TIERS[tier].priceCents);
   // Selo de garantia perto do botão precisa bater com o plano real (30d Completo / 7d Essencial).

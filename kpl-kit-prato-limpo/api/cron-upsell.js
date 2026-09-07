@@ -33,8 +33,8 @@ function emailHtml({ nome, url }) {
     <p>Junto vêm o cardápio de 4 semanas, o calendário, as cartelas, o quadro de progresso e as atualizações semanais do kit.</p>
 
     <p style="background:#E8F1DD; border-radius:10px; padding:14px 16px;">
-      Você já pagou <strong>R$ 10,00</strong>.<br>
-      Pra completar, é só <strong>R$ 17,90</strong>.<br>
+      Você já pagou <strong>R$ 19,90</strong>.<br>
+      Pra completar, é só <strong>R$ 8,90</strong>.<br>
       <span style="color:#7C857D; font-size:13px;">Quem compra o Completo direto paga R$ 37,00.</span>
     </p>
 
