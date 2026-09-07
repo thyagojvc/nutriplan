@@ -155,6 +155,30 @@
   /* Qualificação da MÃE (a lista de sintomas da criança já existe lá em cima,
      na seção de dor). Esta fica colada na decisão de propósito. */
   .praquem--voce { background: var(--mint); border-color: #BFE0C4; }
+
+  /* ESTEIRA DE FICHAS. Duas funções: prova o volume (a página fala em 149 e
+     mostrava uma só) e acrescenta imagem sem custar altura, porque cresce pro
+     lado em vez de pra baixo.
+     Sangra 20px pra cada lado pra encostar na borda da tela, que é o padding
+     do .wrap, e as pontas somem numa máscara pra não terminar em corte seco. */
+  .esteira { overflow: hidden; margin: 22px -20px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+  /* A lista vai DUPLICADA no HTML e a animação anda exatamente -50%: no fim do
+     ciclo a segunda cópia está no lugar onde a primeira começou, então o laço é
+     invisível e não precisa de JS.
+     O espaçamento é margin-right em cada item, NÃO gap: com gap, a emenda entre
+     as duas cópias ganha um vão a mais e o -50% deixa de bater. */
+  .esteira__trilho { display: flex; width: max-content; animation: esteira 48s linear infinite; }
+  .esteira__trilho img {
+    flex: 0 0 auto; width: 148px; height: 197px; margin-right: 12px;
+    object-fit: cover; object-position: top;
+    border-radius: 10px; border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm); background: #fff;
+  }
+  @keyframes esteira { to { transform: translateX(-50%); } }
+  .esteira:hover .esteira__trilho { animation-play-state: paused; }
+  .esteira__nota { text-align: center; font-size: .92rem; color: var(--muted); margin-top: 12px; }
   .cta-meio .btn-note { margin-top: 8px; }
 
   /* Prova social adiantada: dois depoimentos na 4ª dobra, logo depois da dor e
@@ -275,6 +299,9 @@
   .reveal-delay-3 { transition-delay: 270ms; }
   @media (prefers-reduced-motion: reduce) {
     .reveal { opacity: 1; transform: none; transition: none; }
+    /* A esteira para de andar sozinha e passa a ser rolada com o dedo. */
+    .esteira { overflow-x: auto; }
+    .esteira__trilho { animation: none; }
   }
 
   /* COMO FUNCIONA */
@@ -1260,6 +1287,40 @@
         </div>
       </div>
     </article>
+
+    <div class="esteira">
+      <div class="esteira__trilho">
+        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Caça-palavras dos alimentos" />
+        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Cadu Cenoura, folha para colorir" />
+        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Monte o seu sanduíche" />
+        <img src="assets/fichas-esteira/B8-F76-so-cheirar-nao-precisa-comer.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Só cheirar, não precisa comer" />
+        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Passaporte dos sabores" />
+        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Jogo da memória dos alimentos" />
+        <img src="assets/fichas-esteira/B1-F05-a-mesa-sem-tela.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: A mesa sem tela" />
+        <img src="assets/fichas-esteira/B7-F63-o-tomate-que-tinha-medo.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: O tomate que tinha medo" />
+        <img src="assets/fichas-esteira/B3-F19-a-escada-da-textura.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: A escada da textura" />
+        <img src="assets/fichas-esteira/B4-F32-arco-iris-no-prato.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Arco-íris no prato" />
+        <img src="assets/fichas-esteira/B2-F12-o-prato-da-casa-da-vovo.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: O prato da casa da vovó" />
+        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Cada um com sua sombra" />
+        <img src="assets/fichas-esteira/B11-F116-pinte-o-morango.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Pinte o morango" />
+        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Labirinto do lanche" />
+        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B8-F76-so-cheirar-nao-precisa-comer.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B1-F05-a-mesa-sem-tela.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B7-F63-o-tomate-que-tinha-medo.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B3-F19-a-escada-da-textura.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B4-F32-arco-iris-no-prato.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B2-F12-o-prato-da-casa-da-vovo.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F116-pinte-o-morango.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+      </div>
+    </div>
+    <p class="esteira__nota">Um pedaço do que vem dentro. São 149 fichas, em 11 blocos.</p>
 
     <p class="anatomia__note">✨ Toda ficha de orientação segue exatamente esse mesmo padrão. E todas, sem exceção, funcionam tanto impressas quanto direto na tela do celular ou tablet.</p>
   </div>
