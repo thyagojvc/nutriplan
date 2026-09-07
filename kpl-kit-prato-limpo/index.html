@@ -169,9 +169,9 @@
      invisível e não precisa de JS.
      O espaçamento é margin-right em cada item, NÃO gap: com gap, a emenda entre
      as duas cópias ganha um vão a mais e o -50% deixa de bater. */
-  .esteira__trilho { display: flex; width: max-content; animation: esteira 48s linear infinite; }
+  .esteira__trilho { display: flex; width: max-content; animation: esteira 54s linear infinite; }
   .esteira__trilho img {
-    flex: 0 0 auto; width: 148px; height: 197px; margin-right: 12px;
+    flex: 0 0 auto; width: 232px; height: 309px; margin-right: 12px;
     object-fit: cover; object-position: top;
     border-radius: 10px; border: 1px solid var(--border);
     box-shadow: var(--shadow-sm); background: #fff;
@@ -593,7 +593,24 @@
   .progression__note { font-size: .88rem; color: var(--text); text-align: center; }
 
   /* BLOCOS */
-  .blocos-grid { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  /* Os 11 blocos em faixa lateral em vez de empilhados: era a seção mais alta
+     da página inteira, onze cartões um embaixo do outro. */
+  .blocos-grid {
+    display: flex; gap: 12px;
+    overflow-x: auto; scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    /* Sangra até a borda da tela e devolve o respiro por dentro, pro primeiro
+       card não nascer colado na margem e o último não terminar no corte. */
+    margin: 0 -20px; padding: 4px 20px 14px;
+    scrollbar-width: none;
+  }
+  .blocos-grid::-webkit-scrollbar { display: none; }
+  .blocos-grid .bloco {
+    flex: 0 0 auto; width: 232px; scroll-snap-align: start;
+    display: flex; flex-direction: column;
+  }
+  .blocos-grid .bloco p { flex: 1; }
+  .blocos-hint { text-align: center; font-size: .9rem; color: var(--muted); margin: 2px 0 0; }
   .bloco {
     background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
     box-shadow: var(--shadow-sm); position: relative; overflow: hidden;
@@ -916,7 +933,8 @@
     .hero__h1 { font-size: 2.3rem; }
     .hero__sub { font-size: 1.08rem; }
     .section-title { font-size: 2rem; }
-    .blocos-grid { grid-template-columns: 1fr 1fr; }
+    /* No desktop os cards da faixa dos blocos ficam um pouco maiores. */
+    .blocos-grid .bloco { width: 260px; }
     .steps { flex-direction: row; }
     .step { flex-direction: column; text-align: center; align-items: center; }
   }
@@ -1290,37 +1308,29 @@
 
     <div class="esteira">
       <div class="esteira__trilho">
-        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Caça-palavras dos alimentos" />
-        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Cadu Cenoura, folha para colorir" />
-        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Monte o seu sanduíche" />
-        <img src="assets/fichas-esteira/B8-F76-so-cheirar-nao-precisa-comer.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Só cheirar, não precisa comer" />
-        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Passaporte dos sabores" />
-        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Jogo da memória dos alimentos" />
-        <img src="assets/fichas-esteira/B1-F05-a-mesa-sem-tela.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: A mesa sem tela" />
-        <img src="assets/fichas-esteira/B7-F63-o-tomate-que-tinha-medo.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: O tomate que tinha medo" />
-        <img src="assets/fichas-esteira/B3-F19-a-escada-da-textura.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: A escada da textura" />
-        <img src="assets/fichas-esteira/B4-F32-arco-iris-no-prato.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Arco-íris no prato" />
-        <img src="assets/fichas-esteira/B2-F12-o-prato-da-casa-da-vovo.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: O prato da casa da vovó" />
-        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Cada um com sua sombra" />
-        <img src="assets/fichas-esteira/B11-F116-pinte-o-morango.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Pinte o morango" />
-        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="300" height="400" loading="lazy" decoding="async" alt="Ficha: Labirinto do lanche" />
-        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B8-F76-so-cheirar-nao-precisa-comer.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B1-F05-a-mesa-sem-tela.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B7-F63-o-tomate-que-tinha-medo.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B3-F19-a-escada-da-textura.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B4-F32-arco-iris-no-prato.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B2-F12-o-prato-da-casa-da-vovo.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B11-F116-pinte-o-morango.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
-        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="300" height="400" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Caça-palavras dos alimentos" />
+        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Labirinto do lanche" />
+        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Cada um com sua sombra" />
+        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Cadu Cenoura, folha para colorir" />
+        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Jogo da memória dos alimentos" />
+        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Monte o seu sanduíche" />
+        <img src="assets/fichas-esteira/B11-F124-colorir-por-numeros.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Colorir por números" />
+        <img src="assets/fichas-esteira/B11-F114-ache-as-diferencas.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Ache as diferenças" />
+        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Passaporte dos sabores" />
+        <img src="assets/fichas-esteira/B11-F117-quebra-cabeca-da-abobora.jpg" width="480" height="640" loading="lazy" decoding="async" alt="Ficha: Quebra-cabeça da abóbora" />
+        <img src="assets/fichas-esteira/B11-F109-caca-palavras-dos-alimentos.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F120-labirinto-do-lanche.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F108-cada-um-com-sua-sombra.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B10-F06-cadu-cenoura.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B6-F52-memoria-dos-alimentos.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B5-F43-monte-o-seu-sanduiche.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F124-colorir-por-numeros.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F114-ache-as-diferencas.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B9-F88-passaporte-dos-sabores.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
+        <img src="assets/fichas-esteira/B11-F117-quebra-cabeca-da-abobora.jpg" width="480" height="640" loading="lazy" decoding="async" aria-hidden="true" alt="" />
       </div>
     </div>
-    <p class="esteira__nota">Um pedaço do que vem dentro. São 149 fichas, em 11 blocos.</p>
+    <p class="esteira__nota">Dez das 149. Em todas elas quem preenche é a criança.</p>
 
     <p class="anatomia__note">✨ Toda ficha de orientação segue exatamente esse mesmo padrão. E todas, sem exceção, funcionam tanto impressas quanto direto na tela do celular ou tablet.</p>
   </div>
@@ -1336,6 +1346,7 @@
     <p class="section-sub">Cada bloco ataca um lado da seletividade. Juntos, formam um caminho completo.</p>
 
     <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
+    <p class="blocos-hint">👉 Arraste para o lado para ver os 11</p>
 
     <div class="blocos-total">
       <div class="num"><span class="plus">+</span><span id="total-atividades">149</span></div>
