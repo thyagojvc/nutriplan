@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KPL - Kit Prato Limpo | Sistema de 86 atividades para destravar a alimentação infantil</title>
-<meta name="description" content="Kit digital com 86 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
+<title>KPL - Kit Prato Limpo | Sistema de 149 atividades para destravar a alimentação infantil</title>
+<meta name="description" content="Kit digital com 149 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
 
 <!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 19,90,
      Completo R$ 37) é de novo o
@@ -18,7 +18,7 @@
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="KPL - Kit Prato Limpo" />
-<meta property="og:description" content="Sistema de 86 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
+<meta property="og:description" content="Sistema de 149 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
 <meta property="og:image" content="assets/og-image.png" />
 <meta property="og:url" content="https://kitpratolimpo.com.br" />
 <meta property="og:locale" content="pt_BR" />
@@ -916,7 +916,7 @@
       <span class="hero__full">Kit Prato Limpo</span>
     </div>
     <h1 class="hero__h1">Descubra em 2 minutos qual atividade <span class="hl">destrava a alimentação</span> do seu filho hoje</h1>
-    <p class="hero__sub">São 86 atividades prontas. Você procura o que o seu filho faz na hora da comida e já vê qual delas usar.</p>
+    <p class="hero__sub">São 149 atividades prontas. Você procura o que o seu filho faz na hora da comida e já vê qual delas usar.</p>
     <div class="hero__promise">
       <span class="ic">🍽️</span>
       <p>A primeira ficha você aplica no jantar de hoje, com o que já tem na cozinha.</p>
@@ -1035,7 +1035,7 @@
       </div>
     </div>
 
-    <p class="indice-close">O índice de consulta rápida cobre as <strong>86 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
+    <p class="indice-close">O índice de consulta rápida cobre as <strong>149 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
   </div>
 </section>
 
@@ -1277,7 +1277,7 @@
     <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
 
     <div class="blocos-total">
-      <div class="num"><span class="plus">+</span><span id="total-atividades">86</span></div>
+      <div class="num"><span class="plus">+</span><span id="total-atividades">149</span></div>
       <p>atividades prontas para aplicar</p>
     </div>
   </div>
@@ -1285,7 +1285,7 @@
 
 <div class="wrap">
   <div class="cta-meio cta-meio--solo">
-    <a href="#checkout" class="btn" data-cta="blocos">Quero as 86 atividades prontas →</a>
+    <a href="#checkout" class="btn" data-cta="blocos">Quero as 149 atividades prontas →</a>
     <p class="btn-note">Acesso imediato, pelo Pix</p>
   </div>
 </div>
@@ -1460,6 +1460,7 @@
           <div class="plano__price-old">Tudo separado: R$ 126</div>
           <div class="plano__price">R$ 37<span class="cents">,00</span></div>
           <ul class="plano__list">
+            <li><span class="ic">✅</span><span class="plano__hl">149 atividades em 11 blocos</span></li>
             <li><span class="ic">✅</span>Tudo do Essencial, e mais:</li>
             <!-- ORDEM (27/08): app, jogo e atualizações vêm primeiro porque são os
                  três de maior valor percebido, e eram justamente os três que estavam
@@ -1778,13 +1779,12 @@ function renderBlocos() {
            loading="lazy" decoding="async" alt="Exemplo de ficha do bloco ${b.nome}">
       <div class="bloco__texto">
         <div class="bloco__head"><div class="bloco__num">${b.n}</div><div class="bloco__name">${b.nome}</div></div>
+        <span class="bloco__count">${b.qtd} atividades</span>
         <p>${b.desc}</p>
       </div>
     </div>`).join('');
-  // NÃO recalcula o total a partir dos blocos: a soma real dá 149 e a página
-  // anuncia 86 de propósito (message match com o criativo que vende). O número
-  // fica fixo no HTML. Se um dia a página voltar a anunciar o total real, é só
-  // devolver as duas linhas de soma que estavam aqui.
+  const total = BLOCOS.reduce((s,b) => s + b.qtd, 0);
+  $('#total-atividades').textContent = total;
 }
 
 // Os dois primeiros sobem pro bloco de prova adiantada (#depo-cedo) e os
