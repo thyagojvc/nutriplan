@@ -80,10 +80,10 @@
       <p class="sub" id="updated"></p>
 
       <div class="ranges" id="ranges">
-        <button class="range-btn" data-range="today">Hoje</button>
+        <button class="range-btn active" data-range="today">Hoje</button>
         <button class="range-btn" data-range="7d">7 dias</button>
         <button class="range-btn" data-range="30d">30 dias</button>
-        <button class="range-btn active" data-range="all">Tudo</button>
+        <button class="range-btn" data-range="all">Tudo</button>
         <button class="range-btn" id="refresh-btn" type="button" style="margin-left:auto">↻ Atualizar</button>
       </div>
 
@@ -187,7 +187,11 @@
 const $ = (s) => document.querySelector(s);
 let KEY = new URLSearchParams(window.location.search).get('key') || sessionStorage.getItem('funil_key') || '';
 if (KEY) sessionStorage.setItem('funil_key', KEY);
-let RANGE = 'all';
+// Abre em "Hoje": o painel e consultado no dia a dia pra saber como HOJE esta
+// indo, e abrir em "Tudo" fazia o numero do dia ficar diluido no historico.
+// O botao marcado como active la em cima tem que continuar batendo com este
+// valor, senao a pilha destaca um periodo e a tela mostra outro.
+let RANGE = 'today';
 
 const DEVICE_LABELS = { mobile: 'Celular', tablet: 'Tablet', desktop: 'Computador' };
 const PLATFORM_LABELS = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Outro' };
