@@ -156,9 +156,16 @@
       </table>
       <p class="note">Nome preenchido + avançou pro e-mail. Mais forte que "chegou na seção checkout" (que só mostra que rolou até lá) — mas não cruza com quem já comprou, então tem gente aqui que já está na lista de Vendas.</p>
 
+      <h2>Vendas por sistema</h2>
+      <table>
+        <thead><tr><th>Sistema</th><th class="num">Vendas</th><th class="num">%</th></tr></thead>
+        <tbody id="sales-platforms-body"></tbody>
+      </table>
+      <p class="note">Só das vendas do período, não das visitas. "Sem dado" são as compras anteriores a 07/09, quando o campo passou a ser gravado, e as que entraram pela rede de segurança do webhook, que chega pelo servidor da PushInPay e não pelo aparelho de quem comprou.</p>
+
       <h2>Vendas</h2>
       <table>
-        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>IP</th><th class="num">Valor</th></tr></thead>
+        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>Sistema</th><th>IP</th><th class="num">Valor</th></tr></thead>
         <tbody id="sales-body"></tbody>
       </table>
 
@@ -352,6 +359,14 @@ function render(data) {
     ? pctRows(data.platforms.map((r) => ({ ...r, label: PLATFORM_LABELS[r.key] || r.key })), totalVisits)
     : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
 
+  // Vendas por sistema. A base do % e o total de VENDAS do periodo, e nao o
+  // de visitas: a pergunta aqui e "de quem comprou, quantos eram iPhone".
+  $('#sales-platforms-body').innerHTML = (data.salesPlatforms || []).length
+    ? pctRows(data.salesPlatforms.map((r) => ({
+        ...r, label: r.key === '—' ? 'Sem dado' : (PLATFORM_LABELS[r.key] || r.key),
+      })), data.salesCount)
+    : '<tr><td colspan="3" class="muted">Sem vendas no período.</td></tr>';
+
   // Vendas
   $('#sales-body').innerHTML = data.sales.length
     ? data.sales.map((s) => `<tr>
@@ -359,10 +374,11 @@ function render(data) {
         <td>${esc(s.name)}</td>
         <td>${esc(s.tierName)}</td>
         <td class="muted">${esc(s.adRef)}</td>
+        <td class="muted">${esc(s.platform ? (PLATFORM_LABELS[s.platform] || s.platform) : '—')}</td>
         <td class="muted">${esc(s.ip || '—')}</td>
         <td class="num">${fmtBRL(s.valueCents)}</td>
       </tr>`).join('')
-    : '<tr><td colspan="6" class="muted">Sem vendas no período.</td></tr>';
+    : '<tr><td colspan="7" class="muted">Sem vendas no período.</td></tr>';
 
   // Visitantes
   $('#individuals-body').innerHTML = data.individuals.length

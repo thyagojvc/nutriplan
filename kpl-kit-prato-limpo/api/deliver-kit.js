@@ -34,6 +34,7 @@ const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
 const { tierFromValueCents } = require('./_catalog');
 const { redis } = require('./_kv');
+const { detectPlatform } = require('./_ua');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
@@ -117,6 +118,10 @@ module.exports = async (req, res) => {
     const tier = tierFromValueCents(valorCents);
     const tierName = tier.name;
     const clientIpAddress = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || null;
+    // Mesma derivacao do presence.js, e no servidor de proposito: esta
+    // chamada parte do navegador de quem comprou (tela de sucesso), entao o
+    // User-Agent aqui e o do aparelho dela.
+    const platform = detectPlatform(String(req.headers['user-agent'] || ''));
 
     // Registra a venda no painel /funil (sorted set por tempo). Não bloqueia a
     // entrega se o Redis falhar — é só métrica.
@@ -137,7 +142,7 @@ module.exports = async (req, res) => {
       .then((lock) => {
         if (lock !== 'OK') return null;
         return Promise.resolve()
-          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: clientIpAddress, ts: now })))
+          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: clientIpAddress, p: platform, ts: now })))
           .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
       })
       .catch((err) => console.error('sales record error', err));

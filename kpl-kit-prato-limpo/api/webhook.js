@@ -101,7 +101,7 @@ async function deliverKit(transaction) {
     .then((lock) => {
       if (lock !== 'OK') return null;
       return Promise.resolve()
-        .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, ts: now })))
+        .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, p: null, ts: now })))
         .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
     })
     .catch((err) => console.error('webhook: sales record error', err));

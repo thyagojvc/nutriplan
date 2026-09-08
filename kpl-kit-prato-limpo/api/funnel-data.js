@@ -219,6 +219,9 @@ module.exports = async (req, res) => {
       .filter((s) => range === 'all' || s.ts >= sinceTs)
       .slice(0, 50);
     const revenueCents = sales.reduce((acc, s) => acc + (s.valueCents || 0), 0);
+    // Sai do array de vendas que ja foi lido acima: nenhuma leitura nova no
+    // Redis. groupCount ja transforma null em '—', que o painel rotula.
+    const salesPlatforms = groupCount(sales, 'platform');
 
     const payload = {
       now,
@@ -238,6 +241,7 @@ module.exports = async (req, res) => {
       platforms,
       sales,
       salesCount: sales.length,
+      salesPlatforms,
       revenueCents,
       individuals: rows,
     };
@@ -279,6 +283,11 @@ function parseSales(arr) {
       valueCents: Number(obj.v) || 0,
       adRef: obj.a || 'Sem anúncio',
       ip: obj.i || null,
+      // Vendas gravadas antes de 07/09 nao tem plataforma, e as que entram
+      // pela rede de seguranca do webhook nunca vao ter. As duas viram
+      // 'Sem dado' no painel em vez de sumir da tabela: sumindo, a
+      // porcentagem mentiria por omissao.
+      platform: obj.p || null,
       ts: Number(arr[i + 1]) || obj.ts || 0,
     });
   }

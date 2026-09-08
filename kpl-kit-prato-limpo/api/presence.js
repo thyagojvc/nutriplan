@@ -14,6 +14,7 @@
 const { redisPipeline } = require('./_kv');
 const { SECTIONS, QUIZ_STEPS } = require('./_sections');
 const { isDatacenterIP } = require('./_bot-filter');
+const { detectPlatform } = require('./_ua');
 
 const VALID_IDS = new Set(SECTIONS.map((s) => s.id));
 const VALID_QUIZ_IDS = new Set(QUIZ_STEPS.map((s) => s.id));
@@ -23,13 +24,6 @@ function detectDevice(ua) {
   if (/iPad|Tablet/i.test(ua)) return 'tablet';
   if (/Mobile|iPhone|Android/i.test(ua)) return 'mobile';
   return 'desktop';
-}
-function detectPlatform(ua) {
-  if (/iPhone|iPad|iPod/i.test(ua)) return 'iOS';
-  if (/Android/i.test(ua)) return 'Android';
-  if (/Windows/i.test(ua)) return 'Windows';
-  if (/Macintosh|Mac OS/i.test(ua)) return 'Mac';
-  return 'Other';
 }
 // Onde a página abriu. Cruzado com a plataforma, é o corte que separa "iOS vai
 // mal" de "webview do Instagram vai mal" — sem ele, um problema que só existe
