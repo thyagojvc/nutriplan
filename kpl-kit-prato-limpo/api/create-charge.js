@@ -93,7 +93,7 @@ module.exports = async (req, res) => {
     // nome, e-mail e telefone. O CPF do aviso do webhook é o
     // `payer_national_registration`, capturado pela PushInPay direto do banco do
     // pagador. Ou seja, era um campo a mais no formulário sem nenhuma função,
-    // num checkout de R$ 19,90 comprado por impulso.
+    // num checkout de R$ 10,00 comprado por impulso.
     if (name.length < 5 || !isEmail(email) || phone.length < 10) {
       return res.status(400).json({ error: 'Dados do cliente inválidos.' });
     }

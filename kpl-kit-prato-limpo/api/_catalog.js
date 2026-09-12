@@ -4,30 +4,30 @@
 
 // Dois planos: Essencial (barato, atrai) e Completo (premium, sobe o ticket).
 const TIERS = {
-  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1990 },
-  completo: { id: 'completo', name: 'KPL Completo', priceCents: 3700 },
+  essencial: { id: 'essencial', name: 'KPL Essencial', priceCents: 1000 },
+  completo: { id: 'completo', name: 'KPL Completo', priceCents: 2990 },
   // Mesmo produto do Completo, com desconto. Só é enviado pelo front quando a
   // pessoa aceita o pop-up de downsell (ia levar o Essencial e sobe pro Completo).
-  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 2390 },
-  // UPGRADE (21/08, repreçado em 27/08 e em 01/09): quem já comprou o
-  // Essencial por R$ 19,90 completa por R$ 8,90 e passa a ter tudo do
-  // Completo, inclusive o app. Total pago vira R$ 28,80, contra R$ 37 de quem
-  // compra o Completo direto: a diferença é de propósito, pra ela sentir que
-  // ganhou por ter começado pequeno, e não que foi punida.
+  completo_promo: { id: 'completo_promo', name: 'KPL Completo', priceCents: 1990 },
+  // UPGRADE (21/08, repreçado em 27/08, 01/09, 07/09 e 12/09): quem já comprou
+  // o Essencial por R$ 10,00 completa por R$ 12,70 e passa a ter tudo do
+  // Completo, inclusive o app. Total pago vira R$ 22,70, contra R$ 29,90 de
+  // quem compra o Completo direto: a diferença é de propósito, pra ela sentir
+  // que ganhou por ter começado pequeno, e não que foi punida.
   //
-  // 07/09: quando o Essencial subiu pra 19,90, manter o upgrade em 17,90 faria
-  // o caminho Essencial + upgrade custar 37,80, MAIS CARO que o Completo
-  // direto. Este valor NUNCA pode ficar parado quando um dos dois muda.
+  // ESTE VALOR NUNCA PODE FICAR PARADO quando o Essencial ou o Completo muda.
+  // Ele é DERIVADO dos dois, e as duas pontas do erro já aconteceram aqui:
+  //   - alto demais: com o Essencial a 19,90, um upgrade de 17,90 fazia o
+  //     caminho longo custar 37,80, MAIS CARO que os 37,00 do Completo direto;
+  //   - barato demais: com o Essencial a 10,00, um upgrade de 8,90 faria o
+  //     total ser 18,90, só 63% do Completo, e aí ninguém escolhe o Completo de
+  //     primeira, porque entrar pelo Essencial sairia bem mais barato.
   //
-  // O valor ACOMPANHA o Completo, não é solto: 28,80 é 78% de 37, a mesma
-  // proporção que 35,80 era de 47. Ele NÃO pode ficar parado quando o Completo
-  // muda. Se tivesse continuado em R$ 15,90 agora que o Essencial caiu pra
-  // R$ 10, o caminho Essencial + upgrade sairia por R$ 25,90 contra R$ 37 no
-  // direto, ou seja, 30% mais barato pelo caminho mais longo, e ninguém
-  // escolheria o Completo de primeira.
+  // A regra: essencial + upgrade tem que cair entre 76% e 78% do Completo.
+  // Hoje: 10,00 + 12,70 = 22,70, que é 76% de 29,90.
   // Entregue como Completo sem precisar de mais nada: download.js e kit-access.js
   // só desviam pro Essencial quando o tier é literalmente 'essencial'.
-  upgrade: { id: 'upgrade', name: 'KPL Upgrade (Essencial -> Completo)', priceCents: 890 },
+  upgrade: { id: 'upgrade', name: 'KPL Upgrade (Essencial -> Completo)', priceCents: 1270 },
   // EDIÇÃO PROFISSIONAL (22/08): outro público (nutricionista que atende
   // infantil), outro material (30 fichas de consultório na frente + licença de
   // uso com pacientes) e outro PDF. Vendida em /profissional, que hoje está
@@ -65,13 +65,23 @@ function computeOrder(tierId, bumpIds = []) {
 // Dado um valor em centavos, descobre qual plano foi (usado na entrega/aviso,
 // pra o admin saber o que mandar por WhatsApp). Casa pelo preço base do tier.
 //
-// CUIDADO com pagamento ANTIGO: os preços já mudaram duas vezes e os valores
-// se cruzaram, então casar por valor erra o tier de venda velha.
-//   R$ 19,90 = completo_promo antes de 27/08, essencial de 27/08 a 31/08, e
-//              hoje não casa com tier nenhum.
-//   R$ 29,90 = completo antes de 27/08, completo_promo de 27/08 a 31/08, e
-//              hoje não casa com nada.
+// CUIDADO com pagamento ANTIGO: os preços já mudaram várias vezes e os valores
+// se CRUZARAM, então casar por valor erra o tier de venda velha.
+//
+// Depois do repreço de 12/09, dois valores voltaram a casar com um tier, só que
+// com significado DIFERENTE do que tinham antes. Isso é pior que não casar:
+// quando não casa, cai na regra do mais próximo por baixo e o número destoa;
+// quando casa errado, a entrega manda o kit errado em silêncio.
+//   R$ 19,90 = completo_promo antes de 27/08
+//              essencial de 27/08 a 31/08 e de 07/09 a 12/09
+//              completo_promo de novo hoje  <- casa, e entrega o COMPLETO
+//   R$ 29,90 = completo antes de 27/08
+//              completo_promo de 27/08 a 31/08
+//              completo de novo hoje        <- casa
+//   R$ 23,90 = completo_promo de 07/09 a 12/09, hoje não casa com nada.
+//   R$ 37,00 = completo de 07/09 a 12/09, hoje não casa com nada.
 //   R$ 47,00 = completo até 31/08, hoje não casa com nada.
+//   R$ 8,90 e R$ 15,90 = upgrades antigos, hoje não casam com nada.
 // Só importa se você reenviar o POST de uma venda velha na PushInPay:
 // reconferir o tier na mão antes, senão a pessoa recebe o kit errado.
 function tierFromValueCents(valueCents) {
