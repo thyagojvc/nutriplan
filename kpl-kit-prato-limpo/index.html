@@ -480,6 +480,12 @@
     padding: 5px 12px; font-size: .84rem; font-weight: 700; color: var(--text);
   }
   .ficha__steps { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 9px; }
+  /* O texto do passo PRECISA vir dentro de um <span>, e nao solto depois do
+     numero. Em container flex, cada trecho contiguo de conteudo inline vira um
+     item anonimo, entao um <b> no meio da frase parte o texto em tres itens e
+     o passo aparece em colunas, com o gap entre elas. Foi o que aconteceu com
+     o passo 5 ("nao corrija na hora"). Mesma regra vale pra .ba__list e
+     .pintar-lista, que hoje escapam so porque nao tem tag no meio do texto. */
   .ficha__steps li { display: flex; gap: 10px; align-items: flex-start; font-size: .93rem; color: var(--text); margin: 0; line-height: 1.4; }
   .ficha__steps li .sn {
     flex: 0 0 auto; width: 24px; height: 24px; border-radius: 50%;
@@ -1220,11 +1226,11 @@
         <div class="ficha__block">
           <div class="ficha__label">📋 Passo a passo</div>
           <ol class="ficha__steps">
-            <li><span class="sn">1</span>Imprima a ficha ou abra a atividade na tela do celular.</li>
-            <li><span class="sn">2</span>Aponte a primeira sombra e pergunte: que alimento faz essa sombra?</li>
-            <li><span class="sn">3</span>Ela liga o alimento à sombra dele, com lápis ou com o dedo.</li>
-            <li><span class="sn">4</span>A cada acerto, fale o nome do alimento em voz alta junto com ela.</li>
-            <li><span class="sn">5</span>Se ela errar, <b>não corrija na hora</b>. Diga o nome certo e siga. Não fale em comer.</li>
+            <li><span class="sn">1</span><span>Imprima a ficha ou abra a atividade na tela do celular.</span></li>
+            <li><span class="sn">2</span><span>Aponte a primeira sombra e pergunte: que alimento faz essa sombra?</span></li>
+            <li><span class="sn">3</span><span>Ela liga o alimento à sombra dele, com lápis ou com o dedo.</span></li>
+            <li><span class="sn">4</span><span>A cada acerto, fale o nome do alimento em voz alta junto com ela.</span></li>
+            <li><span class="sn">5</span><span>Se ela errar, <b>não corrija na hora</b>. Diga o nome certo e siga. Não fale em comer.</span></li>
           </ol>
         </div>
 
