@@ -137,6 +137,20 @@
      deles só empilharia mais vazio. */
   .cta-meio--solo { margin-top: 2px; margin-bottom: 26px; }
 
+  /* Bloco da autora do método (Cristina Campos). Volta em 13/09 com a mesma
+     estrutura do bloco removido em 08/09. */
+  .autor { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    box-shadow: var(--shadow-sm); padding: 18px; margin-bottom: 22px; }
+  .autor__topo { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .autor__foto { flex: 0 0 auto; width: 84px; height: 84px; border-radius: 50%; object-fit: cover;
+    object-position: 50% 22%; border: 3px solid var(--mint); }
+  .autor__nome { font-family: var(--heading); font-weight: 800; color: var(--ink); font-size: 1.15rem; line-height: 1.2; }
+  .autor__cargo { font-size: .9rem; color: var(--green-dark); font-weight: 700; }
+  .autor p { font-size: .95rem; color: var(--text); margin-bottom: 10px; }
+  .autor p:last-child { margin-bottom: 0; }
+  .autor__frase { font-family: var(--heading); font-weight: 700; color: var(--ink);
+    border-left: 3px solid var(--orange); padding-left: 12px; }
+
   /* Qualificação da MÃE (a lista de sintomas da criança já existe lá em cima,
      na seção de dor). Esta fica colada na decisão de propósito. */
   .praquem--voce { background: var(--mint); border-color: #BFE0C4; }
@@ -315,6 +329,7 @@
     border-radius: var(--radius-sm); border: 1px solid var(--border);
     box-shadow: var(--shadow-sm); background: var(--card);
   }
+  .foto--prova { max-width: 720px; margin: 0 auto; }
   .foto figcaption {
     margin-top: 10px; font-size: .92rem; color: var(--muted);
     text-align: center; line-height: 1.45;
@@ -1349,6 +1364,41 @@
   </div>
 </div>
 
+
+<!-- =============== 6.5 APLICAÇÃO REAL (foto de prova) ===============
+     Fora da lista de api/_sections.js de propósito, igual à seção "pintar": o
+     índice daquela lista vira o maxSection gravado por visitante, então incluir
+     esta seção lá remontaria o significado de todo o dado já coletado. -->
+<section id="aplicacao">
+  <div class="wrap">
+    <div style="text-align:center">
+      <span class="eyebrow">Aplicação real</span>
+    </div>
+    <h2 class="section-title">Testado e aprovado por <span class="hl">nutricionistas infantis</span></h2>
+    <p class="section-sub">Não é teoria montada na frente de uma tela. As mesmas atividades do kit já foram aplicadas com crianças que têm seletividade alimentar, em escolas.</p>
+
+    <div class="autor">
+      <div class="autor__topo">
+        <img class="autor__foto" src="assets/autor-cristina.jpg" width="640" height="800"
+             loading="lazy" decoding="async" alt="Cristina Campos, nutricionista, de jaleco branco em um consultório" />
+        <div>
+          <div class="autor__nome">Cristina Campos</div>
+          <div class="autor__cargo">Nutricionista · USP</div>
+        </div>
+      </div>
+      <p>Formada pela Universidade de São Paulo, com especialização em nutrição infantil e seletividade alimentar.</p>
+      <p class="autor__frase">Foi ela quem desenvolveu o método por trás do Kit Prato Limpo. Cada uma das 149 fichas foi montada em cima dele.</p>
+    </div>
+
+    <div class="foto foto--prova">
+      <figure>
+        <img src="assets/foto-aplicacao-escola.jpg" width="1200" height="796" loading="lazy" decoding="async"
+             alt="Profissional de jaleco aplicando atividades com cartelas de alimentos junto com um grupo de crianças em uma escola" />
+        <figcaption>Atividades sendo aplicadas com crianças em uma escola. Os rostos foram borrados para preservar a identidade delas.</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
 
 <!-- ======================= 7. DEPOIMENTOS ======================= -->
 <section id="depoimentos" class="depos">
