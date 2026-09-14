@@ -10,6 +10,9 @@ const SECTIONS = [
   // a essa data tem esses dois índices trocados em relação ao que a pessoa viu.
   { id: 'dores', label: 'A dor (agitação)' },
   { id: 'indice', label: 'Índice de sintomas' },
+  // 14/09: a secao #antesdepois saiu da pagina. A entrada FICA de proposito:
+  // tirar daqui remapearia o indice de todo dado ja coletado. Hoje a linha dela
+  // no painel significa "passou daquele ponto da pagina".
   { id: 'antesdepois', label: 'Antes vs Depois' },
   { id: 'como', label: 'Como funciona' },
   { id: 'ficha', label: 'Ficha de exemplo' },
