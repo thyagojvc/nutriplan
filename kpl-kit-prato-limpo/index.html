@@ -1088,17 +1088,6 @@
   </div>
 </section>
 
-<!-- =============== 1.7 PROVA SOCIAL ADIANTADA ===============
-     Fora da lista de api/_sections.js de propósito, igual a "pintar": o índice
-     daquela lista vira o maxSection gravado por visitante, e incluir seções
-     novas lá remontaria o dado já coletado. -->
-<section id="prova-cedo" class="prova-cedo">
-  <div class="wrap">
-    <h2 class="section-title">Mães que conseguiram <span class="hl">destravar a alimentação</span> de seus filhos</h2>
-    <div class="stories-grid" id="depo-cedo"><!-- 2 primeiros de DEPOIMENTOS via JS --></div>
-  </div>
-</section>
-
 <!-- ======================= 2. COMO FUNCIONA ======================= -->
 <section id="como">
   <div class="wrap">
@@ -1340,7 +1329,7 @@
     <div style="text-align:center">
       <span class="eyebrow">Quem já usa</span>
     </div>
-    <h2 class="section-title">Mais mães que <span class="hl">destravam</span> a mesa</h2>
+    <h2 class="section-title">Mães que <span class="hl">destravaram</span> a mesa</h2>
     <p class="section-sub">Depoimentos reais de quem já aplicou o kit em casa.</p>
 
     <div class="stories-grid" id="depo-scroll"><!-- preenchido via JS a partir de DEPOIMENTOS --></div>
@@ -1769,12 +1758,9 @@ function renderBlocos() {
   $('#total-atividades').textContent = total;
 }
 
-// Os dois primeiros sobem pro bloco de prova adiantada (#depo-cedo) e os
-// demais ficam na seção de depoimentos (#depo-scroll). Mesma fonte de dados,
-// pra não existir depoimento em dois lugares nem lista duplicada pra manter.
+// 14/09: os 4 depoimentos voltaram a ficar juntos, na secao de depoimentos.
 function renderDepoimentos() {
-  cardsDepoimento(DEPOIMENTOS.slice(0, 2), '#depo-cedo');
-  cardsDepoimento(DEPOIMENTOS.slice(2), '#depo-scroll');
+  cardsDepoimento(DEPOIMENTOS, '#depo-scroll');
 }
 
 function cardsDepoimento(lista, alvo) {
