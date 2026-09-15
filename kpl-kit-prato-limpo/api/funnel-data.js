@@ -267,6 +267,15 @@ function arrToObj(arr) {
   return out;
 }
 
+// Apelidos das campanhas. O anuncio manda o ID ({{campaign.id}}), que e unico e
+// nao muda, e aqui ele vira um nome legivel so na hora de mostrar. Nada e
+// regravado no Redis, entao vale pras vendas antigas e pras novas.
+// Campanha nova: e so acrescentar o ID aqui.
+const CAMPAIGN_NAMES = {
+  '120251182110130180': 'Rumo a Glória',
+  '120251968043270180': 'Prezin',
+};
+
 // ZREVRANGE ... WITHSCORES devolve [member, score, member, score, ...].
 function parseSales(arr) {
   if (!Array.isArray(arr)) return [];
@@ -283,8 +292,9 @@ function parseSales(arr) {
       valueCents: Number(obj.v) || 0,
       adRef: obj.a || 'Sem anúncio',
       // Campanha e conjunto: gravados a partir de 15/09. Venda antiga vem null.
-      campaign: obj.c || null,
-      adset: obj.s || null,
+      campaign: CAMPAIGN_NAMES[obj.c] || obj.c || null,
+      // Com a campanha ja nomeada, o ID do conjunto so polui a coluna.
+      adset: CAMPAIGN_NAMES[obj.c] ? null : (obj.s || null),
       ip: obj.i || null,
       // Vendas gravadas antes de 07/09 nao tem plataforma, e as que entram
       // pela rede de seguranca do webhook nunca vao ter. As duas viram
