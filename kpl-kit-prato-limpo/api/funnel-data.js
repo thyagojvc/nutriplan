@@ -282,6 +282,9 @@ function parseSales(arr) {
       // somar (0 + "2990" + "1000" virava "029901000" no faturamento total).
       valueCents: Number(obj.v) || 0,
       adRef: obj.a || 'Sem anúncio',
+      // Campanha e conjunto: gravados a partir de 15/09. Venda antiga vem null.
+      campaign: obj.c || null,
+      adset: obj.s || null,
       ip: obj.i || null,
       // Vendas gravadas antes de 07/09 nao tem plataforma, e as que entram
       // pela rede de seguranca do webhook nunca vao ter. As duas viram

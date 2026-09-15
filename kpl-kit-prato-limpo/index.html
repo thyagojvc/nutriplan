@@ -2040,6 +2040,21 @@ function getAdRef() {
   } catch (e) { return ''; }
 }
 
+// Campanha e conjunto de origem (utm_campaign={{campaign.name}} e
+// utm_term={{adset.name}} no Meta). Mesma logica first-touch do getAdRef: pega
+// da URL na entrada e guarda na sessao, pra chegar ate o checkout.
+function getUtmRef(param, key) {
+  try {
+    const v = new URLSearchParams(location.search).get(param);
+    if (v) { const s = v.slice(0, 120); sessionStorage.setItem(key, s); return s; }
+    return sessionStorage.getItem(key) || '';
+  } catch (e) { return ''; }
+}
+const getCampaignRef = () => getUtmRef('utm_campaign', 'kpl_campaign');
+const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset');
+
+getCampaignRef(); getAdsetRef();
+
 function getVisitorId() {
   try {
     let id = sessionStorage.getItem(VISITOR_ID_KEY);
@@ -2180,6 +2195,8 @@ async function startCharge() {
     tier: selectedTier,
     bumps: getSelectedBumps().map(b => b.id),
     adRef: getAdRef(),
+    campaign: getCampaignRef(),
+    adset: getAdsetRef(),
     ...(fbclid ? { fbclid } : {}),
   };
 
@@ -2335,6 +2352,8 @@ async function deliverKit() {
         email: currentCustomer.email,
         phone: currentCustomer.phone,
         adRef: getAdRef(),
+        campaign: getCampaignRef(),
+        adset: getAdsetRef(),
         ...(fbclid ? { fbclid } : {}),
       }),
     });

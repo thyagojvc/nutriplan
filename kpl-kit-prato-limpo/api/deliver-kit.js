@@ -138,11 +138,14 @@ module.exports = async (req, res) => {
     const now = Date.now();
     const adRef = String(body.adRef || '').replace(/[^\w\s\-.|:/]/g, '').trim().slice(0, 120) || 'Sem anúncio';
     const firstName = (name || '').trim().split(/\s+/)[0] || 'Cliente';
+    const cleanRef = (v) => String(v || '').replace(/[^\p{L}\p{N}\s\-–—.|:/_+()]/gu, '').trim().slice(0, 120) || null;
+    const campaign = cleanRef(body.campaign);
+    const adset = cleanRef(body.adset);
     redis('SET', `sale-logged:${paymentId}`, '1', 'NX', 'EX', 86400)
       .then((lock) => {
         if (lock !== 'OK') return null;
         return Promise.resolve()
-          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: clientIpAddress, p: platform, ts: now })))
+          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, c: campaign, s: adset, i: clientIpAddress, p: platform, ts: now })))
           .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
       })
       .catch((err) => console.error('sales record error', err));

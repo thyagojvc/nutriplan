@@ -165,7 +165,7 @@
 
       <h2>Vendas</h2>
       <table>
-        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>Sistema</th><th>IP</th><th class="num">Valor</th></tr></thead>
+        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>Sistema</th><th>IP</th><th class="num">Valor</th></tr></thead>
         <tbody id="sales-body"></tbody>
       </table>
 
@@ -378,11 +378,12 @@ function render(data) {
         <td>${esc(s.name)}</td>
         <td>${esc(s.tierName)}</td>
         <td class="muted">${esc(s.adRef)}</td>
+        <td class="muted">${esc([s.campaign, s.adset].filter(Boolean).join(' · ') || '—')}</td>
         <td class="muted">${esc(s.platform ? (PLATFORM_LABELS[s.platform] || s.platform) : '—')}</td>
         <td class="muted">${esc(s.ip || '—')}</td>
         <td class="num">${fmtBRL(s.valueCents)}</td>
       </tr>`).join('')
-    : '<tr><td colspan="7" class="muted">Sem vendas no período.</td></tr>';
+    : '<tr><td colspan="8" class="muted">Sem vendas no período.</td></tr>';
 
   // Visitantes
   $('#individuals-body').innerHTML = data.individuals.length

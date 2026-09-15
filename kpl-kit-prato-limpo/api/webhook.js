@@ -96,12 +96,14 @@ async function deliverKit(transaction) {
   const tierName = tierFromValueCents(valorCents).name;
   const firstName = ((backup && backup.name) || transaction.payer_name || '').trim().split(/\s+/)[0] || 'Cliente';
   const adRef = (backup && backup.adRef) || 'Sem anúncio';
+  const campaign = (backup && backup.campaign) || null;
+  const adset = (backup && backup.adset) || null;
   const now = Date.now();
   redis('SET', `sale-logged:${paymentId}`, '1', 'NX', 'EX', 86400)
     .then((lock) => {
       if (lock !== 'OK') return null;
       return Promise.resolve()
-        .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, i: null, p: null, ts: now })))
+        .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, c: campaign, s: adset, i: null, p: null, ts: now })))
         .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
     })
     .catch((err) => console.error('webhook: sales record error', err));
