@@ -2096,7 +2096,14 @@ function initPresenceTracking() {
   ids.forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
 
   const visitorId = getVisitorId();
-  const adRef = getAdRef();
+  // Anúncio, campanha e conjunto viajam empacotados num campo só, separados por
+  // "~". Motivo: o hash do visitante já grava adRef com HSETNX, e dois campos
+  // novos seriam dois comandos a mais em CADA batida de presença, o que a cota
+  // do Upstash não comporta. O "~" nunca aparece dentro de um valor: o
+  // sanitizador do servidor só o aceita como separador e aqui ele é removido de
+  // cada parte antes de juntar.
+  const packRef = (...parts) => parts.map((p) => String(p || '').split('~').join('')).join('~');
+  const adRef = packRef(getAdRef(), getCampaignRef(), getAdsetRef());
 
   // Sinais de entrada, pro painel separar "página nasceu escondida (preload do
   // in-app do IG/FB) e ninguém viu" de "alguém viu e desistiu no topo".

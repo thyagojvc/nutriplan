@@ -49,8 +49,8 @@ function groupCount(rows, field) {
 // acento aparece percent-encoded ("Organico1+-+Cal%C3%A7a+Cinza"). Sem decodificar,
 // o MESMO criativo vira duas linhas no painel e a leitura por anúncio racha.
 // '+' vira espaço (codificação de formulário) antes do decode.
-function decodeAdRef(raw) {
-  if (!raw) return 'Sem anúncio';
+function decodeRef(raw) {
+  if (!raw) return '';
   let out;
   try {
     out = decodeURIComponent(String(raw).replace(/\+/g, ' '));
@@ -60,7 +60,29 @@ function decodeAdRef(raw) {
   // O decode pode RESSUSCITAR caracteres que o cleanAdRef tinha barrado na
   // gravação (%3C vira "<"), e esse texto vai parar no HTML do painel. Tira de
   // novo o que serve pra montar tag/atributo.
-  return out.replace(/[<>"'&]/g, '').trim() || 'Sem anúncio';
+  return out.replace(/[<>"'&]/g, '').trim();
+}
+
+function decodeAdRef(raw) {
+  return decodeRef(raw) || 'Sem anúncio';
+}
+
+// O visitante guarda anúncio, campanha e conjunto num campo só ("a~c~s"), pra
+// não custar dois comandos a mais do Upstash em cada batida (ver presence.js).
+// Visitante gravado antes de 16/09 não tem "~": vira só o anúncio, e campanha e
+// conjunto ficam null, igual às vendas antigas.
+// Separa ANTES de decodificar, pra um valor que chegue com %7E não virar um
+// separador extra e deslocar os campos.
+function splitVisitorRef(raw) {
+  const parts = String(raw || '').split('~');
+  const campaign = decodeRef(parts[1]);
+  return {
+    adRef: decodeAdRef(parts[0]),
+    // Mesma regra das vendas: com a campanha já nomeada, o ID do conjunto só
+    // polui a coluna.
+    campaign: campaign ? (CAMPAIGN_NAMES[campaign] || campaign) : null,
+    adset: campaign && CAMPAIGN_NAMES[campaign] ? null : (decodeRef(parts[2]) || null),
+  };
 }
 
 const BROWSER_ENV_LABELS = {
@@ -122,7 +144,7 @@ module.exports = async (req, res) => {
         device: h.device || null,
         platform: h.platform || null,
         browserEnv: h.browserEnv || null,
-        adRef: decodeAdRef(h.adRef),
+        ...splitVisitorRef(h.adRef),
         ip: h.ip || 'Sem dado',
         hiddenLoad: h.hiddenLoad === '1',
         visible: h.visible === '1',

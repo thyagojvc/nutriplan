@@ -43,7 +43,11 @@ function cleanAdRef(v) {
   // \p{L}\p{N} em vez de \w: com \w um nome que chega SEM encoding perdia os
   // acentos ("Calça" virava "Cala"), e aí o mesmo criativo aparecia escrito de
   // dois jeitos no painel. Continua barrando < > " ' &, que é o que importa.
-  const s = String(v || '').replace(/[^\p{L}\p{N}\s\-.|:/%+_]/gu, '').trim().slice(0, 120);
+  // "~" entra na lista porque o front manda anúncio, campanha e conjunto
+  // empacotados num campo só ("anuncio~campanha~conjunto"), pra não gastar dois
+  // comandos a mais do Upstash em cada batida. O front já tira o "~" de dentro
+  // de cada parte, então aqui ele só pode ser separador.
+  const s = String(v || '').replace(/[^\p{L}\p{N}\s\-.|:/%+_~]/gu, '').trim().slice(0, 360);
   return s || 'Sem anúncio';
 }
 

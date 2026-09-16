@@ -176,7 +176,7 @@
         <button type="button" class="btn-del" id="del-btn" disabled>Apagar selecionados</button>
       </div>
       <table>
-        <thead><tr><th class="chk-col"></th><th>ID</th><th>Entrou</th><th>Dispositivo</th><th>Sistema</th><th>Onde abriu</th><th>Anúncio</th><th>IP</th><th>Parou em</th><th>Status</th></tr></thead>
+        <thead><tr><th class="chk-col"></th><th>ID</th><th>Entrou</th><th>Dispositivo</th><th>Sistema</th><th>Onde abriu</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>IP</th><th>Parou em</th><th>Status</th></tr></thead>
         <tbody id="individuals-body"></tbody>
       </table>
       <p class="note">Para limpar teste seu ou bot que passou pelo filtro. Só apaga o que estiver marcado, e não tem como desfazer (o dado mora só no Redis, sem backup).</p>
@@ -402,12 +402,13 @@ function render(data) {
           <td>${esc(plat)}</td>
           <td class="muted">${esc(env)}</td>
           <td class="muted">${esc(ind.adRef)}</td>
+          <td class="muted">${esc([ind.campaign, ind.adset].filter(Boolean).join(' · ') || '—')}</td>
           <td class="muted">${esc(ind.ip || '—')}</td>
           <td>${esc(stopLabel)}</td>
           <td>${ind.isLive ? '<span class="live-dot"></span>Ao vivo' : '<span class="muted">Saiu</span>'}</td>
         </tr>`;
       }).join('')
-    : '<tr><td colspan="10" class="muted">Sem visitantes no período.</td></tr>';
+    : '<tr><td colspan="11" class="muted">Sem visitantes no período.</td></tr>';
 
   // Só sobram marcados os que ainda existem na tela (mudou o período, por ex.)
   const visiveis = new Set(data.individuals.map((i) => i.id));
