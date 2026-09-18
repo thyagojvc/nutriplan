@@ -45,7 +45,18 @@ const DEFAULT_TIER = 'completo';
 const BUMPS = {
   bump1: { name: 'Cardápio de 4 semanas anti-seletividade', priceCents: 990 },
   bump2: { name: 'Áudios para acalmar a hora da refeição', priceCents: 1490 },
+  // Bump da /profissional (17/09). Entregue como PDF proprio, ver _entrega.js.
+  devolutiva: { name: 'Fichas de devolutiva e registro clínico', priceCents: 1000 },
 };
+
+// O bump da devolutiva e reconhecido pelo VALOR, nao pela lista de bumps: o
+// webhook (rede de seguranca) nunca recebe essa lista, e sem isso a compra que
+// cai por la sairia sem o material pago. R$ 67 + R$ 10 nao colide com nenhum
+// tier, entao da pra inferir com seguranca.
+function pedidoTemDevolutiva(valueCents) {
+  const v = Number(valueCents) || 0;
+  return v >= TIERS.profissional.priceCents + BUMPS.devolutiva.priceCents;
+}
 
 // Recalcula o total confiável a partir do tier + ids de bump recebidos do front.
 function computeOrder(tierId, bumpIds = []) {
@@ -93,4 +104,4 @@ function tierFromValueCents(valueCents) {
   return sorted.find((t) => valueCents >= t.priceCents) || sorted[sorted.length - 1];
 }
 
-module.exports = { TIERS, BUMPS, DEFAULT_TIER, computeOrder, tierFromValueCents };
+module.exports = { TIERS, BUMPS, DEFAULT_TIER, computeOrder, tierFromValueCents, pedidoTemDevolutiva };

@@ -102,9 +102,16 @@ module.exports = async (req, res) => {
     });
   }
 
+  // ?item=devolutiva: bump da Edicao Profissional, arquivo separado. So libera
+  // se o registro do token disser que a compra incluiu o bump, senao o link do
+  // kit viraria link do material que a pessoa nao pagou.
+  const querDevolutiva = String((req.query && req.query.item) || '') === 'devolutiva';
+
   let tierId = 'completo';
+  let temDevolutiva = false;
   try {
     const parsed = JSON.parse(record);
+    temDevolutiva = parsed.devolutiva === true;
     if (parsed.tierId === 'essencial') tierId = 'essencial';
     // Edição profissional (22/08): PDF próprio, com as 30 fichas de consultório
     // na frente e a licença de uso. Só entra se o build já tiver gerado o
@@ -112,7 +119,17 @@ module.exports = async (req, res) => {
     // material de outro público e sem a licença que ela pagou pra ter.
     if (parsed.tierId === 'profissional' && KIT_FILE.profissional) tierId = 'profissional';
   } catch {}
-  const fileName = KIT_FILE[tierId] || KIT_FILE.completo;
+
+  if (querDevolutiva && !(temDevolutiva && KIT_FILE.devolutiva)) {
+    return sendPage(res, 404, {
+      title: 'Material não encontrado',
+      message: 'Esse link é das fichas de devolutiva, que são um adicional da Edição Profissional. Se você comprou e está vendo esta tela, responda o e-mail da compra que a gente libera na hora.',
+    });
+  }
+
+  const fileName = querDevolutiva
+    ? KIT_FILE.devolutiva
+    : (KIT_FILE[tierId] || KIT_FILE.completo);
 
   let count = 0;
   try {

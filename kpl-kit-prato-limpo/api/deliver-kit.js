@@ -32,7 +32,7 @@ const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
-const { tierFromValueCents } = require('./_catalog');
+const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { detectPlatform } = require('./_ua');
 
@@ -156,13 +156,19 @@ module.exports = async (req, res) => {
     const clientUserAgent = req.headers['user-agent'] || null;
 
     // Link exclusivo desta compra. Precisa existir antes do e-mail sair.
-    const downloadUrl = await createDownloadLink(paymentId, email, name, tier.id);
+    // Bump das fichas de devolutiva: inferido pelo valor pago (ver _catalog).
+    const temDevolutiva = tier.id === 'profissional' && pedidoTemDevolutiva(valorCents);
+    const downloadUrl = await createDownloadLink(
+      paymentId, email, name, tier.id, temDevolutiva ? { devolutiva: true } : undefined);
+    const devolutivaUrl = temDevolutiva && downloadUrl
+      ? downloadUrl + (downloadUrl.includes('?') ? '&' : '?') + 'item=devolutiva'
+      : null;
 
     const [customerResult] = await Promise.all([
       sendEmail({
         to: email,
         subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-        html: confirmationEmailHtml({ name, tierName, downloadUrl }),
+        html: confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }),
         // Cliente costuma responder o e-mail de entrega em vez de escrever pro
         // suporte. Sem reply_to, essa resposta cai na caixa do remetente
         // técnico (entrega@nutriplan.email) e ninguém vê.

@@ -18,7 +18,7 @@
 const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { sendCapiPurchase, resolveFbc } = require('./_fb-capi');
-const { tierFromValueCents } = require('./_catalog');
+const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
 
@@ -125,12 +125,19 @@ async function deliverKit(transaction) {
       console.error('webhook: trava de entrega falhou (entregando mesmo assim)', err);
     }
     if (podeEntregar) {
-      entregaUrl = await createDownloadLink(paymentId, backup.email, backup.name, tierFromValueCents(valorCents).id);
+      const tierWh = tierFromValueCents(valorCents);
+      const temDevolutivaWh = tierWh.id === 'profissional' && pedidoTemDevolutiva(valorCents);
+      entregaUrl = await createDownloadLink(
+        paymentId, backup.email, backup.name, tierWh.id,
+        temDevolutivaWh ? { devolutiva: true } : undefined);
+      const devolutivaUrlWh = temDevolutivaWh && entregaUrl
+        ? entregaUrl + (entregaUrl.includes('?') ? '&' : '?') + 'item=devolutiva'
+        : null;
       try {
         await sendEmail({
           to: backup.email,
           subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl }),
+          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl, devolutivaUrl: devolutivaUrlWh }),
           replyTo: 'kitpratolimpo@gmail.com',
         });
       } catch (err) {

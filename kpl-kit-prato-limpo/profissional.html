@@ -218,6 +218,22 @@
   .garantia-box p{color:var(--text)}
   .garantia-box .support{margin-top:14px;font-weight:700;color:var(--green-dark);font-size:.95rem}
 
+  .bumps{margin:8px 0 18px}
+  .bumps-title{font-family:var(--heading);font-weight:700;font-size:.95rem;color:var(--ink);
+    margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .bump{display:block;position:relative;cursor:pointer;border:2px solid var(--border);
+    border-radius:var(--radius-sm);padding:14px 14px 14px 46px;margin-bottom:10px;
+    background:var(--cream);transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
+  .bump:hover{border-color:var(--mint-2)}
+  .bump.checked{border-color:var(--green);background:#fff;box-shadow:0 6px 16px rgba(92,167,65,.15)}
+  .bump input{position:absolute;left:14px;top:16px;width:22px;height:22px;accent-color:var(--green);cursor:pointer}
+  .bump__name{font-family:var(--heading);font-weight:700;color:var(--ink);font-size:1rem;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .bump__tag{background:var(--orange-soft);color:#a4610a;font-size:.68rem;font-weight:800;
+    padding:2px 8px;border-radius:999px;text-transform:uppercase}
+  .bump__desc{font-size:.93rem;color:var(--text);margin:3px 0 6px}
+  .bump__price{font-weight:800;color:var(--green-dark);font-size:.95rem}
+
   .today-banner{background:var(--ink);color:#fff;border-radius:var(--radius-sm);
     padding:12px 16px;text-align:center;font-size:.9rem;margin-bottom:18px;line-height:1.4}
   .today-banner strong{color:var(--orange)}
@@ -567,9 +583,23 @@
         <div class="pay-step"><span class="pay-step__n">3</span>O acesso chega sozinho no seu e-mail</div>
       </div>
 
+      <!-- Order bump. Responde a dor que a propria pagina levanta la em cima:
+           "a mae volta dizendo que nao deu certo e voce nao tem como saber o
+           que ela fez de fato em casa". -->
+      <div class="bumps">
+        <div class="bumps-title">🎁 Adicione ao seu pedido:</div>
+        <label class="bump" id="bump-devolutiva">
+          <input type="checkbox" id="chk-devolutiva" />
+          <span class="bump__name">Fichas de devolutiva e registro clínico <span class="bump__tag">4 folhas</span></span>
+          <span class="bump__desc">A família preenche em casa e traz na consulta seguinte: o que aplicou, até onde a criança chegou e o que atrapalhou. Vem com o acompanhamento entre consultas, a devolutiva para os pais e a folha de anotação clínica.</span>
+          <span class="bump__price">+ R$ 10,00</span>
+        </label>
+      </div>
+
       <div class="pedido-resumo">
         <div class="linha"><span>KPL Edição Profissional</span><span>R$ 67,00</span></div>
-        <div class="linha total"><span>Total</span><span>R$ 67,00</span></div>
+        <div class="linha" id="linha-devolutiva" hidden><span>Fichas de devolutiva</span><span>R$ 10,00</span></div>
+        <div class="linha total"><span>Total</span><span id="total-valor">R$ 67,00</span></div>
       </div>
 
       <div class="pix-trust">
@@ -652,6 +682,7 @@ const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar
 const POLL_MS = 5000;
 const PIXEL_ID = '2794485957574762';
 const PRECO_CENTS = 6700;
+const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
 // Tarja "Oferta valida ate": mostra a data de HOJE, entao a urgencia e real
@@ -663,6 +694,38 @@ const $ = s => document.querySelector(s);
     { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
 })();
 let timer=null, paymentId=null, cliente=null;
+
+/* =========================================================
+   Order bump das fichas de devolutiva
+   O valor que vale e o que o servidor recalcula pelo _catalog a partir dos
+   ids enviados. O numero aqui e so o que a pessoa ve.
+   ========================================================= */
+const bumpMarcado = () => !!(document.getElementById('chk-devolutiva') || {}).checked;
+const bumpsEscolhidos = () => (bumpMarcado() ? ['devolutiva'] : []);
+const totalCents = () => PRECO_CENTS + (bumpMarcado() ? BUMP_DEVOLUTIVA_CENTS : 0);
+const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
+
+function atualizaTotal(){
+  const chk = document.getElementById('chk-devolutiva');
+  if (!chk) return;
+  const marcado = chk.checked;
+  document.getElementById('bump-devolutiva').classList.toggle('checked', marcado);
+  const linha = document.getElementById('linha-devolutiva');
+  if (linha) linha.hidden = !marcado;
+  const total = document.getElementById('total-valor');
+  if (total) total.textContent = emReais(totalCents());
+  const rotulo = document.getElementById('btn-label');
+  // So mexe no rotulo quando ele esta no estado normal: durante o "Gerando
+  // Pix..." isso apagaria o aviso na cara da pessoa.
+  if (rotulo && /^Pagar /.test(rotulo.textContent)) {
+    rotulo.textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
+  }
+}
+document.addEventListener('DOMContentLoaded', () => {
+  const chk = document.getElementById('chk-devolutiva');
+  if (chk) chk.addEventListener('change', atualizaTotal);
+  atualizaTotal();
+});
 
 /* =========================================================
    Meta Pixel
@@ -759,7 +822,7 @@ $('#form').addEventListener('submit', async e => {
   btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
 
   cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
-  pixel('InitiateCheckout', { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' });
+  pixel('InitiateCheckout', { value: totalCents()/100, currency:'BRL', content_name:'KPL Edição Profissional' });
 
   try{
     const r = await fetch(API.criar, {
@@ -767,7 +830,8 @@ $('#form').addEventListener('submit', async e => {
       // tier 'profissional': o servidor recalcula o valor pelo _catalog e grava
       // esse tierId no token, que é o que faz o download.js entregar o PDF
       // profissional em vez do kit das mães.
-      body: JSON.stringify({ customer: cliente, method:'pix', tier:'profissional', adRef:'profissional' })
+      body: JSON.stringify({ customer: cliente, method:'pix', tier:'profissional',
+        bumps: bumpsEscolhidos(), adRef:'profissional' })
     });
     if(!r.ok) throw new Error('status '+r.status);
     const d = await r.json();
@@ -827,7 +891,7 @@ function pago(){
   // de eventos de lá, e o deliver-kit manda a versão com e-mail e telefone
   // hasheados, que casa muito melhor.
   try { if (window.fbq) fbq('track', 'Purchase',
-    { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' },
+    { value: totalCents()/100, currency:'BRL', content_name:'KPL Edição Profissional' },
     { eventID: 'purchase_' + paymentId }); } catch(e){}
 
   // mesma chamada do checkout principal: é ela que gera o acesso e manda o

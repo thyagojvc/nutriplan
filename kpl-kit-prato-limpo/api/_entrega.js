@@ -54,13 +54,17 @@ async function createDownloadLink(paymentId, email, name, tierId, extra) {
   }
 }
 
-function confirmationEmailHtml({ name, tierName, downloadUrl }) {
+function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }) {
   const firstName = String(name || '').trim().split(' ')[0] || 'oi';
   const downloadBlock = downloadUrl
     ? `<p style="text-align: center; margin: 24px 0;">
       <a href="${downloadUrl}" style="background: #5CA741; color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 8px; font-weight: bold; display: inline-block;">Acessar meu Kit Prato Limpo</a>
     </p>
-    <p style="font-size: 13px; color: #7C857D; text-align: center;">Este link é só seu, ligado à sua compra. Guarde este e-mail para acessar de novo quando precisar.</p>`
+    <p style="font-size: 13px; color: #7C857D; text-align: center;">Este link é só seu, ligado à sua compra. Guarde este e-mail para acessar de novo quando precisar.</p>${devolutivaUrl ? `
+    <p style="text-align: center; margin: 20px 0 6px;">
+      <a href="${devolutivaUrl}" style="background: #fff; color: #3C7A2C; border: 2px solid #5CA741; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">Baixar as fichas de devolutiva</a>
+    </p>
+    <p style="font-size: 13px; color: #7C857D; text-align: center;">São 4 folhas para imprimir: a devolutiva da família, o acompanhamento entre consultas, a devolutiva para os pais e a anotação clínica.</p>` : ''}`
     : `<p>Vamos te mandar o acesso no WhatsApp que você cadastrou no checkout. Se preferir não esperar, escreva para kitpratolimpo@gmail.com que a gente manda na hora.</p>`;
 
   return `
