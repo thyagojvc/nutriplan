@@ -48,6 +48,19 @@ async function main() {
   const pdf = await PDFDocument.create();
   pdf.setTitle('Fichas de consultório para imprimir e filmar');
 
+  // Capa (gerada no ChatGPT a partir do logo) vira a primeira pagina, pra sair
+  // tudo numa impressao so. Mora FORA de para-imprimir/ porque essa pasta e
+  // apagada e refeita a cada rodada do script.
+  const CAPA = path.join(OUT, 'capa-kit-prato-limpo.png');
+  if (fs.existsSync(CAPA)) {
+    const img = await pdf.embedJpg(await sharp(CAPA).jpeg({ quality: 92 }).toBuffer());
+    const escala = Math.min((W - MARGEM * 2) / img.width, (H - MARGEM * 2) / img.height);
+    const w = img.width * escala;
+    const h = img.height * escala;
+    pdf.addPage([W, H]).drawImage(img, { x: (W - w) / 2, y: (H - h) / 2, width: w, height: h });
+    console.log('  capa   capa-kit-prato-limpo.png');
+  }
+
   console.log(SELECAO.length + ' fichas de toque com alimento real:\n');
   for (let i = 0; i < SELECAO.length; i++) {
     const [arquivo, etapa, titulo] = SELECAO[i];
