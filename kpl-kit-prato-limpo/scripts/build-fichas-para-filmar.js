@@ -1,4 +1,4 @@
-// Separa as 10 fichas de consultorio pra imprimir e filmar a demonstracao.
+// Separa as fichas de consultorio pra imprimir e filmar a demonstracao.
 //
 // CRITERIO DA ESCOLHA: cobrir o protocolo de ponta a ponta (avaliacao ->
 // aproximacao -> toque -> boca -> prova -> ambiente -> caso dificil -> alta).
@@ -25,17 +25,20 @@ const W = 595.28;
 const H = 841.89;
 const MARGEM = 20;
 
+// 18/09: troca de criterio. A primeira selecao cobria o protocolo inteiro, o que
+// e racional mas nao para ninguem no feed. Criativo e pontape, a pagina conta o
+// resto. Agora sao so as fichas em que a crianca TOCA o alimento de verdade
+// dentro de uma brincadeira: as que a nutri olha e pensa "aplico na proxima
+// consulta".
 const SELECAO = [
-  ['C01-o-mapa-do-prato.png', 'avaliacao', 'O mapa do prato'],
-  ['C04-escadinha-do-medo.png', 'avaliacao', 'Escadinha do medo'],
-  ['C06-adivinha-pelo-cheiro.png', 'aproximacao', 'Adivinha pelo cheiro'],
   ['C11-carimbo-de-pimentao.png', 'toque', 'Carimbo de pimentão'],
   ['C16-quebra-cabeca-de-fruta.png', 'toque', 'Quebra-cabeça de fruta'],
-  ['C24-a-lambida-secreta.png', 'boca', 'A lambida secreta'],
-  ['C27-o-juri-do-sabor.png', 'prova', 'O júri do sabor'],
-  ['C37-as-frases-da-mesa.png', 'ambiente', 'As frases da mesa'],
-  ['C48-depois-do-engasgo.png', 'caso-dificil', 'Depois do engasgo'],
-  ['C60-alta-com-plano-de-90-dias.png', 'alta', 'Alta com plano de 90 dias'],
+  ['C13-boliche-de-tomate.png', 'toque', 'Boliche de tomate'],
+  ['C12-torre-de-legumes.png', 'toque', 'Torre de legumes'],
+  ['C15-pescaria-de-macarrao.png', 'toque', 'Pescaria de macarrão'],
+  ['C14-massinha-de-comida.png', 'toque', 'Massinha de comida'],
+  ['C21-magica-da-gelatina.png', 'toque', 'Mágica da gelatina'],
+  ['C03-a-caixa-fechada.png', 'toque', 'A caixa fechada'],
 ];
 
 async function main() {
