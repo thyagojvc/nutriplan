@@ -218,6 +218,25 @@
   .garantia-box p{color:var(--text)}
   .garantia-box .support{margin-top:14px;font-weight:700;color:var(--green-dark);font-size:.95rem}
 
+  /* Painel do bump: aparece depois do formulario preenchido. */
+  .bump-step{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;
+    background:rgba(38,48,42,.55);padding:18px}
+  .bump-step.show{display:flex}
+  .bump-step__card{background:var(--card);border-radius:var(--radius);padding:24px 20px;
+    max-width:440px;width:100%;box-shadow:0 20px 60px rgba(38,48,42,.3);max-height:92vh;overflow-y:auto}
+  .bump-step__eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--green-dark);text-align:center;margin-bottom:6px}
+  .bump-step__card h3{font-size:1.3rem;text-align:center;margin-bottom:8px}
+  .bump-step__sub{font-size:.92rem;color:var(--text);text-align:center;margin-bottom:16px}
+  .bump-step__lista{list-style:none;margin:0 0 16px;display:flex;flex-direction:column;gap:7px}
+  .bump-step__lista li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--text)}
+  .bump-step__lista .tick{color:var(--green);font-weight:800;flex:0 0 auto}
+  .bump-step__preco{background:var(--mint);border-radius:var(--radius-sm);padding:12px;text-align:center;
+    font-family:var(--heading);font-weight:800;color:var(--green-dark);margin-bottom:16px}
+  .bump-step__recusa{display:block;width:100%;background:none;border:none;margin-top:12px;
+    color:var(--muted);font-size:.86rem;font-family:var(--body);text-decoration:underline;cursor:pointer}
+  .bump-step__recusa:hover{color:var(--text)}
+
   .bumps{margin:8px 0 18px}
   .bumps-title{font-family:var(--heading);font-weight:700;font-size:.95rem;color:var(--ink);
     margin-bottom:10px;display:flex;align-items:center;gap:8px}
@@ -583,19 +602,6 @@
         <div class="pay-step"><span class="pay-step__n">3</span>O acesso chega sozinho no seu e-mail</div>
       </div>
 
-      <!-- Order bump. Responde a dor que a propria pagina levanta la em cima:
-           "a mae volta dizendo que nao deu certo e voce nao tem como saber o
-           que ela fez de fato em casa". -->
-      <div class="bumps">
-        <div class="bumps-title">🎁 Adicione ao seu pedido:</div>
-        <label class="bump" id="bump-devolutiva">
-          <input type="checkbox" id="chk-devolutiva" />
-          <span class="bump__name">Fichas de devolutiva e registro clínico <span class="bump__tag">4 folhas</span></span>
-          <span class="bump__desc">A família preenche em casa e traz na consulta seguinte: o que aplicou, até onde a criança chegou e o que atrapalhou. Vem com o acompanhamento entre consultas, a devolutiva para os pais e a folha de anotação clínica.</span>
-          <span class="bump__price">+ R$ 10,00</span>
-        </label>
-      </div>
-
       <div class="pedido-resumo">
         <div class="linha"><span>KPL Edição Profissional</span><span>R$ 67,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Fichas de devolutiva</span><span>R$ 10,00</span></div>
@@ -675,6 +681,25 @@
   </div>
 </section>
 
+<!-- Etapa do order bump: so abre depois do formulario validado, pra nao pedir
+     decisao de quem ainda nao se comprometeu com a compra. -->
+<div class="bump-step" id="bump-step" role="dialog" aria-modal="true" aria-labelledby="bump-step-titulo">
+  <div class="bump-step__card">
+    <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
+    <h3 id="bump-step-titulo">Quer saber o que a família fez em casa?</h3>
+    <p class="bump-step__sub">A mãe volta dizendo que não deu certo, e hoje não dá pra saber o que ela aplicou de fato. Estas 4 folhas resolvem isso.</p>
+    <ul class="bump-step__lista">
+      <li><span class="tick">✓</span><span><b>Como foi em casa:</b> a família marca o que aplicou, até onde a criança chegou e o que atrapalhou</span></li>
+      <li><span class="tick">✓</span><span><b>Evolução entre consultas:</b> uma linha por semana, pra bater o olho</span></li>
+      <li><span class="tick">✓</span><span><b>Devolutiva para os pais:</b> o que trabalhou, o que avançou, o que segue</span></li>
+      <li><span class="tick">✓</span><span><b>Anotação clínica:</b> acompanha o "O que observar" das fichas, já pronta pro prontuário</span></li>
+    </ul>
+    <div class="bump-step__preco">Adicione por mais R$ 10,00</div>
+    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de R$ 77,00</button>
+    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por R$ 67,00</button>
+  </div>
+</div>
+
 <p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
 
 <script>
@@ -700,32 +725,17 @@ let timer=null, paymentId=null, cliente=null;
    O valor que vale e o que o servidor recalcula pelo _catalog a partir dos
    ids enviados. O numero aqui e so o que a pessoa ve.
    ========================================================= */
-const bumpMarcado = () => !!(document.getElementById('chk-devolutiva') || {}).checked;
-const bumpsEscolhidos = () => (bumpMarcado() ? ['devolutiva'] : []);
-const totalCents = () => PRECO_CENTS + (bumpMarcado() ? BUMP_DEVOLUTIVA_CENTS : 0);
+let bumpAceito = false;
+const bumpsEscolhidos = () => (bumpAceito ? ['devolutiva'] : []);
+const totalCents = () => PRECO_CENTS + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
 const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
 
 function atualizaTotal(){
-  const chk = document.getElementById('chk-devolutiva');
-  if (!chk) return;
-  const marcado = chk.checked;
-  document.getElementById('bump-devolutiva').classList.toggle('checked', marcado);
   const linha = document.getElementById('linha-devolutiva');
-  if (linha) linha.hidden = !marcado;
+  if (linha) linha.hidden = !bumpAceito;
   const total = document.getElementById('total-valor');
   if (total) total.textContent = emReais(totalCents());
-  const rotulo = document.getElementById('btn-label');
-  // So mexe no rotulo quando ele esta no estado normal: durante o "Gerando
-  // Pix..." isso apagaria o aviso na cara da pessoa.
-  if (rotulo && /^Pagar /.test(rotulo.textContent)) {
-    rotulo.textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
-  }
 }
-document.addEventListener('DOMContentLoaded', () => {
-  const chk = document.getElementById('chk-devolutiva');
-  if (chk) chk.addEventListener('change', atualizaTotal);
-  atualizaTotal();
-});
 
 /* =========================================================
    Meta Pixel
@@ -736,6 +746,10 @@ document.addEventListener('DOMContentLoaded', () => {
    api/_sections.js descreve a /mae, e mexer nela remontaria o significado do
    `maxSection` já coletado.
    ========================================================= */
+function pixelCustom(nome, dados){
+  try{ if(window.fbq) fbq('trackCustom', nome, dados||{}); }catch(e){}
+}
+
 function idEvento(){ return 'kpl_' + Date.now() + '_' + Math.random().toString(36).slice(2,10); }
 
 /** Dispara no pixel do navegador E na CAPI com o MESMO event_id, pra o Meta
@@ -813,16 +827,50 @@ $('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.targ
 ['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
 
 /* ---- checkout ---- */
-$('#form').addEventListener('submit', async e => {
+// ETAPA 1: valida e abre o painel do bump. Ninguem e cobrado aqui.
+$('#form').addEventListener('submit', e => {
   e.preventDefault();
   $('#erro').classList.remove('show');
   if(!valida()){ $('.invalid input')?.focus(); return; }
 
-  const btn=$('#btn'), rotulo=$('#btn-label').textContent;
-  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
-
   cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
-  pixel('InitiateCheckout', { value: totalCents()/100, currency:'BRL', content_name:'KPL Edição Profissional' });
+  // InitiateCheckout dispara aqui, com o formulario ja validado: o evento
+  // significa "comecou o checkout", nao "decidiu sobre o adicional".
+  pixel('InitiateCheckout', { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' });
+
+  $('#bump-step').classList.add('show');
+  document.getElementById('bump-sim').focus();
+});
+
+// ETAPA 2: a escolha do bump gera o Pix.
+document.getElementById('bump-sim').addEventListener('click', () => {
+  bumpAceito = true;
+  pixelCustom('BumpAceito', { bump_id: 'devolutiva' });
+  fechaBumpEGera();
+});
+// Volta pro formulario sem gerar nada. Sem isso, quem percebe que errou o
+// e-mail fica preso: os dois botoes do painel geram o Pix.
+function voltaPraForm(){
+  $('#bump-step').classList.remove('show');
+  $('#btn').focus();
+}
+$('#bump-step').addEventListener('click', (ev) => { if (ev.target.id === 'bump-step') voltaPraForm(); });
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape' && $('#bump-step').classList.contains('show')) voltaPraForm();
+});
+
+document.getElementById('bump-nao').addEventListener('click', () => {
+  bumpAceito = false;
+  fechaBumpEGera();
+});
+
+async function fechaBumpEGera(){
+  $('#bump-step').classList.remove('show');
+  atualizaTotal();
+
+  const btn=$('#btn'), rotulo='Pagar ' + emReais(totalCents()) + ' com Pix';
+  $('#btn-label').textContent = rotulo;
+  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
 
   try{
     const r = await fetch(API.criar, {
@@ -852,7 +900,7 @@ $('#form').addEventListener('submit', async e => {
     $('#erro').classList.add('show');
     btn.disabled=false; $('#btn-label').textContent=rotulo;
   }
-});
+}
 
 $('#copiar').addEventListener('click', async () => {
   const c = $('#codigo').dataset.full || $('#codigo').textContent;
