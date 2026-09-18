@@ -65,7 +65,10 @@ module.exports = async (req, res) => {
     if (!isEmail(email)) return res.status(400).json({ error: 'E-mail inválido' });
 
     const name = String(body.name || '').trim().slice(0, 80);
-    const tierId = body.tier === 'essencial' ? 'essencial' : 'completo';
+    // 'profissional' entrou em 18/09: antes caia no 'completo', e o reenvio pra
+    // uma nutricionista entregava o PDF das maes, sem as fichas de consultorio
+    // e sem a licenca que ela pagou.
+    const tierId = ['essencial', 'profissional'].includes(body.tier) ? body.tier : 'completo';
     const tierName = (TIERS[tierId] && TIERS[tierId].name) || 'KPL Completo';
     // Sem id da PushInPay em mãos, marca a origem: o registro fica rastreável
     // como reenvio manual em vez de se passar por uma venda comum.
