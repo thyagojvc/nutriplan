@@ -228,6 +228,8 @@
     color:var(--green-dark);text-align:center;margin-bottom:6px}
   .bump-step__card h3{font-size:1.3rem;text-align:center;margin-bottom:8px}
   .bump-step__sub{font-size:.92rem;color:var(--text);text-align:center;margin-bottom:16px}
+  .bump-step__foto{width:100%;height:auto;display:block;border-radius:var(--radius-sm);
+    margin:0 0 16px;box-shadow:var(--shadow-sm)}
   .bump-step__lista{list-style:none;margin:0 0 18px;display:flex;flex-direction:column;gap:9px}
   .bump-step__lista li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--text)}
   .bump-step__lista .tick{color:var(--green);font-weight:800;flex:0 0 auto}
@@ -686,6 +688,14 @@
     <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
     <h3 id="bump-step-titulo">Quer acompanhar a evolução entre as consultas?</h3>
     <p class="bump-step__sub"><b>Bloco de Evolução</b>: capa e 4 folhas para imprimir, por mais R$ 10,00.</p>
+    <!-- Mostrar o material vale mais que descrever: sem foto, o painel falava de
+         4 folhas que a pessoa nunca tinha visto. -->
+    <picture>
+      <source srcset="assets/bloco-evolucao.webp" type="image/webp">
+      <img class="bump-step__foto" src="assets/bloco-evolucao.jpg" width="880" height="660"
+           loading="lazy" decoding="async"
+           alt="O Bloco de Evolução impresso e encadernado sobre uma mesa, aberto na folha Como foi em casa, com a folha Linha do tempo ao lado" />
+    </picture>
     <ul class="bump-step__lista">
       <li><span class="tick">✓</span><span>Como foi em casa <b>(a família preenche)</b></span></li>
       <li><span class="tick">✓</span><span>Linha do tempo, semana a semana</span></li>
