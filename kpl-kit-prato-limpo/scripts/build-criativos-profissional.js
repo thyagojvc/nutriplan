@@ -46,12 +46,22 @@ function txt(s, x, y, { size = 30, font = BODY, weight = 'normal', fill = TEXT, 
     fill="${fill}" text-anchor="${anchor}" letter-spacing="${spacing}">${esc(s)}</text>`;
 }
 
-// Faixa de filtro de publico. E a primeira coisa lida e o que corta quem nao e
-// nutricionista antes de gastar clique.
-function filtro(texto) {
+// Cabecalho das tres pecas.
+//
+// A PERGUNTA e o maior elemento da peca, de proposito. Em video o filtro de
+// publico vem primeiro porque a pessoa ouve na ordem; em estatico ela ve tudo
+// de uma vez, entao quem filtra e o TAMANHO, nao a posicao. Com a promessa
+// maior que a pergunta, quem nao e nutricionista parava do mesmo jeito.
+//
+// A pergunta tambem e mais segura que afirmacao na politica da Meta. Profissao
+// nao e atributo pessoal protegido, entao aqui os dois passariam, mas o habito
+// evita reprovacao quando a linha encosta em rotina ou dificuldade.
+function cabecalho(linha1, linha2, claim) {
   return `
-    <rect x="0" y="0" width="${W}" height="78" fill="${GREEN_DARK}"/>
-    ${txt(texto, W / 2, 50, { size: 27, font: BODY, weight: 'bold', fill: '#fff', anchor: 'middle', spacing: 1.5 })}`;
+    ${txt(linha1, W / 2, 132, { size: 64, font: DISPLAY, weight: '900', fill: GREEN_DARK, anchor: 'middle' })}
+    ${txt(linha2, W / 2, 206, { size: 64, font: DISPLAY, weight: '900', fill: GREEN_DARK, anchor: 'middle' })}
+    <rect x="70" y="246" width="${W - 140}" height="70" rx="35" fill="${ORANGE}"/>
+    ${txt(claim, W / 2, 292, { size: 33, font: DISPLAY, weight: '900', fill: '#fff', anchor: 'middle' })}`;
 }
 
 // Selo de preco, sempre no mesmo lugar nas tres pecas.
@@ -114,10 +124,9 @@ async function grade() {
   const y0 = 360;
   const PASSO = LH + 56;
 
-  let svg = filtro('PARA NUTRICIONISTA QUE ATENDE SELETIVIDADE INFANTIL');
-  svg += txt('60 fichas prontas', W / 2, 178, { size: 74, font: DISPLAY, weight: '900', fill: GREEN_DARK, anchor: 'middle' });
-  svg += txt('pra aplicar na sessão', W / 2, 254, { size: 74, font: DISPLAY, weight: '900', fill: ORANGE, anchor: 'middle' });
-  svg += txt('Da avaliação até a alta, em 12 etapas. Com alimento de verdade na mesa.', W / 2, 320, { size: 29, fill: TEXT, anchor: 'middle' });
+  // Segmento 1: a nutricionista que ja atende seletividade (o nucleo).
+  let svg = cabecalho('Você é nutricionista', 'e atende criança seletiva?',
+    '60 fichas prontas pra aplicar na sessão');
 
   const camadas = [];
   let topo = '';
@@ -141,10 +150,9 @@ async function anatomia() {
   const FW = 520, FH = 704;
   const fx = 62, fy = 400;
 
-  let svg = filtro('PARA NUTRICIONISTA QUE ATENDE SELETIVIDADE INFANTIL');
-  svg += txt('Você bate o olho', W / 2, 178, { size: 72, font: DISPLAY, weight: '900', fill: GREEN_DARK, anchor: 'middle' });
-  svg += txt('e já sabe o que fazer', W / 2, 254, { size: 72, font: DISPLAY, weight: '900', fill: ORANGE, anchor: 'middle' });
-  svg += txt('Uma ficha inteira cabe em uma página. Sem estudar nada antes.', W / 2, 320, { size: 29, fill: TEXT, anchor: 'middle' });
+  // Segmento 2: recebe o caso mas seletividade nao e a area principal dela.
+  let svg = cabecalho('Chega criança que', 'não come no seu consultório?',
+    'Você bate o olho na ficha e já sabe o que fazer');
 
   svg += `<rect x="${fx - 5}" y="${fy - 5}" width="${FW + 10}" height="${FH + 10}" rx="14" fill="#fff" stroke="#E9E3D5" stroke-width="3"/>`;
 
@@ -176,11 +184,9 @@ async function anatomia() {
    3 - O QUE VEM JUNTO. Responde "o que eu levo por R$ 67".
    ========================================================= */
 async function pacote() {
-  let svg = filtro('PARA NUTRICIONISTA QUE ATENDE SELETIVIDADE INFANTIL');
-  svg += txt('189 atividades prontas', W / 2, 178, { size: 68, font: DISPLAY, weight: '900', fill: GREEN_DARK, anchor: 'middle' });
-  svg += txt('pro seu consultório', W / 2, 254, { size: 68, font: DISPLAY, weight: '900', fill: ORANGE, anchor: 'middle' });
-  svg += txt('Uma parte pra sessão, uma pra família levar pra casa,', W / 2, 318, { size: 28, fill: TEXT, anchor: 'middle' });
-  svg += txt('e o aplicativo pros dias entre as consultas.', W / 2, 354, { size: 28, fill: TEXT, anchor: 'middle' });
+  // Segmento 3: atendimento em escola e oficina em grupo (a licenca cobre).
+  let svg = cabecalho('Você atende em escola', 'ou faz oficina em grupo?',
+    '189 atividades prontas pro seu consultório');
 
   const CW = 306, CH = 414, GAP = 24;
   const x0 = (W - (CW * 3 + GAP * 2)) / 2;
