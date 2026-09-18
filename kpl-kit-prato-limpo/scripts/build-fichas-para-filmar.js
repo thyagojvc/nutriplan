@@ -48,7 +48,7 @@ async function main() {
   const pdf = await PDFDocument.create();
   pdf.setTitle('Fichas de consultório para imprimir e filmar');
 
-  console.log('10 fichas, da avaliação até a alta:\n');
+  console.log(SELECAO.length + ' fichas de toque com alimento real:\n');
   for (let i = 0; i < SELECAO.length; i++) {
     const [arquivo, etapa, titulo] = SELECAO[i];
     const origem = path.join(FICHAS, arquivo);
