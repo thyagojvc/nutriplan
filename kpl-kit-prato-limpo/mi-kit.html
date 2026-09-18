@@ -169,6 +169,19 @@
     display: none;
   }
   .tabbar button.has-news .dot { display: block; }
+  /* Aba Consultorio (Edicao Profissional). Visual mais sobrio que o resto do
+     app: e ferramenta de trabalho da nutricionista, nao brinquedo da crianca. */
+  .pro-hero { background: var(--green-dark, #3C7A2C); color: #fff; border-radius: 18px; padding: 20px 18px; margin-bottom: 14px; }
+  .pro-hero .pro-eyebrow { font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; opacity: .85; font-weight: 700; }
+  .pro-hero h1 { color: #fff; font-size: 1.35rem; margin: 4px 0 6px; }
+  .pro-hero p { font-size: .88rem; opacity: .92; margin: 0; }
+  .pro-card { background: #fff; border: 1px solid #E9E3D5; border-radius: 16px; padding: 14px 16px; margin-bottom: 12px; }
+  .pro-card b { color: var(--ink, #26302A); }
+  .pro-card p { font-size: .85rem; color: var(--muted, #7C857D); margin: 4px 0 0; }
+  .pro-card .btn { width: 100%; margin-top: 10px; }
+  .pro-note { font-size: .8rem; color: var(--muted, #7C857D); margin: 4px 2px 14px; }
+  .tabbar button.is-pro .ico { filter: none; }
+
   .tabpanel { display: none; }
   .tabpanel.is-active { display: block; }
 
@@ -488,6 +501,32 @@
   <!-- token valido -->
   <div id="state-unlocked" class="state">
 
+    <!-- ABA: CONSULTORIO (so Edicao Profissional; o botao e o conteudo sao
+         criados via JS quando kit-access devolve tier 'profissional') -->
+    <div class="tabpanel" id="tab-consultorio">
+      <div class="pro-hero">
+        <div class="pro-eyebrow">Edição Profissional</div>
+        <h1>Fichas de consultório</h1>
+        <p>Para aplicar na sessão, com alimento de verdade na mesa. Organizadas em 12 etapas, da avaliação até a alta.</p>
+      </div>
+
+      <div class="pro-card" id="pro-bloco" style="display:none">
+        <b>📋 Bloco de Evolução</b>
+        <p>Como foi em casa, linha do tempo, resumo para a família e anotação clínica. Para imprimir.</p>
+        <a class="btn" id="pro-bloco-btn" href="#">Baixar o Bloco de Evolução</a>
+      </div>
+
+      <div class="pro-card">
+        <b>📥 Tudo em PDF</b>
+        <p>As 60 fichas de consultório e as 129 da família num arquivo só, com a licença de uso.</p>
+        <a class="btn" id="pro-download-btn" href="#">Baixar o kit profissional</a>
+      </div>
+
+      <div id="pro-gallery"></div>
+
+      <p class="pro-note">As abas <b>Família</b>, <b>Jogar</b>, <b>Pintar</b> e <b>Turma</b> são o que a família usa em casa. Você pode passar o link do app pra ela instalar no celular, a licença permite.</p>
+    </div>
+
     <!-- ABA: JOGAR -->
     <div class="tabpanel is-active" id="tab-jogar">
       <div class="hero">
@@ -723,6 +762,7 @@
         return;
       }
       document.getElementById('download-btn').href = '/api/download?t=' + encodeURIComponent(token);
+      if (data.tier === 'profissional') setupPro(data, token);
       // De propósito NÃO usa data.name (o nome de quem comprou) aqui: a
       // saudação é de quem joga, e quem preenche isso é a própria família.
       showState('state-unlocked');
@@ -738,6 +778,78 @@
     .catch(function () {
       showState('state-locked');
     });
+
+  // ================= EDICAO PROFISSIONAL =================
+  // Cria a aba Consultorio na frente das outras e abre o app nela: pra
+  // nutricionista, o material de sessao e o principal, e o resto e o que ela
+  // repassa pra familia. A aba "Fichas" vira "Familia" pra deixar isso claro.
+  function setupPro(data, token) {
+    var bar = document.getElementById('tabbar');
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'is-pro';
+    btn.setAttribute('data-tab', 'tab-consultorio');
+    btn.innerHTML = '<span class="ico">🩺</span>Consultório';
+    bar.insertBefore(btn, bar.firstChild);
+
+    var fichasBtn = bar.querySelector('button[data-tab="tab-fichas"]');
+    if (fichasBtn) fichasBtn.innerHTML = '<span class="ico">🏠</span>Família';
+
+    document.getElementById('pro-download-btn').href = '/api/download?t=' + encodeURIComponent(token);
+    if (data.bloco) {
+      document.getElementById('pro-bloco-btn').href = '/api/download?t=' + encodeURIComponent(token) + '&item=devolutiva';
+      document.getElementById('pro-bloco').style.display = 'block';
+    }
+
+    renderProGallery((data.consultorio && data.consultorio.stages) || []);
+
+    // Abre direto no Consultorio.
+    document.querySelectorAll('.tabpanel').forEach(function (p) { p.classList.remove('is-active'); });
+    document.getElementById('tab-consultorio').classList.add('is-active');
+    bar.querySelectorAll('button').forEach(function (b) { b.classList.remove('is-active'); });
+    btn.classList.add('is-active');
+  }
+
+  var proFlat = [];
+  function renderProGallery(stages) {
+    var html = '';
+    proFlat = [];
+    stages.forEach(function (st, i) {
+      var id = 'pro-stage-' + i;
+      var n = st.fichas.length;
+      html += '<div class="gallery-block">'
+        + '<button class="gallery-block__toggle" type="button" aria-expanded="false" aria-controls="' + id + '">'
+        + '<span class="gallery-block__left">'
+        + '<span class="gallery-block__num">ETAPA ' + escapeHtml(st.code) + '</span>'
+        + '<span class="gallery-block__title">' + escapeHtml(st.title) + '</span>'
+        + '<span class="gallery-block__count">' + n + (n === 1 ? ' ficha' : ' fichas') + '</span>'
+        + '</span><span class="gallery-block__chevron">›</span></button>'
+        + '<div class="gallery-block__body" id="' + id + '">'
+        + '<p class="gallery-block__desc">' + escapeHtml(st.desc) + '</p><div class="gallery-grid">';
+      st.fichas.forEach(function (f) {
+        var idx = proFlat.length;
+        proFlat.push({ src: 'assets/consultorio-app/' + f.file, title: f.title });
+        html += '<button class="gallery-thumb pro-thumb" data-idx="' + idx + '">'
+          + '<img src="assets/consultorio-app/' + f.file + '" loading="lazy" alt="' + escapeHtml(f.title) + '">'
+          + '</button>';
+      });
+      html += '</div></div></div>';
+    });
+    var box = document.getElementById('pro-gallery');
+    box.innerHTML = html;
+    box.querySelectorAll('.gallery-block__toggle').forEach(function (t) {
+      t.addEventListener('click', function () {
+        var body = document.getElementById(t.getAttribute('aria-controls'));
+        var open = body.classList.toggle('is-open');
+        t.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    });
+    box.querySelectorAll('.pro-thumb').forEach(function (b) {
+      b.addEventListener('click', function () {
+        openLightbox(parseInt(b.getAttribute('data-idx'), 10), proFlat);
+      });
+    });
+  }
 
   // ================= ABAS =================
   document.getElementById('tabbar').addEventListener('click', function (e) {
@@ -1372,7 +1484,11 @@
   var lightboxPrev = document.getElementById('lightbox-prev');
   var lightboxNext = document.getElementById('lightbox-next');
 
-  function openLightbox(idx) {
+  // A lista ativa muda conforme a galeria que abriu: sem isso, o "proximo"
+  // na ultima ficha de consultorio pulava pra uma ficha da familia.
+  var lightboxList = null;
+  function openLightbox(idx, list) {
+    lightboxList = list || galleryFlat;
     lightboxIndex = idx;
     updateLightbox();
     lightboxEl.classList.add('is-open');
@@ -1381,13 +1497,13 @@
     lightboxEl.classList.remove('is-open');
   }
   function updateLightbox() {
-    var item = galleryFlat[lightboxIndex];
+    var item = lightboxList[lightboxIndex];
     if (!item) return;
-    lightboxImg.src = 'assets/fichas-web/' + item.file;
+    lightboxImg.src = item.src || ('assets/fichas-web/' + item.file);
     lightboxImg.alt = item.title;
     lightboxTitle.textContent = item.title;
     lightboxPrev.disabled = lightboxIndex <= 0;
-    lightboxNext.disabled = lightboxIndex >= galleryFlat.length - 1;
+    lightboxNext.disabled = lightboxIndex >= lightboxList.length - 1;
   }
 
   lightboxEl.addEventListener('click', function (e) {
@@ -1398,7 +1514,7 @@
     if (lightboxIndex > 0) { lightboxIndex--; updateLightbox(); }
   });
   lightboxNext.addEventListener('click', function () {
-    if (lightboxIndex < galleryFlat.length - 1) { lightboxIndex++; updateLightbox(); }
+    if (lightboxIndex < lightboxList.length - 1) { lightboxIndex++; updateLightbox(); }
   });
 
   var touchStartX = null;
@@ -1410,7 +1526,7 @@
     var dx = e.changedTouches[0].clientX - touchStartX;
     touchStartX = null;
     if (Math.abs(dx) < 40) return;
-    if (dx < 0 && lightboxIndex < galleryFlat.length - 1) { lightboxIndex++; updateLightbox(); }
+    if (dx < 0 && lightboxIndex < lightboxList.length - 1) { lightboxIndex++; updateLightbox(); }
     if (dx > 0 && lightboxIndex > 0) { lightboxIndex--; updateLightbox(); }
   });
 })();

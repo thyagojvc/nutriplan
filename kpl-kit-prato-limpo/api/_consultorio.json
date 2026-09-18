@@ -1,0 +1,328 @@
+{
+ "stages": [
+  {
+   "code": "A",
+   "title": "Avaliação inicial",
+   "desc": "Mapear o repertório real e a raiz da recusa antes de intervir.",
+   "fichas": [
+    {
+     "file": "c8c856dfeb58c8784677.jpg",
+     "title": "O mapa do prato"
+    },
+    {
+     "file": "5f647055ba676e6ce1eb.jpg",
+     "title": "Semáforo dos alimentos"
+    },
+    {
+     "file": "7b1096b2cb34dc82fb12.jpg",
+     "title": "A caixa fechada"
+    },
+    {
+     "file": "59ae7d865bd5873e0d0b.jpg",
+     "title": "Escadinha do medo"
+    },
+    {
+     "file": "c93e243df7a3a1ac9b25.jpg",
+     "title": "O que a boca aceita"
+    }
+   ]
+  },
+  {
+   "code": "B",
+   "title": "Aproximação sem contato",
+   "desc": "Olhar e cheirar. A criança conhece o alimento sem precisar tocar.",
+   "fichas": [
+    {
+     "file": "cf68170d8cf1d688a595.jpg",
+     "title": "Adivinha pelo cheiro"
+    },
+    {
+     "file": "0e5a890ece6397f62074.jpg",
+     "title": "Retrato do alimento"
+    },
+    {
+     "file": "a93cb0b5e96cfc2c9aee.jpg",
+     "title": "Detetive de cores"
+    },
+    {
+     "file": "dd336ea2a83ed3f2b48c.jpg",
+     "title": "Antes e depois"
+    },
+    {
+     "file": "cb93a5667baa96c1f643.jpg",
+     "title": "A família do alimento"
+    }
+   ]
+  },
+  {
+   "code": "C",
+   "title": "Toque e manipulação",
+   "desc": "A mão entra no alimento dentro de um jogo, sem expectativa de comer.",
+   "fichas": [
+    {
+     "file": "f800b66e88dac77876b2.jpg",
+     "title": "Carimbo de pimentão"
+    },
+    {
+     "file": "e9fa4672243707b01e37.jpg",
+     "title": "Torre de legumes"
+    },
+    {
+     "file": "c095f6f0218dcc1b3e2e.jpg",
+     "title": "Boliche de tomate"
+    },
+    {
+     "file": "2373268e5e0d30420d19.jpg",
+     "title": "Massinha de comida"
+    },
+    {
+     "file": "e606b9ed656f34c8a5b0.jpg",
+     "title": "Pescaria de macarrão"
+    },
+    {
+     "file": "83502601df29652f7b1a.jpg",
+     "title": "Quebra-cabeça de fruta"
+    }
+   ]
+  },
+  {
+   "code": "D",
+   "title": "Som, corte e transformação",
+   "desc": "O alimento muda de forma na frente dela e deixa de ser imprevisível.",
+   "fichas": [
+    {
+     "file": "25050a0010941435bce1.jpg",
+     "title": "Orquestra crocante"
+    },
+    {
+     "file": "3a6dec74247122d2a7f0.jpg",
+     "title": "O alimento que muda"
+    },
+    {
+     "file": "e8591a7e8bb66e03dc3f.jpg",
+     "title": "Chef de tesoura"
+    },
+    {
+     "file": "d01f2ce2b6dcc806bff9.jpg",
+     "title": "Espremedor de laranja"
+    },
+    {
+     "file": "827b8268e7c7915d1816.jpg",
+     "title": "Mágica da gelatina"
+    }
+   ]
+  },
+  {
+   "code": "E",
+   "title": "Aproximação da boca",
+   "desc": "Lábio, língua e mordida sem o contrato de engolir.",
+   "fichas": [
+    {
+     "file": "ce661f473a59ab78dd85.jpg",
+     "title": "Beijo no alimento"
+    },
+    {
+     "file": "bafb3f3cf4fa254ba6ed.jpg",
+     "title": "O bigode"
+    },
+    {
+     "file": "76c2e10ec22f2c419836.jpg",
+     "title": "A lambida secreta"
+    },
+    {
+     "file": "a3760542b164039894c3.jpg",
+     "title": "Sopro de canudo"
+    },
+    {
+     "file": "cfb4139b2b6aa96fba77.jpg",
+     "title": "Dente de vampiro"
+    }
+   ]
+  },
+  {
+   "code": "F",
+   "title": "Prova e registro",
+   "desc": "Provar com direito de recusa, e registrar o avanço entre as sessões.",
+   "fichas": [
+    {
+     "file": "4355439fa05f81231000.jpg",
+     "title": "O júri do sabor"
+    },
+    {
+     "file": "1bc0a44c7845ffe675e1.jpg",
+     "title": "Ponte de sabor"
+    },
+    {
+     "file": "51f9c01124de2ccd0677.jpg",
+     "title": "O contrato do provador"
+    },
+    {
+     "file": "225245a4dc53f7f54a59.jpg",
+     "title": "Diário de conquistas"
+    }
+   ]
+  },
+  {
+   "code": "G",
+   "title": "Recusa e crise",
+   "desc": "O que fazer quando o único repertório da criança é dizer não.",
+   "fichas": [
+    {
+     "file": "cf3f53960844a9689f65.jpg",
+     "title": "O termômetro do não"
+    },
+    {
+     "file": "b0a825b35dd728a19b9a.jpg",
+     "title": "A pausa de 30 segundos"
+    },
+    {
+     "file": "df59a52d682256d694a5.jpg",
+     "title": "O prato de saída"
+    },
+    {
+     "file": "2101606368f9901407ed.jpg",
+     "title": "A carta de recusa"
+    },
+    {
+     "file": "86d6bfa8e8356088488b.jpg",
+     "title": "O relógio da tempestade"
+    }
+   ]
+  },
+  {
+   "code": "H",
+   "title": "A ficha do adulto",
+   "desc": "Aplicadas com o cuidador, não com a criança. É ele que muda primeiro.",
+   "fichas": [
+    {
+     "file": "cfe16294248b2c48380b.jpg",
+     "title": "O mapa da mesa"
+    },
+    {
+     "file": "d4dba683992f6b1de1bb.jpg",
+     "title": "As frases da mesa"
+    },
+    {
+     "file": "e2f70e6a29820de57e16.jpg",
+     "title": "O termômetro da ansiedade"
+    },
+    {
+     "file": "0ffadf5e09d73b185512.jpg",
+     "title": "Quem serve o prato"
+    },
+    {
+     "file": "9fe0202a97bcc3f60123.jpg",
+     "title": "O combinado de 7 dias"
+    }
+   ]
+  },
+  {
+   "code": "I",
+   "title": "Rotina e ambiente",
+   "desc": "Horário, líquido, tela e lugar à mesa. O prato é só o fim da linha.",
+   "fichas": [
+    {
+     "file": "5d43663e6f4615b6ca2b.jpg",
+     "title": "A linha do dia"
+    },
+    {
+     "file": "722dc32a0faafe85a94a.jpg",
+     "title": "A janela da fome"
+    },
+    {
+     "file": "7286b3eae6266789912a.jpg",
+     "title": "O copo que atrapalha"
+    },
+    {
+     "file": "c1c7a316e49164a8ffc7.jpg",
+     "title": "A mesa sem tela"
+    },
+    {
+     "file": "293bb1977e86c503fc45.jpg",
+     "title": "O lugar fixo"
+    }
+   ]
+  },
+  {
+   "code": "J",
+   "title": "Casos difíceis",
+   "desc": "Repertório mínimo, só triturado, medo depois do engasgo e náusea antecipatória.",
+   "fichas": [
+    {
+     "file": "9762190a40f94d53b8c4.jpg",
+     "title": "Só cinco alimentos"
+    },
+    {
+     "file": "440e48bcb12ac4c208ed.jpg",
+     "title": "Só triturado"
+    },
+    {
+     "file": "61793747211886d1f109.jpg",
+     "title": "Depois do engasgo"
+    },
+    {
+     "file": "9cd903c983a1f1c77001.jpg",
+     "title": "A náusea antes de comer"
+    },
+    {
+     "file": "18e4979867f4fb978853.jpg",
+     "title": "A marca de sempre"
+    }
+   ]
+  },
+  {
+   "code": "K",
+   "title": "Expansão do repertório",
+   "desc": "Depois que ela prova: como virar hábito, volume e comida fora de casa.",
+   "fichas": [
+    {
+     "file": "ff8763cb4509c919b4f7.jpg",
+     "title": "A regra do primo"
+    },
+    {
+     "file": "dd10e7b5812a097b6510.jpg",
+     "title": "O cardápio de três colunas"
+    },
+    {
+     "file": "497e3a65ac9ec933e27e.jpg",
+     "title": "Duas colheres a mais"
+    },
+    {
+     "file": "1ebefcba8be0fa4bc7c3.jpg",
+     "title": "O alimento da semana"
+    },
+    {
+     "file": "572cda246138dd72dea5.jpg",
+     "title": "O prato de fora de casa"
+    }
+   ]
+  },
+  {
+   "code": "L",
+   "title": "Manutenção e alta",
+   "desc": "Provar a evolução, sobreviver à recaída e dar alta com plano.",
+   "fichas": [
+    {
+     "file": "17d9d0d6f81c21153901.jpg",
+     "title": "O gráfico do repertório"
+    },
+    {
+     "file": "e02b38e51f5d13a2db8d.jpg",
+     "title": "A recaída não zera"
+    },
+    {
+     "file": "c27555bff4f8e3df3923.jpg",
+     "title": "O teste da avó"
+    },
+    {
+     "file": "529564d690215cefdaa6.jpg",
+     "title": "O que ela mesma vê"
+    },
+    {
+     "file": "ab21908267cad1f944ec.jpg",
+     "title": "Alta com plano de 90 dias"
+    }
+   ]
+  }
+ ]
+}

@@ -52,5 +52,20 @@ module.exports = async (req, res) => {
     return res.status(200).json({ valid: true, appLocked: true, name: firstName });
   }
 
+  // Edicao Profissional (18/09): o app ganha a aba Consultorio. A lista das 60
+  // fichas (nomes imprevisiveis, ver scripts/build-consultorio-app.js) so sai
+  // daqui, e so pra token profissional. E o que impede a nutricionista de ver
+  // o mesmo app da mae, e impede qualquer um de achar as fichas sem pagar.
+  if (record.tierId === 'profissional') {
+    let consultorio = null;
+    try { consultorio = require('./_consultorio.json'); } catch {}
+    return res.status(200).json({
+      valid: true, name: firstName, tier: 'profissional',
+      consultorio,
+      // Order bump do Bloco de Evolucao: so aparece o botao pra quem comprou.
+      bloco: record.devolutiva === true,
+    });
+  }
+
   return res.status(200).json({ valid: true, name: firstName });
 };
