@@ -62,9 +62,9 @@ function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }) {
     </p>
     <p style="font-size: 13px; color: #7C857D; text-align: center;">Este link é só seu, ligado à sua compra. Guarde este e-mail para acessar de novo quando precisar.</p>${devolutivaUrl ? `
     <p style="text-align: center; margin: 20px 0 6px;">
-      <a href="${devolutivaUrl}" style="background: #fff; color: #3C7A2C; border: 2px solid #5CA741; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">Baixar as fichas de devolutiva</a>
+      <a href="${devolutivaUrl}" style="background: #fff; color: #3C7A2C; border: 2px solid #5CA741; text-decoration: none; padding: 12px 24px; border-radius: 8px; font-weight: bold; display: inline-block;">Baixar o Bloco de Evolução</a>
     </p>
-    <p style="font-size: 13px; color: #7C857D; text-align: center;">São 4 folhas para imprimir: a devolutiva da família, o acompanhamento entre consultas, a devolutiva para os pais e a anotação clínica.</p>` : ''}`
+    <p style="font-size: 13px; color: #7C857D; text-align: center;">Capa e 4 folhas para imprimir: como foi em casa, linha do tempo, resumo para a família e anotação clínica.</p>` : ''}`
     : `<p>Vamos te mandar o acesso no WhatsApp que você cadastrou no checkout. Se preferir não esperar, escreva para kitpratolimpo@gmail.com que a gente manda na hora.</p>`;
 
   return `

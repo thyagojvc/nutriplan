@@ -602,7 +602,7 @@
 
       <div class="pedido-resumo">
         <div class="linha"><span>KPL Edição Profissional</span><span>R$ 67,00</span></div>
-        <div class="linha" id="linha-devolutiva" hidden><span>Fichas de devolutiva</span><span>R$ 10,00</span></div>
+        <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 67,00</span></div>
       </div>
 
@@ -684,12 +684,12 @@
 <div class="bump-step" id="bump-step" role="dialog" aria-modal="true" aria-labelledby="bump-step-titulo">
   <div class="bump-step__card">
     <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
-    <h3 id="bump-step-titulo">Quer saber o que a família fez em casa?</h3>
-    <p class="bump-step__sub">4 folhas para imprimir, por mais R$ 10,00.</p>
+    <h3 id="bump-step-titulo">Quer acompanhar a evolução entre as consultas?</h3>
+    <p class="bump-step__sub"><b>Bloco de Evolução</b>: capa e 4 folhas para imprimir, por mais R$ 10,00.</p>
     <ul class="bump-step__lista">
       <li><span class="tick">✓</span><span>Como foi em casa <b>(a família preenche)</b></span></li>
-      <li><span class="tick">✓</span><span>Evolução entre consultas</span></li>
-      <li><span class="tick">✓</span><span>Devolutiva para os pais</span></li>
+      <li><span class="tick">✓</span><span>Linha do tempo, semana a semana</span></li>
+      <li><span class="tick">✓</span><span>Resumo para a família</span></li>
       <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
     </ul>
     <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de R$ 77,00</button>
@@ -718,7 +718,7 @@ const $ = s => document.querySelector(s);
 let timer=null, paymentId=null, cliente=null;
 
 /* =========================================================
-   Order bump das fichas de devolutiva
+   Order bump do Bloco de Evolução (id interno segue 'devolutiva')
    O valor que vale e o que o servidor recalcula pelo _catalog a partir dos
    ids enviados. O numero aqui e so o que a pessoa ve.
    ========================================================= */

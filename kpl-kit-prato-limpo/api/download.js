@@ -123,7 +123,7 @@ module.exports = async (req, res) => {
   if (querDevolutiva && !(temDevolutiva && KIT_FILE.devolutiva)) {
     return sendPage(res, 404, {
       title: 'Material não encontrado',
-      message: 'Esse link é das fichas de devolutiva, que são um adicional da Edição Profissional. Se você comprou e está vendo esta tela, responda o e-mail da compra que a gente libera na hora.',
+      message: 'Esse link é do Bloco de Evolução, que é um adicional da Edição Profissional. Se você comprou e está vendo esta tela, responda o e-mail da compra que a gente libera na hora.',
     });
   }
 

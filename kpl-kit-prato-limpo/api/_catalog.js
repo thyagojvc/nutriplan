@@ -46,7 +46,9 @@ const BUMPS = {
   bump1: { name: 'Cardápio de 4 semanas anti-seletividade', priceCents: 990 },
   bump2: { name: 'Áudios para acalmar a hora da refeição', priceCents: 1490 },
   // Bump da /profissional (17/09). Entregue como PDF proprio, ver _entrega.js.
-  devolutiva: { name: 'Fichas de devolutiva e registro clínico', priceCents: 1000 },
+  // Id 'devolutiva' mantido: e o ?item= do download e a chave do manifesto.
+  // O nome que a pessoa le mudou pra Bloco de Evolução em 17/09.
+  devolutiva: { name: 'Bloco de Evolução', priceCents: 1000 },
 };
 
 // O bump da devolutiva e reconhecido pelo VALOR, nao pela lista de bumps: o
