@@ -67,6 +67,62 @@ function decodeAdRef(raw) {
   return decodeRef(raw) || 'Sem anúncio';
 }
 
+// MESMA PESSOA, VARIAS SESSOES (18/09). O id do visitante mora no
+// sessionStorage, e o navegador do Instagram abre uma sessao nova a cada toque
+// no anuncio: quem abre tres vezes vira tres visitantes, e o funil infla.
+//
+// Aqui junta, SO NA LEITURA, sessoes com o mesmo IP e o mesmo anuncio em que
+// uma comeca ate 30 min depois da anterior terminar. Nada muda no Redis (sem
+// comando novo, e vale pro historico todo). Fica a parte mais funda que a
+// pessoa alcancou em qualquer uma das aberturas.
+//
+// Risco conhecido: operadora de celular as vezes poe varias pessoas atras do
+// mesmo IP (CGNAT). Exigir o mesmo anuncio e a janela curta deixa isso raro.
+// IP "Sem dado" nunca junta.
+const JANELA_MESMA_PESSOA_MS = 30 * 60 * 1000;
+
+function juntarMesmaPessoa(rows, idxOf) {
+  const quizIdx = {};
+  QUIZ_STEPS.forEach((s, i) => { quizIdx[s.id] = i; });
+  const fundo = (a, b, idx) => ((idx[b] ?? -1) > (idx[a] ?? -1) ? b : a);
+
+  const ordem = rows.slice().sort((a, b) => (a.firstSeen || 0) - (b.firstSeen || 0));
+  const aberto = {}; // chave -> grupo em andamento
+  const saida = [];
+
+  for (const v of ordem) {
+    const chave = v.ip && v.ip !== 'Sem dado' ? v.ip + '|' + v.adRef : null;
+    const g = chave && aberto[chave];
+    if (g && (v.firstSeen || 0) - (g.lastSeen || 0) <= JANELA_MESMA_PESSOA_MS) {
+      g.ids.push(v.id);
+      g.firstSeen = Math.min(g.firstSeen || v.firstSeen, v.firstSeen || g.firstSeen);
+      if ((v.lastSeen || 0) >= (g.lastSeen || 0)) {
+        // Dados de ambiente vêm da abertura mais recente.
+        Object.assign(g, {
+          id: v.id, lastSeen: v.lastSeen, lastSection: v.lastSection,
+          device: v.device || g.device, platform: v.platform || g.platform,
+          browserEnv: v.browserEnv || g.browserEnv,
+          campaign: v.campaign || g.campaign, adset: v.adset || g.adset,
+        });
+      }
+      g.maxSection = fundo(g.maxSection, v.maxSection, idxOf);
+      g.quizMax = fundo(g.quizMax, v.quizMax, quizIdx);
+      g.hiddenLoad = g.hiddenLoad && v.hiddenLoad;
+      g.visible = g.visible || v.visible;
+      g.touched = g.touched || v.touched;
+      g.checkoutStarted = g.checkoutStarted || v.checkoutStarted;
+      g.isLive = g.isLive || v.isLive;
+      continue;
+    }
+    const novo = Object.assign({}, v, { ids: [v.id] });
+    if (chave) aberto[chave] = novo;
+    saida.push(novo);
+  }
+
+  // Mesma ordem de antes: mais recente primeiro.
+  return saida.sort((a, b) => (b.lastSeen || 0) - (a.lastSeen || 0));
+}
+
 // O visitante guarda anúncio, campanha e conjunto num campo só ("a~c~s"), pra
 // não custar dois comandos a mais do Upstash em cada batida (ver presence.js).
 // Visitante gravado antes de 16/09 não tem "~": vira só o anúncio, e campanha e
@@ -154,9 +210,10 @@ module.exports = async (req, res) => {
       };
     });
 
-    const rows = range === 'all'
+    const noPeriodo = range === 'all'
       ? all
       : all.filter((v) => v.lastSeen && v.lastSeen >= sinceTs);
+    const rows = juntarMesmaPessoa(noPeriodo, idxOf);
 
     const liveCount = rows.filter((v) => v.isLive).length;
 

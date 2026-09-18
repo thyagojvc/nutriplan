@@ -394,8 +394,11 @@ function render(data) {
         const dev = ind.device ? (DEVICE_LABELS[ind.device] || ind.device) : '—';
         const plat = ind.platform ? (PLATFORM_LABELS[ind.platform] || ind.platform) : '—';
         const env = ind.browserEnv ? (ENV_LABELS[ind.browserEnv] || ind.browserEnv) : '—';
-        return `<tr data-id="${esc(ind.id)}"${selectedIds.has(ind.id) ? ' class="sel"' : ''}>
-          <td class="chk-col"><input type="checkbox" class="row-chk" data-id="${esc(ind.id)}"${selectedIds.has(ind.id) ? ' checked' : ''} /></td>
+        // Linha pode juntar varias sessoes da mesma pessoa (ver funnel-data):
+        // a chave carrega todos os ids, pra apagar apaga todos.
+        const chave = (ind.ids || [ind.id]).join(',');
+        return `<tr data-id="${esc(chave)}"${selectedIds.has(chave) ? ' class="sel"' : ''}>
+          <td class="chk-col"><input type="checkbox" class="row-chk" data-id="${esc(chave)}"${selectedIds.has(chave) ? ' checked' : ''} /></td>
           <td class="muted">${esc(ind.id.slice(0, 8))}</td>
           <td>${fmtTime(ind.firstSeen)}</td>
           <td>${esc(dev)}</td>
@@ -411,7 +414,7 @@ function render(data) {
     : '<tr><td colspan="11" class="muted">Sem visitantes no período.</td></tr>';
 
   // Só sobram marcados os que ainda existem na tela (mudou o período, por ex.)
-  const visiveis = new Set(data.individuals.map((i) => i.id));
+  const visiveis = new Set(data.individuals.map((i) => (i.ids || [i.id]).join(',')));
   selectedIds.forEach((id) => { if (!visiveis.has(id)) selectedIds.delete(id); });
   bindRowChecks();
   refreshSelUI();
@@ -452,7 +455,7 @@ $('#sel-all').addEventListener('change', (e) => {
 });
 
 $('#del-btn').addEventListener('click', async () => {
-  const ids = Array.from(selectedIds);
+  const ids = Array.from(selectedIds).flatMap((k) => k.split(',')).filter(Boolean);
   if (!ids.length) return;
   // Sem desfazer: o dado mora só no Redis. A confirmação diz o número exato.
   if (!confirm(`Apagar ${ids.length} sessão(ões) do painel?\n\nIsso não tem como desfazer.`)) return;
