@@ -117,7 +117,7 @@ module.exports = async (req, res) => {
     // na frente e a licença de uso. Só entra se o build já tiver gerado o
     // arquivo — sem isso o `||` abaixo entregaria o Completo em silêncio, que é
     // material de outro público e sem a licença que ela pagou pra ter.
-    if (parsed.tierId === 'profissional' && KIT_FILE.profissional) tierId = 'profissional';
+    if ((parsed.tierId === 'profissional' || parsed.tierId === 'profissional_pdf') && KIT_FILE.profissional) tierId = 'profissional';
   } catch {}
 
   if (querDevolutiva && !(temDevolutiva && KIT_FILE.devolutiva)) {

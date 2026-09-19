@@ -48,7 +48,8 @@ module.exports = async (req, res) => {
   // Essencial tem token válido — pagou de verdade — só não pra ISSO aqui. Em
   // vez de tratar como link inválido (o que seria falso e rude com quem
   // pagou), avisa e devolve o link direto do PDF dela.
-  if (record.tierId === 'essencial') {
+  // profissional_pdf (19/09) tambem: o plano de R$ 32,90 e so o PDF.
+  if (record.tierId === 'essencial' || record.tierId === 'profissional_pdf') {
     return res.status(200).json({ valid: true, appLocked: true, name: firstName });
   }
 

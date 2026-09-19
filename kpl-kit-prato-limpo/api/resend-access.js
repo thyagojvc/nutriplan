@@ -68,7 +68,7 @@ module.exports = async (req, res) => {
     // 'profissional' entrou em 18/09: antes caia no 'completo', e o reenvio pra
     // uma nutricionista entregava o PDF das maes, sem as fichas de consultorio
     // e sem a licenca que ela pagou.
-    const tierId = ['essencial', 'profissional'].includes(body.tier) ? body.tier : 'completo';
+    const tierId = ['essencial', 'profissional', 'profissional_pdf'].includes(body.tier) ? body.tier : 'completo';
     const tierName = (TIERS[tierId] && TIERS[tierId].name) || 'KPL Completo';
     // Sem id da PushInPay em mãos, marca a origem: o registro fica rastreável
     // como reenvio manual em vez de se passar por uma venda comum.

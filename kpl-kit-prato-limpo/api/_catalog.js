@@ -37,6 +37,9 @@ const TIERS = {
   // Fica acima de qualquer preço de mãe de propósito: preço baixo em material
   // clínico soa amador, e o teto de CPA aqui é ~10x o do produto de R$ 10.
   profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 4700 }, // era 6700 ate 19/09
+  // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
+  // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
+  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 3290 },
 };
 const DEFAULT_TIER = 'completo';
 
@@ -55,9 +58,14 @@ const BUMPS = {
 // webhook (rede de seguranca) nunca recebe essa lista, e sem isso a compra que
 // cai por la sairia sem o material pago. R$ 47 + R$ 10 (R$ 57) nao colide com nenhum
 // tier, entao da pra inferir com seguranca.
+// Vale pros dois planos da /profissional: 32,90 + 10 = 42,90 e 47 + 10 = 57.
+// Nenhum dos dois colide com tier, e o tierFromValueCents ja cai no plano
+// certo pela regra do mais proximo por baixo.
+const TIERS_PRO = ['profissional', 'profissional_pdf'];
 function pedidoTemDevolutiva(valueCents) {
   const v = Number(valueCents) || 0;
-  return v >= TIERS.profissional.priceCents + BUMPS.devolutiva.priceCents;
+  const t = tierFromValueCents(v);
+  return TIERS_PRO.includes(t.id) && v >= t.priceCents + BUMPS.devolutiva.priceCents;
 }
 
 // Recalcula o total confiável a partir do tier + ids de bump recebidos do front.
@@ -108,4 +116,4 @@ function tierFromValueCents(valueCents) {
   return sorted.find((t) => valueCents >= t.priceCents) || sorted[sorted.length - 1];
 }
 
-module.exports = { TIERS, BUMPS, DEFAULT_TIER, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
+module.exports = { TIERS, BUMPS, DEFAULT_TIER, TIERS_PRO, computeOrder, tierFromValueCents, pedidoTemDevolutiva };

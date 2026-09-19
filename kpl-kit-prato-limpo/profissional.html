@@ -173,6 +173,29 @@
   .resumo li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
   .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
 
+  /* ---------- dois planos (19/09) ---------- */
+  .planos{display:flex;flex-direction:column;gap:14px}
+  .plano{position:relative;display:block;cursor:pointer;background:var(--card);border:2px solid var(--border);
+    border-radius:var(--radius);padding:18px 16px 16px;box-shadow:var(--shadow-sm);transition:border-color .15s,box-shadow .15s}
+  .plano input{position:absolute;opacity:0;pointer-events:none}
+  .plano:has(input:checked){border-color:var(--green);box-shadow:var(--shadow)}
+  .plano:has(input:focus-visible){outline:3px solid var(--mint-2);outline-offset:2px}
+  .plano__topo{display:flex;align-items:center;gap:12px}
+  .plano__radio{flex:0 0 22px;height:22px;border-radius:50%;border:2px solid var(--border);display:grid;place-items:center}
+  .plano:has(input:checked) .plano__radio{border-color:var(--green)}
+  .plano:has(input:checked) .plano__radio::after{content:"";width:12px;height:12px;border-radius:50%;background:var(--green)}
+  .plano__nome{font-family:var(--heading);font-weight:800;color:var(--ink);font-size:1.08rem;line-height:1.2}
+  .plano__nome small{display:block;font-family:var(--body);font-weight:600;color:var(--muted);font-size:.8rem;margin-top:2px}
+  .plano__preco{margin-left:auto;font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:1.5rem;white-space:nowrap}
+  .plano__preco small{font-size:.85rem}
+  .plano .resumo{margin-top:12px;gap:6px}
+  .plano .resumo li{font-size:.88rem}
+  .plano .resumo .no{color:var(--muted);font-weight:800;flex:0 0 auto}
+  .plano .resumo li.fora{color:var(--muted)}
+  .plano__selo{position:absolute;top:-11px;right:14px;background:var(--green);color:#fff;font-size:.7rem;font-weight:800;
+    letter-spacing:.06em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+  .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
+
   .field{margin-bottom:14px}
   .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
   .field input{width:100%;padding:13px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
@@ -546,18 +569,41 @@
       ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
     </div>
 
-    <div class="preco">
-      <div class="valor"><small>R$</small> 47<small>,00</small></div>
-      <p class="comp">Pagamento único, sem mensalidade.</p>
-      <ul class="resumo">
-        <li><span class="tick">✓</span><span>60 fichas de consultório, em 12 etapas</span></li>
-        <li><span class="tick">✓</span><span>129 fichas para a família levar pra casa</span></li>
-        <li><span class="tick">✓</span><span>O aplicativo, com as atividades na tela e o jogo dos 20 personagens</span></li>
-        <li><span class="tick">✓</span><span>Calendário, cartelas e quadro de progresso</span></li>
-        <li><span class="tick">✓</span><span>Licença de uso com seus pacientes</span></li>
-        <li><span class="tick">✓</span><span>Atualizações incluídas, sem pagar de novo</span></li>
-      </ul>
+    <!-- Dois planos (19/09). O data-tier e o id do _catalog: o servidor recalcula
+         o valor por ele, o preco aqui e so o que a pessoa ve. -->
+    <div class="planos" role="radiogroup" aria-label="Escolha o plano">
+      <label class="plano">
+        <input type="radio" name="plano" value="profissional_pdf" data-cents="3290" data-nome="KPL Edição Profissional (PDF)">
+        <div class="plano__topo">
+          <span class="plano__radio" aria-hidden="true"></span>
+          <span class="plano__nome">Fichas em PDF<small>Para imprimir e aplicar</small></span>
+          <span class="plano__preco"><small>R$</small> 32<small>,90</small></span>
+        </div>
+        <ul class="resumo">
+          <li><span class="tick">✓</span><span>60 fichas de consultório, em 12 etapas</span></li>
+          <li><span class="tick">✓</span><span>129 fichas para a família levar pra casa</span></li>
+          <li><span class="tick">✓</span><span>Licença de uso com seus pacientes</span></li>
+          <li class="fora"><span class="no">✕</span><span>Sem o aplicativo</span></li>
+        </ul>
+      </label>
+
+      <label class="plano">
+        <span class="plano__selo">Kit completo</span>
+        <input type="radio" name="plano" value="profissional" data-cents="4700" data-nome="KPL Edição Profissional" checked>
+        <div class="plano__topo">
+          <span class="plano__radio" aria-hidden="true"></span>
+          <span class="plano__nome">PDF + Aplicativo<small>Tudo da Edição Profissional</small></span>
+          <span class="plano__preco"><small>R$</small> 47<small>,00</small></span>
+        </div>
+        <ul class="resumo">
+          <li><span class="tick">✓</span><span>As 189 fichas em PDF e a licença de uso</span></li>
+          <li><span class="tick">✓</span><span>O aplicativo, com a aba Consultório e as 60 fichas na tela do tablet</span></li>
+          <li><span class="tick">✓</span><span>Atividades na tela e o jogo dos 20 personagens para a criança usar entre as consultas</span></li>
+          <li><span class="tick">✓</span><span>Calendário, cartelas e quadro de progresso</span></li>
+        </ul>
+      </label>
     </div>
+    <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
 
     <div class="garantia-box">
       <div class="seal">🛡️</div>
@@ -603,7 +649,7 @@
       </div>
 
       <div class="pedido-resumo">
-        <div class="linha"><span>KPL Edição Profissional</span><span>R$ 47,00</span></div>
+        <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 47,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
       </div>
@@ -661,7 +707,7 @@
       </details>
       <details>
         <summary>Como recebo, e quanto tempo demora?</summary>
-        <p>Logo depois do Pix confirmado, chega no seu e-mail o link do aplicativo, que já é seu acesso. Dentro dele tem o botão para baixar o kit completo em PDF. Leva alguns minutos, não é entrega manual.</p>
+        <p>Logo depois do Pix confirmado, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
       </details>
       <details>
         <summary>Preciso de impressora?</summary>
@@ -673,7 +719,7 @@
       </details>
       <details>
         <summary>É assinatura?</summary>
-        <p>Não. É pagamento único de R$ 47,00. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
+        <p>Não. É pagamento único, nos dois planos. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
       </details>
     </div>
 
@@ -702,8 +748,8 @@
       <li><span class="tick">✓</span><span>Resumo para a família</span></li>
       <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
     </ul>
-    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de R$ 57,00</button>
-    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por R$ 47,00</button>
+    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de <span id="bump-sim-valor">R$ 57,00</span></button>
+    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por <span id="bump-nao-valor">R$ 47,00</span></button>
   </div>
 </div>
 
@@ -713,7 +759,12 @@
 const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
 const POLL_MS = 5000;
 const PIXEL_ID = '2794485957574762';
-const PRECO_CENTS = 4700; // manter em sincronia com api/_catalog.js
+// Plano escolhido nos radios do checkout. Precos em sincronia com api/_catalog.js.
+const plano = () => {
+  const r = document.querySelector('input[name="plano"]:checked');
+  return { tier: r.value, cents: Number(r.dataset.cents), nome: r.dataset.nome };
+};
+const PRECO_CENTS = 4700; // plano de referencia pro ViewContent
 const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
@@ -734,10 +785,20 @@ let timer=null, paymentId=null, cliente=null;
    ========================================================= */
 let bumpAceito = false;
 const bumpsEscolhidos = () => (bumpAceito ? ['devolutiva'] : []);
-const totalCents = () => PRECO_CENTS + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
+const totalCents = () => plano().cents + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
 const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
 
+function travaPlanos(sim){
+  document.querySelectorAll('input[name="plano"]').forEach((r) => { r.disabled = sim; });
+}
+
 function atualizaTotal(){
+  const p = plano();
+  $('#linha-plano-nome').textContent = p.nome;
+  $('#linha-plano-valor').textContent = emReais(p.cents);
+  $('#bump-sim-valor').textContent = emReais(p.cents + BUMP_DEVOLUTIVA_CENTS);
+  $('#bump-nao-valor').textContent = emReais(p.cents);
+  if (!$('#btn').disabled) $('#btn-label').textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
   const linha = document.getElementById('linha-devolutiva');
   if (linha) linha.hidden = !bumpAceito;
   const total = document.getElementById('total-valor');
@@ -834,6 +895,10 @@ $('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.targ
 ['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
 
 /* ---- checkout ---- */
+document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
+  pixelCustom('PlanoEscolhido', { plano: r.value });
+  atualizaTotal();
+}));
 // ETAPA 1: valida e abre o painel do bump. Ninguem e cobrado aqui.
 $('#form').addEventListener('submit', e => {
   e.preventDefault();
@@ -843,7 +908,7 @@ $('#form').addEventListener('submit', e => {
   cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
   // InitiateCheckout dispara aqui, com o formulario ja validado: o evento
   // significa "comecou o checkout", nao "decidiu sobre o adicional".
-  pixel('InitiateCheckout', { value: PRECO_CENTS/100, currency:'BRL', content_name:'KPL Edição Profissional' });
+  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
 
   $('#bump-step').classList.add('show');
   document.getElementById('bump-sim').focus();
@@ -885,7 +950,7 @@ async function fechaBumpEGera(){
       // tier 'profissional': o servidor recalcula o valor pelo _catalog e grava
       // esse tierId no token, que é o que faz o download.js entregar o PDF
       // profissional em vez do kit das mães.
-      body: JSON.stringify({ customer: cliente, method:'pix', tier:'profissional',
+      body: JSON.stringify({ customer: cliente, method:'pix', tier: plano().tier,
         bumps: bumpsEscolhidos(), adRef:'profissional' })
     });
     if(!r.ok) throw new Error('status '+r.status);
@@ -893,6 +958,9 @@ async function fechaBumpEGera(){
     if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
 
     paymentId = d.paymentId;
+    // Trava o plano com o Pix na tela: trocar agora mudaria o valor do Purchase
+    // no pixel sem mudar a cobranca.
+    travaPlanos(true);
     $('#form').style.display='none';
     $('#pix').classList.add('show');
     const qr=d.pix.qrCodeImage||'';
@@ -927,6 +995,7 @@ function poll(){
       else if(status==='expired'||status==='canceled'){
         clearInterval(timer);
         $('#pix').classList.remove('show'); $('#form').style.display='';
+        travaPlanos(false);
         $('#btn').disabled=false;
         $('#erro').textContent='O Pix expirou. Gere um novo para concluir.';
         $('#erro').classList.add('show');
@@ -946,7 +1015,7 @@ function pago(){
   // de eventos de lá, e o deliver-kit manda a versão com e-mail e telefone
   // hasheados, que casa muito melhor.
   try { if (window.fbq) fbq('track', 'Purchase',
-    { value: totalCents()/100, currency:'BRL', content_name:'KPL Edição Profissional' },
+    { value: totalCents()/100, currency:'BRL', content_name: plano().nome },
     { eventID: 'purchase_' + paymentId }); } catch(e){}
 
   // mesma chamada do checkout principal: é ela que gera o acesso e manda o

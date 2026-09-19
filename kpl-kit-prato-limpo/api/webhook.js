@@ -126,7 +126,7 @@ async function deliverKit(transaction) {
     }
     if (podeEntregar) {
       const tierWh = tierFromValueCents(valorCents);
-      const temDevolutivaWh = tierWh.id === 'profissional' && pedidoTemDevolutiva(valorCents);
+      const temDevolutivaWh = pedidoTemDevolutiva(valorCents);
       entregaUrl = await createDownloadLink(
         paymentId, backup.email, backup.name, tierWh.id,
         temDevolutivaWh ? { devolutiva: true } : undefined);

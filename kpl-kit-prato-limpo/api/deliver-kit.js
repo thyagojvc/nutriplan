@@ -157,7 +157,7 @@ module.exports = async (req, res) => {
 
     // Link exclusivo desta compra. Precisa existir antes do e-mail sair.
     // Bump das fichas de devolutiva: inferido pelo valor pago (ver _catalog).
-    const temDevolutiva = tier.id === 'profissional' && pedidoTemDevolutiva(valorCents);
+    const temDevolutiva = pedidoTemDevolutiva(valorCents);
     const downloadUrl = await createDownloadLink(
       paymentId, email, name, tier.id, temDevolutiva ? { devolutiva: true } : undefined);
     const devolutivaUrl = temDevolutiva && downloadUrl
