@@ -26,3 +26,7 @@ Keys/
 # outros 132MB no histórico pra sempre. Quem sobe pra produção é o Vercel CLI,
 # que lê do disco e não do git, então nada quebra por eles não estarem aqui.
 entrega/*.pdf
+
+# Copias dos PDFs entregues e video bruto da Edicao Profissional
+PROFISSIONAL/entregaveis/
+PROFISSIONAL/**/*.mp4

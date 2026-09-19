@@ -6,8 +6,8 @@
 // de folha solta. Por isso nao sao 10 fichas parecidas.
 //
 // Saida:
-//   criativos-kpl/profissional/para-imprimir/   PNGs numerados na ordem
-//   criativos-kpl/profissional/fichas-para-filmar.pdf   tudo num arquivo so
+//   PROFISSIONAL/criativos/para-imprimir/   PNGs numerados na ordem
+//   PROFISSIONAL/criativos/fichas-para-filmar.pdf   tudo num arquivo so
 //
 // Rodar:  node scripts/build-fichas-para-filmar.js
 const fs = require('fs');
@@ -16,8 +16,8 @@ const sharp = require('sharp');
 const { PDFDocument } = require('pdf-lib');
 
 const RAIZ = path.join(__dirname, '..');
-const FICHAS = path.join(RAIZ, 'assets', 'fichas-consultorio');
-const OUT = path.join(RAIZ, '..', 'criativos-kpl', 'profissional');
+const FICHAS = path.join(RAIZ, 'PROFISSIONAL', 'fichas-consultorio');
+const OUT = path.join(RAIZ, 'PROFISSIONAL', 'criativos');
 const PASTA = path.join(OUT, 'para-imprimir');
 
 // A4 retrato em pontos.
@@ -89,8 +89,8 @@ async function main() {
   const saida = path.join(OUT, 'fichas-para-filmar.pdf');
   fs.writeFileSync(saida, bytes);
 
-  console.log('\nPNGs  -> criativos-kpl/profissional/para-imprimir/');
-  console.log('PDF   -> criativos-kpl/profissional/fichas-para-filmar.pdf  (' +
+  console.log('\nPNGs  -> PROFISSIONAL/criativos/para-imprimir/');
+  console.log('PDF   -> PROFISSIONAL/criativos/fichas-para-filmar.pdf  (' +
     (bytes.length / 1024 / 1024).toFixed(1) + ' MB, ' + pdf.getPageCount() + ' páginas)');
 }
 

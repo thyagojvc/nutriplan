@@ -52,3 +52,8 @@ assets/fichas-consultorio/
 # Este deploy tira o arquivo do ar, mas ele ficou aberto por um tempo, então
 # a chave em si tem que ser TROCADA — arquivo removido não desfaz quem já leu.
 Keys/
+
+# Pasta de trabalho da Edicao Profissional (19/09): fichas de origem,
+# criativos e copias dos PDFs. Nada aqui e servido pelo site, e as fichas
+# ficariam PUBLICAS se subissem (mesmo motivo de assets/fichas-geradas).
+PROFISSIONAL/

@@ -53,7 +53,7 @@ const FICHAS_DIR = path.join(__dirname, '..', 'assets', 'fichas-geradas');
 // filtro de fichas-geradas/ é /^B\d+-F\d+-/, então mesmo se caíssem lá elas não
 // entrariam no kit das mães — mas separar deixa explícito que são produtos
 // diferentes, e evita que um glob distraído misture os dois.
-const CONSULTORIO_DIR = path.join(__dirname, '..', 'assets', 'fichas-consultorio');
+const CONSULTORIO_DIR = path.join(__dirname, '..', 'PROFISSIONAL', 'fichas-consultorio');
 const BONUS_DIR = path.join(__dirname, '..', 'assets', 'bonus');
 const OUTPUT_DIR = path.join(__dirname, '..', 'entrega');
 const MANIFEST_PATH = path.join(__dirname, '..', 'api', '_kit-file.json');

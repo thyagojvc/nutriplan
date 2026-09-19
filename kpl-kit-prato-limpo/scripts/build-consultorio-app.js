@@ -20,7 +20,7 @@ const sharp = require('sharp');
 const { PRO_STAGES, titleFromProFile } = require('./kit-data');
 
 const RAIZ = path.join(__dirname, '..');
-const ORIGEM = path.join(RAIZ, 'assets', 'fichas-consultorio');
+const ORIGEM = path.join(RAIZ, 'PROFISSIONAL', 'fichas-consultorio');
 const DESTINO = path.join(RAIZ, 'assets', 'consultorio-app');
 const MANIFESTO = path.join(RAIZ, 'api', '_consultorio.json');
 const SAL = 'kpl-pro-consultorio-2026';

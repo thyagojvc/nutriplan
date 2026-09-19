@@ -44,7 +44,7 @@ const BLOCKS = [
 // casa) e "leva para casa" (a ponte que faz a orientação sobreviver até a
 // próxima consulta). Ficam ANTES dos blocos caseiros no PDF profissional.
 //
-// Os arquivos são assets/fichas-consultorio/C<NN>-<slug>.png, e `range` é a
+// Os arquivos são PROFISSIONAL/fichas-consultorio/C<NN>-<slug>.png, e `range` é a
 // faixa de NN de cada etapa — é isso que agrupa ficha em etapa, não o nome.
 const PRO_STAGES = [
   { code: 'A', title: 'Avaliação inicial', desc: 'Mapear o repertório real e a raiz da recusa antes de intervir.', range: [1, 5] },

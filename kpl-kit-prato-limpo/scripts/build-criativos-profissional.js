@@ -1,7 +1,7 @@
 // Monta os estaticos de anuncio da Edicao Profissional, em 4:5 (1080x1350).
 //
 // POR QUE AQUI E NAO NO CHATGPT: as fichas sao os PNGs REAIS de
-// assets/fichas-consultorio/. Gerador de imagem redesenharia elas, e o criativo
+// PROFISSIONAL/fichas-consultorio/. Gerador de imagem redesenharia elas, e o criativo
 // passaria a mostrar um material diferente do que a pessoa recebe. Em anuncio
 // pra profissional isso e fatal: ela avalia material tecnico com olho critico,
 // e a peca inteira existe pra provar que a ficha e clinica.
@@ -11,7 +11,7 @@
 //   2. o material aparecendo por dentro
 //   3. preco visivel
 //
-// Saida: criativos-kpl/profissional/*.jpg
+// Saida: PROFISSIONAL/criativos/*.jpg
 //
 // Rodar:  node scripts/build-criativos-profissional.js
 const fs = require('fs');
@@ -19,8 +19,8 @@ const path = require('path');
 const sharp = require('sharp');
 
 const RAIZ = path.join(__dirname, '..');
-const FICHAS = path.join(RAIZ, 'assets', 'fichas-consultorio');
-const OUT = path.join(RAIZ, '..', 'criativos-kpl', 'profissional');
+const FICHAS = path.join(RAIZ, 'PROFISSIONAL', 'fichas-consultorio');
+const OUT = path.join(RAIZ, 'PROFISSIONAL', 'criativos');
 
 const W = 1080;
 const H = 1350;
@@ -220,7 +220,7 @@ async function main() {
   await grade();
   await anatomia();
   await pacote();
-  console.log('-> criativos-kpl/profissional/');
+  console.log('-> PROFISSIONAL/criativos/');
 }
 
 main().catch((e) => { console.error(e); process.exit(1); });
