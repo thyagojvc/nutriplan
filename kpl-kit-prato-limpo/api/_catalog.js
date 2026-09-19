@@ -36,7 +36,7 @@ const TIERS = {
   //
   // Fica acima de qualquer preço de mãe de propósito: preço baixo em material
   // clínico soa amador, e o teto de CPA aqui é ~10x o do produto de R$ 10.
-  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 6700 },
+  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 4700 }, // era 6700 ate 19/09
 };
 const DEFAULT_TIER = 'completo';
 
@@ -53,7 +53,7 @@ const BUMPS = {
 
 // O bump da devolutiva e reconhecido pelo VALOR, nao pela lista de bumps: o
 // webhook (rede de seguranca) nunca recebe essa lista, e sem isso a compra que
-// cai por la sairia sem o material pago. R$ 67 + R$ 10 nao colide com nenhum
+// cai por la sairia sem o material pago. R$ 47 + R$ 10 (R$ 57) nao colide com nenhum
 // tier, entao da pra inferir com seguranca.
 function pedidoTemDevolutiva(valueCents) {
   const v = Number(valueCents) || 0;
@@ -93,7 +93,9 @@ function computeOrder(tierId, bumpIds = []) {
 //              completo de novo hoje        <- casa
 //   R$ 23,90 = completo_promo de 07/09 a 12/09, hoje não casa com nada.
 //   R$ 37,00 = completo de 07/09 a 12/09, hoje não casa com nada.
-//   R$ 47,00 = completo até 31/08, hoje não casa com nada.
+//   R$ 47,00 = completo até 31/08, e PROFISSIONAL desde 19/09  <- casa, e
+//              entrega o kit PROFISSIONAL pra uma venda antiga do Completo.
+//   R$ 67,00 = profissional de 22/08 a 19/09, hoje não casa com nada.
 //   R$ 8,90 e R$ 15,90 = upgrades antigos, hoje não casam com nada.
 // Só importa se você reenviar o POST de uma venda velha na PushInPay:
 // reconferir o tier na mão antes, senão a pessoa recebe o kit errado.

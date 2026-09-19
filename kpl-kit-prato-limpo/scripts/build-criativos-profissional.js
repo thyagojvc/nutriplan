@@ -70,7 +70,7 @@ function selo(y) {
   const x = (W - largura) / 2;
   return `
     <rect x="${x}" y="${y}" width="${largura}" height="104" rx="52" fill="${GREEN}"/>
-    ${txt('R$ 67', W / 2 - 96, y + 70, { size: 58, font: DISPLAY, weight: '900', fill: '#fff', anchor: 'middle' })}
+    ${txt('R$ 47', W / 2 - 96, y + 70, { size: 58, font: DISPLAY, weight: '900', fill: '#fff', anchor: 'middle' })}
     ${txt('pagamento único', W / 2 + 108, y + 52, { size: 25, font: BODY, weight: 'bold', fill: '#fff', anchor: 'middle' })}
     ${txt('sem mensalidade', W / 2 + 108, y + 82, { size: 25, font: BODY, weight: 'bold', fill: '#D9EDC9', anchor: 'middle' })}`;
 }
@@ -181,7 +181,7 @@ async function anatomia() {
 }
 
 /* =========================================================
-   3 - O QUE VEM JUNTO. Responde "o que eu levo por R$ 67".
+   3 - O QUE VEM JUNTO. Responde "o que eu levo por R$ 47".
    ========================================================= */
 async function pacote() {
   // Segmento 3: atendimento em escola e oficina em grupo (a licenca cobre).

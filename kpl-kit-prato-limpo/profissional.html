@@ -547,7 +547,7 @@
     </div>
 
     <div class="preco">
-      <div class="valor"><small>R$</small> 67<small>,00</small></div>
+      <div class="valor"><small>R$</small> 47<small>,00</small></div>
       <p class="comp">Pagamento único, sem mensalidade.</p>
       <ul class="resumo">
         <li><span class="tick">✓</span><span>60 fichas de consultório, em 12 etapas</span></li>
@@ -603,9 +603,9 @@
       </div>
 
       <div class="pedido-resumo">
-        <div class="linha"><span>KPL Edição Profissional</span><span>R$ 67,00</span></div>
+        <div class="linha"><span>KPL Edição Profissional</span><span>R$ 47,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
-        <div class="linha total"><span>Total</span><span id="total-valor">R$ 67,00</span></div>
+        <div class="linha total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
       </div>
 
       <div class="pix-trust">
@@ -618,7 +618,7 @@
         <span class="pix-trust__text"><b>Pagamento via Pix</b><br>Sistema de pagamento instantâneo do Banco Central. Cai na hora, direto no seu banco.</span>
       </div>
 
-      <button type="submit" class="btn" id="btn"><span id="btn-label">Pagar R$ 67,00 com Pix</span></button>
+      <button type="submit" class="btn" id="btn"><span id="btn-label">Pagar R$ 47,00 com Pix</span></button>
 
       <div class="secure-badges">
         <span>🔒 Site seguro (HTTPS)</span>
@@ -673,7 +673,7 @@
       </details>
       <details>
         <summary>É assinatura?</summary>
-        <p>Não. É pagamento único de R$ 67,00. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
+        <p>Não. É pagamento único de R$ 47,00. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
       </details>
     </div>
 
@@ -702,8 +702,8 @@
       <li><span class="tick">✓</span><span>Resumo para a família</span></li>
       <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
     </ul>
-    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de R$ 77,00</button>
-    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por R$ 67,00</button>
+    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de R$ 57,00</button>
+    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por R$ 47,00</button>
   </div>
 </div>
 
@@ -713,7 +713,7 @@
 const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
 const POLL_MS = 5000;
 const PIXEL_ID = '2794485957574762';
-const PRECO_CENTS = 6700;
+const PRECO_CENTS = 4700; // manter em sincronia com api/_catalog.js
 const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
