@@ -783,7 +783,7 @@
       }
       document.getElementById('download-btn').href = '/api/download?t=' + encodeURIComponent(token);
       // Acesso que a nutricionista repassou: tela sim, PDF nao (o impresso quem
-      // entrega e ela). Ver api/familia-link.js.
+      // entrega e ela). Ver o POST de api/kit-access.js.
       if (data.familia) {
         var cartao = document.querySelector('.download-card');
         if (cartao) cartao.style.display = 'none';
@@ -848,7 +848,7 @@
       btn.disabled = true;
       var rotulo = btn.textContent;
       btn.textContent = 'Gerando...';
-      fetch('/api/familia-link', {
+      fetch('/api/kit-access', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ t: token }),

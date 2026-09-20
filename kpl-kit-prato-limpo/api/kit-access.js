@@ -10,11 +10,18 @@
 // pra entender por que aqui é o oposto do fail-OPEN de deliver-kit.js). Não
 // mexe no contador de downloads (dlc:) nem faz nenhuma escrita.
 
+const crypto = require('crypto');
 const { redis } = require('./_kv');
 
 module.exports = async (req, res) => {
+  // POST = link da família (ver linkDaFamilia lá embaixo). Ele mora AQUI, e não
+  // num arquivo próprio em api/, porque o plano da Vercel só permite 12 funções
+  // por deploy e a conta já estava exatamente no limite: um arquivo a mais
+  // derrubava o deploy inteiro com "No more than 12 Serverless Functions".
+  if (req.method === 'POST') return linkDaFamilia(req, res);
+
   if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
+    res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
@@ -68,7 +75,83 @@ module.exports = async (req, res) => {
     });
   }
 
-  // familia: true vem do link que a nutricionista repassa (familia-link.js).
+  // familia: true vem do link que a nutricionista repassa (ver o POST abaixo).
   // O app usa isso pra esconder o botao de baixar o PDF.
   return res.status(200).json({ valid: true, name: firstName, familia: record.familia === true });
 };
+
+// ---------------------------------------------------------------------------
+// POST /api/kit-access  { t: <token da nutricionista> }  ->  { url }
+//
+// LINK DA FAMÍLIA (20/09). A licença da Edição Profissional deixa a
+// nutricionista passar o app pras famílias que ela atende. Até aqui isso só
+// dava pra fazer repassando o PRÓPRIO link dela, o que entregava junto a aba
+// Consultório, as 60 fichas clínicas e o PDF profissional inteiro: uma cópia
+// do produto solta no WhatsApp de cada paciente.
+//
+// Aqui nasce um SEGUNDO token, o da família, que abre o mesmo app sem nada de
+// profissional e sem download de PDF nenhum. Ele é DERIVADO do token dela por
+// hash, não sorteado: clicar de novo devolve o mesmo link, então a cota de
+// escrita do Redis não cresce com o uso e ela manda o mesmo endereço pra
+// quantas famílias quiser.
+//
+// Quem bloqueia o PDF é o `familia: true` do registro, lido por download.js e
+// pelo GET aqui de cima. O tierId fica 'completo' só pra o app abrir com as
+// abas da família (fichas de casa, jogo, pintar, turma).
+// ---------------------------------------------------------------------------
+
+const TTL_FAMILIA_SECONDS = 365 * 24 * 60 * 60;
+
+function tokenDaFamilia(tokenPro) {
+  const salt = process.env.KIT_TOKEN_SALT || 'kpl-familia';
+  return crypto.createHash('sha256').update(salt + ':familia:' + tokenPro).digest('hex').slice(0, 48);
+}
+
+async function linkDaFamilia(req, res) {
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Robots-Tag', 'noindex, nofollow');
+
+  const body = req.body && typeof req.body === 'object' ? req.body : {};
+  const token = String(body.t || '').trim();
+  if (!/^[a-f0-9]{32,64}$/.test(token)) {
+    return res.status(400).json({ error: 'Token inválido.' });
+  }
+
+  let raw;
+  try {
+    raw = await redis('GET', `dl:${token}`);
+  } catch (err) {
+    console.error('link da família: redis indisponível', err);
+    return res.status(503).json({ error: 'Serviço indisponível, tente de novo em instantes.' });
+  }
+  if (!raw) return res.status(404).json({ error: 'Token não encontrado.' });
+
+  let record = {};
+  try { record = JSON.parse(raw); } catch {}
+  // Só a Edição Profissional tem licença de repasse. O plano só PDF nem abre o
+  // app, então também não tem link pra passar adiante.
+  if (record.tierId !== 'profissional') {
+    return res.status(403).json({ error: 'Esse acesso não é da Edição Profissional.' });
+  }
+
+  const famToken = tokenDaFamilia(token);
+  const registro = {
+    paymentId: record.paymentId || null,
+    email: record.email || null,
+    name: record.name || null,
+    tierId: 'completo',
+    familia: true,
+    de: token,
+    ts: Date.now(),
+  };
+
+  try {
+    await redis('SET', `dl:${famToken}`, JSON.stringify(registro), 'EX', String(TTL_FAMILIA_SECONDS));
+  } catch (err) {
+    console.error('link da família: falhou ao gravar o token', err);
+    return res.status(503).json({ error: 'Não conseguimos gerar o link agora. Tente de novo.' });
+  }
+
+  const base = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
+  return res.status(200).json({ url: `${base}/mi-kit?t=${famToken}` });
+}
