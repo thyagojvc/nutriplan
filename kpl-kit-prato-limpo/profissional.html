@@ -320,6 +320,9 @@
      de entregaveis do bloco de preco. */
   .pedido-resumo{background:var(--cream-2);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px}
   .pedido-resumo .linha{display:flex;justify-content:space-between;font-size:.95rem;padding:4px 0;color:var(--text)}
+  /* display:flex vence o [hidden] do navegador: sem esta linha, o Bloco de
+     Evolução e o cupom apareciam no resumo antes de serem escolhidos. */
+  .pedido-resumo .linha[hidden]{display:none}
   .pedido-resumo .linha.total{border-top:2px dashed var(--border);margin-top:8px;padding-top:12px;
     font-family:var(--heading);font-weight:800;font-size:1.25rem;color:var(--ink)}
 
