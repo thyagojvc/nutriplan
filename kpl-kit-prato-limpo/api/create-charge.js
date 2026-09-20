@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
     }
 
     // --- Total confiável (servidor manda) — a partir do tier + bumps ---
-    const { items, totalCents, tierId, tierName } = computeOrder(body.tier, body.bumps);
+    const { items, totalCents, tierId, tierName } = computeOrder(body.tier, body.bumps, body.cupom);
 
     const token = process.env.PUSHINPAY_TOKEN;
     if (!token) {

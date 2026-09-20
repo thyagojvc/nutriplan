@@ -285,6 +285,24 @@
   .today-banner{background:var(--ink);color:#fff;border-radius:var(--radius-sm);
     padding:12px 16px;text-align:center;font-size:.9rem;margin-bottom:18px;line-height:1.4}
   .today-banner strong{color:var(--orange)}
+  .today-banner .codigo{display:inline-block;background:var(--orange);color:#fff;font-weight:800;letter-spacing:.06em;
+    padding:2px 8px;border-radius:6px;margin:0 2px}
+
+  /* ---------- cupom (20/09) ---------- */
+  .plano__price-old{color:var(--muted);text-decoration:line-through;font-size:.85rem;font-weight:700;margin-bottom:2px}
+  .plano__desconto{margin-top:6px;display:inline-block;background:var(--mint);color:var(--green-dark);font-size:.72rem;
+    font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:999px}
+  .cupom{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px}
+  .cupom__titulo{font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:8px}
+  .cupom__linha{display:flex;gap:8px}
+  .cupom__linha input{flex:1;min-width:0;padding:12px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
+    text-transform:uppercase;background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);outline:none}
+  .cupom__linha input:focus{border-color:var(--green)}
+  .cupom__linha button{flex:0 0 auto;padding:12px 18px;font-family:var(--heading);font-weight:800;font-size:.9rem;
+    color:var(--green-dark);background:var(--mint);border:2px solid var(--green);border-radius:var(--radius-sm);cursor:pointer}
+  .cupom__aviso{font-size:.84rem;margin:8px 2px 0;color:var(--muted)}
+  .cupom__aviso.ok{color:var(--green-dark);font-weight:700}
+  .cupom__aviso.erro{color:var(--coral);font-weight:700}
 
   .pay-method{display:flex;gap:10px;margin:4px 0 20px}
   .pay-opt{flex:1;border:2px solid var(--green);background:var(--mint);border-radius:12px;
@@ -584,7 +602,7 @@
     </div>
 
     <div class="today-banner" id="today-banner">
-      ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
+      🏷️ Cupom <span class="codigo">PRATO30</span> com 30% de desconto, válido até <strong id="today-date">hoje</strong>.
     </div>
 
     <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
@@ -611,11 +629,13 @@
 
       <label class="plano plano--premium">
         <span class="plano__badge">Kit completo</span>
-        <input type="radio" name="plano" value="profissional" data-cents="4700" data-nome="KPL Edição Profissional" checked>
+        <input type="radio" name="plano" value="profissional" data-cents="6700" data-nome="KPL Edição Profissional" checked>
         <span class="plano__radio" aria-hidden="true"></span>
         <div class="plano__name">PDF + Aplicativo</div>
         <div class="plano__tagline">Tudo da Edição Profissional.</div>
-        <div class="plano__price">R$ 47<span class="cents">,00</span></div>
+        <div class="plano__price-old" id="pro-preco-cheio" hidden>R$ 67,00</div>
+        <div class="plano__price" id="pro-preco">R$ 67<span class="cents">,00</span></div>
+        <span class="plano__desconto" id="pro-selo-cupom" hidden>Cupom PRATO30 aplicado</span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
           <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
@@ -666,9 +686,21 @@
         <div class="pay-step"><span class="pay-step__n">3</span>O acesso chega sozinho no seu e-mail</div>
       </div>
 
+      <!-- Cupom: o front so manda o CODIGO. Quem desconta e o servidor, em
+           api/_catalog.js, senao daria pra pedir qualquer preco por aqui. -->
+      <div class="cupom">
+        <div class="cupom__titulo">Tem um cupom de desconto?</div>
+        <div class="cupom__linha">
+          <input type="text" id="cupom" placeholder="PRATO30" autocomplete="off" spellcheck="false" maxlength="20" />
+          <button type="button" id="cupom-btn">Aplicar</button>
+        </div>
+        <p class="cupom__aviso" id="cupom-aviso">O cupom PRATO30 tira R$ 20,00 do plano PDF + Aplicativo.</p>
+      </div>
+
       <div class="pedido-resumo">
         <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 47,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
+        <div class="linha" id="linha-cupom" hidden style="color:var(--green-dark);font-weight:700"><span>Cupom PRATO30</span><span>- R$ 20,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
       </div>
 
@@ -782,7 +814,14 @@ const plano = () => {
   const r = document.querySelector('input[name="plano"]:checked');
   return { tier: r.value, cents: Number(r.dataset.cents), nome: r.dataset.nome };
 };
-const PRECO_CENTS = 4700; // plano de referencia pro ViewContent
+const PRECO_CENTS = 4700; // plano de referencia pro ViewContent (ja com o cupom)
+// Cupom (20/09). O desconto de verdade e recalculado no servidor pelo codigo:
+// estes numeros so desenham a tela.
+const CUPOM_CODIGO = 'PRATO30';
+const CUPOM_DESCONTO_CENTS = 2000;
+const CUPOM_TIER = 'profissional';
+let cupomAplicado = false;
+const descontoCents = () => (cupomAplicado && plano().tier === CUPOM_TIER ? CUPOM_DESCONTO_CENTS : 0);
 const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
@@ -795,6 +834,8 @@ const $ = s => document.querySelector(s);
     { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
 })();
 let timer=null, paymentId=null, cliente=null;
+// Desenha o resumo com o estado inicial (sem cupom) assim que a pagina carrega.
+addEventListener('DOMContentLoaded', () => atualizaTotal());
 
 /* =========================================================
    Order bump do Bloco de Evolução (id interno segue 'devolutiva')
@@ -803,7 +844,7 @@ let timer=null, paymentId=null, cliente=null;
    ========================================================= */
 let bumpAceito = false;
 const bumpsEscolhidos = () => (bumpAceito ? ['devolutiva'] : []);
-const totalCents = () => plano().cents + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
+const totalCents = () => Math.max(0, plano().cents - descontoCents() + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0));
 const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
 
 function travaPlanos(sim){
@@ -812,10 +853,17 @@ function travaPlanos(sim){
 
 function atualizaTotal(){
   const p = plano();
+  const base = p.cents - descontoCents();
   $('#linha-plano-nome').textContent = p.nome;
   $('#linha-plano-valor').textContent = emReais(p.cents);
-  $('#bump-sim-valor').textContent = emReais(p.cents + BUMP_DEVOLUTIVA_CENTS);
-  $('#bump-nao-valor').textContent = emReais(p.cents);
+  $('#linha-cupom').hidden = descontoCents() === 0;
+  $('#bump-sim-valor').textContent = emReais(base + BUMP_DEVOLUTIVA_CENTS);
+  $('#bump-nao-valor').textContent = emReais(base);
+  // Preco do cartao do plano completo: com o cupom, o de R$ 67,00 fica riscado.
+  const comCupom = cupomAplicado;
+  $('#pro-preco-cheio').hidden = !comCupom;
+  $('#pro-selo-cupom').hidden = !comCupom;
+  $('#pro-preco').innerHTML = comCupom ? 'R$ 47<span class="cents">,00</span>' : 'R$ 67<span class="cents">,00</span>';
   if (!$('#btn').disabled) $('#btn-label').textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
   const linha = document.getElementById('linha-devolutiva');
   if (linha) linha.hidden = !bumpAceito;
@@ -912,6 +960,27 @@ function mascaraTel(v){
 $('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
 ['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
 
+/* ---- cupom ---- */
+function aplicaCupom(){
+  const campo = $('#cupom');
+  const aviso = $('#cupom-aviso');
+  const codigo = campo.value.trim().toUpperCase();
+  aviso.classList.remove('ok', 'erro');
+  if (codigo !== CUPOM_CODIGO) {
+    aviso.textContent = 'Esse cupom não existe ou já venceu. Confira o código.';
+    aviso.classList.add('erro');
+    return;
+  }
+  cupomAplicado = true;
+  campo.value = CUPOM_CODIGO;
+  aviso.textContent = 'Cupom aplicado: R$ 20,00 de desconto no plano PDF + Aplicativo.';
+  aviso.classList.add('ok');
+  pixelCustom('CupomAplicado', { cupom: CUPOM_CODIGO });
+  atualizaTotal();
+}
+$('#cupom-btn').addEventListener('click', aplicaCupom);
+$('#cupom').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.preventDefault(); aplicaCupom(); } });
+
 /* ---- checkout ---- */
 document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
   pixelCustom('PlanoEscolhido', { plano: r.value });
@@ -969,7 +1038,7 @@ async function fechaBumpEGera(){
       // esse tierId no token, que é o que faz o download.js entregar o PDF
       // profissional em vez do kit das mães.
       body: JSON.stringify({ customer: cliente, method:'pix', tier: plano().tier,
-        bumps: bumpsEscolhidos(), adRef:'profissional' })
+        bumps: bumpsEscolhidos(), cupom: cupomAplicado ? CUPOM_CODIGO : null, adRef:'profissional' })
     });
     if(!r.ok) throw new Error('status '+r.status);
     const d = await r.json();

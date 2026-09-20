@@ -36,7 +36,7 @@ const TIERS = {
   //
   // Fica acima de qualquer preço de mãe de propósito: preço baixo em material
   // clínico soa amador, e o teto de CPA aqui é ~10x o do produto de R$ 10.
-  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 4700 }, // era 6700 ate 19/09
+  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 6700 },
   // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
   // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
   profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 3290 },
@@ -58,18 +58,44 @@ const BUMPS = {
 // webhook (rede de seguranca) nunca recebe essa lista, e sem isso a compra que
 // cai por la sairia sem o material pago. R$ 47 + R$ 10 (R$ 57) nao colide com nenhum
 // tier, entao da pra inferir com seguranca.
-// Vale pros dois planos da /profissional: 32,90 + 10 = 42,90 e 47 + 10 = 57.
-// Nenhum dos dois colide com tier, e o tierFromValueCents ja cai no plano
-// certo pela regra do mais proximo por baixo.
-const TIERS_PRO = ['profissional', 'profissional_pdf'];
+// CUPOM (20/09): o preco cheio da Edicao Profissional voltou a ser R$ 67,00 e o
+// cupom derruba pra R$ 47,00, que era o preco anunciado desde 19/09. A ancora e
+// verdadeira: 67 foi o preco praticado de 22/08 a 19/09.
+//
+// Quem aplica o desconto e o SERVIDOR: o front manda o codigo, nunca o valor.
+const CUPONS = {
+  PRATO30: { codigo: 'PRATO30', descontoPorTier: { profissional: 2000 } },
+};
+function cupomValido(codigo, tierId) {
+  const c = CUPONS[String(codigo || '').trim().toUpperCase()];
+  if (!c) return null;
+  const desconto = c.descontoPorTier[tierId];
+  return desconto ? { codigo: c.codigo, descontoCents: desconto } : null;
+}
+
+// VALORES DA /profissional. Com o cupom, o valor pago deixou de ser o preco
+// base do tier, entao casar "pelo mais proximo por baixo" passou a errar: R$ 47
+// (profissional com cupom) caia no profissional_pdf de R$ 32,90, e aquela conta
+// de bump (32,90 + 10 = 42,90) dava o Bloco de Evolução de graça pra quem nao
+// comprou. Por isso os valores da /profissional sao uma tabela explicita.
+const BASES_PRO = [
+  { valor: 6700, tier: 'profissional' },      // preco cheio
+  { valor: 4700, tier: 'profissional' },      // com o cupom PRATO30
+  { valor: 3290, tier: 'profissional_pdf' },  // plano so PDF
+];
+const VALORES_PRO = new Map();
+for (const b of BASES_PRO) {
+  VALORES_PRO.set(b.valor, b.tier);
+  VALORES_PRO.set(b.valor + BUMPS.devolutiva.priceCents, b.tier);
+}
+
 function pedidoTemDevolutiva(valueCents) {
   const v = Number(valueCents) || 0;
-  const t = tierFromValueCents(v);
-  return TIERS_PRO.includes(t.id) && v >= t.priceCents + BUMPS.devolutiva.priceCents;
+  return BASES_PRO.some((b) => b.valor + BUMPS.devolutiva.priceCents === v);
 }
 
 // Recalcula o total confiável a partir do tier + ids de bump recebidos do front.
-function computeOrder(tierId, bumpIds = []) {
+function computeOrder(tierId, bumpIds = [], cupom) {
   const tier = TIERS[tierId] || TIERS[DEFAULT_TIER];
   const items = [{ id: tier.id, name: tier.name, priceCents: tier.priceCents }];
   const seen = new Set();
@@ -79,8 +105,13 @@ function computeOrder(tierId, bumpIds = []) {
       items.push({ id, name: BUMPS[id].name, priceCents: BUMPS[id].priceCents });
     }
   }
-  const totalCents = items.reduce((s, i) => s + i.priceCents, 0);
-  return { items, totalCents, tierId: tier.id, tierName: tier.name };
+  // Cupom entra como item NEGATIVO, pra soma continuar sendo uma soma so.
+  const desconto = cupomValido(cupom, tier.id);
+  if (desconto) {
+    items.push({ id: 'cupom', name: 'Cupom ' + desconto.codigo, priceCents: -desconto.descontoCents });
+  }
+  const totalCents = Math.max(0, items.reduce((s, i) => s + i.priceCents, 0));
+  return { items, totalCents, tierId: tier.id, tierName: tier.name, cupom: desconto ? desconto.codigo : null };
 }
 
 // Dado um valor em centavos, descobre qual plano foi (usado na entrega/aviso,
@@ -108,6 +139,8 @@ function computeOrder(tierId, bumpIds = []) {
 // Só importa se você reenviar o POST de uma venda velha na PushInPay:
 // reconferir o tier na mão antes, senão a pessoa recebe o kit errado.
 function tierFromValueCents(valueCents) {
+  const pro = VALORES_PRO.get(Number(valueCents));
+  if (pro) return TIERS[pro];
   for (const t of Object.values(TIERS)) {
     if (t.priceCents === valueCents) return t;
   }
@@ -116,4 +149,4 @@ function tierFromValueCents(valueCents) {
   return sorted.find((t) => valueCents >= t.priceCents) || sorted[sorted.length - 1];
 }
 
-module.exports = { TIERS, BUMPS, DEFAULT_TIER, TIERS_PRO, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
+module.exports = { TIERS, BUMPS, DEFAULT_TIER, CUPONS, cupomValido, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
