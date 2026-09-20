@@ -109,8 +109,11 @@ module.exports = async (req, res) => {
 
   let tierId = 'completo';
   let temDevolutiva = false;
+  let daFamilia = false;
   try {
     const parsed = JSON.parse(record);
+    // Link da familia (20/09): acesso de tela, sem download. Ver familia-link.js.
+    daFamilia = parsed.familia === true;
     temDevolutiva = parsed.devolutiva === true;
     if (parsed.tierId === 'essencial') tierId = 'essencial';
     // Edição profissional (22/08): PDF próprio, com as 30 fichas de consultório
@@ -119,6 +122,13 @@ module.exports = async (req, res) => {
     // material de outro público e sem a licença que ela pagou pra ter.
     if ((parsed.tierId === 'profissional' || parsed.tierId === 'profissional_pdf') && KIT_FILE.profissional) tierId = 'profissional';
   } catch {}
+
+  if (daFamilia) {
+    return sendPage(res, 403, {
+      title: 'Seu acesso é pelo app',
+      message: 'Este link abre as atividades direto na tela, em kitpratolimpo.com.br/mi-kit. O material impresso quem entrega é a nutricionista que acompanha a criança.',
+    });
+  }
 
   if (querDevolutiva && !(temDevolutiva && KIT_FILE.devolutiva)) {
     return sendPage(res, 404, {

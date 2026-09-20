@@ -54,7 +54,7 @@ async function createDownloadLink(paymentId, email, name, tierId, extra) {
   }
 }
 
-function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }) {
+function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia }) {
   const firstName = String(name || '').trim().split(' ')[0] || 'oi';
   const downloadBlock = downloadUrl
     ? `<p style="text-align: center; margin: 24px 0;">
@@ -72,6 +72,7 @@ function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }) {
     <h1 style="font-size: 22px; margin-bottom: 8px;">Pagamento confirmado! 🍽️</h1>
     <p>${firstName}, recebemos seu pagamento do <strong>${tierName}</strong>.</p>
     ${downloadBlock}
+    ${linkFamilia ? `<p style="background:#F2F7EE;border-radius:8px;padding:14px;font-size:14px;"><strong>Para passar o app às famílias:</strong> abra o link acima, vá na aba <strong>Consultório</strong> e toque em <em>Gerar o link da família</em>. Esse segundo link abre só as atividades de casa, sem o seu material de consultório.</p>` : ''}
     <p>Também mandamos o acesso no WhatsApp que você cadastrou no checkout.</p>
     <p>Se o botão acima não funcionar, escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a> que resolvemos rapidamente.</p>
     <p style="margin-top: 24px;">Guarde este e-mail como comprovante da sua compra.</p>

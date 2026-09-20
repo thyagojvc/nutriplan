@@ -137,7 +137,7 @@ async function deliverKit(transaction) {
         await sendEmail({
           to: backup.email,
           subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl, devolutivaUrl: devolutivaUrlWh }),
+          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl, devolutivaUrl: devolutivaUrlWh, linkFamilia: tierWh.id === 'profissional' }),
           replyTo: 'kitpratolimpo@gmail.com',
         });
       } catch (err) {

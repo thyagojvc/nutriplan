@@ -168,7 +168,7 @@ module.exports = async (req, res) => {
       sendEmail({
         to: email,
         subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-        html: confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl }),
+        html: confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia: tier.id === 'profissional' }),
         // Cliente costuma responder o e-mail de entrega em vez de escrever pro
         // suporte. Sem reply_to, essa resposta cai na caixa do remetente
         // técnico (entrega@nutriplan.email) e ninguém vê.

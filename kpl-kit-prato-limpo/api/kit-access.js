@@ -68,5 +68,7 @@ module.exports = async (req, res) => {
     });
   }
 
-  return res.status(200).json({ valid: true, name: firstName });
+  // familia: true vem do link que a nutricionista repassa (familia-link.js).
+  // O app usa isso pra esconder o botao de baixar o PDF.
+  return res.status(200).json({ valid: true, name: firstName, familia: record.familia === true });
 };
