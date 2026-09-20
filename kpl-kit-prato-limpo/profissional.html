@@ -602,7 +602,7 @@
     </div>
 
     <div class="today-banner" id="today-banner">
-      🏷️ Cupom <span class="codigo">PRATO30</span> com 30% de desconto, válido até <strong id="today-date">hoje</strong>.
+      🏷️ Cupom <span class="codigo">KIT30</span> com 30% de desconto, válido até <strong id="today-date">hoje</strong>.
     </div>
 
     <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
@@ -635,7 +635,7 @@
         <div class="plano__tagline">Tudo da Edição Profissional.</div>
         <div class="plano__price-old" id="pro-preco-cheio" hidden>R$ 67,00</div>
         <div class="plano__price" id="pro-preco">R$ 67<span class="cents">,00</span></div>
-        <span class="plano__desconto" id="pro-selo-cupom" hidden>Cupom PRATO30 aplicado</span>
+        <span class="plano__desconto" id="pro-selo-cupom" hidden>Cupom KIT30 aplicado</span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
           <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
@@ -691,16 +691,16 @@
       <div class="cupom">
         <div class="cupom__titulo">Tem um cupom de desconto?</div>
         <div class="cupom__linha">
-          <input type="text" id="cupom" placeholder="PRATO30" autocomplete="off" spellcheck="false" maxlength="20" />
+          <input type="text" id="cupom" placeholder="KIT30" autocomplete="off" spellcheck="false" maxlength="20" />
           <button type="button" id="cupom-btn">Aplicar</button>
         </div>
-        <p class="cupom__aviso" id="cupom-aviso">O cupom PRATO30 tira R$ 20,00 do plano PDF + Aplicativo.</p>
+        <p class="cupom__aviso" id="cupom-aviso">O cupom KIT30 tira R$ 20,00 do plano PDF + Aplicativo.</p>
       </div>
 
       <div class="pedido-resumo">
         <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 47,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
-        <div class="linha" id="linha-cupom" hidden style="color:var(--green-dark);font-weight:700"><span>Cupom PRATO30</span><span>- R$ 20,00</span></div>
+        <div class="linha" id="linha-cupom" hidden style="color:var(--green-dark);font-weight:700"><span>Cupom KIT30</span><span>- R$ 20,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
       </div>
 
@@ -817,7 +817,7 @@ const plano = () => {
 const PRECO_CENTS = 4700; // plano de referencia pro ViewContent (ja com o cupom)
 // Cupom (20/09). O desconto de verdade e recalculado no servidor pelo codigo:
 // estes numeros so desenham a tela.
-const CUPOM_CODIGO = 'PRATO30';
+const CUPOM_CODIGO = 'KIT30';
 const CUPOM_DESCONTO_CENTS = 2000;
 const CUPOM_TIER = 'profissional';
 let cupomAplicado = false;

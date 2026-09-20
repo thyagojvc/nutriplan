@@ -64,7 +64,7 @@ const BUMPS = {
 //
 // Quem aplica o desconto e o SERVIDOR: o front manda o codigo, nunca o valor.
 const CUPONS = {
-  PRATO30: { codigo: 'PRATO30', descontoPorTier: { profissional: 2000 } },
+  KIT30: { codigo: 'KIT30', descontoPorTier: { profissional: 2000 } },
 };
 function cupomValido(codigo, tierId) {
   const c = CUPONS[String(codigo || '').trim().toUpperCase()];
@@ -80,7 +80,7 @@ function cupomValido(codigo, tierId) {
 // comprou. Por isso os valores da /profissional sao uma tabela explicita.
 const BASES_PRO = [
   { valor: 6700, tier: 'profissional' },      // preco cheio
-  { valor: 4700, tier: 'profissional' },      // com o cupom PRATO30
+  { valor: 4700, tier: 'profissional' },      // com o cupom KIT30
   { valor: 3290, tier: 'profissional_pdf' },  // plano so PDF
 ];
 const VALORES_PRO = new Map();
