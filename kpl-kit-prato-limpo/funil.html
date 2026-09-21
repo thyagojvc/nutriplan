@@ -377,7 +377,7 @@ function render(data) {
   $('#pro-creatives-body').innerHTML = proAds.length
     ? proAds.map((c) => `<tr>
         <td>${esc(c.key)}</td>
-        <td class="num">${c.total}</td>
+        <td class="num">${c.count}</td>
         <td class="num">${c.checkout || 0}</td>
         <td class="num">${c.pix || 0}</td>
       </tr>`).join('')
