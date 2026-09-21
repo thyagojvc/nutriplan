@@ -31,13 +31,13 @@
 <link rel="icon" href="assets/favicon.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
 <style>
   :root{
     --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
     --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
     --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A; --coral-soft:#FBE0D5;
-    --ink:#26302A; --text:#4B564E; --muted:#7C857D; --card:#FFFFFF; --border:#E9E3D5;
+    --ink:#1E2721; --text:#3A443D; --muted:#69736B; --card:#FFFFFF; --border:#E3DCCB;
     --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
     --radius:20px; --radius-sm:14px;
     --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
@@ -45,27 +45,31 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{scroll-behavior:smooth}
-  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6}
+  /* 21/09: a pagina inteira subiu de peso. Nunito 400 num fundo creme fica
+     lavado no celular, e o dono comparou com paginas de low ticket que usam
+     600 a 900 em tudo. Texto corrido vai a 600, titulo a 800. */
+  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;font-weight:600}
   .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
   section{padding:38px 0}
   /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
      com display proprio (inline-block, flex) aparece mesmo escondido, que foi
      o que fez o selo "cupom aplicado" surgir com o preco ainda em R$ 67,00. */
   [hidden]{display:none !important}
-  h1,h2,h3{font-family:var(--heading);color:var(--ink);line-height:1.15;text-wrap:balance}
+  h1,h2,h3{font-family:var(--heading);font-weight:800;color:var(--ink);line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
+  b,strong{font-weight:800}
   p{margin-bottom:14px}
   p:last-child{margin-bottom:0}
-  .hl{color:var(--orange)}
+  .hl{color:var(--orange);font-weight:800}
   a{color:var(--green-dark)}
 
   /* Cabeçalho de seção centralizado, igual ao da /mae. Era isso que fazia a
      página parecer documento: títulos pequenos e alinhados à esquerda. */
-  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:700;font-size:.8rem;
+  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.82rem;
     letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
     padding:6px 14px;border-radius:999px;margin-bottom:12px}
   .section-head{text-align:center;margin-bottom:24px}
-  .section-title{font-size:1.7rem;text-align:center;margin-bottom:10px}
-  .section-sub{text-align:center;color:var(--muted);max-width:30rem;margin:0 auto;font-size:.97rem}
+  .section-title{font-size:1.85rem;text-align:center;margin-bottom:10px}
+  .section-sub{text-align:center;color:var(--text);max-width:30rem;margin:0 auto;font-size:1rem;font-weight:600}
 
   /* ---------- hero ---------- */
   .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
@@ -78,13 +82,13 @@
   .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
     letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
   .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
-  .hero__h1{font-size:1.62rem;line-height:1.14;margin-bottom:12px}
-  .hero__sub{font-size:.98rem;color:var(--text);font-weight:600;margin-bottom:16px}
+  .hero__h1{font-size:1.9rem;line-height:1.1;margin-bottom:12px}
+  .hero__sub{font-size:1.02rem;color:var(--text);font-weight:600;margin-bottom:16px}
   .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
     border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
   .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
   .hero__promise p{font-size:.94rem;margin:0}
-  .btn-note{text-align:center;font-size:.9rem;color:var(--muted);margin:10px auto 0;max-width:22rem}
+  .btn-note{text-align:center;font-size:.92rem;font-weight:700;color:var(--muted);margin:12px auto 0;max-width:22rem}
   .hero__reinforce{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.95rem;
     font-weight:700;color:var(--green-dark);margin:18px 0 6px}
   /* height:auto é OBRIGATÓRIO em toda imagem com os atributos width/height no
@@ -241,11 +245,17 @@
   .field.invalid input{border-color:#D64545}
   .field.invalid .err{display:block}
 
-  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:56px;padding:14px 22px;
-    font-family:var(--heading);font-weight:800;font-size:1.1rem;color:#fff;text-decoration:none;
-    background:linear-gradient(180deg,#67B84C,var(--green));border:none;border-radius:999px;cursor:pointer;
-    box-shadow:var(--shadow);transition:filter .15s}
-  .btn:hover{filter:brightness(1.05)} .btn:disabled{opacity:.65;cursor:default}
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;padding:16px 22px;
+    font-family:var(--heading);font-weight:800;font-size:1.12rem;letter-spacing:.02em;text-transform:uppercase;
+    color:#fff;text-decoration:none;
+    background:linear-gradient(180deg,#6DC050,var(--green));border:none;border-radius:999px;cursor:pointer;
+    box-shadow:0 10px 0 -2px rgba(60,122,44,.35), 0 14px 26px rgba(38,48,42,.18);
+    transition:filter .15s, transform .1s, box-shadow .1s}
+  .btn:hover{filter:brightness(1.05)}
+  /* Afunda no toque: o botao "responde" e parece fisico, que e o que as paginas
+     de low ticket usam pra dar sensacao de clique. */
+  .btn:active{transform:translateY(3px);box-shadow:0 6px 0 -2px rgba(60,122,44,.35), 0 8px 16px rgba(38,48,42,.16)}
+  .btn:disabled{opacity:.65;cursor:default;transform:none}
 
   .aviso{display:none;background:#FDECEC;border:2px solid #F3B4B4;color:#8a2b2b;border-radius:var(--radius-sm);
     padding:12px 14px;font-size:.9rem;margin-bottom:14px}
