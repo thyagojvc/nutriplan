@@ -95,7 +95,13 @@
      HTML: sem ele o `height` vira altura fixa em px, `aspect-ratio` não tem
      efeito (só age quando uma dimensão é auto) e a imagem estica na vertical.
      Foi o que deformou as fichas, o mockup e o vídeo. */
-  .hero__mockup{width:100%;height:auto;display:block;margin-top:10px}
+  .hero__mockup{width:100%;height:auto;display:block;margin-top:10px;
+    animation:pulso-mockup 3.2s ease-in-out infinite;transform-origin:center 60%;will-change:transform}
+  /* Respiro lento no mockup do topo: da movimento sem virar enfeite piscando.
+     4% de escala e o suficiente pra prender o olho no primeiro segundo. */
+  @keyframes pulso-mockup{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  /* Quem pediu menos animacao no sistema nao ve nada se mexer. */
+  @media (prefers-reduced-motion:reduce){ .hero__mockup{animation:none} }
 
   /* ---------- cartões de dor ---------- */
   .dor-list{display:flex;flex-direction:column;gap:10px}
@@ -1155,7 +1161,9 @@ $('#form').addEventListener('submit', e => {
   cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
   // InitiateCheckout dispara aqui, com o formulario ja validado: o evento
   // significa "comecou o checkout", nao "decidiu sobre o adicional".
-  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
+  // Valor JA com o cupom: mandar o preco cheio aqui inflaria o valor de
+  // checkout iniciado no Meta e bagunçaria a comparacao com o Purchase.
+  pixel('InitiateCheckout', { value: (plano().cents - descontoCents())/100, currency:'BRL', content_name: plano().nome });
 
   marcaPro('p_dados');
   $('#bump-step').classList.add('show');
