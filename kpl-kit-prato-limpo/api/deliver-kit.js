@@ -32,6 +32,18 @@ const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
+
+const BASE_URL = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
+// Nome e URL por produto: e o que a conversao personalizada do Gerenciador de
+// Eventos usa pra separar a venda profissional da venda das maes.
+function marcaDoPedido(tierId) {
+  const pro = tierId === 'profissional' || tierId === 'profissional_pdf';
+  return {
+    contentName: pro ? 'KPL Edicao Profissional' : 'Kit Prato Limpo',
+    sourceUrl: pro ? `${BASE_URL}/profissional` : `${BASE_URL}/`,
+  };
+}
+
 const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { detectPlatform } = require('./_ua');
@@ -183,7 +195,7 @@ module.exports = async (req, res) => {
         : Promise.resolve({ ok: false }),
       // Purchase com dados completos (mesmo event_id do pixel client-side, ver
       // onPaid() em index.html: 'purchase_' + paymentId, pro Meta desduplicar).
-      sendCapiPurchase({ paymentId, email, name, phone, valueCents: valorCents, fbc, fbp, clientUserAgent, clientIpAddress })
+      sendCapiPurchase(Object.assign({ paymentId, email, name, phone, valueCents: valorCents, fbc, fbp, clientUserAgent, clientIpAddress }, marcaDoPedido(tier.id)))
         .catch((err) => console.error('capi purchase error', err)),
     ]);
 

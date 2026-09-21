@@ -18,6 +18,18 @@
 const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
 const { sendCapiPurchase, resolveFbc } = require('./_fb-capi');
+
+const BASE_URL = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
+// Nome e URL por produto: e o que a conversao personalizada do Gerenciador de
+// Eventos usa pra separar a venda profissional da venda das maes.
+function marcaDoPedido(tierId) {
+  const pro = tierId === 'profissional' || tierId === 'profissional_pdf';
+  return {
+    contentName: pro ? 'KPL Edicao Profissional' : 'Kit Prato Limpo',
+    sourceUrl: pro ? `${BASE_URL}/profissional` : `${BASE_URL}/`,
+  };
+}
+
 const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
@@ -67,14 +79,14 @@ async function deliverKit(transaction) {
   // o backup não foi encontrado. Fraco, mas o Meta REJEITA (HTTP 400) evento
   // sem nenhum dado de cliente, então sem esse fallback a venda simplesmente
   // não é contada.
-  sendCapiPurchase({
+  sendCapiPurchase(Object.assign({
     paymentId,
     email: backup && backup.email,
     name: (backup && backup.name) || transaction.payer_name || null,
     phone: backup && backup.phone,
     valueCents: transaction.value || 0,
     fbc,
-  }).catch((err) => console.error('webhook: capi purchase error', err));
+  }, marcaDoPedido(tierFromValueCents(Number(transaction.value || 0)).id))).catch((err) => console.error('webhook: capi purchase error', err));
 
   // Registra no painel /funil (sorted set kpl:sales) igual o deliver-kit.js já
   // faz no fluxo normal — sem isso, TODA venda que passa pelo caminho órfão

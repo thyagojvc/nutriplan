@@ -79,7 +79,7 @@ async function sendCapiEvent({ eventName, eventId, fbc, fbp, clientUserAgent, cl
  * importante. event_id = purchase_<paymentId>, igual ao que o pixel client-side usa
  * em onPaid(), pro Meta desduplicar em vez de contar a venda duas vezes.
  */
-async function sendCapiPurchase({ paymentId, email, name, phone, valueCents, fbc, fbp, clientUserAgent, clientIpAddress, eventTime }) {
+async function sendCapiPurchase({ paymentId, email, name, phone, valueCents, fbc, fbp, clientUserAgent, clientIpAddress, eventTime, contentName, sourceUrl }) {
   const userData = {};
   if (email) userData.em = [sha256(email)];
   if (phone) userData.ph = [sha256(String(phone).replace(/\D/g, ''))];
@@ -110,10 +110,15 @@ async function sendCapiPurchase({ paymentId, email, name, phone, valueCents, fbc
       event_id: `purchase_${paymentId}`,
       action_source: 'website',
       user_data: userData,
+      // content_name e event_source_url vao daqui de proposito (20/09): sem eles,
+      // a conversao personalizada da Edicao Profissional no Gerenciador de
+      // Eventos nao teria como separar a venda de R$ 47 da venda de R$ 10 quando
+      // o pixel do navegador e bloqueado e so este evento chega.
+      event_source_url: sourceUrl || undefined,
       custom_data: {
         value: (valueCents || 0) / 100,
         currency: 'BRL',
-        content_name: 'Kit Prato Limpo',
+        content_name: contentName || 'Kit Prato Limpo',
       },
     },
   ]);
