@@ -105,9 +105,11 @@
   .opt.on { border-color: var(--green); background: #F3F9EE; box-shadow: 0 0 0 1px var(--green); }
   .opt__ic { flex: 0 0 auto; font-size: 1.35rem; line-height: 1; }
   .opt__body { flex: 1 1 auto; min-width: 0; }
-  .opt__label { font-size: .96rem; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .opt__label { display: block; font-size: .96rem; font-weight: 700; color: var(--ink); line-height: 1.25; }
   .opt.on .opt__label { color: var(--green-dark); }
-  .opt__desc { font-size: .84rem; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+  /* display:block pra descricao cair SEMPRE na linha de baixo: em span
+     inline ela emendava no rotulo quando o texto era curto. */
+  .opt__desc { display: block; font-size: .84rem; color: var(--muted); margin-top: 3px; line-height: 1.3; }
   .opt__check {
     flex: 0 0 auto; width: 21px; height: 21px; border-radius: 50%;
     border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
@@ -211,7 +213,7 @@
   </div>
 
   <p class="matchline" id="matchline">
-    Descubra em <span class="hl">2 minutos</span> por onde começar com o seu filho
+    Descubra em <span class="hl">2 minutos</span> por qual etapa começar no seu atendimento
   </p>
 
   <div id="stage"></div>
@@ -279,8 +281,10 @@ const QUESTIONS = [
   },
   {
     id: 'pq3',
-    title: 'Que idade tem a maioria delas?',
-    sub: 'As fichas mudam de acordo com a fase.',
+    title: 'Que faixa de idade você mais atende?',
+    // Quem respondeu "nenhuma ainda" na pq2 nao tem "a maioria delas": a
+    // pergunta antiga soava desconectada logo depois daquela resposta.
+    sub: 'Se você ainda não atende, escolha a idade que pretende atender.',
     opts: [
       { v: '1-3',   ic: '🍼', label: '1 a 3 anos' },
       { v: '4-6',   ic: '🧒', label: '4 a 6 anos' },
@@ -332,6 +336,7 @@ const QUESTIONS = [
       { v: 'proprio',  ic: '📁', label: 'Sim, material que eu mesma montei' },
       { v: 'internet', ic: '🔍', label: 'Sim, o que encontro na internet' },
       { v: 'nao',      ic: '🗣️', label: 'Não, minha consulta é só conversa' },
+      { v: 'semnada',  ic: '📭', label: 'Não tenho material ainda' },
       { v: 'quero',    ic: '✨', label: 'Quero começar a usar' },
     ],
   },
@@ -647,7 +652,7 @@ function renderResult() {
   const m = MECANISMO[answers.pq4] || MECANISMO.preparo;
   const idade = (QUESTIONS[2].opts.find((o) => o.v === answers.pq3) || {}).label || '1 a 10 anos';
   const tempo = TEMPO_LABEL[answers.pq5] || TEMPO_LABEL.medio;
-  const semMaterial = answers.pq7 === 'nao' || answers.pq7 === 'quero';
+  const semMaterial = answers.pq7 === 'nao' || answers.pq7 === 'quero' || answers.pq7 === 'semnada';
 
   setProgress(QUESTIONS.length + 1, QUESTIONS.length + 1);
   $('#matchline').textContent = 'Pronto. Aqui está a sua etapa de partida.';
