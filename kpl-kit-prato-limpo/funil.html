@@ -135,14 +135,14 @@
         <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
         <tbody id="pro-body"></tbody>
       </table>
-      <p class="note">Só quem passou pela /profissional. Outro público e outro preço, por isso conta separado.</p>
+      <p class="note">Só quem chegou na página de vendas (/kit-profissional). Outro público e outro preço, por isso conta separado.</p>
 
       <h2>Funil do quiz profissional <span id="proquiz-total" class="note" style="font-weight:400"></span></h2>
       <table>
         <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
         <tbody id="proquiz-body"></tbody>
       </table>
-      <p class="note">Só quem entrou no /quiz-pro. Quem cai direto na /profissional não aparece aqui.</p>
+      <p class="note">Só quem entrou no quiz (/profissional), que é onde o anúncio cai. Quem vai direto pra página de vendas não aparece aqui.</p>
 
       <h2>Anúncios da Edição Profissional</h2>
       <table>
@@ -380,7 +380,7 @@ function render(data) {
   $('#pro-total').textContent = proEntered ? `· ${proEntered} entraram` : '· ninguém entrou ainda';
   $('#pro-body').innerHTML = proEntered
     ? funnelRows(proSteps)
-    : '<tr><td colspan="4" class="muted">Sem visitas na /profissional no período.</td></tr>';
+    : '<tr><td colspan="4" class="muted">Sem visitas na página de vendas no período.</td></tr>';
   const proQuizSteps = data.proQuizSections || [];
   const proQuizEntered = proQuizSteps[0]?.count || 0;
   $('#proquiz-total').textContent = proQuizEntered ? `· ${proQuizEntered} entraram` : '· ninguém entrou ainda';
