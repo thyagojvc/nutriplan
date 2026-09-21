@@ -609,7 +609,7 @@
     </div>
 
     <div class="today-banner" id="today-banner">
-      🏷️ Cupom <span class="codigo">SETEMBRO30</span> com 30% de desconto, válido até <strong id="today-date">hoje</strong>.
+      🏷️ Cupom <span class="codigo cupom-nome">SETEMBRO30</span> com 30% de desconto, válido até <strong id="today-date">hoje</strong>.
     </div>
 
     <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
@@ -617,7 +617,7 @@
     <p class="planos__titulo">Escolha o seu plano:</p>
     <!-- 21/09: sem este aviso, quem le o preco acha que ele JA esta com
          desconto e o cupom la embaixo perde o efeito (ou pior, parece pegadinha). -->
-    <p class="planos__cupom-aviso">🏷️ Escolha o plano e, no campo logo abaixo, insira o cupom <b>SETEMBRO30</b> para pagar 30% menos.<br><span>Os valores dos dois planos ainda estão sem o desconto.</span></p>
+    <p class="planos__cupom-aviso">🏷️ Escolha o plano e, no campo logo abaixo, insira o cupom <b class="cupom-nome">SETEMBRO30</b> para pagar 30% menos.<br><span>Os valores dos dois planos ainda estão sem o desconto.</span></p>
     <div class="planos" role="radiogroup" aria-label="Escolha o plano">
       <label class="plano">
         <input type="radio" name="plano" value="profissional_pdf" data-cents="4690" data-nome="KPL Edição Profissional (PDF)">
@@ -626,7 +626,7 @@
         <div class="plano__tagline">Para imprimir e aplicar.</div>
         <div class="plano__price-old" id="pdf-preco-cheio" hidden>R$ 46,90</div>
         <div class="plano__price" id="pdf-preco">R$ 46<span class="cents">,90</span></div>
-        <span class="plano__desconto" id="pdf-selo-cupom" hidden>Cupom SETEMBRO30 aplicado</span>
+        <span class="plano__desconto" id="pdf-selo-cupom" hidden>Cupom <span class="cupom-nome">SETEMBRO30</span> aplicado</span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">189 atividades prontas para consultório e casa</span></li>
           <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
@@ -646,7 +646,7 @@
         <div class="plano__tagline">Tudo da Edição Profissional.</div>
         <div class="plano__price-old" id="pro-preco-cheio" hidden>R$ 67,00</div>
         <div class="plano__price" id="pro-preco">R$ 67<span class="cents">,00</span></div>
-        <span class="plano__desconto" id="pro-selo-cupom" hidden>Cupom SETEMBRO30 aplicado</span>
+        <span class="plano__desconto" id="pro-selo-cupom" hidden>Cupom <span class="cupom-nome">SETEMBRO30</span> aplicado</span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
           <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
@@ -705,13 +705,13 @@
           <input type="text" id="cupom" placeholder="SETEMBRO30" autocomplete="off" spellcheck="false" maxlength="20" />
           <button type="button" id="cupom-btn">Aplicar</button>
         </div>
-        <p class="cupom__aviso" id="cupom-aviso">O cupom SETEMBRO30 dá 30% de desconto nos dois planos.</p>
+        <p class="cupom__aviso" id="cupom-aviso">O cupom <b class="cupom-nome">SETEMBRO30</b> dá 30% de desconto nos dois planos.</p>
       </div>
 
       <div class="pedido-resumo">
         <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 47,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
-        <div class="linha" id="linha-cupom" hidden style="color:var(--green-dark);font-weight:700"><span>Cupom SETEMBRO30</span><span>- R$ 20,00</span></div>
+        <div class="linha" id="linha-cupom" hidden style="color:var(--green-dark);font-weight:700"><span>Cupom <span class="cupom-nome">SETEMBRO30</span></span><span>- R$ 20,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 47,00</span></div>
       </div>
 
@@ -828,7 +828,23 @@ const plano = () => {
 const PRECO_CENTS = 4700; // plano de referencia pro ViewContent (ja com o cupom)
 // Cupom (20/09). O desconto de verdade e recalculado no servidor pelo codigo:
 // estes numeros so desenham a tela.
-const CUPOM_CODIGO = 'SETEMBRO30';
+// O cupom e SAZONAL e o codigo sai do mes atual (SETEMBRO30, OUTUBRO30...).
+// Esta lista e a regra de fuso tem que bater com api/_catalog.js, que e quem
+// valida de verdade. Sem acento de proposito.
+const MESES_CUPOM = ['JANEIRO','FEVEREIRO','MARCO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+const CUPOM_CODIGO = (function(){
+  try{
+    const m = Number(new Intl.DateTimeFormat('en-US', { timeZone:'America/Sao_Paulo', month:'numeric' }).format(new Date()));
+    return MESES_CUPOM[m - 1] + '30';
+  }catch(e){ return MESES_CUPOM[new Date().getMonth()] + '30'; }
+})();
+// Escreve o codigo do mes em todo lugar que o mostra (tarja, aviso, selo dos
+// planos, resumo do pedido e o campo do checkout).
+addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.cupom-nome').forEach((el) => { el.textContent = CUPOM_CODIGO; });
+  const campo = document.getElementById('cupom');
+  if (campo) campo.placeholder = CUPOM_CODIGO;
+});
 // Quanto o cupom tira de cada plano. Em sincronia com CUPONS no _catalog.
 const CUPOM_DESCONTO = { profissional: 2000, profissional_pdf: 1400 };
 let cupomAplicado = false;
@@ -1104,7 +1120,7 @@ function aplicaCupom(){
   const codigo = campo.value.trim().toUpperCase();
   aviso.classList.remove('ok', 'erro');
   if (codigo !== CUPOM_CODIGO) {
-    aviso.textContent = 'Esse cupom não existe ou já venceu. Confira o código.';
+    aviso.textContent = 'Esse cupom não existe ou já venceu. O cupom do mês é ' + CUPOM_CODIGO + '.';
     aviso.classList.add('erro');
     return;
   }

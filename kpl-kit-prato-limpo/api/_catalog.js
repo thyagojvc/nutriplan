@@ -66,14 +66,38 @@ const BUMPS = {
 // verdadeira: 67 foi o preco praticado de 22/08 a 19/09.
 //
 // Quem aplica o desconto e o SERVIDOR: o front manda o codigo, nunca o valor.
-const CUPONS = {
-  SETEMBRO30: { codigo: 'SETEMBRO30', descontoPorTier: { profissional: 2000, profissional_pdf: 1400 } },
-};
+// O codigo do cupom E O MES (SETEMBRO30, OUTUBRO30...), calculado na hora nos
+// dois lados. Assim a promocao vira sazonal de verdade sem ninguem precisar
+// lembrar de trocar o nome todo dia 1, e um print antigo com o mes passado para
+// de valer sozinho.
+//
+// Sem acento de proposito (MARCO30, nao MARÇO30): cupom com cedilha e acento
+// quebra na hora de digitar e de comparar. Esta lista tem que ser IGUAL a do
+// profissional.html.
+const MESES = ['JANEIRO','FEVEREIRO','MARCO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
+const DESCONTO_MENSAL = { profissional: 2000, profissional_pdf: 1400 };
+
+// Mes de Sao Paulo, nao do servidor (que roda em UTC): perto da meia-noite os
+// dois discordam, e o codigo que a pessoa ve na tela tem que ser o mesmo que o
+// servidor aceita.
+function mesAtualSP(quando) {
+  const d = quando || new Date();
+  const m = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', month: 'numeric' }).format(d);
+  return Number(m) - 1;
+}
+function cupomDoMes(indice) {
+  return MESES[((indice % 12) + 12) % 12] + '30';
+}
+// O mes ANTERIOR continua valendo. Motivo pratico: quem abriu a pagina 23h50 do
+// dia 30 e gera o Pix depois da meia-noite teria o cupom recusado e pagaria o
+// preco cheio sem entender por que.
 function cupomValido(codigo, tierId) {
-  const c = CUPONS[String(codigo || '').trim().toUpperCase()];
-  if (!c) return null;
-  const desconto = c.descontoPorTier[tierId];
-  return desconto ? { codigo: c.codigo, descontoCents: desconto } : null;
+  const limpo = String(codigo || '').trim().toUpperCase();
+  const mes = mesAtualSP();
+  const aceitos = [cupomDoMes(mes), cupomDoMes(mes - 1)];
+  if (!aceitos.includes(limpo)) return null;
+  const desconto = DESCONTO_MENSAL[tierId];
+  return desconto ? { codigo: limpo, descontoCents: desconto } : null;
 }
 
 // VALORES DA /profissional. Com o cupom, o valor pago deixou de ser o preco
@@ -153,4 +177,4 @@ function tierFromValueCents(valueCents) {
   return sorted.find((t) => valueCents >= t.priceCents) || sorted[sorted.length - 1];
 }
 
-module.exports = { TIERS, BUMPS, DEFAULT_TIER, CUPONS, cupomValido, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
+module.exports = { TIERS, BUMPS, DEFAULT_TIER, cupomDoMes, mesAtualSP, cupomValido, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
