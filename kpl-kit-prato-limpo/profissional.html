@@ -48,6 +48,10 @@
   body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6}
   .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
   section{padding:38px 0}
+  /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
+     com display proprio (inline-block, flex) aparece mesmo escondido, que foi
+     o que fez o selo "cupom aplicado" surgir com o preco ainda em R$ 67,00. */
+  [hidden]{display:none !important}
   h1,h2,h3{font-family:var(--heading);color:var(--ink);line-height:1.15;text-wrap:balance}
   p{margin-bottom:14px}
   p:last-child{margin-bottom:0}
@@ -64,7 +68,10 @@
   .section-sub{text-align:center;color:var(--muted);max-width:30rem;margin:0 auto;font-size:.97rem}
 
   /* ---------- hero ---------- */
-  .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 34px;text-align:center}
+  .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
+  /* O mockup ja traz margem branca dentro da propria imagem, entao o padding
+     cheio das duas secoes somava um vazio grande entre as dobras. */
+  .hero + section{padding-top:20px}
   .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
     font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
   .hero__brand{display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px}
