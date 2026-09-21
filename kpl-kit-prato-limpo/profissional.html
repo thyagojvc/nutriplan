@@ -370,7 +370,7 @@
 <body>
 
 <!-- ======================= HERO ======================= -->
-<header class="hero">
+<header class="hero" id="p_topo">
   <div class="wrap">
     <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
     <div class="hero__brand">
@@ -418,7 +418,7 @@
 </section>
 
 <!-- ======================= OS 3 PILARES ======================= -->
-<section style="background:var(--cream-2)">
+<section id="p_pecas" style="background:var(--cream-2)">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">O que você recebe</span>
@@ -462,7 +462,7 @@
 </section>
 
 <!-- ======================= O PROTOCOLO ======================= -->
-<section>
+<section id="p_protocolo">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">O protocolo</span>
@@ -492,7 +492,7 @@
 </section>
 
 <!-- ======================= POR DENTRO DA FICHA ======================= -->
-<section style="background:var(--cream-2)">
+<section id="p_ficha" style="background:var(--cream-2)">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Por dentro</span>
@@ -522,7 +522,7 @@
 </section>
 
 <!-- ======================= O APP ======================= -->
-<section>
+<section id="p_app">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Entre as consultas</span>
@@ -554,7 +554,7 @@
 </section>
 
 <!-- ======================= LICENÇA ======================= -->
-<section style="background:var(--cream-2)">
+<section id="p_licenca" style="background:var(--cream-2)">
   <div class="wrap">
     <div class="licenca">
       <div style="text-align:center"><span class="eyebrow">Licença de uso</span></div>
@@ -601,7 +601,7 @@
 </section>
 
 <!-- ======================= CHECKOUT ======================= -->
-<section id="checkout" style="background:var(--cream-2)">
+<section id="checkout" data-pro-step="p_checkout" style="background:var(--cream-2)">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Garanta o seu</span>
@@ -840,6 +840,129 @@ const $ = s => document.querySelector(s);
   el.textContent = new Date().toLocaleDateString('pt-BR',
     { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
 })();
+
+/* =========================================================
+   Presenca e funil da /profissional (20/09)
+   Mesma mecanica da pagina das maes, com trilha propria (PRO_STEPS em
+   api/_sections.js). Sem isso o painel so mostrava a VENDA profissional, e
+   nao dava pra saber quantas entraram, de qual anuncio vieram e onde pararam.
+   Anuncio, campanha e conjunto viajam empacotados num campo so ("~"), pra nao
+   gastar comandos a mais do Redis em cada batida.
+   ========================================================= */
+const PRESENCE_MS = 8000;
+const VISITOR_ID_KEY = 'kpl_visitor_id';
+const AD_REF_KEY = 'kpl_ad_ref';
+
+function getAdRef(){
+  try{
+    const q = new URLSearchParams(location.search);
+    const daUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
+    if (daUrl) { const v = daUrl.slice(0,120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
+    return sessionStorage.getItem(AD_REF_KEY) || '';
+  }catch(e){ return ''; }
+}
+function getUtmRef(param, chave){
+  try{
+    const v = new URLSearchParams(location.search).get(param);
+    if (v) { const t = v.slice(0,120); sessionStorage.setItem(chave, t); return t; }
+    return sessionStorage.getItem(chave) || '';
+  }catch(e){ return ''; }
+}
+const getCampaignRef = () => getUtmRef('utm_campaign', 'kpl_campaign');
+const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset');
+getCampaignRef(); getAdsetRef();
+
+function getVisitorId(){
+  try{
+    let id = sessionStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+      sessionStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+  }catch(e){ return 'v_' + Date.now(); }
+}
+
+// Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
+const PRO_IDS = ['p_topo','p_pecas','p_protocolo','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_cupom','p_dados','p_pix','p_pago'];
+let proAtual = 'p_topo';
+let proMaxIdx = 0;
+let bateAgora = () => {};
+// Marca uma acao (escolheu plano, gerou Pix...) e manda na hora, em vez de
+// esperar a proxima batida: quem gera o Pix costuma sair da pagina logo.
+function marcaPro(id){
+  const i = PRO_IDS.indexOf(id);
+  if (i > proMaxIdx) proMaxIdx = i;
+  if (i >= 0) proAtual = id;
+  bateAgora();
+}
+
+(function initPresenca(){
+  try{
+    const q = new URLSearchParams(location.search);
+    if (q.has('track')) localStorage.removeItem('kpl_notrack');
+    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
+    if (localStorage.getItem('kpl_notrack') === '1') return;
+  }catch(e){}
+
+  // id do elemento na pagina -> passo do funil
+  const alvos = { p_topo:'p_topo', p_pecas:'p_pecas', p_protocolo:'p_protocolo', p_ficha:'p_ficha',
+                  p_app:'p_app', p_licenca:'p_licenca', checkout:'p_checkout' };
+  if ('IntersectionObserver' in window) {
+    const visiveis = {};
+    const obs = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => { visiveis[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+      let melhor = null, maior = 0;
+      Object.keys(alvos).forEach((id) => { if ((visiveis[id]||0) > maior) { maior = visiveis[id]; melhor = id; } });
+      if (melhor) {
+        const passo = alvos[melhor];
+        const i = PRO_IDS.indexOf(passo);
+        // Rolar pra cima nao desfaz progresso, mas tambem nao pode "desmarcar"
+        // uma acao ja feita: por isso o passo atual so volta pra rolagem se ela
+        // for mais funda que a ultima acao marcada.
+        if (i >= PRO_IDS.indexOf(proAtual) || proMaxIdx < 7) proAtual = passo;
+        if (i > proMaxIdx) proMaxIdx = i;
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    Object.keys(alvos).forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+  }
+
+  const visitorId = getVisitorId();
+  const packRef = (...partes) => partes.map((p) => String(p || '').split('~').join('')).join('~');
+  const adRef = packRef(getAdRef(), getCampaignRef(), getAdsetRef());
+
+  const hiddenLoad = document.visibilityState === 'hidden';
+  let visible = document.visibilityState === 'visible';
+  let touched = false;
+  if (!visible) {
+    document.addEventListener('visibilitychange', function aoVer(){
+      if (document.visibilityState !== 'visible') return;
+      visible = true;
+      document.removeEventListener('visibilitychange', aoVer);
+      bate();
+    });
+  }
+  const tocou = () => { touched = true; bate(); };
+  addEventListener('pointerdown', tocou, { once: true });
+  addEventListener('keydown', tocou, { once: true });
+
+  function bate(){
+    fetch('/api/presence', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        visitorId, proStep: proAtual, proMax: PRO_IDS[proMaxIdx] || proAtual, adRef,
+        hiddenLoad, visible, touched,
+        // checkoutStarted e o mesmo sinal da pagina das maes: dados preenchidos.
+        checkoutStarted: proMaxIdx >= PRO_IDS.indexOf('p_dados'),
+      }),
+      keepalive: true,
+    }).catch(()=>{});
+  }
+  bateAgora = bate;
+  bate();
+  setInterval(bate, PRESENCE_MS);
+})();
+
 let timer=null, paymentId=null, cliente=null;
 // Desenha o resumo com o estado inicial (sem cupom) assim que a pagina carrega.
 addEventListener('DOMContentLoaded', () => atualizaTotal());
@@ -983,6 +1106,7 @@ function aplicaCupom(){
   aviso.textContent = 'Cupom aplicado: R$ 20,00 de desconto no plano PDF + Aplicativo.';
   aviso.classList.add('ok');
   pixelCustom('CupomAplicado', { cupom: CUPOM_CODIGO });
+  marcaPro('p_cupom');
   atualizaTotal();
 }
 $('#cupom-btn').addEventListener('click', aplicaCupom);
@@ -991,6 +1115,7 @@ $('#cupom').addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.p
 /* ---- checkout ---- */
 document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
   pixelCustom('PlanoEscolhido', { plano: r.value });
+  marcaPro('p_plano');
   atualizaTotal();
 }));
 // ETAPA 1: valida e abre o painel do bump. Ninguem e cobrado aqui.
@@ -1004,6 +1129,7 @@ $('#form').addEventListener('submit', e => {
   // significa "comecou o checkout", nao "decidiu sobre o adicional".
   pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
 
+  marcaPro('p_dados');
   $('#bump-step').classList.add('show');
   document.getElementById('bump-sim').focus();
 });
@@ -1052,6 +1178,7 @@ async function fechaBumpEGera(){
     if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
 
     paymentId = d.paymentId;
+    marcaPro('p_pix');
     // Trava o plano com o Pix na tela: trocar agora mudaria o valor do Purchase
     // no pixel sem mudar a cobranca.
     travaPlanos(true);
@@ -1099,6 +1226,7 @@ function poll(){
 }
 
 function pago(){
+  marcaPro('p_pago');
   $('#pix').classList.remove('show');
   $('#ok').classList.add('show');
   $('#ok').scrollIntoView({behavior:'smooth',block:'center'});

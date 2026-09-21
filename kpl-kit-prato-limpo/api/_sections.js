@@ -40,4 +40,25 @@ const QUIZ_STEPS = [
   { id: 'qcta', label: '7. Clicou pra ver o kit' },
 ];
 
-module.exports = { SECTIONS, QUIZ_STEPS };
+// Trilha da EDIÇÃO PROFISSIONAL (/profissional). Funil separado pelo mesmo
+// motivo do quiz: é outra página, outro público e outro preço, então misturar
+// com as seções da página das mães faria o painel somar coisas diferentes.
+// Vive no campo `proMax` do visitante. A ordem aqui É o funil: os últimos
+// passos não são seções roladas, são ações (escolheu plano, aplicou cupom,
+// gerou o Pix), e por isso ficam no fim, mais fundo que qualquer rolagem.
+const PRO_STEPS = [
+  { id: 'p_topo', label: '1. Topo' },
+  { id: 'p_pecas', label: '2. As três peças' },
+  { id: 'p_protocolo', label: '3. As 12 etapas' },
+  { id: 'p_ficha', label: '4. Ficha por dentro' },
+  { id: 'p_app', label: '5. O aplicativo' },
+  { id: 'p_licenca', label: '6. Licença de uso' },
+  { id: 'p_checkout', label: '7. Chegou no checkout' },
+  { id: 'p_plano', label: '8. Escolheu um plano' },
+  { id: 'p_cupom', label: '9. Aplicou o cupom' },
+  { id: 'p_dados', label: '10. Preencheu os dados' },
+  { id: 'p_pix', label: '11. Gerou o Pix' },
+  { id: 'p_pago', label: '12. Pagou' },
+];
+
+module.exports = { SECTIONS, QUIZ_STEPS, PRO_STEPS };

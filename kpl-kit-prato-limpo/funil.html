@@ -130,6 +130,20 @@
       </table>
       <p class="note">Contado só entre quem entrou no /quiz. Quem cai direto na página de vendas não aparece aqui.</p>
 
+      <h2>Funil da Edição Profissional <span id="pro-total" class="note" style="font-weight:400"></span></h2>
+      <table>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <tbody id="pro-body"></tbody>
+      </table>
+      <p class="note">Só quem passou pela /profissional. Outro público e outro preço, por isso conta separado.</p>
+
+      <h2>Anúncios da Edição Profissional</h2>
+      <table>
+        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">Checkout</th><th class="num">Pix</th></tr></thead>
+        <tbody id="pro-creatives-body"></tbody>
+      </table>
+      <p class="note">Checkout = rolou até os planos. Pix = gerou o código pra pagar.</p>
+
       <h2>Criativos (anúncio de origem)</h2>
       <table>
         <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
@@ -277,12 +291,13 @@ function render(data) {
 
   (data.sections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.quizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
+  (data.proSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
 
   // Últimos acessos (pulso ao vivo)
   const last = data.lastVisits || [];
   $('#last-body').innerHTML = last.length
     ? last.map((v) => {
-        const parou = SECTION_LABELS[v.quizMax || v.maxSection] || v.quizMax || v.maxSection || '—';
+        const parou = SECTION_LABELS[v.proMax || v.quizMax || v.maxSection] || v.proMax || v.quizMax || v.maxSection || '—';
         const onde = [PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ') || '—';
         const vivo = v.isLive ? '<span class="live-dot"></span>' : '';
         return `<tr>
@@ -351,6 +366,23 @@ function render(data) {
     ? funnelRows(quizSteps)
     : '<tr><td colspan="4" class="muted">Sem dados do quiz no período.</td></tr>';
 
+  // Funil da Edição Profissional (trilha separada: só quem passou pela /profissional)
+  const proSteps = data.proSections || [];
+  const proEntered = proSteps[0]?.count || 0;
+  $('#pro-total').textContent = proEntered ? `· ${proEntered} entraram` : '· ninguém entrou ainda';
+  $('#pro-body').innerHTML = proEntered
+    ? funnelRows(proSteps)
+    : '<tr><td colspan="4" class="muted">Sem visitas na /profissional no período.</td></tr>';
+  const proAds = data.proCreatives || [];
+  $('#pro-creatives-body').innerHTML = proAds.length
+    ? proAds.map((c) => `<tr>
+        <td>${esc(c.key)}</td>
+        <td class="num">${c.total}</td>
+        <td class="num">${c.checkout || 0}</td>
+        <td class="num">${c.pix || 0}</td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="muted">Sem anúncio registrado no período.</td></tr>';
+
   // Criativos / Dispositivo / Sistema
   const totalVisits = data.total || 1;
   $('#creatives-body').innerHTML = data.creatives.length
@@ -389,7 +421,7 @@ function render(data) {
   $('#individuals-body').innerHTML = data.individuals.length
     ? data.individuals.map((ind) => {
         // Quem fez o quiz para numa etapa DELE, não numa seção da página.
-        const stopKey = ind.quizMax || ind.maxSection;
+        const stopKey = ind.proMax || ind.quizMax || ind.maxSection;
         const stopLabel = SECTION_LABELS[stopKey] || stopKey || '—';
         const dev = ind.device ? (DEVICE_LABELS[ind.device] || ind.device) : '—';
         const plat = ind.platform ? (PLATFORM_LABELS[ind.platform] || ind.platform) : '—';

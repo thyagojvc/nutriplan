@@ -8,7 +8,7 @@
 // contagens e o primeiro nome de quem comprou.
 
 const { redis, redisPipeline } = require('./_kv');
-const { SECTIONS, QUIZ_STEPS } = require('./_sections');
+const { SECTIONS, QUIZ_STEPS, PRO_STEPS } = require('./_sections');
 
 const MAX = 100;
 // O painel fica aberto e recalcula o funil inteiro (pipeline de até 2×MAX
@@ -84,6 +84,8 @@ const JANELA_MESMA_PESSOA_MS = 30 * 60 * 1000;
 function juntarMesmaPessoa(rows, idxOf) {
   const quizIdx = {};
   QUIZ_STEPS.forEach((s, i) => { quizIdx[s.id] = i; });
+  const proIdx = {};
+  PRO_STEPS.forEach((s, i) => { proIdx[s.id] = i; });
   const fundo = (a, b, idx) => ((idx[b] ?? -1) > (idx[a] ?? -1) ? b : a);
 
   const ordem = rows.slice().sort((a, b) => (a.firstSeen || 0) - (b.firstSeen || 0));
@@ -107,6 +109,7 @@ function juntarMesmaPessoa(rows, idxOf) {
       }
       g.maxSection = fundo(g.maxSection, v.maxSection, idxOf);
       g.quizMax = fundo(g.quizMax, v.quizMax, quizIdx);
+      g.proMax = fundo(g.proMax, v.proMax, proIdx);
       g.hiddenLoad = g.hiddenLoad && v.hiddenLoad;
       g.visible = g.visible || v.visible;
       g.touched = g.touched || v.touched;
@@ -197,6 +200,7 @@ module.exports = async (req, res) => {
         lastSection: h.lastSection || null,
         maxSection: h.maxSection || h.lastSection || null,
         quizMax: h.quizMax || h.quizStep || null,
+        proMax: h.proMax || h.proStep || null,
         device: h.device || null,
         platform: h.platform || null,
         browserEnv: h.browserEnv || null,
@@ -236,6 +240,24 @@ module.exports = async (req, res) => {
       count: quizRows.filter((v) => (quizIdxOf[v.quizMax] ?? -1) >= i).length,
     }));
 
+    // Funil da EDIÇÃO PROFISSIONAL: só entre quem passou pela /profissional
+    // (tem proMax). Página, público e preço são outros, então some junto com o
+    // funil das mães daria número sem significado.
+    const proIdxOf = {};
+    PRO_STEPS.forEach((s, i) => { proIdxOf[s.id] = i; });
+    const proRows = rows.filter((v) => v.proMax && proIdxOf[v.proMax] != null);
+    const proSections = PRO_STEPS.map((s, i) => ({
+      id: s.id,
+      label: s.label,
+      count: proRows.filter((v) => (proIdxOf[v.proMax] ?? -1) >= i).length,
+    }));
+    // Por anúncio, DENTRO da edição profissional: é o corte que diz qual
+    // criativo traz nutricionista que chega no Pix, e não só clique.
+    const proCreatives = groupCount(proRows, 'adRef').map((c) => Object.assign({}, c, {
+      pix: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_pix).length,
+      checkout: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_checkout).length,
+    }));
+
     const creatives = groupCount(rows, 'adRef');
     const devices = groupCount(rows, 'device');
     const platforms = groupCount(rows, 'platform');
@@ -243,7 +265,7 @@ module.exports = async (req, res) => {
     // ENTRADA: o trecho antes de a pessoa se engajar, que o funil por seção não
     // enxerga (ele usa quem já está na página como 100%). É aqui que some a
     // maior parte do tráfego pago.
-    const engagedOf = (v) => (idxOf[v.maxSection] ?? -1) >= 1 || !!v.quizMax;
+    const engagedOf = (v) => (idxOf[v.maxSection] ?? -1) >= 1 || !!v.quizMax || (proIdxOf[v.proMax] ?? -1) >= 1;
     const entrada = [
       { key: 'visitas',  label: 'Visitas registradas', hint: 'bateu no site e o rastreamento rodou', count: rows.length },
       { key: 'fantasma', label: 'Carga fantasma',      hint: 'página nasceu em segundo plano (preload do in-app)', count: rows.filter((v) => v.hiddenLoad).length },
@@ -275,6 +297,7 @@ module.exports = async (req, res) => {
       browserEnv: v.browserEnv ? (BROWSER_ENV_LABELS[v.browserEnv] || v.browserEnv) : null,
       maxSection: v.maxSection,
       quizMax: v.quizMax,
+      proMax: v.proMax,
       isLive: v.isLive,
     }));
 
@@ -310,6 +333,9 @@ module.exports = async (req, res) => {
       sections,
       quizSections,
       quizTotal: quizRows.length,
+      proSections,
+      proTotal: proRows.length,
+      proCreatives,
       entrada,
       browserEnvs,
       lastVisits,

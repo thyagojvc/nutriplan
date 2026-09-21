@@ -12,12 +12,13 @@
 // Fire-and-forget do ponto de vista do front: não bloqueia a navegação.
 
 const { redisPipeline } = require('./_kv');
-const { SECTIONS, QUIZ_STEPS } = require('./_sections');
+const { SECTIONS, QUIZ_STEPS, PRO_STEPS } = require('./_sections');
 const { isDatacenterIP } = require('./_bot-filter');
 const { detectPlatform } = require('./_ua');
 
 const VALID_IDS = new Set(SECTIONS.map((s) => s.id));
 const VALID_QUIZ_IDS = new Set(QUIZ_STEPS.map((s) => s.id));
+const VALID_PRO_IDS = new Set(PRO_STEPS.map((s) => s.id));
 const MAX_INDIVIDUALS = 500; // limite pra não crescer sem fim
 
 function detectDevice(ua) {
@@ -79,7 +80,14 @@ module.exports = async (req, res) => {
     if (!VALID_QUIZ_IDS.has(quizMax)) quizMax = quizStep;
     const isQuizBeat = VALID_QUIZ_IDS.has(quizStep);
 
-    if (!visitorId || (!VALID_IDS.has(section) && !isQuizBeat)) {
+    // Batida vinda da /profissional (20/09): terceira trilha, mesma ideia do
+    // quiz. Ver PRO_STEPS em _sections.js.
+    const proStep = String(body.proStep || '');
+    let proMax = String(body.proMax || '');
+    if (!VALID_PRO_IDS.has(proMax)) proMax = proStep;
+    const isProBeat = VALID_PRO_IDS.has(proStep);
+
+    if (!visitorId || (!VALID_IDS.has(section) && !isQuizBeat && !isProBeat)) {
       return res.status(200).json({ ok: false });
     }
 
@@ -101,12 +109,15 @@ module.exports = async (req, res) => {
     // A batida do quiz só mexe nos campos do quiz; a da página só nos da página.
     // Assim um visitante que fez o quiz e depois foi pra página acumula as duas
     // trilhas no mesmo hash, sem uma sobrescrever a outra.
-    const progress = isQuizBeat
-      ? ['HSET', `visitor:${visitorId}`, 'quizStep', quizStep, 'quizMax', quizMax, 'lastSeen', String(now), 'device', device, 'platform', platform, 'browserEnv', browserEnv]
-      : ['HSET', `visitor:${visitorId}`, 'lastSection', section, 'maxSection', maxSection, 'lastSeen', String(now), 'device', device, 'platform', platform, 'browserEnv', browserEnv];
+    const comum = ['lastSeen', String(now), 'device', device, 'platform', platform, 'browserEnv', browserEnv];
+    const progress = isProBeat
+      ? ['HSET', `visitor:${visitorId}`, 'proStep', proStep, 'proMax', proMax, ...comum]
+      : isQuizBeat
+        ? ['HSET', `visitor:${visitorId}`, 'quizStep', quizStep, 'quizMax', quizMax, ...comum]
+        : ['HSET', `visitor:${visitorId}`, 'lastSection', section, 'maxSection', maxSection, ...comum];
 
     const cmds = [
-      ['SET', `presence:${visitorId}`, isQuizBeat ? `quiz:${quizStep}` : section, 'EX', 45],
+      ['SET', `presence:${visitorId}`, isProBeat ? `pro:${proStep}` : isQuizBeat ? `quiz:${quizStep}` : section, 'EX', 45],
       progress,
       // Campos "first-touch": só gravam na primeira vez.
       ['HSETNX', `visitor:${visitorId}`, 'firstSeen', String(now)],
