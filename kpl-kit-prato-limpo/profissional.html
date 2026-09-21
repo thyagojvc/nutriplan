@@ -207,6 +207,10 @@
   .plano__guarantee{margin-top:auto;padding-top:12px;font-size:.78rem;font-weight:700;color:var(--green-dark)}
   .planos__titulo{text-align:center;font-family:var(--heading);font-weight:700;color:var(--ink);margin:0 0 14px}
   .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
+  .planos__cupom-aviso{background:var(--orange-soft);color:#8a5008;border-radius:var(--radius-sm);
+    padding:10px 14px;font-size:.86rem;text-align:center;margin:0 0 14px;line-height:1.4}
+  .planos__cupom-aviso b{color:#a4610a;font-weight:800;letter-spacing:.03em}
+  .planos__cupom-aviso span{display:inline-block;margin-top:2px;font-size:.8rem;opacity:.85}
   /* 21/09: os dois planos ficam lado a lado tambem no celular. Empilhado, a
      pessoa via um plano por vez e nao comparava, que e o ponto de ter dois. */
   @media(max-width:560px){
@@ -483,36 +487,6 @@
   </div>
 </section>
 
-<!-- ======================= O PROTOCOLO ======================= -->
-<section id="p_protocolo">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">O protocolo</span>
-      <h2 class="section-title">Um caminho de <span class="hl">12 etapas</span></h2>
-      <p class="section-sub">Cada ficha cabe em 10 a 20 minutos de consulta e usa alimento de verdade.</p>
-    </div>
-
-    <div class="trilha">
-      <b>A</b>
-      <b>B</b>
-      <b>C</b>
-      <b>D</b>
-      <b>E</b>
-      <b>F</b>
-      <b>G</b>
-      <b>H</b>
-      <b>I</b>
-      <b>J</b>
-      <b>K</b>
-      <b>L</b>
-    </div>
-    <div class="trilha__pontas">
-      <span><b>Começa na avaliação</b>o que ela come de verdade</span>
-      <span><b>Termina na alta</b>com plano de 90 dias</span>
-    </div>
-  </div>
-</section>
-
 <!-- ======================= POR DENTRO DA FICHA ======================= -->
 <section id="p_ficha" style="background:var(--cream-2)">
   <div class="wrap">
@@ -637,6 +611,9 @@
     <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
          _catalog: o servidor recalcula o valor por ele. -->
     <p class="planos__titulo">Escolha o seu plano:</p>
+    <!-- 21/09: sem este aviso, quem le o preco acha que ele JA esta com
+         desconto e o cupom la embaixo perde o efeito (ou pior, parece pegadinha). -->
+    <p class="planos__cupom-aviso">🏷️ Escolha o plano e, no campo logo abaixo, insira o cupom <b>KIT30</b> para pagar 30% menos.<br><span>Os valores dos dois planos ainda estão sem o desconto.</span></p>
     <div class="planos" role="radiogroup" aria-label="Escolha o plano">
       <label class="plano">
         <input type="radio" name="plano" value="profissional_pdf" data-cents="4690" data-nome="KPL Edição Profissional (PDF)">
@@ -907,7 +884,7 @@ function getVisitorId(){
 }
 
 // Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_pecas','p_protocolo','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_cupom','p_dados','p_pix','p_pago'];
+const PRO_IDS = ['p_topo','p_pecas','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_cupom','p_dados','p_pix','p_pago'];
 let proAtual = 'p_topo';
 let proMaxIdx = 0;
 let bateAgora = () => {};
@@ -929,7 +906,7 @@ function marcaPro(id){
   }catch(e){}
 
   // id do elemento na pagina -> passo do funil
-  const alvos = { p_topo:'p_topo', p_pecas:'p_pecas', p_protocolo:'p_protocolo', p_ficha:'p_ficha',
+  const alvos = { p_topo:'p_topo', p_pecas:'p_pecas', p_ficha:'p_ficha',
                   p_app:'p_app', p_licenca:'p_licenca', checkout:'p_checkout' };
   if ('IntersectionObserver' in window) {
     const visiveis = {};
@@ -943,7 +920,7 @@ function marcaPro(id){
         // Rolar pra cima nao desfaz progresso, mas tambem nao pode "desmarcar"
         // uma acao ja feita: por isso o passo atual so volta pra rolagem se ela
         // for mais funda que a ultima acao marcada.
-        if (i >= PRO_IDS.indexOf(proAtual) || proMaxIdx < 7) proAtual = passo;
+        if (i >= PRO_IDS.indexOf(proAtual) || proMaxIdx < PRO_IDS.indexOf('p_plano')) proAtual = passo;
         if (i > proMaxIdx) proMaxIdx = i;
       }
     }, { threshold: [0, 0.25, 0.5, 0.75, 1] });

@@ -49,16 +49,15 @@ const QUIZ_STEPS = [
 const PRO_STEPS = [
   { id: 'p_topo', label: '1. Topo' },
   { id: 'p_pecas', label: '2. As três peças' },
-  { id: 'p_protocolo', label: '3. As 12 etapas' },
-  { id: 'p_ficha', label: '4. Ficha por dentro' },
-  { id: 'p_app', label: '5. O aplicativo' },
-  { id: 'p_licenca', label: '6. Licença de uso' },
-  { id: 'p_checkout', label: '7. Chegou no checkout' },
-  { id: 'p_plano', label: '8. Escolheu um plano' },
-  { id: 'p_cupom', label: '9. Aplicou o cupom' },
-  { id: 'p_dados', label: '10. Preencheu os dados' },
-  { id: 'p_pix', label: '11. Gerou o Pix' },
-  { id: 'p_pago', label: '12. Pagou' },
+  { id: 'p_ficha', label: '3. Ficha por dentro' },
+  { id: 'p_app', label: '4. O aplicativo' },
+  { id: 'p_licenca', label: '5. Licença de uso' },
+  { id: 'p_checkout', label: '6. Chegou no checkout' },
+  { id: 'p_plano', label: '7. Escolheu um plano' },
+  { id: 'p_cupom', label: '8. Aplicou o cupom' },
+  { id: 'p_dados', label: '9. Preencheu os dados' },
+  { id: 'p_pix', label: '10. Gerou o Pix' },
+  { id: 'p_pago', label: '11. Pagou' },
 ];
 
 module.exports = { SECTIONS, QUIZ_STEPS, PRO_STEPS };
