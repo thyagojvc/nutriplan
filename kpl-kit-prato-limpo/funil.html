@@ -137,6 +137,13 @@
       </table>
       <p class="note">Só quem passou pela /profissional. Outro público e outro preço, por isso conta separado.</p>
 
+      <h2>Funil do quiz profissional <span id="proquiz-total" class="note" style="font-weight:400"></span></h2>
+      <table>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <tbody id="proquiz-body"></tbody>
+      </table>
+      <p class="note">Só quem entrou no /quiz-pro. Quem cai direto na /profissional não aparece aqui.</p>
+
       <h2>Anúncios da Edição Profissional</h2>
       <table>
         <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">Checkout</th><th class="num">Pix</th></tr></thead>
@@ -292,12 +299,13 @@ function render(data) {
   (data.sections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.quizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.proSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
+  (data.proQuizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
 
   // Últimos acessos (pulso ao vivo)
   const last = data.lastVisits || [];
   $('#last-body').innerHTML = last.length
     ? last.map((v) => {
-        const parou = SECTION_LABELS[v.proMax || v.quizMax || v.maxSection] || v.proMax || v.quizMax || v.maxSection || '—';
+        const parou = SECTION_LABELS[v.proQuizMax || v.proMax || v.quizMax || v.maxSection] || v.proQuizMax || v.proMax || v.quizMax || v.maxSection || '—';
         const onde = [PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ') || '—';
         const vivo = v.isLive ? '<span class="live-dot"></span>' : '';
         return `<tr>
@@ -373,6 +381,13 @@ function render(data) {
   $('#pro-body').innerHTML = proEntered
     ? funnelRows(proSteps)
     : '<tr><td colspan="4" class="muted">Sem visitas na /profissional no período.</td></tr>';
+  const proQuizSteps = data.proQuizSections || [];
+  const proQuizEntered = proQuizSteps[0]?.count || 0;
+  $('#proquiz-total').textContent = proQuizEntered ? `· ${proQuizEntered} entraram` : '· ninguém entrou ainda';
+  $('#proquiz-body').innerHTML = proQuizEntered
+    ? funnelRows(proQuizSteps)
+    : '<tr><td colspan="4" class="muted">Sem ninguém no quiz profissional no período.</td></tr>';
+
   const proAds = data.proCreatives || [];
   $('#pro-creatives-body').innerHTML = proAds.length
     ? proAds.map((c) => `<tr>
@@ -421,7 +436,7 @@ function render(data) {
   $('#individuals-body').innerHTML = data.individuals.length
     ? data.individuals.map((ind) => {
         // Quem fez o quiz para numa etapa DELE, não numa seção da página.
-        const stopKey = ind.proMax || ind.quizMax || ind.maxSection;
+        const stopKey = ind.proQuizMax || ind.proMax || ind.quizMax || ind.maxSection;
         const stopLabel = SECTION_LABELS[stopKey] || stopKey || '—';
         const dev = ind.device ? (DEVICE_LABELS[ind.device] || ind.device) : '—';
         const plat = ind.platform ? (PLATFORM_LABELS[ind.platform] || ind.platform) : '—';

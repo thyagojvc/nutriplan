@@ -8,7 +8,7 @@
 // contagens e o primeiro nome de quem comprou.
 
 const { redis, redisPipeline } = require('./_kv');
-const { SECTIONS, QUIZ_STEPS, PRO_STEPS } = require('./_sections');
+const { SECTIONS, QUIZ_STEPS, PRO_STEPS, PRO_QUIZ_STEPS } = require('./_sections');
 
 const MAX = 100;
 // O painel fica aberto e recalcula o funil inteiro (pipeline de até 2×MAX
@@ -97,6 +97,8 @@ function juntarMesmaPessoa(rows, idxOf) {
   QUIZ_STEPS.forEach((s, i) => { quizIdx[s.id] = i; });
   const proIdx = {};
   PRO_STEPS.forEach((s, i) => { proIdx[s.id] = i; });
+  const proQuizIdx = {};
+  PRO_QUIZ_STEPS.forEach((s, i) => { proQuizIdx[s.id] = i; });
   const fundo = (a, b, idx) => ((idx[b] ?? -1) > (idx[a] ?? -1) ? b : a);
 
   const ordem = rows.slice().sort((a, b) => (a.firstSeen || 0) - (b.firstSeen || 0));
@@ -121,6 +123,7 @@ function juntarMesmaPessoa(rows, idxOf) {
       g.maxSection = fundo(g.maxSection, v.maxSection, idxOf);
       g.quizMax = fundo(g.quizMax, v.quizMax, quizIdx);
       g.proMax = fundo(g.proMax, v.proMax, proIdx);
+      g.proQuizMax = fundo(g.proQuizMax, v.proQuizMax, proQuizIdx);
       g.hiddenLoad = g.hiddenLoad && v.hiddenLoad;
       g.visible = g.visible || v.visible;
       g.touched = g.touched || v.touched;
@@ -212,6 +215,7 @@ module.exports = async (req, res) => {
         maxSection: h.maxSection || h.lastSection || null,
         quizMax: h.quizMax || h.quizStep || null,
         proMax: h.proMax || h.proStep || null,
+        proQuizMax: h.proQuizMax || h.proQuizStep || null,
         device: h.device || null,
         platform: h.platform || null,
         browserEnv: h.browserEnv || null,
@@ -264,6 +268,16 @@ module.exports = async (req, res) => {
     }));
     // Por anúncio, DENTRO da edição profissional: é o corte que diz qual
     // criativo traz nutricionista que chega no Pix, e não só clique.
+    // Funil do QUIZ PROFISSIONAL (/quiz-pro), contado so entre quem entrou nele.
+    const proQuizIdxOf = {};
+    PRO_QUIZ_STEPS.forEach((s, i) => { proQuizIdxOf[s.id] = i; });
+    const proQuizRows = rows.filter((v) => v.proQuizMax && proQuizIdxOf[v.proQuizMax] != null);
+    const proQuizSections = PRO_QUIZ_STEPS.map((s, i) => ({
+      id: s.id,
+      label: s.label,
+      count: proQuizRows.filter((v) => (proQuizIdxOf[v.proQuizMax] ?? -1) >= i).length,
+    }));
+
     const proCreatives = groupCount(proRows, 'adRef').map((c) => Object.assign({}, c, {
       pix: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_pix).length,
       checkout: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_checkout).length,
@@ -309,6 +323,7 @@ module.exports = async (req, res) => {
       maxSection: v.maxSection,
       quizMax: v.quizMax,
       proMax: v.proMax,
+      proQuizMax: v.proQuizMax,
       isLive: v.isLive,
     }));
 
@@ -346,6 +361,8 @@ module.exports = async (req, res) => {
       quizTotal: quizRows.length,
       proSections,
       proTotal: proRows.length,
+      proQuizSections,
+      proQuizTotal: proQuizRows.length,
       proCreatives,
       entrada,
       browserEnvs,

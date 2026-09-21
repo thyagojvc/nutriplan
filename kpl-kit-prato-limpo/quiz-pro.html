@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Descubra por qual etapa começar com a sua paciente seletiva | Kit Prato Limpo Profissional</title>
+<meta name="description" content="7 perguntas rápidas para nutricionista que atende seletividade alimentar infantil. No fim, a etapa do protocolo por onde começar e as fichas que ela usa." />
+<meta name="robots" content="noindex" />
+<link rel="icon" href="assets/favicon.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+  /* Mesmos tokens do index.html: o quiz precisa parecer a mesma marca, senão a
+     pessoa estranha ao ser levada pra página de vendas depois. */
+  :root {
+    --cream: #FBF8F1; --cream-2: #F4EFE3;
+    --mint: #E8F1DD; --mint-2: #DDEBCE;
+    --green: #5CA741; --green-hover: #4E9235; --green-dark: #3C7A2C;
+    --orange: #F2911F; --orange-soft: #FDEBCF;
+    --coral: #F0673A; --coral-soft: #FBE0D5;
+    --ink: #26302A; --text: #4B564E; --muted: #7C857D;
+    --card: #FFFFFF; --border: #E9E3D5;
+    --shadow: 0 10px 30px rgba(38,48,42,.08);
+    --shadow-sm: 0 4px 14px rgba(38,48,42,.06);
+    --radius: 20px; --radius-sm: 14px;
+    --heading: "Baloo 2", system-ui, "Segoe UI", Roboto, sans-serif;
+    --body: "Nunito", system-ui, "Segoe UI", Roboto, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--text);
+    background: linear-gradient(180deg, var(--mint) 0px, var(--cream-2) 140px, var(--cream) 320px);
+    min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: var(--heading); color: var(--ink); line-height: 1.15; font-weight: 800; }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 20; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar__kpl { font-family: var(--heading); font-weight: 800; font-size: 1.35rem; color: var(--green); letter-spacing: .04em; }
+  .topbar__full { font-family: var(--heading); font-weight: 700; font-size: .82rem; color: var(--muted); margin-left: 7px; }
+
+  main { max-width: 480px; margin: 0 auto; padding: 18px 18px 48px; }
+
+  /* Barra de progresso: avanço acelerado no início (sensação de rapidez sem
+     mentir o total de passos). Mesma curva do quiz do NutriPlan. */
+  .prog { margin-bottom: 14px; }
+  .prog__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; min-height: 24px; }
+  .prog__back {
+    display: none; align-items: center; gap: 5px; background: none; border: none; cursor: pointer;
+    font-family: var(--body); font-size: .8rem; font-weight: 700; color: var(--muted); padding: 4px 2px;
+  }
+  .prog__back.show { display: inline-flex; }
+  .prog__back:hover { color: var(--green-dark); }
+  .prog__pct {
+    font-family: var(--heading); font-weight: 800; font-size: .78rem; color: var(--green-dark);
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: 999px; padding: 2px 10px;
+  }
+  .prog__rail { height: 8px; width: 100%; background: var(--mint-2); border-radius: 999px; overflow: hidden; }
+  .prog__fill { height: 100%; width: 0; background: var(--green); border-radius: 999px; transition: width .7s cubic-bezier(.22,.9,.3,1); }
+
+  .matchline {
+    text-align: center; font-family: var(--heading); font-weight: 800;
+    font-size: 1.32rem; line-height: 1.2; color: var(--green-dark); margin-bottom: 14px;
+  }
+  .matchline .hl { color: var(--orange); }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 20px 18px;
+  }
+
+  /* Bloco de confirmação: devolve a resposta anterior antes da próxima pergunta,
+     pra virar uma narrativa contínua em vez de perguntas soltas. */
+  .confirm {
+    display: flex; gap: 9px; align-items: flex-start;
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: var(--radius-sm);
+    padding: 10px 12px; margin-bottom: 14px;
+  }
+  .confirm__tick {
+    flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; margin-top: 2px;
+  }
+  .confirm p { font-size: .88rem; font-weight: 700; color: var(--green-dark); line-height: 1.35; }
+
+  .q__title { font-size: 1.18rem; margin-bottom: 6px; }
+  .q__sub { font-size: .92rem; color: var(--muted); margin-bottom: 16px; }
+
+  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px; cursor: pointer; font-family: var(--body);
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .opt:hover { border-color: var(--green); background: #FAFCF8; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .opt:active { transform: scale(.99); }
+  .opt.on { border-color: var(--green); background: #F3F9EE; box-shadow: 0 0 0 1px var(--green); }
+  .opt__ic { flex: 0 0 auto; font-size: 1.35rem; line-height: 1; }
+  .opt__body { flex: 1 1 auto; min-width: 0; }
+  .opt__label { font-size: .96rem; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .opt.on .opt__label { color: var(--green-dark); }
+  .opt__desc { font-size: .84rem; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+  .opt__check {
+    flex: 0 0 auto; width: 21px; height: 21px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
+    transition: all .18s ease;
+  }
+  .opt.on .opt__check { background: var(--green); border-color: var(--green); }
+  .opt__check svg { opacity: 0; transition: opacity .18s ease; }
+  .opt.on .opt__check svg { opacity: 1; }
+
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    width: 100%; min-height: 54px; padding: 14px 20px; margin-top: 16px;
+    font-family: var(--heading); font-weight: 800; font-size: 1.05rem; color: #fff;
+    background: linear-gradient(180deg, #67B84C, var(--green)); border: none; border-radius: 999px;
+    cursor: pointer; box-shadow: 0 8px 20px rgba(92,167,65,.35); text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; filter: none; }
+  .btn--ghost {
+    background: none; color: var(--muted); box-shadow: none; min-height: 0;
+    font-family: var(--body); font-size: .86rem; font-weight: 700; text-decoration: underline; padding: 10px;
+  }
+  .btn--ghost:hover { color: var(--ink); transform: none; filter: none; }
+
+  /* Tela de análise */
+  .analyzing { text-align: center; padding: 34px 18px; }
+  .analyzing__ring {
+    width: 62px; height: 62px; margin: 0 auto 18px; border-radius: 50%;
+    border: 5px solid var(--mint-2); border-top-color: var(--green); animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .analyzing h2 { font-size: 1.22rem; margin-bottom: 16px; }
+  .analyzing__list { list-style: none; display: flex; flex-direction: column; gap: 9px; text-align: left; max-width: 19rem; margin: 0 auto; }
+  .analyzing__list li {
+    display: flex; align-items: center; gap: 9px; font-size: .92rem; font-weight: 600;
+    color: var(--muted); opacity: .35; transition: opacity .4s ease, color .4s ease;
+  }
+  .analyzing__list li.on { opacity: 1; color: var(--green-dark); }
+  .analyzing__list li .tick {
+    flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%; background: var(--mint-2);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 800;
+    transition: background .4s ease;
+  }
+  .analyzing__list li.on .tick { background: var(--green); }
+
+  /* Resultado */
+  .res__eyebrow {
+    display: inline-block; font-family: var(--heading); font-weight: 700; font-size: .74rem;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--green-dark);
+    background: var(--mint); padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;
+  }
+  .res h2 { font-size: 1.42rem; line-height: 1.18; margin-bottom: 10px; }
+  .res h2 .hl { color: var(--orange); }
+  .res__lead { font-size: .96rem; color: var(--text); margin-bottom: 18px; }
+  .res__box {
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: var(--radius-sm);
+    padding: 15px; margin-bottom: 12px;
+  }
+  .res__box__k { font-family: var(--heading); font-weight: 800; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--green-dark); margin-bottom: 5px; }
+  .res__box__v { font-family: var(--heading); font-weight: 800; font-size: 1.16rem; color: var(--ink); line-height: 1.2; }
+  .res__box__d { font-size: .89rem; color: var(--text); margin-top: 5px; line-height: 1.4; }
+  .res__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .res__stat { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px; text-align: center; }
+  .res__stat .n { font-family: var(--heading); font-weight: 800; font-size: 1.55rem; color: var(--green-dark); line-height: 1; }
+  .res__stat .l { font-size: .78rem; color: var(--muted); margin-top: 3px; line-height: 1.25; }
+  .res__note { font-size: .84rem; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.45; }
+
+  /* Modal de saída (só na 1ª pergunta, maior ponto de abandono) */
+  .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.5); padding: 18px; }
+  .modal.show { display: flex; }
+  .modal__box { background: #fff; border-radius: var(--radius); padding: 24px 20px; max-width: 21rem; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+  .modal__ic { width: 46px; height: 46px; border-radius: 50%; background: var(--coral-soft); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 12px; }
+  .modal__box h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .modal__box p { font-size: .92rem; color: var(--muted); margin-bottom: 18px; line-height: 1.45; }
+
+  .fade { animation: fade .32s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .fade, .analyzing__ring { animation: none; }
+    .prog__fill { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <span class="topbar__kpl">KPL</span><span class="topbar__full">Kit Prato Limpo</span>
+</header>
+
+<main>
+  <div class="prog" id="prog">
+    <div class="prog__top">
+      <button type="button" class="prog__back" id="back-btn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M3 7L6.5 3.5M3 7L6.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Anterior
+      </button>
+      <span class="prog__pct" id="prog-pct">0%</span>
+    </div>
+    <div class="prog__rail"><div class="prog__fill" id="prog-fill"></div></div>
+  </div>
+
+  <p class="matchline" id="matchline">
+    Descubra em <span class="hl">2 minutos</span> por onde começar com o seu filho
+  </p>
+
+  <div id="stage"></div>
+</main>
+
+<div class="modal" id="exit-modal">
+  <div class="modal__box">
+    <div class="modal__ic">🤔</div>
+    <h3>Já vai embora?</h3>
+    <p>Faltam só 5 perguntas rápidas pra descobrir por onde começar com o seu filho. Leva menos de 2 minutos.</p>
+    <button type="button" class="btn" id="exit-stay">Continuar respondendo</button>
+    <button type="button" class="btn btn--ghost" id="exit-leave">Sair mesmo assim</button>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   CONFIG
+   ========================================================= */
+const CONFIG = {
+  META_PIXEL_ID: '2794485957574762',
+  API_CAPI: '/api/capi-event',
+  API_PRESENCE: '/api/presence',
+  PRESENCE_MS: 8000,
+  // Página de vendas da Edição Profissional. visitorId e adRef viajam por
+  // sessionStorage (mesma origem), então a pessoa continua sendo o MESMO
+  // visitante no painel depois de sair do quiz.
+  VENDA_URL: '/profissional',
+};
+
+/* =========================================================
+   PERGUNTAS (Edição Profissional)
+
+   Mesma regra do quiz das mães: nenhuma pergunta pede texto digitado, a mais
+   fácil vem primeiro e a que decide o resultado (pq4) fica no meio, quando a
+   pessoa já investiu alguns toques.
+
+   A URL é sempre /quiz-pro.html: reordenar ou acrescentar pergunta aqui NÃO
+   quebra o link do anúncio.
+   ========================================================= */
+const QUESTIONS = [
+  {
+    id: 'pq1',
+    title: 'Onde você atende hoje?',
+    sub: 'Pode escolher o lugar onde você passa a maior parte do tempo.',
+    opts: [
+      { v: 'consultorio', ic: '🩺', label: 'Consultório particular' },
+      { v: 'escola',      ic: '🏫', label: 'Escola, creche ou oficina em grupo' },
+      { v: 'publico',     ic: '🏥', label: 'Ambulatório, posto ou clínica' },
+      { v: 'domicilio',   ic: '🚗', label: 'Atendimento domiciliar ou online' },
+      { v: 'comecando',   ic: '🌱', label: 'Ainda estou começando a atender' },
+    ],
+    confirm: (v) => `Anotado. O material funciona igual em qualquer um desses lugares, e a licença cobre todos eles.`,
+  },
+  {
+    id: 'pq2',
+    title: 'Quantas crianças com seletividade você atende por mês?',
+    sub: 'Mesmo que seletividade não seja o motivo principal da consulta.',
+    opts: [
+      { v: 'nenhuma', ic: '🤔', label: 'Nenhuma ainda, mas quero atender' },
+      { v: 'poucas',  ic: '🙂', label: 'De 1 a 3' },
+      { v: 'media',   ic: '📈', label: 'De 4 a 10' },
+      { v: 'muitas',  ic: '🔥', label: 'Mais de 10' },
+    ],
+  },
+  {
+    id: 'pq3',
+    title: 'Que idade tem a maioria delas?',
+    sub: 'As fichas mudam de acordo com a fase.',
+    opts: [
+      { v: '1-3',   ic: '🍼', label: '1 a 3 anos' },
+      { v: '4-6',   ic: '🧒', label: '4 a 6 anos' },
+      { v: '7-10',  ic: '🎒', label: '7 a 10 anos' },
+      { v: 'misto', ic: '🧩', label: 'Bem variado' },
+    ],
+  },
+  {
+    id: 'pq4',
+    title: 'O que mais te trava no atendimento de seletividade?',
+    sub: 'Escolha o que mais pesa na sua rotina hoje.',
+    opts: [
+      { v: 'preparo',   ic: '🕛', label: 'Montar atividade do zero pra cada paciente', desc: 'Tempo de preparo fora da consulta' },
+      { v: 'sessao',    ic: '😶', label: 'A criança travar no meio da sessão',         desc: 'E você ter que improvisar na hora' },
+      { v: 'casa',      ic: '🏠', label: 'A família não fazer nada em casa',            desc: 'Volta na consulta seguinte do mesmo jeito' },
+      { v: 'material',  ic: '🧰', label: 'Não ter material lúdico pra usar',            desc: 'Só conversa e orientação verbal' },
+      { v: 'evolucao',  ic: '📊', label: 'Mostrar evolução pra família',                desc: 'A criança avança e ninguém percebe' },
+    ],
+    confirm: () => null, // esta define o resultado
+  },
+  {
+    id: 'pq5',
+    title: 'Quanto tempo por semana você gasta preparando material?',
+    sub: 'Somando busca, adaptação e impressão.',
+    opts: [
+      { v: 'pouco', ic: '⚡', label: 'Menos de 30 minutos' },
+      { v: 'medio', ic: '🕐', label: 'De 30 minutos a 1 hora' },
+      { v: 'alto',  ic: '⏳', label: 'De 1 a 3 horas' },
+      { v: 'muito', ic: '🥵', label: 'Mais de 3 horas' },
+    ],
+    confirm: () => 'Esse é o tempo que não é faturado e quase nunca entra na conta do preço da consulta.',
+  },
+  {
+    id: 'pq6',
+    title: 'Como a tarefa de casa chega na família hoje?',
+    sub: 'Do jeito que acontece de verdade, não do jeito ideal.',
+    opts: [
+      { v: 'falo',     ic: '💬', label: 'Explico na consulta, de boca' },
+      { v: 'escrevo',  ic: '📝', label: 'Escrevo à mão num papel' },
+      { v: 'whats',    ic: '📱', label: 'Mando no WhatsApp depois' },
+      { v: 'nada',     ic: '🚫', label: 'Não passo tarefa pra casa' },
+    ],
+  },
+  {
+    id: 'pq7',
+    title: 'Você usa material impresso na sessão?',
+    sub: 'Última pergunta.',
+    opts: [
+      { v: 'proprio',  ic: '📁', label: 'Sim, material que eu mesma montei' },
+      { v: 'internet', ic: '🔍', label: 'Sim, o que encontro na internet' },
+      { v: 'nao',      ic: '🗣️', label: 'Não, minha consulta é só conversa' },
+      { v: 'quero',    ic: '✨', label: 'Quero começar a usar' },
+    ],
+  },
+];
+
+/* =========================================================
+   MECANISMO: a trava -> etapa real do protocolo
+
+   As 12 etapas e as fichas citadas existem de verdade no kit (mesma lista que
+   o app mostra na aba Consultório). Nenhum nome de ficha é inventado aqui.
+   ========================================================= */
+const MECANISMO = {
+  preparo: {
+    nome: 'tempo de preparo',
+    etapa: 'A', etapaNome: 'Avaliação inicial', qtd: 5,
+    ficha: 'O mapa do prato',
+    leitura: 'Montar atividade do zero pra cada paciente é trabalho invisível: acontece fora da consulta e não entra no valor que você cobra.',
+    passo: 'Comece pela ficha de avaliação: em 15 minutos de sessão você mapeia o que a criança come de verdade e já sai com a próxima atividade definida.',
+  },
+  sessao: {
+    nome: 'improviso na sessão',
+    etapa: 'C', etapaNome: 'Toque e manipulação', qtd: 6,
+    ficha: 'Carimbo de pimentão',
+    leitura: 'Quando a criança trava, o que falta não é técnica, é uma atividade pronta pra colocar na mesa naquele minuto.',
+    passo: 'As fichas de toque resolvem esse momento: alimento de verdade, objetivo declarado que não é comer, e o passo a passo numerado na sua frente.',
+  },
+  casa: {
+    nome: 'intervalo entre as consultas',
+    etapa: 'I', etapaNome: 'Rotina e ambiente', qtd: 5,
+    ficha: 'A linha do dia',
+    leitura: 'A mãe sai da consulta convencida e, na terça, já esqueceu metade. Não é má vontade, é falta de material na mão dela.',
+    passo: 'Toda ficha de consultório termina com o "Leva para casa", e a família ainda recebe 129 fichas e o aplicativo pra usar entre um atendimento e outro.',
+  },
+  material: {
+    nome: 'falta de material lúdico',
+    etapa: 'B', etapaNome: 'Aproximação sem contato', qtd: 5,
+    ficha: 'Adivinha pelo cheiro',
+    leitura: 'Consulta só de conversa funciona com o adulto. Com criança seletiva, o que muda o jogo é ter o alimento na mesa dentro de uma brincadeira.',
+    passo: 'Comece pelas fichas de aproximação, que trabalham o alimento sem exigir contato nenhum com a boca.',
+  },
+  evolucao: {
+    nome: 'evolução invisível',
+    etapa: 'F', etapaNome: 'Prova e registro', qtd: 4,
+    ficha: 'O júri do sabor',
+    leitura: 'A criança avança de verdade, mas sem registro a família só enxerga "ela continua não comendo" e desanima do acompanhamento.',
+    passo: 'As fichas de registro transformam cada sessão em dado: o que ela tocou, o que cheirou, o que provou, numa linguagem que a família entende.',
+  },
+};
+
+const TEMPO_LABEL = {
+  pouco: { short: '10-20', txt: 'Com as fichas prontas, esse tempo vira zero.' },
+  medio: { short: '10-20', txt: 'É quase uma consulta inteira por semana só preparando material.' },
+  alto:  { short: '10-20', txt: 'São horas por semana que ninguém te paga pra fazer.' },
+  muito: { short: '10-20', txt: 'Mais de 3 horas por semana é um turno inteiro de atendimento perdido no preparo.' },
+};
+
+/* =========================================================
+   Estado + helpers
+   ========================================================= */
+const $ = (s) => document.querySelector(s);
+const answers = {};
+let idx = 0;              // índice da pergunta atual
+let maxStepIdx = 0;       // etapa mais profunda alcançada (pro funil)
+let advanced = false;     // já avançou ao menos uma vez (habilita "Anterior")
+let finished = false;
+
+const VISITOR_ID_KEY = 'kpl_visitor_id';
+const AD_REF_KEY = 'kpl_ad_ref';
+const ANSWERS_KEY = 'kpl_quiz_pro_answers';
+const EXIT_FLAG = 'kpl_quiz_pro_exit_shown';
+
+function getAdRef() {
+  try {
+    const q = new URLSearchParams(location.search);
+    const fromUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
+    if (fromUrl) { const v = fromUrl.slice(0, 120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
+    return sessionStorage.getItem(AD_REF_KEY) || '';
+  } catch (e) { return ''; }
+}
+/** Mesmo id da página de vendas: quem faz o quiz e vai pro index é UMA pessoa
+ *  só no painel, não duas. */
+function getVisitorId() {
+  try {
+    let id = sessionStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+      sessionStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+  } catch (e) { return 'v_' + Date.now(); }
+}
+
+/* =========================================================
+   Meta Pixel (mesmo esquema do index: navegador + CAPI com o mesmo event_id)
+   ========================================================= */
+const FBCLID_KEY = 'kpl_fbclid';
+function rememberFbclid() {
+  try {
+    const fromUrl = new URLSearchParams(location.search).get('fbclid');
+    if (fromUrl) { sessionStorage.setItem(FBCLID_KEY, fromUrl); return fromUrl; }
+    return sessionStorage.getItem(FBCLID_KEY) || undefined;
+  } catch (e) { return undefined; }
+}
+function pixelDual(event, data, opts) {
+  opts = opts || {};
+  const eventId = (window.crypto && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : (event + '_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+  if (window.fbq) {
+    try { fbq(opts.custom ? 'trackCustom' : 'track', event, data || {}, { eventID: eventId }); } catch (e) {}
+  }
+  const fbclid = rememberFbclid();
+  fetch(CONFIG.API_CAPI, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event_name: event, event_id: eventId, is_custom: !!opts.custom, data: data || {}, ...(fbclid ? { fbclid } : {}) }),
+    keepalive: true,
+  }).catch(() => {});
+  return eventId;
+}
+function pixelCustom(event, data) { return pixelDual(event, data, { custom: true }); }
+function pixelOnce(key, event, data, custom) {
+  try {
+    if (sessionStorage.getItem('kpl_px_' + key)) return;
+    sessionStorage.setItem('kpl_px_' + key, '1');
+  } catch (e) {}
+  pixelDual(event, data, { custom: !!custom });
+}
+function initPixel() {
+  if (!CONFIG.META_PIXEL_ID) return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', CONFIG.META_PIXEL_ID);
+  fbq('track', 'PageView');
+  pixelOnce('quiz_pro_start', 'QuizProStart', undefined, true);
+}
+
+/* =========================================================
+   Presença: trilha do quiz PROFISSIONAL (campo proQuizMax).
+
+   É a quarta trilha do painel (página das mães, quiz das mães, /profissional e
+   esta). Separada de propósito: misturar com o quiz das mães somaria dois
+   públicos e dois preços na mesma conta.
+   ========================================================= */
+const QUIZ_IDS = ['pq1','pq2','pq3','pq4','pq5','pq6','pq7','pqresultado','pqcta'];
+let currentQuizStep = 'pq1';
+let sendBeat = () => {}; // vira a função real se o rastreamento estiver ligado
+
+function initPresence() {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.has('track')) localStorage.removeItem('kpl_notrack');
+    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
+    if (localStorage.getItem('kpl_notrack') === '1') return;
+  } catch (e) {}
+  const visitorId = getVisitorId();
+  const adRef = getAdRef();
+
+  // Mesmos sinais de entrada do index.html (ver comentário lá).
+  const hiddenLoad = document.visibilityState === 'hidden';
+  let visible = document.visibilityState === 'visible';
+  let touched = false;
+  if (!visible) {
+    document.addEventListener('visibilitychange', function onVis() {
+      if (document.visibilityState !== 'visible') return;
+      visible = true;
+      document.removeEventListener('visibilitychange', onVis);
+      sendBeat();
+    });
+  }
+  const markTouch = () => { touched = true; sendBeat(); };
+  window.addEventListener('pointerdown', markTouch, { once: true });
+  window.addEventListener('keydown', markTouch, { once: true });
+
+  sendBeat = () => {
+    fetch(CONFIG.API_PRESENCE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId, proQuizStep: currentQuizStep, proQuizMax: QUIZ_IDS[maxStepIdx] || currentQuizStep, adRef,
+        hiddenLoad, visible, touched,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  };
+  sendBeat();
+  setInterval(sendBeat, CONFIG.PRESENCE_MS);
+}
+function markStep(i, id) {
+  currentQuizStep = id;
+  if (i > maxStepIdx) maxStepIdx = i;
+}
+
+/* =========================================================
+   Progresso (curva acelerada: sobe rápido no início, desacelera no fim)
+   ========================================================= */
+const EASE_K = 1.8;
+function setProgress(done, total) {
+  const linear = done / total;
+  const eased = Math.round(100 * (1 - Math.pow(1 - linear, EASE_K)));
+  $('#prog-fill').style.width = eased + '%';
+  $('#prog-pct').textContent = eased + '%';
+}
+
+/* =========================================================
+   Render das perguntas
+   ========================================================= */
+function renderQuestion() {
+  const q = QUESTIONS[idx];
+  markStep(idx, q.id);
+  setProgress(idx, QUESTIONS.length + 1);
+
+  $('#back-btn').classList.toggle('show', idx > 0 && advanced);
+
+  // Confirmação da resposta anterior: cria continuidade ("o que você respondeu
+  // virou isso") em vez de perguntas soltas.
+  let confirmHtml = '';
+  if (idx > 0) {
+    const prev = QUESTIONS[idx - 1];
+    const prevVal = answers[prev.id];
+    const text = prev.confirm ? prev.confirm(prevVal) : null;
+    if (text) {
+      confirmHtml = `<div class="confirm"><span class="confirm__tick">✓</span><p>${text}</p></div>`;
+    }
+  }
+
+  const opts = q.opts.map((o) => `
+    <button type="button" class="opt${answers[q.id] === o.v ? ' on' : ''}" data-v="${o.v}">
+      <span class="opt__ic">${o.ic}</span>
+      <span class="opt__body">
+        <span class="opt__label">${o.label}</span>
+        ${o.desc ? `<span class="opt__desc">${o.desc}</span>` : ''}
+      </span>
+      <span class="opt__check"><svg width="10" height="8" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </button>`).join('');
+
+  $('#stage').innerHTML = `
+    <div class="card fade">
+      ${confirmHtml}
+      <h1 class="q__title">${q.title}</h1>
+      <p class="q__sub">${q.sub}</p>
+      <div class="opts">${opts}</div>
+    </div>`;
+
+  $('#stage').querySelectorAll('.opt').forEach((btn) => {
+    btn.addEventListener('click', () => choose(q, btn.dataset.v));
+  });
+
+  sendBeat(); // registra a etapa na hora, sem esperar o intervalo de 8s
+}
+
+function choose(q, value) {
+  answers[q.id] = value;
+  try { sessionStorage.setItem(ANSWERS_KEY, JSON.stringify(answers)); } catch (e) {}
+
+  if (q.id === 'q1') pixelOnce('quiz_first_answer', 'QuizFirstAnswer', undefined, true);
+  pixelCustom('QuizStep', { step: q.id, value });
+
+  // Marca visualmente antes de avançar (a pessoa vê o que escolheu)
+  const el = $('#stage').querySelector(`.opt[data-v="${value}"]`);
+  if (el) el.classList.add('on');
+
+  advanced = true;
+  setTimeout(() => {
+    if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    else runAnalysis();
+  }, 190);
+}
+
+$('#back-btn').addEventListener('click', () => {
+  if (idx === 0) return;
+  idx--;
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+/* =========================================================
+   Tela de análise -> resultado
+   ========================================================= */
+const ANALYSIS_LINES = [
+  'Lendo a trava que você descreveu',
+  'Cruzando com o perfil dos seus atendimentos',
+  'Localizando a etapa certa do protocolo',
+  'Separando as fichas pra sua próxima consulta',
+];
+
+function runAnalysis() {
+  finished = true;
+  markStep(QUESTIONS.length, 'pqresultado');
+  setProgress(QUESTIONS.length, QUESTIONS.length + 1);
+  $('#back-btn').classList.remove('show');
+  $('#matchline').textContent = 'Analisando as suas respostas...';
+
+  $('#stage').innerHTML = `
+    <div class="card fade analyzing">
+      <div class="analyzing__ring"></div>
+      <h2>Montando o seu ponto de partida</h2>
+      <ul class="analyzing__list" id="an-list">
+        ${ANALYSIS_LINES.map((l) => `<li><span class="tick">✓</span>${l}</li>`).join('')}
+      </ul>
+    </div>`;
+
+  sendBeat();
+  const items = $('#an-list').querySelectorAll('li');
+  items.forEach((li, i) => setTimeout(() => li.classList.add('on'), 380 + i * 520));
+  setTimeout(renderResult, 380 + items.length * 520 + 420);
+}
+
+function renderResult() {
+  const m = MECANISMO[answers.pq4] || MECANISMO.preparo;
+  const idade = (QUESTIONS[2].opts.find((o) => o.v === answers.pq3) || {}).label || '1 a 10 anos';
+  const tempo = TEMPO_LABEL[answers.pq5] || TEMPO_LABEL.medio;
+  const semMaterial = answers.pq7 === 'nao' || answers.pq7 === 'quero';
+
+  setProgress(QUESTIONS.length + 1, QUESTIONS.length + 1);
+  $('#matchline').textContent = 'Pronto. Aqui está a sua etapa de partida.';
+
+  $('#stage').innerHTML = `
+    <div class="card fade res">
+      <div style="text-align:center"><span class="res__eyebrow">Seu resultado</span></div>
+      <h2>O que te trava hoje é o <span class="hl">${m.nome}</span></h2>
+      <p class="res__lead">${m.leitura}</p>
+
+      <div class="res__box">
+        <div class="res__box__k">Comece por aqui</div>
+        <div class="res__box__v">Etapa ${m.etapa} · ${m.etapaNome}</div>
+        <div class="res__box__d">${m.passo}</div>
+      </div>
+
+      <div class="res__box" style="background:var(--orange-soft); border-color:#F6D9A8">
+        <div class="res__box__k" style="color:#8A5A0A">A primeira ficha pra aplicar</div>
+        <div class="res__box__v">${m.ficha}</div>
+      </div>
+
+      <div class="res__stats">
+        <div class="res__stat"><div class="n">${m.qtd}</div><div class="l">fichas nessa etapa</div></div>
+        <div class="res__stat"><div class="n">${tempo.short}</div><div class="l">minutos por ficha</div></div>
+      </div>
+
+      <p class="res__lead">Para crianças de <strong>${idade}</strong>, as fichas já trazem o nível e o tempo no cabeçalho, então você escolhe pela etapa e aplica. ${tempo.txt}</p>
+      ${semMaterial ? '<p class="res__lead">Como você ainda não usa material impresso na sessão, comece por uma ficha só, na próxima consulta, e veja como a criança responde.</p>' : ''}
+
+      <a href="${CONFIG.VENDA_URL}" class="btn" id="res-cta">Ver a Edição Profissional →</a>
+      <p class="res__note">São 60 fichas de consultório em 12 etapas, da avaliação até a alta, mais 129 fichas para a família e licença de uso com os seus pacientes.</p>
+    </div>`;
+
+  pixelOnce('quiz_pro_result', 'QuizProResult', { trava: answers.pq4, local: answers.pq1 }, true);
+
+  $('#res-cta').addEventListener('click', () => {
+    markStep(QUIZ_IDS.indexOf('pqcta'), 'pqcta');
+    // Batida imediata: o intervalo de 8s não rodaria antes da navegação, e o
+    // "clicou pra ver o kit" sumiria do funil.
+    sendBeat();
+    pixelCustom('QuizProToOffer', { trava: answers.pq4 });
+    try { sessionStorage.setItem('kpl_quiz_pro_result', JSON.stringify({ trava: answers.pq4, local: answers.pq1, etapa: m.etapa })); } catch (e) {}
+  });
+}
+
+/* =========================================================
+   Exit-intent — só na 1ª pergunta (maior ponto de abandono: quem clica no
+   anúncio e não responde nada). Um empurrão no histórico segura o primeiro
+   "voltar"; o segundo deixa sair normal, pra não virar prisão de botão.
+   ========================================================= */
+function initExitIntent() {
+  let shown = false;
+  try { if (sessionStorage.getItem(EXIT_FLAG) === '1') return; } catch (e) { return; }
+
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', () => {
+    if (shown || idx > 0 || finished) return;
+    shown = true;
+    try { sessionStorage.setItem(EXIT_FLAG, '1'); } catch (e) {}
+    $('#exit-modal').classList.add('show');
+    pixelCustom('QuizProExitIntent');
+  });
+
+  $('#exit-stay').addEventListener('click', () => {
+    $('#exit-modal').classList.remove('show');
+    history.pushState(null, '', location.href);
+  });
+  $('#exit-leave').addEventListener('click', () => {
+    $('#exit-modal').classList.remove('show');
+    history.back();
+  });
+}
+
+/* =========================================================
+   Boot
+   ========================================================= */
+(function init() {
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(ANSWERS_KEY) || '{}');
+    Object.assign(answers, cached);
+  } catch (e) {}
+
+  initPixel();
+  initPresence();
+  initExitIntent();
+  renderQuestion();
+})();
+</script>
+</body>
+</html>

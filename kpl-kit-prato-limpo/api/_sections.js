@@ -60,4 +60,19 @@ const PRO_STEPS = [
   { id: 'p_pago', label: '11. Pagou' },
 ];
 
-module.exports = { SECTIONS, QUIZ_STEPS, PRO_STEPS };
+// Trilha do QUIZ PROFISSIONAL (/quiz-pro). Quarta trilha do painel. Separada
+// do quiz das maes porque e outro publico, outro preco e outras perguntas:
+// somar as duas daria um funil que nao descreve nenhuma das duas.
+const PRO_QUIZ_STEPS = [
+  { id: 'pq1', label: '1. Onde atende' },
+  { id: 'pq2', label: '2. Quantas crianças por mês' },
+  { id: 'pq3', label: '3. Idade da maioria' },
+  { id: 'pq4', label: '4. O que mais trava' },
+  { id: 'pq5', label: '5. Tempo de preparo' },
+  { id: 'pq6', label: '6. Tarefa de casa hoje' },
+  { id: 'pq7', label: '7. Usa material impresso' },
+  { id: 'pqresultado', label: '8. Resultado' },
+  { id: 'pqcta', label: '9. Clicou pra ver o kit' },
+];
+
+module.exports = { SECTIONS, QUIZ_STEPS, PRO_STEPS, PRO_QUIZ_STEPS };
