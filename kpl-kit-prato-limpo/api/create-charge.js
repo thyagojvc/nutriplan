@@ -19,7 +19,7 @@ const { redis } = require('./_kv');
 // da cliente, só nome e CPF do banco dela.
 // Best-effort de propósito (nunca trava o checkout): 1 escrita por cobrança
 // criada, nada parecido com o polling do painel que estourou a cota.
-async function saveCheckoutBackup(paymentId, customer, fbclid, adRef, campaign, adset) {
+async function saveCheckoutBackup(paymentId, customer, fbclid, adRef, campaign, adset, pedido) {
   try {
     await redis(
       'SET', `checkout:${paymentId}`,
@@ -36,6 +36,12 @@ async function saveCheckoutBackup(paymentId, customer, fbclid, adRef, campaign, 
         // diz de onde a venda veio. O webhook le daqui na venda orfa.
         campaign: campaign || null,
         adset: adset || null,
+        // PLANO E ADICIONAIS (21/09). A entrega descobria o produto pelo VALOR,
+        // e isso parou de funcionar quando o plano de PDF profissional passou a
+        // custar R$ 29,90, igual ao Completo das maes. Gravando aqui, tanto o
+        // deliver-kit quanto o webhook sabem o que foi vendido sem adivinhar.
+        tierId: (pedido && pedido.tierId) || null,
+        bumps: (pedido && pedido.bumps) || [],
         ts: Date.now(),
       }),
       'EX', 172800, // 48h: tempo de sobra pra qualquer confirmação/reclamação chegar
@@ -103,7 +109,7 @@ module.exports = async (req, res) => {
     }
 
     // --- Total confiável (servidor manda) — a partir do tier + bumps ---
-    const { items, totalCents, tierId, tierName } = computeOrder(body.tier, body.bumps, body.cupom);
+    const { items, totalCents, tierId, tierName } = computeOrder(body.tier, body.bumps);
 
     const token = process.env.PUSHINPAY_TOKEN;
     if (!token) {
@@ -143,7 +149,8 @@ module.exports = async (req, res) => {
     const adset = cleanRef(body.adset);
     // normalizeId: a chave tem que casar com a que o webhook procura depois.
     const paymentId = normalizeId(pp.id);
-    if (paymentId) await saveCheckoutBackup(paymentId, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef, campaign, adset);
+    if (paymentId) await saveCheckoutBackup(paymentId, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef, campaign, adset,
+      { tierId, bumps: items.filter((i) => i.id !== tierId).map((i) => i.id) });
 
     // PushInPay devolve: id, qr_code (copia e cola), qr_code_base64 (imagem), status, value
     const qrBase64 = pp.qr_code_base64 || pp.qrCodeBase64 || '';

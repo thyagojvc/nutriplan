@@ -30,7 +30,7 @@ function marcaDoPedido(tierId) {
   };
 }
 
-const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
+const { TIERS, tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
 
@@ -105,7 +105,10 @@ async function deliverKit(transaction) {
   // Não foi cobrança duplicada, foi o painel contando a mesma venda 2x.
   // Com esta trava, só quem chegar primeiro (webhook OU deliver-kit) grava.
   const valorCents = Number(transaction.value || 0);
-  const tierName = tierFromValueCents(valorCents).name;
+  // Mesma regra do deliver-kit: o plano vem do backup do checkout; o valor e o
+  // plano B pra venda antiga, que nao tem esse campo gravado.
+  const tierDoPedido = (backup && backup.tierId && TIERS[backup.tierId]) || tierFromValueCents(valorCents);
+  const tierName = tierDoPedido.name;
   const firstName = ((backup && backup.name) || transaction.payer_name || '').trim().split(/\s+/)[0] || 'Cliente';
   const adRef = (backup && backup.adRef) || 'Sem anúncio';
   const campaign = (backup && backup.campaign) || null;
@@ -137,8 +140,10 @@ async function deliverKit(transaction) {
       console.error('webhook: trava de entrega falhou (entregando mesmo assim)', err);
     }
     if (podeEntregar) {
-      const tierWh = tierFromValueCents(valorCents);
-      const temDevolutivaWh = pedidoTemDevolutiva(valorCents);
+      const tierWh = tierDoPedido;
+      const temDevolutivaWh = backup && Array.isArray(backup.bumps)
+        ? backup.bumps.includes('devolutiva')
+        : pedidoTemDevolutiva(valorCents);
       entregaUrl = await createDownloadLink(
         paymentId, backup.email, backup.name, tierWh.id,
         temDevolutivaWh ? { devolutiva: true } : undefined);

@@ -44,7 +44,7 @@ function marcaDoPedido(tierId) {
   };
 }
 
-const { tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
+const { TIERS, tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { detectPlatform } = require('./_ua');
 
@@ -127,7 +127,16 @@ module.exports = async (req, res) => {
     // quebrando a soma do faturamento no /funil (concatenação em vez de soma).
     const valorCents = Number((tx && tx.value) || 0);
     const valor = (valorCents / 100).toFixed(2);
-    const tier = tierFromValueCents(valorCents);
+    // PLANO DO PEDIDO (21/09). Casar por valor parou de bastar: o plano de PDF
+    // profissional custa R$ 29,90, o mesmo do Completo das maes. O create-charge
+    // grava o tierId no backup do checkout, e ele manda aqui. O valor so decide
+    // quando o backup nao existe (venda antiga ou Redis fora do ar na hora).
+    let pedido = null;
+    try {
+      const rawPedido = await redis('GET', `checkout:${paymentId}`);
+      if (rawPedido) pedido = JSON.parse(rawPedido);
+    } catch (err) { console.error('deliver-kit: backup do checkout indisponivel', err); }
+    const tier = (pedido && pedido.tierId && TIERS[pedido.tierId]) || tierFromValueCents(valorCents);
     const tierName = tier.name;
     const clientIpAddress = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || null;
     // Mesma derivacao do presence.js, e no servidor de proposito: esta
@@ -169,7 +178,9 @@ module.exports = async (req, res) => {
 
     // Link exclusivo desta compra. Precisa existir antes do e-mail sair.
     // Bump das fichas de devolutiva: inferido pelo valor pago (ver _catalog).
-    const temDevolutiva = pedidoTemDevolutiva(valorCents);
+    const temDevolutiva = pedido && Array.isArray(pedido.bumps)
+      ? pedido.bumps.includes('devolutiva')
+      : pedidoTemDevolutiva(valorCents);
     const downloadUrl = await createDownloadLink(
       paymentId, email, name, tier.id, temDevolutiva ? { devolutiva: true } : undefined);
     const devolutivaUrl = temDevolutiva && downloadUrl

@@ -36,13 +36,13 @@ const TIERS = {
   //
   // Fica acima de qualquer preço de mãe de propósito: preço baixo em material
   // clínico soa amador, e o teto de CPA aqui é ~10x o do produto de R$ 10.
-  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 6700 },
+  profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 3700 }, // 21/09: sem cupom, preco direto
   // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
   // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
-  // 21/09: preco cheio 46,90 e o cupom leva a 32,90. NAO usar 4700 aqui: esse
-  // valor ja e o do plano completo COM cupom, e dois planos com o mesmo valor
-  // fazem a entrega (que casa por valor) mandar o produto errado.
-  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 4690 },
+  // 21/09: R$ 29,90. ATENCAO: e o MESMO valor do KPL Completo das maes. Por
+  // isso a entrega parou de adivinhar o produto pelo valor e passou a ler o
+  // tierId gravado no pedido (ver create-charge e deliver-kit).
+  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 2990 },
 };
 const DEFAULT_TIER = 'completo';
 
@@ -66,50 +66,21 @@ const BUMPS = {
 // verdadeira: 67 foi o preco praticado de 22/08 a 19/09.
 //
 // Quem aplica o desconto e o SERVIDOR: o front manda o codigo, nunca o valor.
-// O codigo do cupom E O MES (SETEMBRO30, OUTUBRO30...), calculado na hora nos
-// dois lados. Assim a promocao vira sazonal de verdade sem ninguem precisar
-// lembrar de trocar o nome todo dia 1, e um print antigo com o mes passado para
-// de valer sozinho.
-//
-// Sem acento de proposito (MARCO30, nao MARÇO30): cupom com cedilha e acento
-// quebra na hora de digitar e de comparar. Esta lista tem que ser IGUAL a do
-// profissional.html.
-const MESES = ['JANEIRO','FEVEREIRO','MARCO','ABRIL','MAIO','JUNHO','JULHO','AGOSTO','SETEMBRO','OUTUBRO','NOVEMBRO','DEZEMBRO'];
-const DESCONTO_MENSAL = { profissional: 2000, profissional_pdf: 1400 };
-
-// Mes de Sao Paulo, nao do servidor (que roda em UTC): perto da meia-noite os
-// dois discordam, e o codigo que a pessoa ve na tela tem que ser o mesmo que o
-// servidor aceita.
-function mesAtualSP(quando) {
-  const d = quando || new Date();
-  const m = new Intl.DateTimeFormat('en-US', { timeZone: 'America/Sao_Paulo', month: 'numeric' }).format(d);
-  return Number(m) - 1;
-}
-function cupomDoMes(indice) {
-  return MESES[((indice % 12) + 12) % 12] + '30';
-}
-// O mes ANTERIOR continua valendo. Motivo pratico: quem abriu a pagina 23h50 do
-// dia 30 e gera o Pix depois da meia-noite teria o cupom recusado e pagaria o
-// preco cheio sem entender por que.
-function cupomValido(codigo, tierId) {
-  const limpo = String(codigo || '').trim().toUpperCase();
-  const mes = mesAtualSP();
-  const aceitos = [cupomDoMes(mes), cupomDoMes(mes - 1)];
-  if (!aceitos.includes(limpo)) return null;
-  const desconto = DESCONTO_MENSAL[tierId];
-  return desconto ? { codigo: limpo, descontoCents: desconto } : null;
-}
-
 // VALORES DA /profissional. Com o cupom, o valor pago deixou de ser o preco
 // base do tier, entao casar "pelo mais proximo por baixo" passou a errar: R$ 47
 // (profissional com cupom) caia no profissional_pdf de R$ 32,90, e aquela conta
 // de bump (32,90 + 10 = 42,90) dava o Bloco de Evolução de graça pra quem nao
 // comprou. Por isso os valores da /profissional sao uma tabela explicita.
+// So entram valores que NAO colidem com os planos das maes. O plano de PDF
+// custa R$ 29,90, igual ao Completo das maes, entao ele NAO pode ser inferido
+// por valor: quem diz que aquela venda foi profissional e o tierId gravado no
+// pedido. Os valores historicos ficam pra reconhecer venda antiga.
 const BASES_PRO = [
-  { valor: 6700, tier: 'profissional' },      // completo, preco cheio
-  { valor: 4700, tier: 'profissional' },      // completo com o cupom SETEMBRO30
-  { valor: 4690, tier: 'profissional_pdf' },  // so PDF, preco cheio
-  { valor: 3290, tier: 'profissional_pdf' },  // so PDF com o cupom SETEMBRO30
+  { valor: 3700, tier: 'profissional' },      // completo, hoje
+  { valor: 6700, tier: 'profissional' },      // completo, ate 19/09
+  { valor: 4700, tier: 'profissional' },      // completo, 19 a 21/09
+  { valor: 4690, tier: 'profissional_pdf' },  // so PDF, por algumas horas em 21/09
+  { valor: 3290, tier: 'profissional_pdf' },  // so PDF com o cupom que existiu em 21/09
 ];
 const VALORES_PRO = new Map();
 for (const b of BASES_PRO) {
@@ -123,7 +94,7 @@ function pedidoTemDevolutiva(valueCents) {
 }
 
 // Recalcula o total confiável a partir do tier + ids de bump recebidos do front.
-function computeOrder(tierId, bumpIds = [], cupom) {
+function computeOrder(tierId, bumpIds = []) {
   const tier = TIERS[tierId] || TIERS[DEFAULT_TIER];
   const items = [{ id: tier.id, name: tier.name, priceCents: tier.priceCents }];
   const seen = new Set();
@@ -133,13 +104,8 @@ function computeOrder(tierId, bumpIds = [], cupom) {
       items.push({ id, name: BUMPS[id].name, priceCents: BUMPS[id].priceCents });
     }
   }
-  // Cupom entra como item NEGATIVO, pra soma continuar sendo uma soma so.
-  const desconto = cupomValido(cupom, tier.id);
-  if (desconto) {
-    items.push({ id: 'cupom', name: 'Cupom ' + desconto.codigo, priceCents: -desconto.descontoCents });
-  }
-  const totalCents = Math.max(0, items.reduce((s, i) => s + i.priceCents, 0));
-  return { items, totalCents, tierId: tier.id, tierName: tier.name, cupom: desconto ? desconto.codigo : null };
+  const totalCents = items.reduce((s, i) => s + i.priceCents, 0);
+  return { items, totalCents, tierId: tier.id, tierName: tier.name };
 }
 
 // Dado um valor em centavos, descobre qual plano foi (usado na entrega/aviso,
@@ -177,4 +143,4 @@ function tierFromValueCents(valueCents) {
   return sorted.find((t) => valueCents >= t.priceCents) || sorted[sorted.length - 1];
 }
 
-module.exports = { TIERS, BUMPS, DEFAULT_TIER, cupomDoMes, mesAtualSP, cupomValido, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
+module.exports = { TIERS, BUMPS, DEFAULT_TIER, computeOrder, tierFromValueCents, pedidoTemDevolutiva };
