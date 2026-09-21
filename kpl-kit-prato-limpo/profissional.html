@@ -1,1191 +1,748 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Kit Prato Limpo · Edição Profissional para nutricionistas</title>
-<meta name="description" content="O kit completo para nutricionista que atende seletividade infantil: 60 fichas para aplicar na sessão, 129 para a família levar pra casa, o aplicativo para a criança usar entre as consultas e licença de uso com seus pacientes." />
-
-<!-- SAIU DA RAIZ EM 27/08 e passou a morar em /profissional. A raiz voltou a
-     ser a página das mães (R$ 10,00 / R$ 29,90). Aqui não mudou nada além deste bloco e do
-     noindex: checkout, pixel e o funil de seções continuam idênticos, e
-     /profissional vende normalmente pra quem chegar.
-     Os criativos de nutricionista mostram kitpratolimpo.com.br no botão, então
-     o link do anúncio precisa apontar pra /profissional. -->
-<meta name="robots" content="noindex, nofollow" />
-
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Kit Prato Limpo · Edição Profissional" />
-<meta property="og:description" content="189 fichas, o aplicativo e licença de uso com seus pacientes. Para nutricionistas que atendem seletividade alimentar infantil." />
-<!-- 1200x630 (1.91:1). O gerador entrega 3:2, então a arte foi encaixada
-     inteira sobre o creme da marca em vez de cortada: crop central comeria
-     21% da altura, e a linha de baixo do texto ia junto. -->
-<meta property="og:image" content="https://kitpratolimpo.com.br/assets/og-profissional.png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
-<meta property="og:url" content="https://kitpratolimpo.com.br/profissional" />
-<meta property="og:locale" content="pt_BR" />
-<meta property="og:site_name" content="Kit Prato Limpo" />
-<meta name="twitter:card" content="summary_large_image" />
-
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Descubra por qual etapa começar com a sua paciente seletiva | Kit Prato Limpo Profissional</title>
+<meta name="description" content="7 perguntas rápidas para nutricionista que atende seletividade alimentar infantil. No fim, a etapa do protocolo por onde começar e as fichas que ela usa." />
+<meta name="robots" content="noindex" />
 <link rel="icon" href="assets/favicon.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
 <style>
-  :root{
-    --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
-    --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
-    --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A; --coral-soft:#FBE0D5;
-    --ink:#1E2721; --text:#3A443D; --muted:#69736B; --card:#FFFFFF; --border:#E3DCCB;
-    --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
-    --radius:20px; --radius-sm:14px;
-    --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
-    --body:"Nunito",system-ui,"Segoe UI",Roboto,sans-serif;
+  /* Mesmos tokens do index.html: o quiz precisa parecer a mesma marca, senão a
+     pessoa estranha ao ser levada pra página de vendas depois. */
+  :root {
+    --cream: #FBF8F1; --cream-2: #F4EFE3;
+    --mint: #E8F1DD; --mint-2: #DDEBCE;
+    --green: #5CA741; --green-hover: #4E9235; --green-dark: #3C7A2C;
+    --orange: #F2911F; --orange-soft: #FDEBCF;
+    --coral: #F0673A; --coral-soft: #FBE0D5;
+    --ink: #26302A; --text: #4B564E; --muted: #7C857D;
+    --card: #FFFFFF; --border: #E9E3D5;
+    --shadow: 0 10px 30px rgba(38,48,42,.08);
+    --shadow-sm: 0 4px 14px rgba(38,48,42,.06);
+    --radius: 20px; --radius-sm: 14px;
+    --heading: "Baloo 2", system-ui, "Segoe UI", Roboto, sans-serif;
+    --body: "Nunito", system-ui, "Segoe UI", Roboto, sans-serif;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  /* 21/09: a pagina inteira subiu de peso. Nunito 400 num fundo creme fica
-     lavado no celular, e o dono comparou com paginas de low ticket que usam
-     600 a 900 em tudo. Texto corrido vai a 600, titulo a 800. */
-  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;font-weight:600}
-  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
-  section{padding:38px 0}
-  /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
-     com display proprio (inline-block, flex) aparece mesmo escondido, que foi
-     o que fez a linha do Bloco de Evolução aparecer antes de ser escolhida. */
-  [hidden]{display:none !important}
-  h1,h2,h3{font-family:var(--heading);font-weight:800;color:var(--ink);line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
-  b,strong{font-weight:800}
-  p{margin-bottom:14px}
-  p:last-child{margin-bottom:0}
-  .hl{color:var(--orange);font-weight:800}
-  a{color:var(--green-dark)}
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--body); font-size: 17px; line-height: 1.6; color: var(--text);
+    background: linear-gradient(180deg, var(--mint) 0px, var(--cream-2) 140px, var(--cream) 320px);
+    min-height: 100vh; -webkit-font-smoothing: antialiased; overflow-x: hidden;
+  }
+  h1, h2, h3 { font-family: var(--heading); color: var(--ink); line-height: 1.15; font-weight: 800; }
 
-  /* Cabeçalho de seção centralizado, igual ao da /mae. Era isso que fazia a
-     página parecer documento: títulos pequenos e alinhados à esquerda. */
-  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.82rem;
-    letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
-    padding:6px 14px;border-radius:999px;margin-bottom:12px}
-  .section-head{text-align:center;margin-bottom:24px}
-  .section-title{font-size:1.85rem;text-align:center;margin-bottom:10px}
-  .section-sub{text-align:center;color:var(--text);max-width:30rem;margin:0 auto;font-size:1rem;font-weight:600}
+  .topbar {
+    position: sticky; top: 0; z-index: 20; height: 56px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(255,255,255,.85); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .topbar__kpl { font-family: var(--heading); font-weight: 800; font-size: 1.35rem; color: var(--green); letter-spacing: .04em; }
+  .topbar__full { font-family: var(--heading); font-weight: 700; font-size: .82rem; color: var(--muted); margin-left: 7px; }
 
-  /* ---------- hero ---------- */
-  .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
-  /* O mockup ja traz margem branca dentro da propria imagem, entao o padding
-     cheio das duas secoes somava um vazio grande entre as dobras. */
-  .hero + section{padding-top:20px}
-  .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
-    font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
-  .hero__brand{display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px}
-  .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
-    letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
-  .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
-  .hero__h1{font-size:1.9rem;line-height:1.1;margin-bottom:12px}
-  .hero__sub{font-size:1.02rem;color:var(--text);font-weight:600;margin-bottom:16px}
-  .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
-    border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
-  .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
-  .hero__promise p{font-size:.94rem;margin:0}
-  .btn-note{text-align:center;font-size:.92rem;font-weight:700;color:var(--muted);margin:12px auto 0;max-width:22rem}
-  .hero__reinforce{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.95rem;
-    font-weight:700;color:var(--green-dark);margin:18px 0 6px}
-  /* height:auto é OBRIGATÓRIO em toda imagem com os atributos width/height no
-     HTML: sem ele o `height` vira altura fixa em px, `aspect-ratio` não tem
-     efeito (só age quando uma dimensão é auto) e a imagem estica na vertical.
-     Foi o que deformou as fichas, o mockup e o vídeo. */
-  .hero__mockup{width:100%;height:auto;display:block;margin-top:10px;
-    animation:pulso-mockup 3.2s ease-in-out infinite;transform-origin:center 60%;will-change:transform}
-  /* Respiro lento no mockup do topo: da movimento sem virar enfeite piscando.
-     4% de escala e o suficiente pra prender o olho no primeiro segundo. */
-  @keyframes pulso-mockup{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
-  /* Quem pediu menos animacao no sistema nao ve nada se mexer. */
-  @media (prefers-reduced-motion:reduce){ .hero__mockup{animation:none} }
+  main { max-width: 480px; margin: 0 auto; padding: 18px 18px 48px; }
 
-  /* ---------- cartões de dor ---------- */
-  .dor-list{display:flex;flex-direction:column;gap:10px}
-  .dor{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);
-    border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm)}
-  .dor__ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
-  .dor p{font-size:.96rem;margin:0}
-  .dor strong{color:var(--ink)}
+  /* Barra de progresso: avanço acelerado no início (sensação de rapidez sem
+     mentir o total de passos). Mesma curva do quiz do NutriPlan. */
+  .prog { margin-bottom: 14px; }
+  .prog__top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 7px; min-height: 24px; }
+  .prog__back {
+    display: none; align-items: center; gap: 5px; background: none; border: none; cursor: pointer;
+    font-family: var(--body); font-size: .8rem; font-weight: 700; color: var(--muted); padding: 4px 2px;
+  }
+  .prog__back.show { display: inline-flex; }
+  .prog__back:hover { color: var(--green-dark); }
+  .prog__pct {
+    font-family: var(--heading); font-weight: 800; font-size: .78rem; color: var(--green-dark);
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: 999px; padding: 2px 10px;
+  }
+  .prog__rail { height: 8px; width: 100%; background: var(--mint-2); border-radius: 999px; overflow: hidden; }
+  .prog__fill { height: 100%; width: 0; background: var(--green); border-radius: 999px; transition: width .7s cubic-bezier(.22,.9,.3,1); }
 
-  /* ---------- os 3 pilares ---------- */
-  .pilares{display:grid;grid-template-columns:1fr;gap:12px}
-  @media(min-width:620px){.pilares{grid-template-columns:repeat(3,1fr);gap:14px}}
-  .pilar{background:var(--card);border:1px solid var(--border);border-top:5px solid var(--green);
-    border-radius:var(--radius-sm);padding:18px 16px;text-align:center;box-shadow:var(--shadow-sm)}
-  .pilar:nth-child(2){border-top-color:var(--orange)}
-  .pilar:nth-child(3){border-top-color:var(--coral)}
-  .pilar .ic{font-size:1.7rem;line-height:1}
-  .pilar .num{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1;color:var(--ink);margin:6px 0 2px}
-  .pilar .num--palavra{font-size:1.42rem}
-  .pilar .rot{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:.98rem;margin-bottom:6px}
-  .pilar p{font-size:.89rem;color:var(--muted);margin:0}
-  .tudo-junto{background:var(--green-dark);color:#fff;border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px}
-  .tudo-junto b{font-family:var(--heading);font-size:1.1rem;display:block;margin-bottom:6px}
-  .tudo-junto p{color:var(--mint-2);font-size:.92rem;margin:0}
+  .matchline {
+    text-align: center; font-family: var(--heading); font-weight: 800;
+    font-size: 1.32rem; line-height: 1.2; color: var(--green-dark); margin-bottom: 14px;
+  }
+  .matchline .hl { color: var(--orange); }
 
-  /* ---------- trilha das etapas ---------- */
-  /* Eram 12 itens com título e descrição: virava parede de texto e a pessoa
-     pulava a seção inteira. Agora são só as letras, e o que se lê é o começo
-     e o fim do caminho. */
-  .trilha{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;max-width:305px;margin:0 auto}
-  .trilha b{width:40px;height:40px;border-radius:50%;background:var(--mint);color:var(--green-dark);
-    font-family:var(--heading);font-weight:800;font-size:1.02rem;display:flex;align-items:center;justify-content:center}
-  /* tom escurece da esquerda pra direita: le como caminho que avanca */
-  .trilha b:nth-child(n+5){background:#BFE0B0}
-  .trilha b:nth-child(n+9){background:var(--green);color:#fff}
-  .trilha__pontas{display:flex;justify-content:space-between;gap:16px;max-width:430px;margin:16px auto 0;
-    font-size:.84rem;color:var(--muted);text-align:center}
-  .trilha__pontas span{flex:1}
-  .trilha__pontas b{display:block;color:var(--ink);font-family:var(--heading);font-size:.95rem}
-  /* ---------- ficha em destaque ---------- */
-  .ficha-destaque{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
-    padding:12px;box-shadow:var(--shadow-sm)}
-  .ficha-destaque img{width:100%;height:auto;display:block;border-radius:10px}
-  .anatomia{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
-  .anatomia li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
-  .anatomia .tag{flex:0 0 auto;font-family:var(--heading);font-weight:800;font-size:.66rem;letter-spacing:.05em;
-    text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-top:3px;background:var(--mint);color:var(--green-dark)}
-  .anatomia .tag.so{background:var(--orange-soft);color:#8a5410}
-  .anatomia b{color:var(--ink);font-weight:800}
-  .grade-fichas{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
-  .grade-fichas img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--border);background:var(--card)}
-  .legenda{text-align:center;color:var(--muted);font-size:.83rem;margin-top:10px}
-
-  /* ---------- app ---------- */
-  .app-bloco{display:grid;grid-template-columns:1fr;gap:18px;align-items:center}
-  @media(min-width:600px){.app-bloco{grid-template-columns:210px 1fr;gap:24px}}
-  /* height:auto pelo mesmo motivo do .hero__mockup: o atributo height="1280"
-     do <video> vira altura fixa e o vídeo renderiza 210x1280. O aspect-ratio
-     segue útil pra reservar o espaço antes do arquivo carregar. */
-  .app-bloco video{width:100%;max-width:210px;height:auto;aspect-ratio:9/16;background:var(--ink);object-fit:cover;
-    border-radius:var(--radius);box-shadow:var(--shadow);display:block;margin:0 auto}
-  .lista{list-style:none;display:flex;flex-direction:column;gap:10px}
-  .lista li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
-  .lista .ic{flex:0 0 auto;font-size:1.05rem;line-height:1.4}
-  .lista b{color:var(--ink);font-weight:800}
-  .personagens{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
-  .personagens img{width:58px;height:58px;border-radius:50%;border:2px solid var(--mint-2);background:var(--card);object-fit:cover}
-
-  /* ---------- licença ---------- */
-  .licenca{background:var(--mint);border:1px solid var(--mint-2);border-radius:var(--radius);padding:22px 20px}
-  .licenca .eyebrow{background:var(--green-dark);color:#fff}
-  .licenca .section-title{font-size:1.4rem}
-  .licenca ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px}
-  .licenca li{display:flex;gap:9px;align-items:flex-start;font-size:.93rem}
-  .licenca .tick{color:var(--green-dark);font-weight:800;flex:0 0 auto}
-  .licenca .no{color:var(--coral);font-weight:800;flex:0 0 auto}
-  .conta{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
-
-  /* ---------- preço e checkout ---------- */
-  .preco{background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:24px 18px;
-    text-align:center;box-shadow:var(--shadow)}
-  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.9rem;line-height:1;margin:4px 0 6px}
-  .preco .valor small{font-size:1.1rem}
-  .preco .comp{color:var(--muted);font-size:.88rem;margin:0}
-  .resumo{list-style:none;text-align:left;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
-  .resumo li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
-  .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
-
-  /* ---------- dois planos (19/09), mesmo desenho da /mae ---------- */
-  .planos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .plano{position:relative;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);
-    padding:20px 16px 16px;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
-  .plano input{position:absolute;opacity:0;pointer-events:none}
-  .plano:hover{border-color:var(--mint-2)}
-  .plano--premium{border-color:var(--orange)}
-  .plano:has(input:checked){border-color:var(--green);box-shadow:0 10px 26px rgba(92,167,65,.20)}
-  .plano:has(input:focus-visible){outline:3px solid var(--mint-2);outline-offset:2px}
-  .plano__badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--orange);
-    color:#fff;font-family:var(--heading);font-weight:800;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;
-    padding:4px 12px;border-radius:999px}
-  .plano__radio{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:#fff}
-  .plano:has(input:checked) .plano__radio{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 4px #fff}
-  .plano__name{font-family:var(--heading);font-weight:800;color:var(--ink);font-size:1.05rem;margin-bottom:2px;padding-right:26px}
-  .plano__tagline{font-size:.9rem;color:var(--muted);margin-bottom:12px;min-height:2.2em}
-  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:1.9rem;line-height:1}
-  .plano__price .cents{font-size:1rem}
-  .plano__list{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:7px}
-  .plano__list li{font-size:.92rem;color:var(--text);display:flex;align-items:flex-start;gap:6px;line-height:1.35}
-  .plano__list li .ic{flex:0 0 auto;margin-top:1px}
-  .plano__list li.off{color:var(--muted);opacity:.7;text-decoration:line-through;text-decoration-color:#D64545;text-decoration-thickness:1.5px}
-  .plano__list li.off .ic{text-decoration:none}
-  .plano__hl{background:linear-gradient(transparent 60%,var(--orange-soft) 60%);font-weight:700}
-  .plano__guarantee{margin-top:auto;padding-top:12px;font-size:.78rem;font-weight:700;color:var(--green-dark)}
-  .planos__titulo{text-align:center;font-family:var(--heading);font-weight:700;color:var(--ink);margin:0 0 14px}
-  .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
-  /* Respiro entre o CTA do meio da pagina e a secao seguinte: com o padding
-     cheio das duas secoes mais a margem do cabecalho, sobrava um vazio grande. */
-  #p_pecas{padding-bottom:22px}
-  #p_ficha{padding-top:24px}
-  /* 21/09: os dois planos ficam lado a lado tambem no celular. Empilhado, a
-     pessoa via um plano por vez e nao comparava, que e o ponto de ter dois. */
-  @media(max-width:560px){
-    .planos{gap:8px}
-    .plano{padding:16px 10px 12px;border-radius:14px}
-    .plano__name{font-size:.92rem;padding-right:20px}
-    .plano__tagline{font-size:.78rem;min-height:2.6em;margin-bottom:8px}
-    .plano__price{font-size:1.45rem}
-    .plano__price .cents{font-size:.8rem}
-    .plano__price-old{font-size:.76rem}
-    .plano__radio{width:18px;height:18px;top:12px;right:10px}
-    .plano__badge{font-size:.58rem;padding:3px 8px}
-    .plano__list li{font-size:.78rem;gap:4px;line-height:1.3}
-    .plano__guarantee{font-size:.7rem}
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: var(--shadow-sm); padding: 20px 18px;
   }
 
-  .field{margin-bottom:14px}
-  .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
-  .field input{width:100%;padding:13px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
-    background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);outline:none}
-  .field input:focus{border-color:var(--green)}
-  .field .err{display:none;color:#D64545;font-size:.8rem;margin-top:4px}
-  .field.invalid input{border-color:#D64545}
-  .field.invalid .err{display:block}
+  /* Bloco de confirmação: devolve a resposta anterior antes da próxima pergunta,
+     pra virar uma narrativa contínua em vez de perguntas soltas. */
+  .confirm {
+    display: flex; gap: 9px; align-items: flex-start;
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: var(--radius-sm);
+    padding: 10px 12px; margin-bottom: 14px;
+  }
+  .confirm__tick {
+    flex: 0 0 auto; width: 18px; height: 18px; border-radius: 50%; background: var(--green);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: .68rem; font-weight: 800; margin-top: 2px;
+  }
+  .confirm p { font-size: .88rem; font-weight: 700; color: var(--green-dark); line-height: 1.35; }
 
-  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;padding:16px 22px;
-    font-family:var(--heading);font-weight:800;font-size:1.12rem;letter-spacing:.02em;text-transform:uppercase;
-    color:#fff;text-decoration:none;
-    background:linear-gradient(180deg,#6DC050,var(--green));border:none;border-radius:999px;cursor:pointer;
-    box-shadow:0 10px 0 -2px rgba(60,122,44,.35), 0 14px 26px rgba(38,48,42,.18);
-    transition:filter .15s, transform .1s, box-shadow .1s}
-  .btn:hover{filter:brightness(1.05)}
-  /* Afunda no toque: o botao "responde" e parece fisico, que e o que as paginas
-     de low ticket usam pra dar sensacao de clique. */
-  .btn:active{transform:translateY(3px);box-shadow:0 6px 0 -2px rgba(60,122,44,.35), 0 8px 16px rgba(38,48,42,.16)}
-  .btn:disabled{opacity:.65;cursor:default;transform:none}
+  .q__title { font-size: 1.18rem; margin-bottom: 6px; }
+  .q__sub { font-size: .92rem; color: var(--muted); margin-bottom: 16px; }
 
-  .aviso{display:none;background:#FDECEC;border:2px solid #F3B4B4;color:#8a2b2b;border-radius:var(--radius-sm);
-    padding:12px 14px;font-size:.9rem;margin-bottom:14px}
-  .aviso.show{display:block}
-  .pix{display:none;background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:22px 18px;text-align:center}
-  .pix.show{display:block}
-  .pix h3{font-size:1.05rem;margin-bottom:4px}
-  .pix-qr img{width:100%;max-width:260px;border-radius:12px}
-  .pix-copy{display:flex;gap:8px;margin:12px 0}
-  .pix-code{flex:1;min-width:0;padding:12px;font-size:.82rem;color:var(--ink);background:var(--cream);
-    border:2px solid var(--border);border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
-  /* width:auto obrigatorio: .btn tem width:100% e com flex-basis auto o botao
-     esmagaria o campo do codigo (mesmo bug ja corrigido na /mae e no /upgrade) */
-  .pix-copy .btn{flex:0 0 auto;width:auto;min-height:48px;padding:0 18px;font-size:1rem}
-  .status{display:inline-flex;align-items:center;gap:8px;color:var(--green-dark);font-weight:700;margin-top:8px}
-  .spin{width:15px;height:15px;border:2px solid var(--mint-2);border-top-color:var(--green);border-radius:50%;animation:g .8s linear infinite}
-  @keyframes g{to{transform:rotate(360deg)}}
-  .ok{display:none;background:var(--mint);border:2px solid var(--green);border-radius:var(--radius);padding:24px 18px;text-align:center}
-  .ok.show{display:block}
-  .ok h2{font-size:1.3rem;margin-bottom:10px}
+  .opts { display: flex; flex-direction: column; gap: 10px; }
+  .opt {
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: 14px; cursor: pointer; font-family: var(--body);
+    box-shadow: 0 1px 3px rgba(0,0,0,.06);
+    transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .1s ease;
+  }
+  .opt:hover { border-color: var(--green); background: #FAFCF8; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+  .opt:active { transform: scale(.99); }
+  .opt.on { border-color: var(--green); background: #F3F9EE; box-shadow: 0 0 0 1px var(--green); }
+  .opt__ic { flex: 0 0 auto; font-size: 1.35rem; line-height: 1; }
+  .opt__body { flex: 1 1 auto; min-width: 0; }
+  .opt__label { display: block; font-size: .96rem; font-weight: 700; color: var(--ink); line-height: 1.25; }
+  .opt.on .opt__label { color: var(--green-dark); }
+  /* display:block pra descricao cair SEMPRE na linha de baixo: em span
+     inline ela emendava no rotulo quando o texto era curto. */
+  .opt__desc { display: block; font-size: .84rem; color: var(--muted); margin-top: 3px; line-height: 1.3; }
+  .opt__check {
+    flex: 0 0 auto; width: 21px; height: 21px; border-radius: 50%;
+    border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center;
+    transition: all .18s ease;
+  }
+  .opt.on .opt__check { background: var(--green); border-color: var(--green); }
+  .opt__check svg { opacity: 0; transition: opacity .18s ease; }
+  .opt.on .opt__check svg { opacity: 1; }
 
-  /* Garantia, tarja e rodape do checkout: mesmo desenho da pagina das maes,
-     pra quem chega pelas duas nao sentir que sao sites diferentes. */
-  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-  .garantia-box{background:var(--card);border:2px solid var(--green);border-radius:var(--radius);
-    padding:28px 22px;text-align:center;box-shadow:var(--shadow);position:relative}
-  .garantia-box .seal{font-size:2.6rem;margin-bottom:8px}
-  .garantia-box h2{font-size:1.5rem;margin-bottom:10px}
-  .garantia-box p{color:var(--text)}
-  .garantia-box .support{margin-top:14px;font-weight:700;color:var(--green-dark);font-size:.95rem}
+  .btn {
+    display: flex; align-items: center; justify-content: center; gap: 9px;
+    width: 100%; min-height: 54px; padding: 14px 20px; margin-top: 16px;
+    font-family: var(--heading); font-weight: 800; font-size: 1.05rem; color: #fff;
+    background: linear-gradient(180deg, #67B84C, var(--green)); border: none; border-radius: 999px;
+    cursor: pointer; box-shadow: 0 8px 20px rgba(92,167,65,.35); text-decoration: none;
+    transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  }
+  .btn:hover { filter: brightness(1.04); transform: translateY(-1px); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; transform: none; filter: none; }
+  .btn--ghost {
+    background: none; color: var(--muted); box-shadow: none; min-height: 0;
+    font-family: var(--body); font-size: .86rem; font-weight: 700; text-decoration: underline; padding: 10px;
+  }
+  .btn--ghost:hover { color: var(--ink); transform: none; filter: none; }
 
-  /* Painel do bump: aparece depois do formulario preenchido. */
-  .bump-step{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;
-    background:rgba(38,48,42,.55);padding:18px}
-  .bump-step.show{display:flex}
-  .bump-step__card{background:var(--card);border-radius:var(--radius);padding:24px 20px;
-    max-width:440px;width:100%;box-shadow:0 20px 60px rgba(38,48,42,.3);max-height:92vh;overflow-y:auto}
-  .bump-step__eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
-    color:var(--green-dark);text-align:center;margin-bottom:6px}
-  .bump-step__card h3{font-size:1.3rem;text-align:center;margin-bottom:8px}
-  .bump-step__sub{font-size:.92rem;color:var(--text);text-align:center;margin-bottom:16px}
-  .bump-step__foto{width:100%;height:auto;display:block;border-radius:var(--radius-sm);
-    margin:0 0 16px;box-shadow:var(--shadow-sm)}
-  .bump-step__lista{list-style:none;margin:0 0 18px;display:flex;flex-direction:column;gap:9px}
-  .bump-step__lista li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--text)}
-  .bump-step__lista .tick{color:var(--green);font-weight:800;flex:0 0 auto}
-  .bump-step__recusa{display:block;width:100%;background:none;border:none;margin-top:12px;
-    color:var(--muted);font-size:.86rem;font-family:var(--body);text-decoration:underline;cursor:pointer}
-  .bump-step__recusa:hover{color:var(--text)}
+  /* Tela de análise */
+  .analyzing { text-align: center; padding: 34px 18px; }
+  .analyzing__ring {
+    width: 62px; height: 62px; margin: 0 auto 18px; border-radius: 50%;
+    border: 5px solid var(--mint-2); border-top-color: var(--green); animation: spin 1s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .analyzing h2 { font-size: 1.22rem; margin-bottom: 16px; }
+  .analyzing__list { list-style: none; display: flex; flex-direction: column; gap: 9px; text-align: left; max-width: 19rem; margin: 0 auto; }
+  .analyzing__list li {
+    display: flex; align-items: center; gap: 9px; font-size: .92rem; font-weight: 600;
+    color: var(--muted); opacity: .35; transition: opacity .4s ease, color .4s ease;
+  }
+  .analyzing__list li.on { opacity: 1; color: var(--green-dark); }
+  .analyzing__list li .tick {
+    flex: 0 0 auto; width: 19px; height: 19px; border-radius: 50%; background: var(--mint-2);
+    color: #fff; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 800;
+    transition: background .4s ease;
+  }
+  .analyzing__list li.on .tick { background: var(--green); }
 
-  .bumps{margin:8px 0 18px}
-  .bumps-title{font-family:var(--heading);font-weight:700;font-size:.95rem;color:var(--ink);
-    margin-bottom:10px;display:flex;align-items:center;gap:8px}
-  .bump{display:block;position:relative;cursor:pointer;border:2px solid var(--border);
-    border-radius:var(--radius-sm);padding:14px 14px 14px 46px;margin-bottom:10px;
-    background:var(--cream);transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
-  .bump:hover{border-color:var(--mint-2)}
-  .bump.checked{border-color:var(--green);background:#fff;box-shadow:0 6px 16px rgba(92,167,65,.15)}
-  .bump input{position:absolute;left:14px;top:16px;width:22px;height:22px;accent-color:var(--green);cursor:pointer}
-  .bump__name{font-family:var(--heading);font-weight:700;color:var(--ink);font-size:1rem;
-    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
-  .bump__tag{background:var(--orange-soft);color:#a4610a;font-size:.68rem;font-weight:800;
-    padding:2px 8px;border-radius:999px;text-transform:uppercase}
-  .bump__desc{font-size:.93rem;color:var(--text);margin:3px 0 6px}
-  .bump__price{font-weight:800;color:var(--green-dark);font-size:.95rem}
+  /* Resultado */
+  .res__eyebrow {
+    display: inline-block; font-family: var(--heading); font-weight: 700; font-size: .74rem;
+    letter-spacing: .06em; text-transform: uppercase; color: var(--green-dark);
+    background: var(--mint); padding: 5px 12px; border-radius: 999px; margin-bottom: 12px;
+  }
+  .res h2 { font-size: 1.42rem; line-height: 1.18; margin-bottom: 10px; }
+  .res h2 .hl { color: var(--orange); }
+  .res__lead { font-size: .96rem; color: var(--text); margin-bottom: 18px; }
+  .res__box {
+    background: var(--mint); border: 1px solid var(--mint-2); border-radius: var(--radius-sm);
+    padding: 15px; margin-bottom: 12px;
+  }
+  .res__box__k { font-family: var(--heading); font-weight: 800; font-size: .72rem; letter-spacing: .05em; text-transform: uppercase; color: var(--green-dark); margin-bottom: 5px; }
+  .res__box__v { font-family: var(--heading); font-weight: 800; font-size: 1.16rem; color: var(--ink); line-height: 1.2; }
+  .res__box__d { font-size: .89rem; color: var(--text); margin-top: 5px; line-height: 1.4; }
+  .res__stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+  .res__stat { background: #fff; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 13px; text-align: center; }
+  .res__stat .n { font-family: var(--heading); font-weight: 800; font-size: 1.55rem; color: var(--green-dark); line-height: 1; }
+  .res__stat .l { font-size: .78rem; color: var(--muted); margin-top: 3px; line-height: 1.25; }
+  .res__note { font-size: .84rem; color: var(--muted); text-align: center; margin-top: 12px; line-height: 1.45; }
 
-  .today-banner{background:var(--ink);color:#fff;border-radius:var(--radius-sm);
-    padding:12px 16px;text-align:center;font-size:.9rem;margin-bottom:18px;line-height:1.4}
-  .today-banner strong{color:var(--orange)}
-  .today-banner .codigo{display:inline-block;background:var(--orange);color:#fff;font-weight:800;letter-spacing:.06em;
-    padding:2px 8px;border-radius:6px;margin:0 2px}
+  /* Modal de saída (só na 1ª pergunta, maior ponto de abandono) */
+  .modal { position: fixed; inset: 0; z-index: 60; display: none; align-items: center; justify-content: center; background: rgba(0,0,0,.5); padding: 18px; }
+  .modal.show { display: flex; }
+  .modal__box { background: #fff; border-radius: var(--radius); padding: 24px 20px; max-width: 21rem; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,.3); }
+  .modal__ic { width: 46px; height: 46px; border-radius: 50%; background: var(--coral-soft); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin: 0 auto 12px; }
+  .modal__box h3 { font-size: 1.15rem; margin-bottom: 8px; }
+  .modal__box p { font-size: .92rem; color: var(--muted); margin-bottom: 18px; line-height: 1.45; }
 
-  .pay-method{display:flex;gap:10px;margin:4px 0 20px}
-  .pay-opt{flex:1;border:2px solid var(--green);background:var(--mint);border-radius:12px;
-    padding:12px;text-align:center;font-weight:800;color:var(--green-dark);
-    font-family:var(--heading);display:flex;flex-direction:column;align-items:center;gap:4px}
-  .pay-opt small{font-weight:600;font-size:.72rem;color:var(--green-dark)}
-
-  .pay-steps{display:flex;flex-direction:column;gap:8px;margin:4px 0 18px}
-  .pay-step{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--text);
-    background:var(--cream-2);border-radius:10px;padding:9px 12px}
-  .pay-step__n{flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:var(--green);
-    color:#fff;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center}
-
-  /* .pedido-resumo e o .resumo do index renomeado: aqui .resumo ja e a lista
-     de entregaveis do bloco de preco. */
-  .pedido-resumo{background:var(--cream-2);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px}
-  .pedido-resumo .linha{display:flex;justify-content:space-between;font-size:.95rem;padding:4px 0;color:var(--text)}
-  /* display:flex vence o [hidden] do navegador: sem esta linha, o Bloco de
-     Evolução aparecia no resumo antes de ser escolhido. */
-  .pedido-resumo .linha[hidden]{display:none}
-  .pedido-resumo .linha.total{border-top:2px dashed var(--border);margin-top:8px;padding-top:12px;
-    font-family:var(--heading);font-weight:800;font-size:1.25rem;color:var(--ink)}
-
-  /* Selo do Pix: e a bandeira do meio de pagamento real, nao um selo de
-     certificacao de terceiro. */
-  .pix-trust{display:flex;align-items:center;gap:10px;background:#E6F8F6;
-    border:1px solid #B7EAE5;border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px}
-  .pix-trust__icon{flex:0 0 34px;width:34px;height:34px;border-radius:50%;
-    background:#32BCAD;display:flex;align-items:center;justify-content:center}
-  .pix-trust__text{font-size:.8rem;color:#1F6E66;line-height:1.4}
-  .pix-trust__text b{color:#17504A;font-family:var(--heading)}
-
-  .secure-badges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;
-    color:var(--muted);font-size:.82rem;font-weight:700}
-  .secure-badges span{display:inline-flex;align-items:center;gap:5px}
-  .pay-note{text-align:center;color:var(--muted);font-size:.78rem;margin:10px auto 0;max-width:32rem;line-height:1.5}
-
-  .garantia{display:flex;gap:11px;align-items:flex-start;background:var(--orange-soft);border:1px solid #F6D9A8;
-    border-radius:var(--radius-sm);padding:14px 16px;font-size:.92rem;margin-top:16px}
-  .garantia .ic{flex:0 0 auto;font-size:1.3rem;line-height:1.3}
-
-  /* ---------- faq ---------- */
-  .faq details{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
-    padding:14px 16px;margin-bottom:9px;box-shadow:var(--shadow-sm)}
-  .faq summary{font-family:var(--heading);font-weight:700;color:var(--ink);cursor:pointer;font-size:.97rem;list-style:none}
-  .faq summary::-webkit-details-marker{display:none}
-  .faq summary::after{content:"+";float:right;color:var(--green);font-weight:800;margin-left:10px}
-  .faq details[open] summary::after{content:"−"}
-  .faq p{font-size:.92rem;margin:10px 0 0}
-
-  .rodape{text-align:center;color:var(--muted);font-size:.8rem;padding:26px 0 40px}
-
-  /* Mesma quebra da /mae: o tipo cresce junto com a tela, senão o desktop fica
-     com cara de página de celular esticada. */
-  @media(min-width:640px){ .trilha{max-width:none}
-    .hero__kpl{font-size:1.24rem}
-    .hero__full{font-size:1.1rem}
-    .hero__h1{font-size:2.3rem}
-    .hero__sub{font-size:1.08rem}
-    .section-title{font-size:2rem}
-    section{padding:46px 0}
+  .fade { animation: fade .32s ease both; }
+  @keyframes fade { from { opacity: 0; transform: translateY(9px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) {
+    .fade, .analyzing__ring { animation: none; }
+    .prog__fill { transition: none; }
   }
 </style>
 </head>
 <body>
 
-<!-- ======================= HERO ======================= -->
-<header class="hero" id="p_topo">
-  <div class="wrap">
-    <h1 class="hero__h1">189 atividades prontas <span class="hl">pra quem trabalha com alimentação infantil</span></h1>
-    <p class="hero__sub">60 fichas para aplicar no atendimento, 129 para a família levar pra casa e o aplicativo para a criança usar entre um encontro e outro.</p>
-
-    <div class="hero__promise">
-      <span class="ic">🍽️</span>
-      <p>A ficha de avaliação você aplica já no próximo atendimento, com alimento de verdade na mesa.</p>
-    </div>
-
-    <div class="hero__reinforce">
-      <span>🍎 Aplique na sessão</span>
-      <span>🏠 Entregue pra família</span>
-      <span>📱 Sem impressora</span>
-    </div>
-
-    <picture>
-      <source srcset="assets/mockup-pro-transp.webp" type="image/webp" />
-      <img class="hero__mockup" src="assets/mockup-pro.jpg" width="1536" height="1024" fetchpriority="high"
-           alt="Seis fichas do kit espalhadas e o aplicativo aberto num celular, na turma de amigos" />
-    </picture>
-  </div>
+<header class="topbar">
+  <span class="topbar__kpl">KPL</span><span class="topbar__full">Kit Prato Limpo</span>
 </header>
 
-<!-- ======================= A DOR ======================= -->
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Talvez você reconheça</span>
-      <h2 class="section-title">Sua orientação morre <span class="hl">no caminho de casa</span></h2>
-      <p class="section-sub">A mãe sai da consulta convencida. Na terça já esqueceu metade, e volta em 30 dias sem nada aplicado.</p>
+<main>
+  <div class="prog" id="prog">
+    <div class="prog__top">
+      <button type="button" class="prog__back" id="back-btn">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none"><path d="M11 7H3M3 7L6.5 3.5M3 7L6.5 10.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Anterior
+      </button>
+      <span class="prog__pct" id="prog-pct">0%</span>
     </div>
-
-    <div class="dor-list">
-      <div class="dor"><span class="dor__ic">⏰</span><p>Você monta atividade <strong>do zero, paciente por paciente</strong>. Meia hora de preparo que não entra na sua agenda nem na sua nota fiscal.</p></div>
-      <div class="dor"><span class="dor__ic">😮‍💨</span><p>Não existe <strong>nada tangível pra entregar</strong> no fim da sessão. O pediatra entrega receita. Você entrega uma lista e a esperança de que a mãe lembre.</p></div>
-      <div class="dor"><span class="dor__ic">😟</span><p>Sem tarefa entre consultas, <strong>o retorno esfria</strong>. Seletividade é acompanhamento longo, e a família some no meio do processo.</p></div>
-      <div class="dor"><span class="dor__ic">🤷‍♀️</span><p>A mãe volta dizendo que <strong>não deu certo</strong>, e você não tem como saber o que ela fez de fato em casa.</p></div>
-    </div>
+    <div class="prog__rail"><div class="prog__fill" id="prog-fill"></div></div>
   </div>
-</section>
 
-<!-- ======================= OS 3 PILARES ======================= -->
-<section id="p_pecas" style="background:var(--cream-2)">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">O que você recebe</span>
-      <h2 class="section-title">Três peças que <span class="hl">trabalham juntas</span></h2>
-      <p class="section-sub">Uma para a sessão, uma para a casa, e uma para os dias entre uma consulta e outra.</p>
-    </div>
+  <p class="matchline" id="matchline">
+    Descubra em <span class="hl">2 minutos</span> por qual etapa começar no seu atendimento
+  </p>
 
-    <div class="pilares">
-      <div class="pilar">
-        <div class="ic">🍎</div>
-        <div class="num">60</div>
-        <div class="rot">Fichas de consultório</div>
-        <p>Para aplicar na sessão, com alimento de verdade. Em 12 etapas, do mapeamento até a alta.</p>
-      </div>
-      <div class="pilar">
-        <div class="ic">🏠</div>
-        <div class="num">129</div>
-        <div class="rot">Fichas para casa</div>
-        <p>Em 11 blocos. Você imprime e entrega conforme a etapa da criança, sem preparar nada.</p>
-      </div>
-      <div class="pilar">
-        <div class="ic">📱</div>
-        <div class="num num--palavra">O aplicativo</div>
-        <div class="rot">no celular da família</div>
-        <p>A criança pinta na tela com o dedo e destrava um personagem a cada alimento que prova.</p>
-      </div>
-    </div>
+  <div id="stage"></div>
+</main>
 
-    <div class="tudo-junto">
-      <b>Não é um dos três. São os três juntos.</b>
-      <p>O kit completo, do jeito que a família recebe, mais o protocolo de sessão que só existe nesta edição.</p>
-    </div>
-
-    <!-- CTA saiu do topo (20/09): aqui ela ja viu as tres pecas, entao o
-         botao chega depois do argumento, nao antes dele. -->
-    <div style="text-align:center;margin-top:22px">
-      <a href="#checkout" class="btn">Quero as 189 atividades →</a>
-      <p class="btn-note">Pagamento único · sem mensalidade</p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= POR DENTRO DA FICHA ======================= -->
-<section id="p_ficha" style="background:var(--cream-2)">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Por dentro</span>
-      <h2 class="section-title">Uma ficha inteira cabe <span class="hl">em uma página</span></h2>
-      <p class="section-sub">Você bate o olho e já sabe o que fazer. Sem estudar nada antes.</p>
-    </div>
-
-    <div class="ficha-destaque">
-      <img src="assets/fichas-consultorio-web/C16.webp" alt="Ficha Quebra-cabeça de fruta, da etapa de toque" loading="lazy" />
-    </div>
-
-    <ul class="anatomia">
-      <li><span class="tag">1 e 2</span><span><b>Por que funciona</b> e <b>material</b>: o racional em duas linhas e a lista do que separar antes.</span></li>
-      <li><span class="tag">3</span><span><b>Como fazer</b>: passo a passo numerado, sem preparo prévio.</span></li>
-      <li><span class="tag so">4</span><span><b>O que observar</b>: o que olhar enquanto a criança brinca. É leitura clínica, vai direto pro prontuário.</span></li>
-      <li><span class="tag so">5</span><span><b>O que dizer e o que evitar</b>: a fala pronta, e a frase que costuma estragar a sessão.</span></li>
-      <li><span class="tag so">6</span><span><b>Leva para casa</b>: a tarefa da família até a próxima consulta.</span></li>
-    </ul>
-
-    <div class="grade-fichas">
-      <img src="assets/fichas-consultorio-web/C01.webp" alt="Ficha O mapa do prato, da etapa de avaliação" loading="lazy" />
-      <img src="assets/fichas-consultorio-web/C11.webp" alt="Ficha Carimbo de pimentão, da etapa de toque" loading="lazy" />
-      <img src="assets/fichas-consultorio-web/C24.webp" alt="Ficha A lambida secreta, da etapa de aproximação da boca" loading="lazy" />
-    </div>
-    <p class="legenda">Três das 60 fichas de consultório.</p>
-  </div>
-</section>
-
-<!-- ======================= O APP ======================= -->
-<section id="p_app">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Entre as consultas</span>
-      <h2 class="section-title">O aplicativo trabalha <span class="hl">quando você não está lá</span></h2>
-      <p class="section-sub">A criança já ia pedir o celular. Aqui ele passa a jogar a favor da comida em vez de contra.</p>
-    </div>
-
-    <div class="app-bloco">
-      <video class="app-video" data-src="assets/pintar-video.mp4" data-poster="assets/pintar-poster.webp"
-             width="720" height="1280" muted loop playsinline preload="none"
-             aria-label="Criança pinta uma laranja na tela do tablet e depois come uma laranja de verdade"></video>
-      <ul class="lista">
-        <li><span class="ic">🖐️</span><span><b>Pinta com o dedo, sem impressora.</b> A família que não tem impressora deixa de ser um problema seu.</span></li>
-        <li><span class="ic">🧩</span><span><b>Um personagem por alimento provado.</b> São 20 para colecionar, e é a criança que decide quando provar.</span></li>
-        <li><span class="ic">🎲</span><span><b>Roleta de missões.</b> A tarefa do dia sai sorteada, então não vira mais uma cobrança da mãe.</span></li>
-        <li><span class="ic">💾</span><span><b>O progresso fica salvo.</b> Dá pra retomar na consulta seguinte e ver o que andou.</span></li>
-      </ul>
-    </div>
-
-    <div class="personagens">
-      <img src="assets/colorir-thumb/marina-maca.webp" alt="Personagem Marina, a maçã" loading="lazy" />
-      <img src="assets/colorir-thumb/bia-brocolis.webp" alt="Personagem Bia, o brócolis" loading="lazy" />
-      <img src="assets/colorir-thumb/cadu-cenoura.webp" alt="Personagem Cadu, a cenoura" loading="lazy" />
-      <img src="assets/colorir-thumb/bruno-banana.webp" alt="Personagem Bruno, a banana" loading="lazy" />
-      <img src="assets/colorir-thumb/manu-morango.webp" alt="Personagem Manu, o morango" loading="lazy" />
-    </div>
-    <p class="legenda">5 dos 20 amigos do prato.</p>
-  </div>
-</section>
-
-<!-- ======================= LICENÇA ======================= -->
-<section id="p_licenca" style="background:var(--cream-2)">
-  <div class="wrap">
-    <div class="licenca">
-      <div style="text-align:center"><span class="eyebrow">Licença de uso</span></div>
-      <h2 class="section-title">Pode usar com <span class="hl">seus pacientes</span></h2>
-      <p class="section-sub">Está escrito dentro do material, na terceira página.</p>
-      <ul>
-        <li><span class="tick">✓</span><span>Imprimir quantas cópias precisar</span></li>
-        <li><span class="tick">✓</span><span>Entregar as fichas impressas ao paciente</span></li>
-        <li><span class="tick">✓</span><span>Passar o link do aplicativo para a família instalar no celular</span></li>
-        <li><span class="tick">✓</span><span>Aplicar em atendimento individual ou em grupo</span></li>
-        <li><span class="tick">✓</span><span>Usar em oficinas e palestras que você conduzir</span></li>
-        <li><span class="tick">✓</span><span>Sem limite de pacientes e sem prazo de validade</span></li>
-        <li><span class="no">✕</span><span>Revender, compartilhar o arquivo ou publicar as fichas</span></li>
-      </ul>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= A CONTA ======================= -->
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Vale a pena?</span>
-      <h2 class="section-title">Quanto custa o <span class="hl">seu tempo de preparo</span></h2>
-    </div>
-    <div class="conta">
-      <p>Montar uma atividade do zero para um paciente leva entre 20 e 30 minutos. Você não fatura esse tempo.</p>
-      <p>No primeiro paciente o kit já se pagou. E ele não acaba: são 189 fichas e um aplicativo para atender quantas crianças aparecerem, por quantos anos você quiser.</p>
-      <p style="color:var(--muted);font-size:.9rem">Uma consulta paga o kit inteiro e ainda sobra.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= GARANTIA ======================= -->
-<section>
-  <div class="wrap">
-    <div class="garantia-box">
-      <div class="seal">🛡️</div>
-      <h2>7 dias de garantia incondicional</h2>
-      <p>Aplique com os seus pacientes sem risco. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
-      <p class="support">Suporte pelo e-mail <a href="mailto:kitpratolimpo@gmail.com" style="color:inherit">kitpratolimpo@gmail.com</a></p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= CHECKOUT ======================= -->
-<section id="checkout" data-pro-step="p_checkout" style="background:var(--cream-2)">
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Garanta o seu</span>
-      <h2 class="section-title">Finalize seu pedido</h2>
-    </div>
-
-    <div class="today-banner" id="today-banner">
-      ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
-    </div>
-
-    <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
-         _catalog: o servidor recalcula o valor por ele. -->
-    <p class="planos__titulo">Escolha o seu plano:</p>
-    <div class="planos" role="radiogroup" aria-label="Escolha o plano">
-      <label class="plano">
-        <input type="radio" name="plano" value="profissional_pdf" data-cents="2990" data-nome="KPL Edição Profissional (PDF)">
-        <span class="plano__radio" aria-hidden="true"></span>
-        <div class="plano__name">Fichas em PDF</div>
-        <div class="plano__tagline">Para imprimir e aplicar.</div>
-        <div class="plano__price">R$ 29<span class="cents">,90</span></div>
-        <ul class="plano__list">
-          <li><span class="ic">✅</span><span class="plano__hl">189 atividades prontas para consultório e casa</span></li>
-          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
-          <li class="off"><span class="ic">➖</span>Acesso pelo aplicativo</li>
-          <li class="off"><span class="ic">➖</span>Aba Consultório no tablet</li>
-          <li class="off"><span class="ic">➖</span>Jogo dos 20 personagens</li>
-          <li class="off"><span class="ic">➖</span>Calendário e cartelas</li>
-        </ul>
-        <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
-      </label>
-
-      <label class="plano plano--premium">
-        <span class="plano__badge">Kit completo</span>
-        <input type="radio" name="plano" value="profissional" data-cents="3700" data-nome="KPL Edição Profissional" checked>
-        <span class="plano__radio" aria-hidden="true"></span>
-        <div class="plano__name">PDF + Aplicativo</div>
-        <div class="plano__tagline">Tudo da Edição Profissional.</div>
-        <div class="plano__price">R$ 37<span class="cents">,00</span></div>
-        <ul class="plano__list">
-          <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
-          <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
-          <li><span class="ic">📱</span><span class="plano__hl">Acesso pelo aplicativo</span></li>
-          <li><span class="ic">🩺</span><span class="plano__hl">Aba Consultório, com as 60 fichas na tela do tablet</span></li>
-          <li><span class="ic">🎲</span><span class="plano__hl">Jogo dos 20 personagens para a criança entre as consultas</span></li>
-          <li><span class="ic">📅</span><span class="plano__hl">Calendário, cartelas e quadro de progresso</span></li>
-        </ul>
-        <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
-      </label>
-    </div>
-    <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
-
-
-    <h2 class="section-title" style="margin-top:26px;font-size:1.3rem">Seus dados</h2>
-    <div class="aviso" id="erro"></div>
-
-    <form id="form" novalidate>
-      <div class="field" id="f-nome">
-        <label for="nome">Nome completo</label>
-        <input type="text" id="nome" autocomplete="name" required />
-        <div class="err">Escreva seu nome e sobrenome.</div>
-      </div>
-      <div class="field" id="f-email">
-        <label for="email">E-mail (o acesso chega aqui)</label>
-        <input type="email" id="email" autocomplete="email" required />
-        <div class="err">Confira o e-mail digitado.</div>
-      </div>
-      <div class="field" id="f-tel">
-        <label for="telefone">WhatsApp</label>
-        <input type="tel" id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
-        <div class="err">Digite um número com DDD.</div>
-      </div>
-
-      <label class="sr-only">Forma de pagamento</label>
-      <div class="pay-method">
-        <div class="pay-opt" aria-current="true">
-          <span>⚡ Pix</span>
-          <small>Aprovação na hora</small>
-        </div>
-      </div>
-
-      <!-- Tira a ansiedade de quem nao conhece a pagina: diz o que acontece
-           DEPOIS do clique, ja que o pagamento nao sai do site. -->
-      <div class="pay-steps">
-        <div class="pay-step"><span class="pay-step__n">1</span>Você paga direto pelo Pix do seu próprio banco</div>
-        <div class="pay-step"><span class="pay-step__n">2</span>A confirmação é automática, na hora</div>
-        <div class="pay-step"><span class="pay-step__n">3</span>O acesso chega sozinho no seu e-mail</div>
-      </div>
-
-      <div class="pedido-resumo">
-        <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 37,00</span></div>
-        <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
-        <div class="linha total"><span>Total</span><span id="total-valor">R$ 37,00</span></div>
-      </div>
-
-      <div class="pix-trust">
-        <span class="pix-trust__icon" aria-hidden="true">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 3.5c1 0 1.96.4 2.67 1.1l2.6 2.6c.3.3.7.3 1 0l.9-.9a1 1 0 0 1 1.4 1.4l-.9.9a2.3 2.3 0 0 1-3.2 0l-2.6-2.6a2.3 2.3 0 0 0-3.2 0L8 8.6a2.3 2.3 0 0 1-3.2 0l-.9-.9a1 1 0 1 1 1.4-1.4l.9.9c.3.3.7.3 1 0l2.6-2.6A3.76 3.76 0 0 1 12 3.5Z" fill="#fff"/>
-            <path d="M12 20.5c-1 0-1.96-.4-2.67-1.1l-2.6-2.6c-.3-.3-.7-.3-1 0l-.9.9a1 1 0 0 1-1.4-1.4l.9-.9a2.3 2.3 0 0 1 3.2 0l2.6 2.6c.9.9 2.3.9 3.2 0l2.6-2.6a2.3 2.3 0 0 1 3.2 0l.9.9a1 1 0 1 1-1.4 1.4l-.9-.9c-.3-.3-.7-.3-1 0l-2.6 2.6a3.76 3.76 0 0 1-2.67 1.1Z" fill="#fff"/>
-          </svg>
-        </span>
-        <span class="pix-trust__text"><b>Pagamento via Pix</b><br>Sistema de pagamento instantâneo do Banco Central. Cai na hora, direto no seu banco.</span>
-      </div>
-
-      <button type="submit" class="btn" id="btn"><span id="btn-label">Pagar R$ 37,00 com Pix</span></button>
-
-      <div class="secure-badges">
-        <span>🔒 Site seguro (HTTPS)</span>
-        <span>🏦 Pago direto pelo seu banco via Pix</span>
-        <span>🛡️ Garantia de 7 dias</span>
-      </div>
-      <p class="pay-note">Nunca pedimos senha, número de cartão ou dados bancários. Você só escaneia o QR Code (ou copia o código) e confirma no aplicativo do seu próprio banco.</p>
-    </form>
-
-    <div class="pix" id="pix">
-      <h3>Escaneie o QR Code</h3>
-      <p class="section-sub">Ou copie o código abaixo no app do seu banco.</p>
-      <div class="pix-qr" id="qr"></div>
-      <div class="pix-copy">
-        <div class="pix-code" id="codigo">—</div>
-        <button type="button" class="btn" id="copiar">Copiar</button>
-      </div>
-      <div class="status"><span class="spin"></span> Aguardando o pagamento...</div>
-      <p class="section-sub" style="margin-top:12px">Assim que o Pix cair, o acesso é liberado nesta tela e enviado por e-mail.</p>
-    </div>
-
-    <div class="ok" id="ok">
-      <h2>Pagamento confirmado 🎉</h2>
-      <p>O acesso à Edição Profissional foi enviado para o seu e-mail. Se não aparecer em alguns minutos, confira o spam ou escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ======================= FAQ ======================= -->
-<section>
-  <div class="wrap">
-    <div class="section-head">
-      <span class="eyebrow">Dúvidas</span>
-      <h2 class="section-title">Antes de decidir</h2>
-    </div>
-    <div class="faq">
-      <details>
-        <summary>Posso mesmo entregar as fichas para os meus pacientes?</summary>
-        <p>Pode. É exatamente pra isso que existe a licença de uso profissional, e ela vem escrita dentro do material. Imprima quantas cópias precisar, entregue ao paciente, use em grupo e em oficina, sem limite e sem prazo. O que não pode é revender ou publicar as fichas.</p>
-      </details>
-      <details>
-        <summary>Como recebo, e quanto tempo demora?</summary>
-        <p>Logo depois do Pix confirmado, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
-      </details>
-      <details>
-        <summary>Preciso de impressora?</summary>
-        <p>Não. Tudo pode ser impresso, e tudo pode ser usado direto na tela do celular ou do tablet. As atividades de pintar funcionam com o dedo.</p>
-      </details>
-      <details>
-        <summary>Serve para criança com autismo?</summary>
-        <p>As atividades trabalham aproximação sensorial em ritmo respeitado, sem pressão para comer, que é uma abordagem comum no acompanhamento de crianças autistas com seletividade. Mas quem decide o que cabe em cada caso é você, dentro da sua conduta e do seu plano terapêutico.</p>
-      </details>
-      <details>
-        <summary>É assinatura?</summary>
-        <p>Não. É pagamento único, nos dois planos. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
-      </details>
-    </div>
-
-    <a class="btn" href="#checkout" style="margin-top:22px">Quero o kit completo →</a>
-  </div>
-</section>
-
-<!-- Etapa do order bump: so abre depois do formulario validado, pra nao pedir
-     decisao de quem ainda nao se comprometeu com a compra. -->
-<div class="bump-step" id="bump-step" role="dialog" aria-modal="true" aria-labelledby="bump-step-titulo">
-  <div class="bump-step__card">
-    <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
-    <h3 id="bump-step-titulo">Quer acompanhar a evolução entre as consultas?</h3>
-    <p class="bump-step__sub"><b>Bloco de Evolução</b>: capa e 4 folhas para imprimir, por mais R$ 10,00.</p>
-    <!-- Mostrar o material vale mais que descrever: sem foto, o painel falava de
-         4 folhas que a pessoa nunca tinha visto. -->
-    <picture>
-      <source srcset="assets/bloco-evolucao.webp" type="image/webp">
-      <img class="bump-step__foto" src="assets/bloco-evolucao.jpg" width="880" height="660"
-           loading="lazy" decoding="async"
-           alt="O Bloco de Evolução impresso e encadernado sobre uma mesa, aberto na folha Como foi em casa, com a folha Linha do tempo ao lado" />
-    </picture>
-    <ul class="bump-step__lista">
-      <li><span class="tick">✓</span><span>Como foi em casa <b>(a família preenche)</b></span></li>
-      <li><span class="tick">✓</span><span>Linha do tempo, semana a semana</span></li>
-      <li><span class="tick">✓</span><span>Resumo para a família</span></li>
-      <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
-    </ul>
-    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de <span id="bump-sim-valor">R$ 47,00</span></button>
-    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por <span id="bump-nao-valor">R$ 37,00</span></button>
+<div class="modal" id="exit-modal">
+  <div class="modal__box">
+    <div class="modal__ic">🤔</div>
+    <h3>Já vai embora?</h3>
+    <p>Faltam só 5 perguntas rápidas pra descobrir por onde começar com o seu filho. Leva menos de 2 minutos.</p>
+    <button type="button" class="btn" id="exit-stay">Continuar respondendo</button>
+    <button type="button" class="btn btn--ghost" id="exit-leave">Sair mesmo assim</button>
   </div>
 </div>
 
-<p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
-
 <script>
-const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
-const POLL_MS = 5000;
-const PIXEL_ID = '2794485957574762';
-// Plano escolhido nos radios do checkout. Precos em sincronia com api/_catalog.js.
-const plano = () => {
-  const r = document.querySelector('input[name="plano"]:checked');
-  return { tier: r.value, cents: Number(r.dataset.cents), nome: r.dataset.nome };
+/* =========================================================
+   CONFIG
+   ========================================================= */
+const CONFIG = {
+  META_PIXEL_ID: '2794485957574762',
+  API_CAPI: '/api/capi-event',
+  API_PRESENCE: '/api/presence',
+  PRESENCE_MS: 8000,
+  // 21/09: o quiz passou a ser a porta de entrada (/profissional, que e pra
+  // onde os anuncios ja apontam) e a pagina de vendas foi pra /kit-profissional.
+  // Mantido "profissional" na URL de venda de proposito: a conversao
+  // personalizada do Meta casa por "URL contem profissional".
+  // visitorId e adRef viajam por sessionStorage (mesma origem), entao a pessoa
+  // continua sendo o MESMO visitante no painel depois de sair do quiz.
+  VENDA_URL: '/kit-profissional',
 };
-const PRECO_CENTS = 3700; // plano de referencia pro ViewContent
-const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
-const $ = s => document.querySelector(s);
-
-// Tarja "Oferta valida ate": mostra a data de HOJE, entao a urgencia e real
-// (o preco de amanha e decisao do dono, nao promessa quebrada de contador).
-(function initTodayDate(){
-  const el = document.getElementById('today-date');
-  if (!el) return;
-  el.textContent = new Date().toLocaleDateString('pt-BR',
-    { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
-})();
 
 /* =========================================================
-   Presenca e funil da /profissional (20/09)
-   Mesma mecanica da pagina das maes, com trilha propria (PRO_STEPS em
-   api/_sections.js). Sem isso o painel so mostrava a VENDA profissional, e
-   nao dava pra saber quantas entraram, de qual anuncio vieram e onde pararam.
-   Anuncio, campanha e conjunto viajam empacotados num campo so ("~"), pra nao
-   gastar comandos a mais do Redis em cada batida.
+   PERGUNTAS (Edição Profissional)
+
+   Mesma regra do quiz das mães: nenhuma pergunta pede texto digitado, a mais
+   fácil vem primeiro e a que decide o resultado (pq4) fica no meio, quando a
+   pessoa já investiu alguns toques.
+
+   A URL é sempre /quiz-pro.html: reordenar ou acrescentar pergunta aqui NÃO
+   quebra o link do anúncio.
    ========================================================= */
-const PRESENCE_MS = 8000;
+const QUESTIONS = [
+  {
+    id: 'pq1',
+    title: 'Onde você atende hoje?',
+    sub: 'Pode escolher o lugar onde você passa a maior parte do tempo.',
+    opts: [
+      { v: 'consultorio', ic: '🩺', label: 'Consultório particular' },
+      { v: 'escola',      ic: '🏫', label: 'Escola, creche ou oficina em grupo' },
+      { v: 'publico',     ic: '🏥', label: 'Ambulatório, posto ou clínica' },
+      { v: 'domicilio',   ic: '🚗', label: 'Atendimento domiciliar ou online' },
+      { v: 'comecando',   ic: '🌱', label: 'Ainda estou começando a atender' },
+    ],
+    confirm: (v) => `Anotado. O material funciona igual em qualquer um desses lugares, e a licença cobre todos eles.`,
+  },
+  {
+    id: 'pq2',
+    title: 'Quantas crianças com seletividade você atende por mês?',
+    sub: 'Mesmo que seletividade não seja o motivo principal da consulta.',
+    opts: [
+      { v: 'nenhuma', ic: '🤔', label: 'Nenhuma ainda, mas quero atender' },
+      { v: 'poucas',  ic: '🙂', label: 'De 1 a 3' },
+      { v: 'media',   ic: '📈', label: 'De 4 a 10' },
+      { v: 'muitas',  ic: '🔥', label: 'Mais de 10' },
+    ],
+  },
+  {
+    id: 'pq3',
+    title: 'Que faixa de idade você mais atende?',
+    // Quem respondeu "nenhuma ainda" na pq2 nao tem "a maioria delas": a
+    // pergunta antiga soava desconectada logo depois daquela resposta.
+    sub: 'Se você ainda não atende, escolha a idade que pretende atender.',
+    opts: [
+      { v: '1-3',   ic: '🍼', label: '1 a 3 anos' },
+      { v: '4-6',   ic: '🧒', label: '4 a 6 anos' },
+      { v: '7-10',  ic: '🎒', label: '7 a 10 anos' },
+      { v: 'misto', ic: '🧩', label: 'Bem variado' },
+    ],
+  },
+  {
+    id: 'pq4',
+    title: 'O que mais te trava no atendimento de seletividade?',
+    sub: 'Escolha o que mais pesa na sua rotina hoje.',
+    opts: [
+      { v: 'preparo',   ic: '🕛', label: 'Montar atividade do zero pra cada paciente', desc: 'Tempo de preparo fora da consulta' },
+      { v: 'sessao',    ic: '😶', label: 'A criança travar no meio da sessão',         desc: 'E você ter que improvisar na hora' },
+      { v: 'casa',      ic: '🏠', label: 'A família não fazer nada em casa',            desc: 'Volta na consulta seguinte do mesmo jeito' },
+      { v: 'material',  ic: '🧰', label: 'Não ter material lúdico pra usar',            desc: 'Só conversa e orientação verbal' },
+      { v: 'evolucao',  ic: '📊', label: 'Mostrar evolução pra família',                desc: 'A criança avança e ninguém percebe' },
+    ],
+    confirm: () => null, // esta define o resultado
+  },
+  {
+    id: 'pq5',
+    title: 'Quanto tempo por semana você gasta preparando material?',
+    sub: 'Somando busca, adaptação e impressão.',
+    opts: [
+      { v: 'pouco', ic: '⚡', label: 'Menos de 30 minutos' },
+      { v: 'medio', ic: '🕐', label: 'De 30 minutos a 1 hora' },
+      { v: 'alto',  ic: '⏳', label: 'De 1 a 3 horas' },
+      { v: 'muito', ic: '🥵', label: 'Mais de 3 horas' },
+    ],
+    confirm: () => 'Esse é o tempo que não é faturado e quase nunca entra na conta do preço da consulta.',
+  },
+  {
+    id: 'pq6',
+    title: 'Como a tarefa de casa chega na família hoje?',
+    sub: 'Do jeito que acontece de verdade, não do jeito ideal.',
+    opts: [
+      { v: 'falo',     ic: '💬', label: 'Explico na consulta, de boca' },
+      { v: 'escrevo',  ic: '📝', label: 'Escrevo à mão num papel' },
+      { v: 'whats',    ic: '📱', label: 'Mando no WhatsApp depois' },
+      { v: 'nada',     ic: '🚫', label: 'Não passo tarefa pra casa' },
+    ],
+  },
+  {
+    id: 'pq7',
+    title: 'Você usa material impresso na sessão?',
+    sub: 'Última pergunta.',
+    opts: [
+      { v: 'proprio',  ic: '📁', label: 'Sim, material que eu mesma montei' },
+      { v: 'internet', ic: '🔍', label: 'Sim, o que encontro na internet' },
+      { v: 'nao',      ic: '🗣️', label: 'Não, minha consulta é só conversa' },
+      { v: 'semnada',  ic: '📭', label: 'Não tenho material ainda' },
+      { v: 'quero',    ic: '✨', label: 'Quero começar a usar' },
+    ],
+  },
+];
+
+/* =========================================================
+   MECANISMO: a trava -> etapa real do protocolo
+
+   As 12 etapas e as fichas citadas existem de verdade no kit (mesma lista que
+   o app mostra na aba Consultório). Nenhum nome de ficha é inventado aqui.
+   ========================================================= */
+const MECANISMO = {
+  preparo: {
+    nome: 'tempo de preparo',
+    etapa: 'A', etapaNome: 'Avaliação inicial', qtd: 5,
+    ficha: 'O mapa do prato',
+    leitura: 'Montar atividade do zero pra cada paciente é trabalho invisível: acontece fora da consulta e não entra no valor que você cobra.',
+    passo: 'Comece pela ficha de avaliação: em 15 minutos de sessão você mapeia o que a criança come de verdade e já sai com a próxima atividade definida.',
+  },
+  sessao: {
+    nome: 'improviso na sessão',
+    etapa: 'C', etapaNome: 'Toque e manipulação', qtd: 6,
+    ficha: 'Carimbo de pimentão',
+    leitura: 'Quando a criança trava, o que falta não é técnica, é uma atividade pronta pra colocar na mesa naquele minuto.',
+    passo: 'As fichas de toque resolvem esse momento: alimento de verdade, objetivo declarado que não é comer, e o passo a passo numerado na sua frente.',
+  },
+  casa: {
+    nome: 'intervalo entre as consultas',
+    etapa: 'I', etapaNome: 'Rotina e ambiente', qtd: 5,
+    ficha: 'A linha do dia',
+    leitura: 'A mãe sai da consulta convencida e, na terça, já esqueceu metade. Não é má vontade, é falta de material na mão dela.',
+    passo: 'Toda ficha de consultório termina com o "Leva para casa", e a família ainda recebe 129 fichas e o aplicativo pra usar entre um atendimento e outro.',
+  },
+  material: {
+    nome: 'falta de material lúdico',
+    etapa: 'B', etapaNome: 'Aproximação sem contato', qtd: 5,
+    ficha: 'Adivinha pelo cheiro',
+    leitura: 'Consulta só de conversa funciona com o adulto. Com criança seletiva, o que muda o jogo é ter o alimento na mesa dentro de uma brincadeira.',
+    passo: 'Comece pelas fichas de aproximação, que trabalham o alimento sem exigir contato nenhum com a boca.',
+  },
+  evolucao: {
+    nome: 'evolução invisível',
+    etapa: 'F', etapaNome: 'Prova e registro', qtd: 4,
+    ficha: 'O júri do sabor',
+    leitura: 'A criança avança de verdade, mas sem registro a família só enxerga "ela continua não comendo" e desanima do acompanhamento.',
+    passo: 'As fichas de registro transformam cada sessão em dado: o que ela tocou, o que cheirou, o que provou, numa linguagem que a família entende.',
+  },
+};
+
+const TEMPO_LABEL = {
+  pouco: { short: '10-20', txt: 'Com as fichas prontas, esse tempo vira zero.' },
+  medio: { short: '10-20', txt: 'É quase uma consulta inteira por semana só preparando material.' },
+  alto:  { short: '10-20', txt: 'São horas por semana que ninguém te paga pra fazer.' },
+  muito: { short: '10-20', txt: 'Mais de 3 horas por semana é um turno inteiro de atendimento perdido no preparo.' },
+};
+
+/* =========================================================
+   Estado + helpers
+   ========================================================= */
+const $ = (s) => document.querySelector(s);
+const answers = {};
+let idx = 0;              // índice da pergunta atual
+let maxStepIdx = 0;       // etapa mais profunda alcançada (pro funil)
+let advanced = false;     // já avançou ao menos uma vez (habilita "Anterior")
+let finished = false;
+
 const VISITOR_ID_KEY = 'kpl_visitor_id';
 const AD_REF_KEY = 'kpl_ad_ref';
+const ANSWERS_KEY = 'kpl_quiz_pro_answers';
+const EXIT_FLAG = 'kpl_quiz_pro_exit_shown';
 
-function getAdRef(){
-  try{
+function getAdRef() {
+  try {
     const q = new URLSearchParams(location.search);
-    const daUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
-    if (daUrl) { const v = daUrl.slice(0,120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
+    const fromUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
+    if (fromUrl) { const v = fromUrl.slice(0, 120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
     return sessionStorage.getItem(AD_REF_KEY) || '';
-  }catch(e){ return ''; }
+  } catch (e) { return ''; }
 }
-function getUtmRef(param, chave){
-  try{
-    const v = new URLSearchParams(location.search).get(param);
-    if (v) { const t = v.slice(0,120); sessionStorage.setItem(chave, t); return t; }
-    return sessionStorage.getItem(chave) || '';
-  }catch(e){ return ''; }
-}
-const getCampaignRef = () => getUtmRef('utm_campaign', 'kpl_campaign');
-const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset');
-getCampaignRef(); getAdsetRef();
-
-function getVisitorId(){
-  try{
+/** Mesmo id da página de vendas: quem faz o quiz e vai pro index é UMA pessoa
+ *  só no painel, não duas. */
+function getVisitorId() {
+  try {
     let id = sessionStorage.getItem(VISITOR_ID_KEY);
     if (!id) {
       id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
       sessionStorage.setItem(VISITOR_ID_KEY, id);
     }
     return id;
-  }catch(e){ return 'v_' + Date.now(); }
-}
-
-// Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_pecas','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
-let proAtual = 'p_topo';
-let proMaxIdx = 0;
-let bateAgora = () => {};
-// Marca uma acao (escolheu plano, gerou Pix...) e manda na hora, em vez de
-// esperar a proxima batida: quem gera o Pix costuma sair da pagina logo.
-function marcaPro(id){
-  const i = PRO_IDS.indexOf(id);
-  if (i > proMaxIdx) proMaxIdx = i;
-  if (i >= 0) proAtual = id;
-  bateAgora();
-}
-
-(function initPresenca(){
-  try{
-    const q = new URLSearchParams(location.search);
-    if (q.has('track')) localStorage.removeItem('kpl_notrack');
-    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
-    if (localStorage.getItem('kpl_notrack') === '1') return;
-  }catch(e){}
-
-  // id do elemento na pagina -> passo do funil
-  const alvos = { p_topo:'p_topo', p_pecas:'p_pecas', p_ficha:'p_ficha',
-                  p_app:'p_app', p_licenca:'p_licenca', checkout:'p_checkout' };
-  if ('IntersectionObserver' in window) {
-    const visiveis = {};
-    const obs = new IntersectionObserver((entradas) => {
-      entradas.forEach((e) => { visiveis[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
-      let melhor = null, maior = 0;
-      Object.keys(alvos).forEach((id) => { if ((visiveis[id]||0) > maior) { maior = visiveis[id]; melhor = id; } });
-      if (melhor) {
-        const passo = alvos[melhor];
-        const i = PRO_IDS.indexOf(passo);
-        // Rolar pra cima nao desfaz progresso, mas tambem nao pode "desmarcar"
-        // uma acao ja feita: por isso o passo atual so volta pra rolagem se ela
-        // for mais funda que a ultima acao marcada.
-        if (i >= PRO_IDS.indexOf(proAtual) || proMaxIdx < PRO_IDS.indexOf('p_plano')) proAtual = passo;
-        if (i > proMaxIdx) proMaxIdx = i;
-      }
-    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
-    Object.keys(alvos).forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
-  }
-
-  const visitorId = getVisitorId();
-  const packRef = (...partes) => partes.map((p) => String(p || '').split('~').join('')).join('~');
-  const adRef = packRef(getAdRef(), getCampaignRef(), getAdsetRef());
-
-  const hiddenLoad = document.visibilityState === 'hidden';
-  let visible = document.visibilityState === 'visible';
-  let touched = false;
-  if (!visible) {
-    document.addEventListener('visibilitychange', function aoVer(){
-      if (document.visibilityState !== 'visible') return;
-      visible = true;
-      document.removeEventListener('visibilitychange', aoVer);
-      bate();
-    });
-  }
-  const tocou = () => { touched = true; bate(); };
-  addEventListener('pointerdown', tocou, { once: true });
-  addEventListener('keydown', tocou, { once: true });
-
-  function bate(){
-    fetch('/api/presence', {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      body: JSON.stringify({
-        visitorId, proStep: proAtual, proMax: PRO_IDS[proMaxIdx] || proAtual, adRef,
-        hiddenLoad, visible, touched,
-        // checkoutStarted e o mesmo sinal da pagina das maes: dados preenchidos.
-        checkoutStarted: proMaxIdx >= PRO_IDS.indexOf('p_dados'),
-      }),
-      keepalive: true,
-    }).catch(()=>{});
-  }
-  bateAgora = bate;
-  bate();
-  setInterval(bate, PRESENCE_MS);
-})();
-
-let timer=null, paymentId=null, cliente=null;
-// Desenha o resumo com o plano inicial assim que a pagina carrega.
-addEventListener('DOMContentLoaded', () => atualizaTotal());
-
-/* =========================================================
-   Order bump do Bloco de Evolução (id interno segue 'devolutiva')
-   O valor que vale e o que o servidor recalcula pelo _catalog a partir dos
-   ids enviados. O numero aqui e so o que a pessoa ve.
-   ========================================================= */
-let bumpAceito = false;
-const bumpsEscolhidos = () => (bumpAceito ? ['devolutiva'] : []);
-const totalCents = () => plano().cents + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
-const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
-
-function travaPlanos(sim){
-  document.querySelectorAll('input[name="plano"]').forEach((r) => { r.disabled = sim; });
-}
-
-function atualizaTotal(){
-  const p = plano();
-  $('#linha-plano-nome').textContent = p.nome;
-  $('#linha-plano-valor').textContent = emReais(p.cents);
-  $('#bump-sim-valor').textContent = emReais(p.cents + BUMP_DEVOLUTIVA_CENTS);
-  $('#bump-nao-valor').textContent = emReais(p.cents);
-  if (!$('#btn').disabled) $('#btn-label').textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
-  const linha = document.getElementById('linha-devolutiva');
-  if (linha) linha.hidden = !bumpAceito;
-  const total = document.getElementById('total-valor');
-  if (total) total.textContent = emReais(totalCents());
+  } catch (e) { return 'v_' + Date.now(); }
 }
 
 /* =========================================================
-   Meta Pixel
-   Mesmo pixel da página das mães de propósito: é a mesma conta de anúncio, e
-   separar públicos se faz por evento e por campanha, não por pixel novo (pixel
-   zerado começa sem nenhum aprendizado).
-   Sem o rastreamento de seção que a /mae tem: a lista de seções de
-   api/_sections.js descreve a /mae, e mexer nela remontaria o significado do
-   `maxSection` já coletado.
+   Meta Pixel (mesmo esquema do index: navegador + CAPI com o mesmo event_id)
    ========================================================= */
-function pixelCustom(nome, dados){
-  try{ if(window.fbq) fbq('trackCustom', nome, dados||{}); }catch(e){}
+const FBCLID_KEY = 'kpl_fbclid';
+function rememberFbclid() {
+  try {
+    const fromUrl = new URLSearchParams(location.search).get('fbclid');
+    if (fromUrl) { sessionStorage.setItem(FBCLID_KEY, fromUrl); return fromUrl; }
+    return sessionStorage.getItem(FBCLID_KEY) || undefined;
+  } catch (e) { return undefined; }
 }
-
-function idEvento(){ return 'kpl_' + Date.now() + '_' + Math.random().toString(36).slice(2,10); }
-
-/** Dispara no pixel do navegador E na CAPI com o MESMO event_id, pra o Meta
- *  desduplicar em vez de contar duas vezes. Se o adblock derrubar o client, o
- *  servidor ainda entrega o evento. */
-function pixel(evento, dados, eventId){
-  const id = eventId || idEvento();
-  try { if (window.fbq) fbq('track', evento, dados || {}, { eventID: id }); } catch(e){}
-  fetch(API.capi, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ event_name: evento, event_id: id, data: dados || {} }),
+function pixelDual(event, data, opts) {
+  opts = opts || {};
+  const eventId = (window.crypto && crypto.randomUUID)
+    ? crypto.randomUUID()
+    : (event + '_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+  if (window.fbq) {
+    try { fbq(opts.custom ? 'trackCustom' : 'track', event, data || {}, { eventID: eventId }); } catch (e) {}
+  }
+  const fbclid = rememberFbclid();
+  fetch(CONFIG.API_CAPI, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ event_name: event, event_id: eventId, is_custom: !!opts.custom, data: data || {}, ...(fbclid ? { fbclid } : {}) }),
     keepalive: true,
-  }).catch(()=>{});
-  return id;
+  }).catch(() => {});
+  return eventId;
 }
-
-(function initPixel(){
-  if (!PIXEL_ID) return;
+function pixelCustom(event, data) { return pixelDual(event, data, { custom: true }); }
+function pixelOnce(key, event, data, custom) {
+  try {
+    if (sessionStorage.getItem('kpl_px_' + key)) return;
+    sessionStorage.setItem('kpl_px_' + key, '1');
+  } catch (e) {}
+  pixelDual(event, data, { custom: !!custom });
+}
+function initPixel() {
+  if (!CONFIG.META_PIXEL_ID) return;
   !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
   n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
   t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', PIXEL_ID);
+  fbq('init', CONFIG.META_PIXEL_ID);
   fbq('track', 'PageView');
-  pixel('ViewContent', {
-    content_name: 'KPL Edição Profissional', content_type: 'product',
-    value: PRECO_CENTS/100, currency: 'BRL',
-  });
-})();
-
-/* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
-   arquivo junto com a página (mesma pegadinha já corrigida na /mae) ---- */
-(function(){
-  const v=document.querySelector('.app-video'); if(!v||!v.dataset.src) return;
-  const carregar=()=>{ if(v.dataset.on) return; v.dataset.on='1';
-    v.poster=v.dataset.poster; v.src=v.dataset.src; v.play().catch(()=>{ v.controls=true; }); };
-  const perto=()=>v.getBoundingClientRect().top < innerHeight+400;
-  const aoRolar=()=>{ if(v.dataset.on){remover();return;} if(perto()){carregar();remover();} };
-  const remover=()=>{ removeEventListener('scroll',aoRolar); document.removeEventListener('scroll',aoRolar,true); };
-  addEventListener('scroll',aoRolar,{passive:true});
-  // Em captura no document também: quando o body é o container de rolagem, o
-  // evento não sobe pra window.
-  document.addEventListener('scroll',aoRolar,{passive:true,capture:true});
-  if('IntersectionObserver' in window){
-    const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){carregar();o.disconnect();remover();} }),{rootMargin:'400px 0px'});
-    o.observe(v);
-  }
-  if(perto()) carregar();
-  // Rede de segurança: se nem o observer nem o scroll dispararem (já vi os dois
-  // falharem juntos em navegador automatizado, e basta o body virar o container
-  // de rolagem pra o evento não subir), o vídeo carregaria nunca e a seção
-  // ficaria com um retângulo escuro vazio. 5s é depois da página já ter pintado,
-  // então não disputa banda com o topo, que era o motivo do lazy-load.
-  setTimeout(carregar, 5000);
-})();
-
-/* ---- validação: mesmas regras do checkout principal, sem CPF ---- */
-const okNome = v => v.trim().split(/\s+/).filter(Boolean).length >= 2 && v.trim().length >= 5;
-const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
-const okTel = v => v.replace(/\D/g,'').length >= 10;
-function marca(id, ok){ $(id).classList.toggle('invalid', !ok); return ok; }
-function valida(){
-  const a=marca('#f-nome',okNome($('#nome').value));
-  const b=marca('#f-email',okEmail($('#email').value));
-  const c=marca('#f-tel',okTel($('#telefone').value));
-  return a&&b&&c;
+  pixelOnce('quiz_pro_start', 'QuizProStart', undefined, true);
 }
-function mascaraTel(v){
-  v=v.replace(/\D/g,'').slice(0,11);
-  if(v.length<=10) return v.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:b?`(${a}) ${b}`:`(${a}`);
-  return v.replace(/(\d{2})(\d{5})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:`(${a}) ${b}`);
-}
-$('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
-['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
 
-/* ---- checkout ---- */
-document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
-  pixelCustom('PlanoEscolhido', { plano: r.value });
-  marcaPro('p_plano');
-  atualizaTotal();
-}));
-// ETAPA 1: valida e abre o painel do bump. Ninguem e cobrado aqui.
-$('#form').addEventListener('submit', e => {
-  e.preventDefault();
-  $('#erro').classList.remove('show');
-  if(!valida()){ $('.invalid input')?.focus(); return; }
+/* =========================================================
+   Presença: trilha do quiz PROFISSIONAL (campo proQuizMax).
 
-  cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
-  // InitiateCheckout dispara aqui, com o formulario ja validado: o evento
-  // significa "comecou o checkout", nao "decidiu sobre o adicional".
-  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
+   É a quarta trilha do painel (página das mães, quiz das mães, /profissional e
+   esta). Separada de propósito: misturar com o quiz das mães somaria dois
+   públicos e dois preços na mesma conta.
+   ========================================================= */
+const QUIZ_IDS = ['pq1','pq2','pq3','pq4','pq5','pq6','pq7','pqresultado','pqcta'];
+let currentQuizStep = 'pq1';
+let sendBeat = () => {}; // vira a função real se o rastreamento estiver ligado
 
-  marcaPro('p_dados');
-  $('#bump-step').classList.add('show');
-  document.getElementById('bump-sim').focus();
-});
+function initPresence() {
+  try {
+    const q = new URLSearchParams(location.search);
+    if (q.has('track')) localStorage.removeItem('kpl_notrack');
+    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
+    if (localStorage.getItem('kpl_notrack') === '1') return;
+  } catch (e) {}
+  const visitorId = getVisitorId();
+  const adRef = getAdRef();
 
-// ETAPA 2: a escolha do bump gera o Pix.
-document.getElementById('bump-sim').addEventListener('click', () => {
-  bumpAceito = true;
-  pixelCustom('BumpAceito', { bump_id: 'devolutiva' });
-  fechaBumpEGera();
-});
-// Volta pro formulario sem gerar nada. Sem isso, quem percebe que errou o
-// e-mail fica preso: os dois botoes do painel geram o Pix.
-function voltaPraForm(){
-  $('#bump-step').classList.remove('show');
-  $('#btn').focus();
-}
-$('#bump-step').addEventListener('click', (ev) => { if (ev.target.id === 'bump-step') voltaPraForm(); });
-document.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Escape' && $('#bump-step').classList.contains('show')) voltaPraForm();
-});
-
-document.getElementById('bump-nao').addEventListener('click', () => {
-  bumpAceito = false;
-  fechaBumpEGera();
-});
-
-async function fechaBumpEGera(){
-  $('#bump-step').classList.remove('show');
-  atualizaTotal();
-
-  const btn=$('#btn'), rotulo='Pagar ' + emReais(totalCents()) + ' com Pix';
-  $('#btn-label').textContent = rotulo;
-  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
-
-  try{
-    const r = await fetch(API.criar, {
-      method:'POST', headers:{'Content-Type':'application/json'},
-      // tier 'profissional': o servidor recalcula o valor pelo _catalog e grava
-      // esse tierId no token, que é o que faz o download.js entregar o PDF
-      // profissional em vez do kit das mães.
-      body: JSON.stringify({ customer: cliente, method:'pix', tier: plano().tier,
-        bumps: bumpsEscolhidos(), adRef:'profissional' })
+  // Mesmos sinais de entrada do index.html (ver comentário lá).
+  const hiddenLoad = document.visibilityState === 'hidden';
+  let visible = document.visibilityState === 'visible';
+  let touched = false;
+  if (!visible) {
+    document.addEventListener('visibilitychange', function onVis() {
+      if (document.visibilityState !== 'visible') return;
+      visible = true;
+      document.removeEventListener('visibilitychange', onVis);
+      sendBeat();
     });
-    if(!r.ok) throw new Error('status '+r.status);
-    const d = await r.json();
-    if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
-
-    paymentId = d.paymentId;
-    marcaPro('p_pix');
-    // Trava o plano com o Pix na tela: trocar agora mudaria o valor do Purchase
-    // no pixel sem mudar a cobranca.
-    travaPlanos(true);
-    $('#form').style.display='none';
-    $('#pix').classList.add('show');
-    const qr=d.pix.qrCodeImage||'';
-    $('#qr').innerHTML = qr ? `<img src="${qr.startsWith('data:')||qr.startsWith('http')?qr:'data:image/png;base64,'+qr}" alt="QR Code Pix">` : '';
-    $('#codigo').textContent = d.pix.copiaECola||'';
-    $('#codigo').dataset.full = d.pix.copiaECola||'';
-    $('#pix').scrollIntoView({behavior:'smooth',block:'start'});
-    poll();
-  }catch(err){
-    console.error(err);
-    $('#erro').textContent='Não conseguimos gerar seu Pix agora. Confira os dados e tente de novo. Se continuar, escreva para kitpratolimpo@gmail.com.';
-    $('#erro').classList.add('show');
-    btn.disabled=false; $('#btn-label').textContent=rotulo;
   }
+  const markTouch = () => { touched = true; sendBeat(); };
+  window.addEventListener('pointerdown', markTouch, { once: true });
+  window.addEventListener('keydown', markTouch, { once: true });
+
+  sendBeat = () => {
+    fetch(CONFIG.API_PRESENCE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        visitorId, proQuizStep: currentQuizStep, proQuizMax: QUIZ_IDS[maxStepIdx] || currentQuizStep, adRef,
+        hiddenLoad, visible, touched,
+      }),
+      keepalive: true,
+    }).catch(() => {});
+  };
+  sendBeat();
+  setInterval(sendBeat, CONFIG.PRESENCE_MS);
+}
+function markStep(i, id) {
+  currentQuizStep = id;
+  if (i > maxStepIdx) maxStepIdx = i;
 }
 
-$('#copiar').addEventListener('click', async () => {
-  const c = $('#codigo').dataset.full || $('#codigo').textContent;
-  try{ await navigator.clipboard.writeText(c); }
-  catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
-  const b=$('#copiar'), o=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=o,1800);
+/* =========================================================
+   Progresso (curva acelerada: sobe rápido no início, desacelera no fim)
+   ========================================================= */
+const EASE_K = 1.8;
+function setProgress(done, total) {
+  const linear = done / total;
+  const eased = Math.round(100 * (1 - Math.pow(1 - linear, EASE_K)));
+  $('#prog-fill').style.width = eased + '%';
+  $('#prog-pct').textContent = eased + '%';
+}
+
+/* =========================================================
+   Render das perguntas
+   ========================================================= */
+function renderQuestion() {
+  const q = QUESTIONS[idx];
+  markStep(idx, q.id);
+  setProgress(idx, QUESTIONS.length + 1);
+
+  $('#back-btn').classList.toggle('show', idx > 0 && advanced);
+
+  // Confirmação da resposta anterior: cria continuidade ("o que você respondeu
+  // virou isso") em vez de perguntas soltas.
+  let confirmHtml = '';
+  if (idx > 0) {
+    const prev = QUESTIONS[idx - 1];
+    const prevVal = answers[prev.id];
+    const text = prev.confirm ? prev.confirm(prevVal) : null;
+    if (text) {
+      confirmHtml = `<div class="confirm"><span class="confirm__tick">✓</span><p>${text}</p></div>`;
+    }
+  }
+
+  const opts = q.opts.map((o) => `
+    <button type="button" class="opt${answers[q.id] === o.v ? ' on' : ''}" data-v="${o.v}">
+      <span class="opt__ic">${o.ic}</span>
+      <span class="opt__body">
+        <span class="opt__label">${o.label}</span>
+        ${o.desc ? `<span class="opt__desc">${o.desc}</span>` : ''}
+      </span>
+      <span class="opt__check"><svg width="10" height="8" viewBox="0 0 11 9" fill="none"><path d="M1 4.5L4 7.5L10 1" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </button>`).join('');
+
+  $('#stage').innerHTML = `
+    <div class="card fade">
+      ${confirmHtml}
+      <h1 class="q__title">${q.title}</h1>
+      <p class="q__sub">${q.sub}</p>
+      <div class="opts">${opts}</div>
+    </div>`;
+
+  $('#stage').querySelectorAll('.opt').forEach((btn) => {
+    btn.addEventListener('click', () => choose(q, btn.dataset.v));
+  });
+
+  sendBeat(); // registra a etapa na hora, sem esperar o intervalo de 8s
+}
+
+function choose(q, value) {
+  answers[q.id] = value;
+  try { sessionStorage.setItem(ANSWERS_KEY, JSON.stringify(answers)); } catch (e) {}
+
+  if (q.id === 'q1') pixelOnce('quiz_first_answer', 'QuizFirstAnswer', undefined, true);
+  pixelCustom('QuizStep', { step: q.id, value });
+
+  // Marca visualmente antes de avançar (a pessoa vê o que escolheu)
+  const el = $('#stage').querySelector(`.opt[data-v="${value}"]`);
+  if (el) el.classList.add('on');
+
+  advanced = true;
+  setTimeout(() => {
+    if (idx < QUESTIONS.length - 1) { idx++; renderQuestion(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    else runAnalysis();
+  }, 190);
+}
+
+$('#back-btn').addEventListener('click', () => {
+  if (idx === 0) return;
+  idx--;
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-function poll(){
-  clearInterval(timer);
-  timer = setInterval(async () => {
-    try{
-      const r = await fetch(`${API.status}?id=${encodeURIComponent(paymentId)}`);
-      if(!r.ok) return;
-      const { status } = await r.json();
-      if(status==='paid'||status==='approved'){ clearInterval(timer); pago(); }
-      else if(status==='expired'||status==='canceled'){
-        clearInterval(timer);
-        $('#pix').classList.remove('show'); $('#form').style.display='';
-        travaPlanos(false);
-        $('#btn').disabled=false;
-        $('#erro').textContent='O Pix expirou. Gere um novo para concluir.';
-        $('#erro').classList.add('show');
-      }
-    }catch(e){}
-  }, POLL_MS);
+/* =========================================================
+   Tela de análise -> resultado
+   ========================================================= */
+const ANALYSIS_LINES = [
+  'Lendo a trava que você descreveu',
+  'Cruzando com o perfil dos seus atendimentos',
+  'Localizando a etapa certa do protocolo',
+  'Separando as fichas pra sua próxima consulta',
+];
+
+function runAnalysis() {
+  finished = true;
+  markStep(QUESTIONS.length, 'pqresultado');
+  setProgress(QUESTIONS.length, QUESTIONS.length + 1);
+  $('#back-btn').classList.remove('show');
+  $('#matchline').textContent = 'Analisando as suas respostas...';
+
+  $('#stage').innerHTML = `
+    <div class="card fade analyzing">
+      <div class="analyzing__ring"></div>
+      <h2>Montando o seu ponto de partida</h2>
+      <ul class="analyzing__list" id="an-list">
+        ${ANALYSIS_LINES.map((l) => `<li><span class="tick">✓</span>${l}</li>`).join('')}
+      </ul>
+    </div>`;
+
+  sendBeat();
+  const items = $('#an-list').querySelectorAll('li');
+  items.forEach((li, i) => setTimeout(() => li.classList.add('on'), 380 + i * 520));
+  setTimeout(renderResult, 380 + items.length * 520 + 420);
 }
 
-function pago(){
-  marcaPro('p_pago');
-  $('#pix').classList.remove('show');
-  $('#ok').classList.add('show');
-  $('#ok').scrollIntoView({behavior:'smooth',block:'center'});
+function renderResult() {
+  const m = MECANISMO[answers.pq4] || MECANISMO.preparo;
+  const idade = (QUESTIONS[2].opts.find((o) => o.v === answers.pq3) || {}).label || '1 a 10 anos';
+  const tempo = TEMPO_LABEL[answers.pq5] || TEMPO_LABEL.medio;
+  const semMaterial = answers.pq7 === 'nao' || answers.pq7 === 'quero' || answers.pq7 === 'semnada';
 
-  // Purchase só no pixel do navegador. O event_id 'purchase_<paymentId>' é o
-  // MESMO que api/deliver-kit.js usa na CAPI logo abaixo, então o Meta conta
-  // uma venda só. Não mandar por /api/capi-event: Purchase nem está na lista
-  // de eventos de lá, e o deliver-kit manda a versão com e-mail e telefone
-  // hasheados, que casa muito melhor.
-  try { if (window.fbq) fbq('track', 'Purchase',
-    { value: totalCents()/100, currency:'BRL', content_name: plano().nome },
-    { eventID: 'purchase_' + paymentId }); } catch(e){}
+  setProgress(QUESTIONS.length + 1, QUESTIONS.length + 1);
+  $('#matchline').textContent = 'Pronto. Aqui está a sua etapa de partida.';
 
-  // mesma chamada do checkout principal: é ela que gera o acesso e manda o
-  // e-mail. Se falhar aqui, o webhook da PushInPay é a rede de segurança.
-  fetch(API.entregar, {
-    method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone, adRef:'profissional' })
-  }).catch(()=>{});
+  $('#stage').innerHTML = `
+    <div class="card fade res">
+      <div style="text-align:center"><span class="res__eyebrow">Seu resultado</span></div>
+      <h2>O que te trava hoje é o <span class="hl">${m.nome}</span></h2>
+      <p class="res__lead">${m.leitura}</p>
+
+      <div class="res__box">
+        <div class="res__box__k">Comece por aqui</div>
+        <div class="res__box__v">Etapa ${m.etapa} · ${m.etapaNome}</div>
+        <div class="res__box__d">${m.passo}</div>
+      </div>
+
+      <div class="res__box" style="background:var(--orange-soft); border-color:#F6D9A8">
+        <div class="res__box__k" style="color:#8A5A0A">A primeira ficha pra aplicar</div>
+        <div class="res__box__v">${m.ficha}</div>
+      </div>
+
+      <div class="res__stats">
+        <div class="res__stat"><div class="n">${m.qtd}</div><div class="l">fichas nessa etapa</div></div>
+        <div class="res__stat"><div class="n">${tempo.short}</div><div class="l">minutos por ficha</div></div>
+      </div>
+
+      <p class="res__lead">Para crianças de <strong>${idade}</strong>, as fichas já trazem o nível e o tempo no cabeçalho, então você escolhe pela etapa e aplica. ${tempo.txt}</p>
+      ${semMaterial ? '<p class="res__lead">Como você ainda não usa material impresso na sessão, comece por uma ficha só, na próxima consulta, e veja como a criança responde.</p>' : ''}
+
+      <a href="${CONFIG.VENDA_URL}" class="btn" id="res-cta">Ver a Edição Profissional →</a>
+      <p class="res__note">São 60 fichas de consultório em 12 etapas, da avaliação até a alta, mais 129 fichas para a família e licença de uso com os seus pacientes.</p>
+    </div>`;
+
+  pixelOnce('quiz_pro_result', 'QuizProResult', { trava: answers.pq4, local: answers.pq1 }, true);
+
+  $('#res-cta').addEventListener('click', () => {
+    markStep(QUIZ_IDS.indexOf('pqcta'), 'pqcta');
+    // Batida imediata: o intervalo de 8s não rodaria antes da navegação, e o
+    // "clicou pra ver o kit" sumiria do funil.
+    sendBeat();
+    pixelCustom('QuizProToOffer', { trava: answers.pq4 });
+    try { sessionStorage.setItem('kpl_quiz_pro_result', JSON.stringify({ trava: answers.pq4, local: answers.pq1, etapa: m.etapa })); } catch (e) {}
+  });
 }
+
+/* =========================================================
+   Exit-intent — só na 1ª pergunta (maior ponto de abandono: quem clica no
+   anúncio e não responde nada). Um empurrão no histórico segura o primeiro
+   "voltar"; o segundo deixa sair normal, pra não virar prisão de botão.
+   ========================================================= */
+function initExitIntent() {
+  let shown = false;
+  try { if (sessionStorage.getItem(EXIT_FLAG) === '1') return; } catch (e) { return; }
+
+  history.pushState(null, '', location.href);
+  window.addEventListener('popstate', () => {
+    if (shown || idx > 0 || finished) return;
+    shown = true;
+    try { sessionStorage.setItem(EXIT_FLAG, '1'); } catch (e) {}
+    $('#exit-modal').classList.add('show');
+    pixelCustom('QuizProExitIntent');
+  });
+
+  $('#exit-stay').addEventListener('click', () => {
+    $('#exit-modal').classList.remove('show');
+    history.pushState(null, '', location.href);
+  });
+  $('#exit-leave').addEventListener('click', () => {
+    $('#exit-modal').classList.remove('show');
+    history.back();
+  });
+}
+
+/* =========================================================
+   Boot
+   ========================================================= */
+(function init() {
+  try {
+    const cached = JSON.parse(sessionStorage.getItem(ANSWERS_KEY) || '{}');
+    Object.assign(answers, cached);
+  } catch (e) {}
+
+  initPixel();
+  initPresence();
+  initExitIntent();
+  renderQuestion();
+})();
 </script>
 </body>
 </html>

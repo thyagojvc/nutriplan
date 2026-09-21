@@ -26,7 +26,7 @@ function marcaDoPedido(tierId) {
   const pro = tierId === 'profissional' || tierId === 'profissional_pdf';
   return {
     contentName: pro ? 'KPL Edicao Profissional' : 'Kit Prato Limpo',
-    sourceUrl: pro ? `${BASE_URL}/profissional` : `${BASE_URL}/`,
+    sourceUrl: pro ? `${BASE_URL}/kit-profissional` : `${BASE_URL}/`,
   };
 }
 
