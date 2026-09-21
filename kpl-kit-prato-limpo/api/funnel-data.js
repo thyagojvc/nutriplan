@@ -63,8 +63,19 @@ function decodeRef(raw) {
   return out.replace(/[<>"'&]/g, '').trim();
 }
 
+// MACRO NAO SUBSTITUIDA (21/09). Quando o clique nao vem pelo anuncio pago de
+// verdade (clique organico no post do anuncio, link compartilhado, preview), o
+// Meta entrega a URL com o {{ad.name}} literal. O cleanAdRef tira as chaves na
+// gravacao, entao no painel isso chegava como um "anuncio" chamado `ad.name`,
+// que parece nome de criativo e nao e. Rotular na leitura evita confundir isso
+// com criativo de verdade (e o dado velho tambem passa a aparecer certo).
+const MACROS_CRUAS = /^(ad|adset|campaign|site_source|placement)\.(name|id)$/i;
+
 function decodeAdRef(raw) {
-  return decodeRef(raw) || 'Sem anúncio';
+  const v = decodeRef(raw);
+  if (!v) return 'Sem anúncio';
+  if (MACROS_CRUAS.test(v)) return 'Link sem macro (clique fora do anúncio)';
+  return v;
 }
 
 // MESMA PESSOA, VARIAS SESSOES (18/09). O id do visitante mora no
@@ -395,7 +406,9 @@ function parseSales(arr) {
       // JSON.parse preserva isso como string. "+" concatena string em vez de
       // somar (0 + "2990" + "1000" virava "029901000" no faturamento total).
       valueCents: Number(obj.v) || 0,
-      adRef: obj.a || 'Sem anúncio',
+      // decodeAdRef aqui tambem, pra venda com macro crua nao virar um
+      // "anuncio" chamado ad.name na lista de vendas.
+      adRef: decodeAdRef(obj.a),
       // Campanha e conjunto: gravados a partir de 15/09. Venda antiga vem null.
       campaign: CAMPAIGN_NAMES[obj.c] || obj.c || null,
       // Com a campanha ja nomeada, o ID do conjunto so polui a coluna.
