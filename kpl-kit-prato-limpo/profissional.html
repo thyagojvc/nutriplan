@@ -207,7 +207,22 @@
   .plano__guarantee{margin-top:auto;padding-top:12px;font-size:.78rem;font-weight:700;color:var(--green-dark)}
   .planos__titulo{text-align:center;font-family:var(--heading);font-weight:700;color:var(--ink);margin:0 0 14px}
   .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
-  @media(max-width:560px){.planos{grid-template-columns:1fr}.plano__tagline{min-height:0}}
+  /* 21/09: os dois planos ficam lado a lado tambem no celular. Empilhado, a
+     pessoa via um plano por vez e nao comparava, que e o ponto de ter dois. */
+  @media(max-width:560px){
+    .planos{gap:8px}
+    .plano{padding:16px 10px 12px;border-radius:14px}
+    .plano__name{font-size:.92rem;padding-right:20px}
+    .plano__tagline{font-size:.78rem;min-height:2.6em;margin-bottom:8px}
+    .plano__price{font-size:1.45rem}
+    .plano__price .cents{font-size:.8rem}
+    .plano__price-old{font-size:.76rem}
+    .plano__radio{width:18px;height:18px;top:12px;right:10px}
+    .plano__badge{font-size:.58rem;padding:3px 8px}
+    .plano__list li{font-size:.78rem;gap:4px;line-height:1.3}
+    .plano__guarantee{font-size:.7rem}
+    .plano__desconto{font-size:.62rem;padding:2px 6px}
+  }
 
   .field{margin-bottom:14px}
   .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
@@ -624,19 +639,20 @@
     <p class="planos__titulo">Escolha o seu plano:</p>
     <div class="planos" role="radiogroup" aria-label="Escolha o plano">
       <label class="plano">
-        <input type="radio" name="plano" value="profissional_pdf" data-cents="3290" data-nome="KPL Edição Profissional (PDF)">
+        <input type="radio" name="plano" value="profissional_pdf" data-cents="4690" data-nome="KPL Edição Profissional (PDF)">
         <span class="plano__radio" aria-hidden="true"></span>
         <div class="plano__name">Fichas em PDF</div>
         <div class="plano__tagline">Para imprimir e aplicar.</div>
-        <div class="plano__price">R$ 32<span class="cents">,90</span></div>
+        <div class="plano__price-old" id="pdf-preco-cheio" hidden>R$ 46,90</div>
+        <div class="plano__price" id="pdf-preco">R$ 46<span class="cents">,90</span></div>
+        <span class="plano__desconto" id="pdf-selo-cupom" hidden>Cupom KIT30 aplicado</span>
         <ul class="plano__list">
-          <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
-          <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
+          <li><span class="ic">✅</span><span class="plano__hl">189 atividades prontas para consultório e casa</span></li>
           <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
           <li class="off"><span class="ic">➖</span>Acesso pelo aplicativo</li>
           <li class="off"><span class="ic">➖</span>Aba Consultório no tablet</li>
           <li class="off"><span class="ic">➖</span>Jogo dos 20 personagens</li>
-          <li class="off"><span class="ic">➖</span>Calendário, cartelas e quadro de progresso</li>
+          <li class="off"><span class="ic">➖</span>Calendário e cartelas</li>
         </ul>
         <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
       </label>
@@ -708,7 +724,7 @@
           <input type="text" id="cupom" placeholder="KIT30" autocomplete="off" spellcheck="false" maxlength="20" />
           <button type="button" id="cupom-btn">Aplicar</button>
         </div>
-        <p class="cupom__aviso" id="cupom-aviso">O cupom KIT30 tira R$ 20,00 do plano PDF + Aplicativo.</p>
+        <p class="cupom__aviso" id="cupom-aviso">O cupom KIT30 dá 30% de desconto nos dois planos.</p>
       </div>
 
       <div class="pedido-resumo">
@@ -832,10 +848,10 @@ const PRECO_CENTS = 4700; // plano de referencia pro ViewContent (ja com o cupom
 // Cupom (20/09). O desconto de verdade e recalculado no servidor pelo codigo:
 // estes numeros so desenham a tela.
 const CUPOM_CODIGO = 'KIT30';
-const CUPOM_DESCONTO_CENTS = 2000;
-const CUPOM_TIER = 'profissional';
+// Quanto o cupom tira de cada plano. Em sincronia com CUPONS no _catalog.
+const CUPOM_DESCONTO = { profissional: 2000, profissional_pdf: 1400 };
 let cupomAplicado = false;
-const descontoCents = () => (cupomAplicado && plano().tier === CUPOM_TIER ? CUPOM_DESCONTO_CENTS : 0);
+const descontoCents = () => (cupomAplicado ? (CUPOM_DESCONTO[plano().tier] || 0) : 0);
 const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
@@ -1001,6 +1017,9 @@ function atualizaTotal(){
   $('#pro-preco-cheio').hidden = !comCupom;
   $('#pro-selo-cupom').hidden = !comCupom;
   $('#pro-preco').innerHTML = comCupom ? 'R$ 47<span class="cents">,00</span>' : 'R$ 67<span class="cents">,00</span>';
+  $('#pdf-preco-cheio').hidden = !comCupom;
+  $('#pdf-selo-cupom').hidden = !comCupom;
+  $('#pdf-preco').innerHTML = comCupom ? 'R$ 32<span class="cents">,90</span>' : 'R$ 46<span class="cents">,90</span>';
   if (!$('#btn').disabled) $('#btn-label').textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
   const linha = document.getElementById('linha-devolutiva');
   if (linha) linha.hidden = !bumpAceito;
@@ -1110,7 +1129,7 @@ function aplicaCupom(){
   }
   cupomAplicado = true;
   campo.value = CUPOM_CODIGO;
-  aviso.textContent = 'Cupom aplicado: R$ 20,00 de desconto no plano PDF + Aplicativo.';
+  aviso.textContent = 'Cupom aplicado: 30% de desconto nos dois planos.';
   aviso.classList.add('ok');
   pixelCustom('CupomAplicado', { cupom: CUPOM_CODIGO });
   marcaPro('p_cupom');

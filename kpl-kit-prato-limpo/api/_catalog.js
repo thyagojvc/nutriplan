@@ -39,7 +39,10 @@ const TIERS = {
   profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 6700 },
   // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
   // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
-  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 3290 },
+  // 21/09: preco cheio 46,90 e o cupom leva a 32,90. NAO usar 4700 aqui: esse
+  // valor ja e o do plano completo COM cupom, e dois planos com o mesmo valor
+  // fazem a entrega (que casa por valor) mandar o produto errado.
+  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 4690 },
 };
 const DEFAULT_TIER = 'completo';
 
@@ -64,7 +67,7 @@ const BUMPS = {
 //
 // Quem aplica o desconto e o SERVIDOR: o front manda o codigo, nunca o valor.
 const CUPONS = {
-  KIT30: { codigo: 'KIT30', descontoPorTier: { profissional: 2000 } },
+  KIT30: { codigo: 'KIT30', descontoPorTier: { profissional: 2000, profissional_pdf: 1400 } },
 };
 function cupomValido(codigo, tierId) {
   const c = CUPONS[String(codigo || '').trim().toUpperCase()];
@@ -79,9 +82,10 @@ function cupomValido(codigo, tierId) {
 // de bump (32,90 + 10 = 42,90) dava o Bloco de Evolução de graça pra quem nao
 // comprou. Por isso os valores da /profissional sao uma tabela explicita.
 const BASES_PRO = [
-  { valor: 6700, tier: 'profissional' },      // preco cheio
-  { valor: 4700, tier: 'profissional' },      // com o cupom KIT30
-  { valor: 3290, tier: 'profissional_pdf' },  // plano so PDF
+  { valor: 6700, tier: 'profissional' },      // completo, preco cheio
+  { valor: 4700, tier: 'profissional' },      // completo com o cupom KIT30
+  { valor: 4690, tier: 'profissional_pdf' },  // so PDF, preco cheio
+  { valor: 3290, tier: 'profissional_pdf' },  // so PDF com o cupom KIT30
 ];
 const VALORES_PRO = new Map();
 for (const b of BASES_PRO) {
