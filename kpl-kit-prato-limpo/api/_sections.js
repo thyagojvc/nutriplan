@@ -58,7 +58,6 @@ const PRO_STEPS = [
   { id: 'p_licenca', label: '6. Licença de uso' },
   { id: 'p_checkout', label: '7. Chegou no checkout' },
   { id: 'p_plano', label: '8. Escolheu um plano' },
-  { id: 'p_cupom', label: '8. Aplicou o cupom' },
   { id: 'p_dados', label: '9. Preencheu os dados' },
   { id: 'p_pix', label: '10. Gerou o Pix' },
   { id: 'p_pago', label: '11. Pagou' },
