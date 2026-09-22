@@ -75,7 +75,8 @@
   .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
   /* O mockup ja traz margem branca dentro da propria imagem, entao o padding
      cheio das duas secoes somava um vazio grande entre as dobras. */
-  .hero + section{padding-top:20px}
+  .hero + section{padding-top:24px}
+  .hero .btn{max-width:26rem;margin:0 auto}
   .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
     font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
   .hero__brand{display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px}
@@ -89,13 +90,19 @@
   .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
   .hero__promise p{font-size:.94rem;margin:0}
   .btn-note{text-align:center;font-size:.92rem;font-weight:700;color:var(--muted);margin:12px auto 0;max-width:22rem}
+  /* Linha de numeros logo abaixo da promessa: e o "o que vem no kit" numa
+     olhada, sem virar o primeiro assunto da pagina. */
+  .hero__numeros{display:flex;gap:8px;justify-content:center;margin:14px 0 16px;flex-wrap:wrap}
+  .hero__numeros span{flex:1 1 30%;min-width:92px;background:var(--mint);border-radius:12px;padding:10px 8px;
+    font-size:.82rem;font-weight:700;color:var(--green-dark);line-height:1.25}
+  .hero__numeros b{display:block;font-family:var(--heading);font-weight:800;font-size:1.3rem;color:var(--ink)}
   .hero__reinforce{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.95rem;
     font-weight:700;color:var(--green-dark);margin:18px 0 6px}
   /* height:auto é OBRIGATÓRIO em toda imagem com os atributos width/height no
      HTML: sem ele o `height` vira altura fixa em px, `aspect-ratio` não tem
      efeito (só age quando uma dimensão é auto) e a imagem estica na vertical.
      Foi o que deformou as fichas, o mockup e o vídeo. */
-  .hero__mockup{width:100%;height:auto;display:block;margin-top:10px;
+  .hero__mockup{width:100%;height:auto;display:block;margin:6px 0 4px;
     animation:pulso-mockup 3.2s ease-in-out infinite;transform-origin:center 60%;will-change:transform}
   /* Respiro lento no mockup do topo: da movimento sem virar enfeite piscando.
      4% de escala e o suficiente pra prender o olho no primeiro segundo. */
@@ -396,26 +403,40 @@
 
 <!-- ======================= HERO ======================= -->
 <header class="hero" id="p_topo">
+  <!-- PRIMEIRA DOBRA REFEITA (22/09). Ordem: atividade concreta -> facilidade
+       -> o que vem no kit -> botao. Quem clica no video viu ATIVIDADE
+       acontecendo, nao um pacote com numeros, e chegava aqui tendo que
+       traduzir "189 atividades" pra aquilo que acabou de ver. -->
   <div class="wrap">
-    <h1 class="hero__h1">189 atividades prontas <span class="hl">pra quem trabalha com alimentação infantil</span></h1>
-    <p class="hero__sub">60 fichas para aplicar no atendimento, 129 para a família levar pra casa e o aplicativo para a criança usar entre um encontro e outro.</p>
-
-    <div class="hero__promise">
-      <span class="ic">🍽️</span>
-      <p>A ficha de avaliação você aplica já no próximo atendimento, com alimento de verdade na mesa.</p>
-    </div>
-
-    <div class="hero__reinforce">
-      <span>🍎 Aplique na sessão</span>
-      <span>🏠 Entregue pra família</span>
-      <span>📱 Sem impressora</span>
-    </div>
+    <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
+    <h1 class="hero__h1">Atividades prontas <span class="hl">pra usar com a criança na própria consulta</span></h1>
+    <p class="hero__sub">Você abre a ficha, põe o alimento na mesa e já sabe o que fazer. Sem montar atividade do zero pra cada paciente.</p>
 
     <picture>
       <source srcset="assets/mockup-pro-transp.webp" type="image/webp" />
       <img class="hero__mockup" src="assets/mockup-pro.jpg" width="1536" height="1024" fetchpriority="high"
            alt="Seis fichas do kit espalhadas e o aplicativo aberto num celular, na turma de amigos" />
     </picture>
+
+    <div class="hero__promise">
+      <span class="ic">🍽️</span>
+      <p>Cada ficha cabe em 10 a 20 minutos de consulta e usa alimento de verdade. Você bate o olho e já sabe o que fazer.</p>
+    </div>
+
+    <div class="hero__numeros">
+      <span><b>60</b> pra aplicar na sessão</span>
+      <span><b>129</b> pra mandar pra casa</span>
+      <span><b>App</b> entre as consultas</span>
+    </div>
+
+    <a href="#checkout" class="btn">Ver o kit por dentro →</a>
+    <p class="btn-note">Pagamento único · licença de uso com seus pacientes</p>
+
+    <div class="hero__reinforce">
+      <span>🍎 Aplique na sessão</span>
+      <span>🏠 Entregue pra família</span>
+      <span>📱 Sem impressora</span>
+    </div>
   </div>
 </header>
 
