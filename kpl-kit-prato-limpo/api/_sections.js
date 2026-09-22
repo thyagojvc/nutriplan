@@ -61,12 +61,13 @@ const PRO_STEPS = [
   // o que fica gravado no visitor e o ID do passo, e o indice e calculado na
   // leitura (ver funnel-data), entao visita antiga continua no lugar certo.
   { id: 'p_bonus', label: '8. Os bônus' },
-  { id: 'p_licenca', label: '9. Licença de uso' },
-  { id: 'p_checkout', label: '10. Chegou no checkout' },
-  { id: 'p_plano', label: '11. Escolheu um plano' },
-  { id: 'p_dados', label: '12. Começou a preencher' },
-  { id: 'p_pix', label: '13. Gerou o Pix' },
-  { id: 'p_pago', label: '14. Pagou' },
+  { id: 'p_depo', label: '9. Os depoimentos' },
+  { id: 'p_licenca', label: '10. Licença de uso' },
+  { id: 'p_checkout', label: '11. Chegou no checkout' },
+  { id: 'p_plano', label: '12. Escolheu um plano' },
+  { id: 'p_dados', label: '13. Começou a preencher' },
+  { id: 'p_pix', label: '14. Gerou o Pix' },
+  { id: 'p_pago', label: '15. Pagou' },
 ];
 
 // Trilha do QUIZ PROFISSIONAL (/quiz-pro). Quarta trilha do painel. Separada

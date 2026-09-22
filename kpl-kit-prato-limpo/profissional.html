@@ -244,6 +244,18 @@
     padding:4px 10px;border-radius:999px}
   @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
 
+  /* ---------- depoimentos (22/09) ---------- */
+  .depo{display:grid;grid-template-columns:1fr;gap:14px}
+  .depo__card{margin:0;background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:20px 18px;box-shadow:var(--shadow-sm)}
+  .depo__card blockquote{margin:0 0 14px;font-size:1.02rem;line-height:1.5;color:var(--text)}
+  .depo__card figcaption{display:flex;align-items:center;gap:10px}
+  .depo__card figcaption span:last-child{display:flex;flex-direction:column;font-size:.82rem;color:var(--muted)}
+  .depo__card figcaption b{font-family:var(--heading);font-size:.98rem;color:var(--ink)}
+  .depo__ini{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--mint);
+    color:var(--green-dark);font-family:var(--heading);font-weight:800;font-size:1.05rem;
+    display:flex;align-items:center;justify-content:center}
+  @media(min-width:640px){ .depo{grid-template-columns:1fr 1fr;gap:16px} }
   /* ---------- bonus com caixa 3D (22/09) ---------- */
   .bonus{display:grid;grid-template-columns:1fr;gap:14px}
   .bonus__card{background:var(--card);border:1px solid var(--border);border-radius:16px;
@@ -861,6 +873,52 @@
   </div>
 </section>
 
+<!-- ======================= DEPOIMENTOS (22/09) =======================
+     As falas sao reais: vieram do WhatsApp de quem comprou a Edicao
+     Profissional por fora, antes da pagina existir. Os prints originais se
+     perderam, entao aqui vai o TEXTO, com o primeiro nome, e nao uma imagem
+     de conversa reconstruida: print remontado com foto de banco e cena de
+     produto que a cliente nunca mandou e documento inventado, mesmo quando a
+     frase dentro dele e verdadeira. Sem foto de rosto, sem sobrenome, sem
+     numero de avaliacao. Quando chegarem prints de verdade, eles entram aqui
+     no lugar dos cartoes. -->
+<section id="p_depo">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Quem já está usando</span>
+      <h2 class="section-title">O que as nutricionistas <span class="hl">falaram depois da consulta</span></h2>
+      <p class="section-sub">Mensagens de quem comprou a Edição Profissional antes desta página existir.</p>
+    </div>
+
+    <div class="depo">
+      <figure class="depo__card">
+        <blockquote>“Hoje mesmo usei uma das atividades da primeira etapa e a criança se envolveu demais. A mãe ficou surpresa e me falou que nunca tinha visto o filho tão interessado em experimentar um alimento novo.”</blockquote>
+        <figcaption><span class="depo__ini">P</span><span><b>Patrícia</b>Nutricionista</span></figcaption>
+      </figure>
+
+      <figure class="depo__card">
+        <blockquote>“Usei hoje a atividade da caixa fechada e foi um sucesso. As crianças ficaram super curiosas e participaram muito bem. Já me deu várias ideias de como conduzir as próximas consultas.”</blockquote>
+        <figcaption><span class="depo__ini">J</span><span><b>Juliana</b>Nutricionista</span></figcaption>
+      </figure>
+
+      <figure class="depo__card">
+        <blockquote>“Já usei com uma criança que tinha muita resistência a legumes. Ela se envolveu bastante e até pediu pra fazer de novo. Tem me ajudado a conduzir as consultas de forma mais leve e lúdica.”</blockquote>
+        <figcaption><span class="depo__ini">C</span><span><b>Camila</b>Nutricionista</span></figcaption>
+      </figure>
+
+      <figure class="depo__card">
+        <blockquote>“As fichas são bem organizadas e com uma linguagem que as famílias entendem. Facilitou muito meu trabalho. Já indiquei para outras colegas da clínica.”</blockquote>
+        <figcaption><span class="depo__ini">L</span><span><b>Larissa</b>Nutricionista</span></figcaption>
+      </figure>
+
+      <figure class="depo__card">
+        <blockquote>“Achei o material muito bom, bem didático e fácil de aplicar. A criança gostou bastante e participou mais do que eu esperava.”</blockquote>
+        <figcaption><span class="depo__ini">F</span><span><b>Fernanda</b>Nutricionista</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
 <!-- ======================= LICENÇA ======================= -->
 <section id="p_licenca" style="background:var(--cream-2)">
   <div class="wrap">
@@ -1254,7 +1312,7 @@ function getVisitorId(){
 }
 
 // Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_bonus','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
+const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_bonus','p_depo','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
 let proAtual = 'p_topo';
 let proMaxIdx = 0;
 let bateAgora = () => {};
@@ -1277,7 +1335,7 @@ function marcaPro(id){
 
   // id do elemento na pagina -> passo do funil
   const alvos = { p_topo:'p_topo', p_dentro:'p_dentro', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
-                  p_app:'p_app', p_junto:'p_junto', p_bonus:'p_bonus', p_licenca:'p_licenca', checkout:'p_checkout' };
+                  p_app:'p_app', p_junto:'p_junto', p_bonus:'p_bonus', p_depo:'p_depo', p_licenca:'p_licenca', checkout:'p_checkout' };
   if ('IntersectionObserver' in window) {
     const visiveis = {};
     const obs = new IntersectionObserver((entradas) => {
