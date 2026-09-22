@@ -30,7 +30,7 @@
 
 const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
-const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
+const { createDownloadLink, confirmationEmailHtml, linksDosBonus } = require('./_entrega');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
 
 const BASE_URL = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
@@ -191,7 +191,7 @@ module.exports = async (req, res) => {
       sendEmail({
         to: email,
         subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-        html: confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia: tier.id === 'profissional' }),
+        html: confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia: tier.id === 'profissional', bonus: linksDosBonus(tier.id, downloadUrl) }),
         // Cliente costuma responder o e-mail de entrega em vez de escrever pro
         // suporte. Sem reply_to, essa resposta cai na caixa do remetente
         // técnico (entrega@nutriplan.email) e ninguém vê.

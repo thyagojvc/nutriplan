@@ -516,6 +516,20 @@
         <p>Para aplicar na sessão, com alimento de verdade na mesa. Organizadas em 12 etapas, da avaliação até a alta.</p>
       </div>
 
+      <!-- Os dois bonus (22/09). Aparecem pra QUALQUER compra profissional,
+           diferente do Bloco de Evolucao logo abaixo, que e pago a parte. -->
+      <div class="pro-card">
+        <b>🗺️ O mapa das 12 etapas</b>
+        <p>Uma folha só, com o caminho inteiro da avaliação até a alta e onde cada ficha entra. Feita pra imprimir e deixar na parede.</p>
+        <a class="btn" id="pro-mapa-btn" href="#">Baixar o mapa</a>
+      </div>
+
+      <div class="pro-card">
+        <b>🗓️ Pacote de 8 sessões</b>
+        <p>O que fazer em cada consulta: a ficha que você aplica, o que observar e a ficha que a família leva pra casa até a próxima.</p>
+        <a class="btn" id="pro-pacote-btn" href="#">Baixar o pacote</a>
+      </div>
+
       <div class="pro-card" id="pro-bloco" style="display:none">
         <b>📋 Bloco de Evolução</b>
         <p>Como foi em casa, linha do tempo, resumo para a família e anotação clínica. Para imprimir.</p>
@@ -822,6 +836,8 @@
     if (fichasBtn) fichasBtn.innerHTML = '<span class="ico">🏠</span>Família';
 
     document.getElementById('pro-download-btn').href = '/api/download?t=' + encodeURIComponent(token);
+    document.getElementById('pro-mapa-btn').href = '/api/download?t=' + encodeURIComponent(token) + '&item=mapa';
+    document.getElementById('pro-pacote-btn').href = '/api/download?t=' + encodeURIComponent(token) + '&item=pacote';
     if (data.bloco) {
       document.getElementById('pro-bloco-btn').href = '/api/download?t=' + encodeURIComponent(token) + '&item=devolutiva';
       document.getElementById('pro-bloco').style.display = 'block';

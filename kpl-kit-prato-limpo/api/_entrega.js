@@ -54,7 +54,20 @@ async function createDownloadLink(paymentId, email, name, tierId, extra) {
   }
 }
 
-function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia }) {
+// Links dos dois bonus da Edicao Profissional (22/09). Saem SEMPRE de
+// /api/download, nunca do downloadUrl: pro plano completo aquele link aponta
+// pro /mi-kit (a casca de app), e colar &item= nele levaria a pessoa pro app
+// em vez do PDF do bonus.
+function linksDosBonus(tierId, downloadUrl) {
+  if (tierId !== 'profissional' && tierId !== 'profissional_pdf') return null;
+  const m = String(downloadUrl || '').match(/[?&]t=([a-f0-9]+)/i);
+  if (!m) return null;
+  const base = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
+  const url = (item) => `${base}/api/download?t=${m[1]}&item=${item}`;
+  return { mapa: url('mapa'), pacote: url('pacote') };
+}
+
+function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia, bonus }) {
   const firstName = String(name || '').trim().split(' ')[0] || 'oi';
   const downloadBlock = downloadUrl
     ? `<p style="text-align: center; margin: 24px 0;">
@@ -72,6 +85,11 @@ function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, lin
     <h1 style="font-size: 22px; margin-bottom: 8px;">Pagamento confirmado! 🍽️</h1>
     <p>${firstName}, recebemos seu pagamento do <strong>${tierName}</strong>.</p>
     ${downloadBlock}
+    ${bonus && bonus.mapa ? `<p style="background:#FDF3E6;border-radius:8px;padding:14px;font-size:14px;">
+      <strong>Seus dois bônus:</strong><br>
+      <a href="${bonus.mapa}" style="color:#3C7A2C;">O mapa das 12 etapas</a>, uma folha só, para deixar na parede do consultório.<br>
+      <a href="${bonus.pacote}" style="color:#3C7A2C;">O pacote de 8 sessões</a>, dizendo qual ficha aplicar em cada consulta e o que a família leva pra casa.
+    </p>` : ''}
     ${linkFamilia ? `<p style="background:#F2F7EE;border-radius:8px;padding:14px;font-size:14px;"><strong>Para passar o app às famílias:</strong> abra o link acima, vá na aba <strong>Consultório</strong> e toque em <em>Gerar o link da família</em>. Esse segundo link abre só as atividades de casa, sem o seu material de consultório.</p>` : ''}
     <p>Também mandamos o acesso no WhatsApp que você cadastrou no checkout.</p>
     <p>Se o botão acima não funcionar, escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a> que resolvemos rapidamente.</p>
@@ -79,4 +97,4 @@ function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, lin
   </div>`;
 }
 
-module.exports = { createDownloadLink, confirmationEmailHtml, DOWNLOAD_TTL_SECONDS };
+module.exports = { createDownloadLink, confirmationEmailHtml, linksDosBonus, DOWNLOAD_TTL_SECONDS };

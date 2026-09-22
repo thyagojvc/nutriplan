@@ -107,6 +107,13 @@ module.exports = async (req, res) => {
   // kit viraria link do material que a pessoa nao pagou.
   const querDevolutiva = String((req.query && req.query.item) || '') === 'devolutiva';
 
+  // ?item=mapa | ?item=pacote: os dois bonus da Edicao Profissional (22/09).
+  // Diferente do Bloco de Evolucao, que e PAGO a parte, estes dois entram nos
+  // DOIS planos profissionais, entao a trava aqui e o tier, nao o bump.
+  const itemBonus = ['mapa', 'pacote'].includes(String((req.query && req.query.item) || ''))
+    ? String(req.query.item)
+    : null;
+
   let tierId = 'completo';
   let temDevolutiva = false;
   let daFamilia = false;
@@ -130,6 +137,13 @@ module.exports = async (req, res) => {
     });
   }
 
+  if (itemBonus && !(tierId === 'profissional' && KIT_FILE[itemBonus])) {
+    return sendPage(res, 404, {
+      title: 'Material não encontrado',
+      message: 'Esse link é de um bônus da Edição Profissional. Se você comprou e está vendo esta tela, responda o e-mail da compra que a gente libera na hora.',
+    });
+  }
+
   if (querDevolutiva && !(temDevolutiva && KIT_FILE.devolutiva)) {
     return sendPage(res, 404, {
       title: 'Material não encontrado',
@@ -137,9 +151,9 @@ module.exports = async (req, res) => {
     });
   }
 
-  const fileName = querDevolutiva
-    ? KIT_FILE.devolutiva
-    : (KIT_FILE[tierId] || KIT_FILE.completo);
+  const fileName = itemBonus
+    ? KIT_FILE[itemBonus]
+    : (querDevolutiva ? KIT_FILE.devolutiva : (KIT_FILE[tierId] || KIT_FILE.completo));
 
   let count = 0;
   try {

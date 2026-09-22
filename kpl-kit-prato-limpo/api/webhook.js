@@ -32,7 +32,7 @@ function marcaDoPedido(tierId) {
 
 const { TIERS, tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
-const { createDownloadLink, confirmationEmailHtml } = require('./_entrega');
+const { createDownloadLink, confirmationEmailHtml, linksDosBonus } = require('./_entrega');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
@@ -154,7 +154,7 @@ async function deliverKit(transaction) {
         await sendEmail({
           to: backup.email,
           subject: 'Pagamento confirmado! Kit Prato Limpo a caminho 🍽️',
-          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl, devolutivaUrl: devolutivaUrlWh, linkFamilia: tierWh.id === 'profissional' }),
+          html: confirmationEmailHtml({ name: backup.name, tierName, downloadUrl: entregaUrl, devolutivaUrl: devolutivaUrlWh, linkFamilia: tierWh.id === 'profissional', bonus: linksDosBonus(tierWh.id, entregaUrl) }),
           replyTo: 'kitpratolimpo@gmail.com',
         });
       } catch (err) {
