@@ -54,7 +54,7 @@
      em fundo creme desaparece. */
   body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:19px;line-height:1.55;font-weight:600}
   .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
-  section{padding:38px 0}
+  section{padding:28px 0}
   /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
      com display proprio (inline-block, flex) aparece mesmo escondido, que foi
      o que fez a linha do Bloco de Evolução aparecer antes de ser escolhida. */
@@ -78,7 +78,7 @@
   .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.9rem;
     letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
     padding:6px 14px;border-radius:999px;margin-bottom:12px}
-  .section-head{text-align:center;margin-bottom:24px}
+  .section-head{text-align:center;margin-bottom:18px}
   .section-title{font-size:2.15rem;line-height:1.08;text-align:center;margin-bottom:12px}
   .section-sub{text-align:center;color:var(--text);max-width:32rem;margin:0 auto;font-size:1.05rem;font-weight:600}
 
@@ -86,7 +86,7 @@
   .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
   /* O mockup ja traz margem branca dentro da propria imagem, entao o padding
      cheio das duas secoes somava um vazio grande entre as dobras. */
-  .hero + section{padding-top:24px}
+  .hero + section{padding-top:18px}
   .hero .btn{max-width:26rem;margin:0 auto}
   .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
     font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
@@ -228,6 +228,8 @@
   .mosaico__item figcaption span{display:block;font-family:var(--body);font-weight:600;font-size:.72rem;
     color:var(--muted);margin-top:2px}
   .mosaico__nota{text-align:center;font-size:1rem;margin:16px 0 0;color:var(--text)}
+  .mosaico__intro{text-align:center;font-size:1rem;margin:18px 0 12px;color:var(--text)}
+  .mosaico--fam .mosaico__item img{background:#fff}
 
   /* ---------- cards do "vem junto" ---------- */
   .junto{display:grid;grid-template-columns:1fr;gap:12px}
@@ -443,7 +445,7 @@
     .hero__h1{font-size:2.9rem}
     .hero__sub{font-size:1.08rem}
     .section-title{font-size:2.5rem}
-    section{padding:46px 0}
+    section{padding:36px 0}
   }
 </style>
 </head>
@@ -461,7 +463,7 @@
        traduzir "189 atividades" pra aquilo que acabou de ver. -->
   <div class="wrap">
     <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
-    <h1 class="hero__h1">Atividades prontas <span class="hl">pra usar com a criança na própria consulta</span></h1>
+    <h1 class="hero__h1">189 atividades prontas <span class="hl">pra usar com a criança na própria consulta</span></h1>
     <p class="hero__sub">Você abre a ficha, põe o alimento na mesa e já sabe o que fazer. Sem montar atividade do zero pra cada paciente.</p>
 
     <picture>
@@ -513,32 +515,17 @@
     <div class="section-head">
       <span class="eyebrow">Veja por dentro</span>
       <h2 class="section-title">Olha o material <span class="hl">por dentro</span></h2>
-      <p class="section-sub">Estas são 16 das 60 fichas de consultório. Todas no mesmo padrão, prontas para imprimir ou abrir no tablet.</p>
+      <p class="section-sub">Estas são 10 das 60 fichas de consultório. Todas no mesmo padrão, prontas para imprimir ou abrir no tablet.</p>
     </div>
 
     <div class="mosaico-wrap">
       <button type="button" class="mosaico__seta mosaico__seta--ant" id="mos-ant" aria-label="Ver fichas anteriores">‹</button>
       <button type="button" class="mosaico__seta mosaico__seta--prox" id="mos-prox" aria-label="Ver próximas fichas">›</button>
-      <div class="mosaico" id="mosaico">
+      <div class="mosaico" id="mosaico" data-auto>
       <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C01.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O mapa do prato, da etapa Avaliação inicial" />
-        <figcaption>O mapa do prato<span>Avaliação inicial</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C03.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha A caixa fechada, da etapa Avaliação inicial" />
-        <figcaption>A caixa fechada<span>Avaliação inicial</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C05.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O que a boca aceita, da etapa Avaliação inicial" />
-        <figcaption>O que a boca aceita<span>Avaliação inicial</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C07.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha Retrato do alimento, da etapa Aproximação sem contato" />
-        <figcaption>Retrato do alimento<span>Aproximação sem contato</span></figcaption>
+        <img src="assets/fichas-consultorio-web/C16.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Quebra-cabeça de fruta, da etapa Toque e manipulação" />
+        <figcaption>Quebra-cabeça de fruta<span>Toque e manipulação</span></figcaption>
       </figure>
       <figure class="mosaico__item">
         <img src="assets/fichas-consultorio-web/C11.webp" width="560" height="840" loading="lazy" decoding="async"
@@ -546,14 +533,19 @@
         <figcaption>Carimbo de pimentão<span>Toque e manipulação</span></figcaption>
       </figure>
       <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C03.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A caixa fechada, da etapa Avaliação inicial" />
+        <figcaption>A caixa fechada<span>Avaliação inicial</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C07.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Retrato do alimento, da etapa Aproximação sem contato" />
+        <figcaption>Retrato do alimento<span>Aproximação sem contato</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
         <img src="assets/fichas-consultorio-web/C13.webp" width="560" height="840" loading="lazy" decoding="async"
              alt="Ficha Boliche de tomate, da etapa Toque e manipulação" />
         <figcaption>Boliche de tomate<span>Toque e manipulação</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C16.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha Quebra-cabeça de fruta, da etapa Toque e manipulação" />
-        <figcaption>Quebra-cabeça de fruta<span>Toque e manipulação</span></figcaption>
       </figure>
       <figure class="mosaico__item">
         <img src="assets/fichas-consultorio-web/C21.webp" width="560" height="840" loading="lazy" decoding="async"
@@ -561,48 +553,28 @@
         <figcaption>Mágica da gelatina<span>Som, corte e transformação</span></figcaption>
       </figure>
       <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C24.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha A lambida secreta, da etapa Aproximação da boca" />
-        <figcaption>A lambida secreta<span>Aproximação da boca</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C27.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O júri do sabor, da etapa Prova e registro" />
-        <figcaption>O júri do sabor<span>Prova e registro</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C31.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O termômetro do não, da etapa Recusa e crise" />
-        <figcaption>O termômetro do não<span>Recusa e crise</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C36.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O mapa da mesa, da etapa A ficha do adulto" />
-        <figcaption>O mapa da mesa<span>A ficha do adulto</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C41.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha A linha do dia, da etapa Rotina e ambiente" />
-        <figcaption>A linha do dia<span>Rotina e ambiente</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C47.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha Só triturado, da etapa Casos difíceis" />
-        <figcaption>Só triturado<span>Casos difíceis</span></figcaption>
-      </figure>
-      <figure class="mosaico__item">
         <img src="assets/fichas-consultorio-web/C52.webp" width="560" height="840" loading="lazy" decoding="async"
              alt="Ficha O cardápio de três colunas, da etapa Expansão do repertório" />
         <figcaption>O cardápio de três colunas<span>Expansão do repertório</span></figcaption>
       </figure>
       <figure class="mosaico__item">
-        <img src="assets/fichas-consultorio-web/C58.webp" width="560" height="840" loading="lazy" decoding="async"
-             alt="Ficha O teste da avó, da etapa Manutenção e alta" />
-        <figcaption>O teste da avó<span>Manutenção e alta</span></figcaption>
+        <img src="assets/fichas-consultorio-web/C54.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O alimento da semana, da etapa Expansão do repertório" />
+        <figcaption>O alimento da semana<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C51.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A regra do primo, da etapa Expansão do repertório" />
+        <figcaption>A regra do primo<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C32.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A pausa de 30 segundos, da etapa Recusa e crise" />
+        <figcaption>A pausa de 30 segundos<span>Recusa e crise</span></figcaption>
       </figure>
       </div>
     </div>
-    <p class="mosaico__dica">← arraste para o lado para ver as 16 →</p>
+    <p class="mosaico__dica">← passa sozinho, e dá pra arrastar →</p>
 
     <p class="mosaico__nota">E ainda tem as <b>129 fichas da família</b>, que você entrega no fim da consulta.</p>
 
@@ -697,12 +669,38 @@
       <li><span class="tag so">6</span><span><b>Leva para casa</b>: a tarefa da família até a próxima consulta.</span></li>
     </ul>
 
-    <div class="grade-fichas">
-      <img src="assets/fichas-consultorio-web/C01.webp" alt="Ficha O mapa do prato, da etapa de avaliação" loading="lazy" />
-      <img src="assets/fichas-consultorio-web/C11.webp" alt="Ficha Carimbo de pimentão, da etapa de toque" loading="lazy" />
-      <img src="assets/fichas-consultorio-web/C24.webp" alt="Ficha A lambida secreta, da etapa de aproximação da boca" loading="lazy" />
+    <!-- 22/09: aqui embaixo ficavam 3 fichas de consultorio de novo, repetindo
+         o que a pessoa acabou de ver la em cima. Passou a mostrar o OUTRO
+         material, o que a familia leva pra casa, que ate entao so aparecia
+         citado em texto. -->
+    <p class="mosaico__intro">E estas são das <b>129 fichas que a família leva pra casa</b>, no fim da consulta.</p>
+    <div class="mosaico-wrap">
+      <button type="button" class="mosaico__seta mosaico__seta--ant" aria-label="Ver fichas anteriores">‹</button>
+      <button type="button" class="mosaico__seta mosaico__seta--prox" aria-label="Ver próximas fichas">›</button>
+      <div class="mosaico mosaico--fam" data-auto>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F108.webp" width="560" height="791" loading="lazy" decoding="async" alt="Ficha Cada um com sua sombra" />
+          <figcaption>Cada um com sua sombra<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F52.webp" width="560" height="840" loading="lazy" decoding="async" alt="Ficha Memória dos alimentos" />
+          <figcaption>Memória dos alimentos<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F109.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Caça-palavras dos alimentos" />
+          <figcaption>Caça-palavras dos alimentos<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F114.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Ache as diferenças" />
+          <figcaption>Ache as diferenças<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F117.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Quebra-cabeça da abóbora" />
+          <figcaption>Quebra-cabeça da abóbora<span>Para levar pra casa</span></figcaption>
+        </figure>
+      </div>
     </div>
-    <p class="legenda">Três das 60 fichas de consultório.</p>
+    <p class="legenda">Cinco das 129 fichas da família.</p>
   </div>
 </section>
 
@@ -1346,11 +1344,50 @@ function pixel(evento, dados, eventId){
 
 /* ---- carrossel das fichas: cada seta rola uma ficha ---- */
 (function(){
-  const trilho = document.getElementById('mosaico');
-  if (!trilho) return;
-  const passo = () => (trilho.querySelector('.mosaico__item')?.getBoundingClientRect().width || 240) + 10;
-  document.getElementById('mos-ant')?.addEventListener('click', () => trilho.scrollBy({ left: -passo(), behavior: 'smooth' }));
-  document.getElementById('mos-prox')?.addEventListener('click', () => trilho.scrollBy({ left: passo(), behavior: 'smooth' }));
+  // Vale pros DOIS carrosseis (fichas de consultorio e fichas da familia): as
+  // setas sao procuradas dentro do proprio .mosaico-wrap, nao por id.
+  //
+  // data-auto = passa sozinho, mas SO enquanto o trilho esta na tela (o
+  // IntersectionObserver desliga fora dela) e so depois que a pessoa chegou
+  // ali. Qualquer toque, arrasto ou clique na seta para o automatico por 9s,
+  // pra nao brigar com quem esta olhando uma ficha especifica. Quem pediu
+  // menos animacao no sistema nao recebe o automatico.
+  const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.mosaico-wrap').forEach((wrap) => {
+    const trilho = wrap.querySelector('.mosaico');
+    if (!trilho) return;
+    const passo = () => (trilho.querySelector('.mosaico__item')?.getBoundingClientRect().width || 240) + 10;
+    const anda = (dir) => trilho.scrollBy({ left: dir * passo(), behavior: 'smooth' });
+
+    let pausaAte = 0;
+    const segura = () => { pausaAte = Date.now() + 9000; };
+
+    wrap.querySelector('.mosaico__seta--ant')?.addEventListener('click', () => { segura(); anda(-1); });
+    wrap.querySelector('.mosaico__seta--prox')?.addEventListener('click', () => { segura(); anda(1); });
+
+    if (calmo || !trilho.hasAttribute('data-auto')) return;
+
+    trilho.addEventListener('pointerdown', segura);
+    trilho.addEventListener('touchstart', segura, { passive: true });
+    trilho.addEventListener('wheel', segura, { passive: true });
+    wrap.addEventListener('mouseenter', segura);
+
+    let relogio = null;
+    const tique = () => {
+      if (Date.now() < pausaAte || document.hidden) return;
+      // Chegou no fim? Volta pro comeco, senao o carrossel morre parado.
+      const fim = trilho.scrollWidth - trilho.clientWidth - 4;
+      if (trilho.scrollLeft >= fim) trilho.scrollTo({ left: 0, behavior: 'smooth' });
+      else anda(1);
+    };
+    new IntersectionObserver((ents) => {
+      for (const e of ents) {
+        if (e.isIntersecting && !relogio) relogio = setInterval(tique, 3200);
+        else if (!e.isIntersecting && relogio) { clearInterval(relogio); relogio = null; }
+      }
+    }, { threshold: 0.35 }).observe(trilho);
+  });
 })();
 
 /* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
