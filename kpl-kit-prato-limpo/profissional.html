@@ -205,8 +205,18 @@
   .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
 
   /* ---------- mosaico do "por dentro" ---------- */
-  .mosaico{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-  .mosaico__item{margin:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+  /* Carrossel (22/09): 16 fichas empilhadas ocupavam meia pagina de rolagem.
+     Deitado, mostra o mesmo volume numa tela so, e arrastar de lado e o gesto
+     natural no celular. */
+  .mosaico-wrap{position:relative}
+  .mosaico{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:4px 2px 10px;-webkit-overflow-scrolling:touch}
+  .mosaico__seta{position:absolute;top:36%;width:42px;height:42px;border-radius:50%;border:2px solid var(--border);
+    background:#fff;color:var(--ink);font-size:1.4rem;font-weight:800;line-height:1;cursor:pointer;display:none;
+    box-shadow:var(--shadow-sm);z-index:2}
+  .mosaico__seta--ant{left:-8px} .mosaico__seta--prox{right:-8px}
+  .mosaico__dica{text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);margin:2px 0 0}
+  .mosaico__item{flex:0 0 62%;max-width:260px;scroll-snap-align:center;margin:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;
     box-shadow:var(--shadow-sm)}
   .mosaico__item img{width:100%;height:auto;display:block}
   .mosaico__item figcaption{font-family:var(--heading);font-weight:800;font-size:.82rem;color:var(--ink);
@@ -226,7 +236,7 @@
   .junto__selo{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
     font-family:var(--heading);font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
     padding:4px 10px;border-radius:999px}
-  @media(min-width:640px){ .mosaico{grid-template-columns:repeat(3,1fr)} }
+  @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
 
   /* ---------- dois planos (19/09), mesmo desenho da /mae ---------- */
   .planos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -496,7 +506,10 @@
       <p class="section-sub">Estas são 16 das 60 fichas de consultório. Todas no mesmo padrão, prontas para imprimir ou abrir no tablet.</p>
     </div>
 
-    <div class="mosaico">
+    <div class="mosaico-wrap">
+      <button type="button" class="mosaico__seta mosaico__seta--ant" id="mos-ant" aria-label="Ver fichas anteriores">‹</button>
+      <button type="button" class="mosaico__seta mosaico__seta--prox" id="mos-prox" aria-label="Ver próximas fichas">›</button>
+      <div class="mosaico" id="mosaico">
       <figure class="mosaico__item">
         <img src="assets/fichas-consultorio-web/C01.webp" width="560" height="840" loading="lazy" decoding="async"
              alt="Ficha O mapa do prato, da etapa Avaliação inicial" />
@@ -577,7 +590,9 @@
              alt="Ficha O teste da avó, da etapa Manutenção e alta" />
         <figcaption>O teste da avó<span>Manutenção e alta</span></figcaption>
       </figure>
+      </div>
     </div>
+    <p class="mosaico__dica">← arraste para o lado para ver as 16 →</p>
 
     <p class="mosaico__nota">E ainda tem as <b>129 fichas da família</b>, que você entrega no fim da consulta.</p>
 
@@ -1288,6 +1303,15 @@ function pixel(evento, dados, eventId){
     content_name: 'KPL Edição Profissional', content_type: 'product',
     value: PRECO_CENTS/100, currency: 'BRL',
   });
+})();
+
+/* ---- carrossel das fichas: cada seta rola uma ficha ---- */
+(function(){
+  const trilho = document.getElementById('mosaico');
+  if (!trilho) return;
+  const passo = () => (trilho.querySelector('.mosaico__item')?.getBoundingClientRect().width || 240) + 10;
+  document.getElementById('mos-ant')?.addEventListener('click', () => trilho.scrollBy({ left: -passo(), behavior: 'smooth' }));
+  document.getElementById('mos-prox')?.addEventListener('click', () => trilho.scrollBy({ left: passo(), behavior: 'smooth' }));
 })();
 
 /* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
