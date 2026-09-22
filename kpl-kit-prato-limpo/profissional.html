@@ -253,6 +253,11 @@
   .plano__list li.off .ic{text-decoration:none}
   .plano__hl{background:linear-gradient(transparent 60%,var(--orange-soft) 60%);font-weight:700}
   .plano__guarantee{margin-top:auto;padding-top:12px;font-size:.78rem;font-weight:700;color:var(--green-dark)}
+  /* Parcelamento: o numero grande passa a ser a parcela, nao o preco cheio.
+     So aparece quando PARCELAMENTO.ativo e true (ver o bloco no script). */
+  .plano__parcela{display:block;font-family:var(--heading);font-weight:800;font-size:1.05rem;color:var(--green-dark);
+    line-height:1.15;margin-top:2px}
+  .plano__avista{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-top:2px}
   .planos__titulo{text-align:center;font-family:var(--heading);font-weight:700;color:var(--ink);margin:0 0 14px}
   .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
   /* Respiro entre o CTA do meio da pagina e a secao seguinte: com o padding
@@ -401,6 +406,10 @@
   .secure-badges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;
     color:var(--muted);font-size:.82rem;font-weight:700}
   .secure-badges span{display:inline-flex;align-items:center;gap:5px}
+  .cartao-box{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:14px;margin:0 0 16px}
+  .cartao-box p{font-size:.92rem;margin:0 0 10px}
+  .btn--linha{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none;min-height:54px}
+  .btn--linha:active{transform:none}
   .pay-note{text-align:center;color:var(--muted);font-size:.78rem;margin:10px auto 0;max-width:32rem;line-height:1.5}
 
   .garantia{display:flex;gap:11px;align-items:flex-start;background:var(--orange-soft);border:1px solid #F6D9A8;
@@ -823,6 +832,8 @@
         <div class="plano__name">Fichas em PDF</div>
         <div class="plano__tagline">Para imprimir e aplicar.</div>
         <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+        <span class="plano__parcela" data-parcela="profissional_pdf" hidden></span>
+        <span class="plano__avista" data-avista="profissional_pdf" hidden></span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">189 atividades prontas para consultório e casa</span></li>
           <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
@@ -841,6 +852,8 @@
         <div class="plano__name">PDF + Aplicativo</div>
         <div class="plano__tagline">Tudo da Edição Profissional.</div>
         <div class="plano__price">R$ 37<span class="cents">,00</span></div>
+        <span class="plano__parcela" data-parcela="profissional" hidden></span>
+        <span class="plano__avista" data-avista="profissional" hidden></span>
         <ul class="plano__list">
           <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
           <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
@@ -895,6 +908,14 @@
         <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 37,00</span></div>
         <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
         <div class="linha total"><span>Total</span><span id="total-valor">R$ 37,00</span></div>
+      </div>
+
+      <!-- Cartao parcelado: so aparece quando PARCELAMENTO.ativo e true. O Pix
+           continua sendo o caminho principal, porque cai na hora e sem taxa de
+           plataforma. -->
+      <div class="cartao-box" id="cartao-box" hidden>
+        <p><b>Prefere cartão?</b> Dá pra parcelar. Você sai daqui e termina a compra na plataforma, e o acesso chega no mesmo e-mail.</p>
+        <a class="btn btn--linha" id="cartao-btn" href="#" rel="noopener">Pagar parcelado no cartão</a>
       </div>
 
       <div class="pix-trust">
@@ -1009,6 +1030,46 @@ const plano = () => {
   return { tier: r.value, cents: Number(r.dataset.cents), nome: r.dataset.nome };
 };
 const PRECO_CENTS = 3700; // plano de referencia pro ViewContent
+
+/* =========================================================
+   PARCELAMENTO NO CARTAO (22/09)
+
+   O Pix daqui continua existindo e e o caminho padrao. O parcelado depende de
+   um checkout de plataforma (Kirvano, Hotmart, Kiwify...), porque o valor de
+   cada parcela sai da TAXA da plataforma, nao de uma conta nossa. Enquanto o
+   link nao existir, nada disso aparece na tela.
+
+   Pra ligar, preencha os tres campos de cada plano e mude ativo pra true:
+     vezes  = numero de parcelas que a plataforma mostra
+     parcela= valor de UMA parcela, EXATAMENTE como a plataforma exibe
+     url    = link do checkout daquele plano na plataforma
+   ========================================================= */
+const PARCELAMENTO = {
+  ativo: false,
+  planos: {
+    profissional_pdf: { vezes: 0, parcela: '', url: '' },
+    profissional:     { vezes: 0, parcela: '', url: '' },
+  },
+};
+
+function aplicaParcelamento(){
+  if (!PARCELAMENTO.ativo) return;
+  document.querySelectorAll('[data-parcela]').forEach((el) => {
+    const cfg = PARCELAMENTO.planos[el.dataset.parcela];
+    if (!cfg || !cfg.vezes || !cfg.parcela) return;
+    el.textContent = 'ou ' + cfg.vezes + 'x de R$ ' + cfg.parcela;
+    el.hidden = false;
+  });
+  document.querySelectorAll('[data-avista]').forEach((el) => {
+    const r = document.querySelector('input[name="plano"][value="' + el.dataset.avista + '"]');
+    if (!r) return;
+    el.textContent = 'à vista no Pix: ' + emReais(Number(r.dataset.cents));
+    el.hidden = false;
+  });
+  // Botao extra no checkout, abaixo do Pix: cartao vai pra plataforma.
+  const alvo = document.getElementById('cartao-box');
+  if (alvo) alvo.hidden = false;
+}
 const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
 const $ = s => document.querySelector(s);
 
@@ -1148,7 +1209,7 @@ function marcaPro(id){
 
 let timer=null, paymentId=null, cliente=null;
 // Desenha o resumo com o plano inicial assim que a pagina carrega.
-addEventListener('DOMContentLoaded', () => atualizaTotal());
+addEventListener('DOMContentLoaded', () => { aplicaParcelamento(); atualizaTotal(); });
 
 /* =========================================================
    Order bump do Bloco de Evolução (id interno segue 'devolutiva')
@@ -1166,6 +1227,14 @@ function travaPlanos(sim){
 
 function atualizaTotal(){
   const p = plano();
+  const cartao = PARCELAMENTO.ativo && PARCELAMENTO.planos[p.tier];
+  const btnCartao = document.getElementById('cartao-btn');
+  if (btnCartao && cartao && cartao.url) {
+    btnCartao.href = cartao.url;
+    btnCartao.textContent = cartao.vezes
+      ? 'Pagar em até ' + cartao.vezes + 'x no cartão'
+      : 'Pagar no cartão';
+  }
   $('#linha-plano-nome').textContent = p.nome;
   $('#linha-plano-valor').textContent = emReais(p.cents);
   $('#bump-sim-valor').textContent = emReais(p.cents + BUMP_DEVOLUTIVA_CENTS);
