@@ -48,12 +48,16 @@ const QUIZ_STEPS = [
 // gerou o Pix), e por isso ficam no fim, mais fundo que qualquer rolagem.
 const PRO_STEPS = [
   { id: 'p_topo', label: '1. Topo' },
-  { id: 'p_pecas', label: '2. As três peças' },
-  { id: 'p_ficha', label: '3. Ficha por dentro' },
-  { id: 'p_app', label: '4. O aplicativo' },
-  { id: 'p_licenca', label: '5. Licença de uso' },
-  { id: 'p_checkout', label: '6. Chegou no checkout' },
-  { id: 'p_plano', label: '7. Escolheu um plano' },
+  // 22/09: a secao da dor ficava ENTRE o topo e as tres pecas sem ser medida,
+  // entao quem rolava ate ela e saia era contado como "parou no topo". Era isso
+  // que fazia o abandono do topo parecer maior do que e.
+  { id: 'p_dor', label: '2. A dor' },
+  { id: 'p_pecas', label: '3. As três peças' },
+  { id: 'p_ficha', label: '4. Ficha por dentro' },
+  { id: 'p_app', label: '5. O aplicativo' },
+  { id: 'p_licenca', label: '6. Licença de uso' },
+  { id: 'p_checkout', label: '7. Chegou no checkout' },
+  { id: 'p_plano', label: '8. Escolheu um plano' },
   { id: 'p_cupom', label: '8. Aplicou o cupom' },
   { id: 'p_dados', label: '9. Preencheu os dados' },
   { id: 'p_pix', label: '10. Gerou o Pix' },

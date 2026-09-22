@@ -420,7 +420,7 @@
 </header>
 
 <!-- ======================= A DOR ======================= -->
-<section>
+<section id="p_dor">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Talvez você reconheça</span>
@@ -852,7 +852,7 @@ function getVisitorId(){
 }
 
 // Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_pecas','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
+const PRO_IDS = ['p_topo','p_dor','p_pecas','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
 let proAtual = 'p_topo';
 let proMaxIdx = 0;
 let bateAgora = () => {};
@@ -874,7 +874,7 @@ function marcaPro(id){
   }catch(e){}
 
   // id do elemento na pagina -> passo do funil
-  const alvos = { p_topo:'p_topo', p_pecas:'p_pecas', p_ficha:'p_ficha',
+  const alvos = { p_topo:'p_topo', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
                   p_app:'p_app', p_licenca:'p_licenca', checkout:'p_checkout' };
   if ('IntersectionObserver' in window) {
     const visiveis = {};
