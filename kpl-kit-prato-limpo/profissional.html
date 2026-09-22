@@ -1072,6 +1072,30 @@ function mascaraTel(v){
 $('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
 ['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
 
+/* =========================================================
+   InitiateCheckout no NOME preenchido (22/09)
+
+   Antes ele so disparava no clique de "Pagar com Pix" com tudo validado, e
+   quem preenchia o nome e desistia no meio nao aparecia em lugar nenhum: nem
+   no Meta, nem no painel. Agora vale a mesma regra da pagina das maes, nome
+   com sobrenome + saiu do campo, que e o primeiro sinal real de intencao.
+   Dispara UMA vez por sessao; o submit so completa se ainda nao tiver ido.
+   ========================================================= */
+let initiateDisparado = false;
+function disparaInitiate(){
+  if (initiateDisparado) return;
+  if (!okNome($('#nome').value)) return;
+  initiateDisparado = true;
+  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
+  pixelCustom('FormStart', {});
+  marcaPro('p_dados'); // marca no funil e manda a batida na hora
+}
+$('#nome').addEventListener('blur', disparaInitiate);
+// Tocar no campo seguinte conta como "avancou": no celular o blur as vezes nao
+// vem, porque a pessoa toca direto no proximo campo.
+$('#email').addEventListener('focus', disparaInitiate);
+$('#telefone').addEventListener('focus', disparaInitiate);
+
 /* ---- checkout ---- */
 document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
   pixelCustom('PlanoEscolhido', { plano: r.value });
@@ -1085,9 +1109,10 @@ $('#form').addEventListener('submit', e => {
   if(!valida()){ $('.invalid input')?.focus(); return; }
 
   cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
-  // InitiateCheckout dispara aqui, com o formulario ja validado: o evento
-  // significa "comecou o checkout", nao "decidiu sobre o adicional".
-  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
+  // Rede de seguranca: se o nome foi preenchido sem passar por blur nem pelo
+  // foco dos outros campos (autopreenchimento do navegador, por exemplo), o
+  // evento sai aqui. A trava interna impede contar duas vezes.
+  disparaInitiate();
 
   marcaPro('p_dados');
   $('#bump-step').classList.add('show');
