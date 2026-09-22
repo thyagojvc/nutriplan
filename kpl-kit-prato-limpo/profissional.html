@@ -244,6 +244,20 @@
     padding:4px 10px;border-radius:999px}
   @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
 
+  /* ---------- bonus com caixa 3D (22/09) ---------- */
+  .bonus{display:grid;grid-template-columns:1fr;gap:14px}
+  .bonus__card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:14px 16px 18px;box-shadow:var(--shadow-sm);text-align:center}
+  .bonus__foto{display:block;width:100%;max-width:230px;margin:0 auto 6px}
+  .bonus__foto img{width:100%;height:auto;display:block}
+  .bonus__tag{display:inline-block;background:var(--green);color:#fff;font-family:var(--heading);
+    font-weight:800;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 14px;border-radius:999px;margin-bottom:8px}
+  .bonus__card b{display:block;font-family:var(--heading);font-size:1.12rem;color:var(--ink);margin-bottom:6px}
+  .bonus__card p{font-size:.95rem;color:var(--text);margin:0}
+  .bonus__selo{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-weight:800;font-size:.76rem;padding:4px 12px;border-radius:999px}
+  @media(min-width:640px){ .bonus{grid-template-columns:1fr 1fr;gap:16px} }
   /* ---------- oferta em cards (22/09) ---------- */
   .oferta__titulo{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1.1;text-align:center;
     color:var(--ink);margin:0 0 18px}
@@ -760,18 +774,6 @@
         <span class="junto__selo">Incluído</span>
       </div>
       <div class="junto__card">
-        <span class="junto__ic">📱</span>
-        <b>O aplicativo</b>
-        <p>Aba Consultório com as 60 fichas na tela do tablet, e o link da família com o jogo dos 20 personagens.</p>
-        <span class="junto__selo">Plano completo</span>
-      </div>
-      <div class="junto__card">
-        <span class="junto__ic">📅</span>
-        <b>Calendário, cartelas e quadro de progresso</b>
-        <p>Para a família acompanhar entre uma consulta e outra.</p>
-        <span class="junto__selo">Plano completo</span>
-      </div>
-      <div class="junto__card">
         <span class="junto__ic">📜</span>
         <b>Licença de uso com seus pacientes</b>
         <p>Sem limite de cópias, sem prazo, sem pagar por paciente. Vale em consultório, escola e oficina.</p>
@@ -783,6 +785,78 @@
         <p>Fichas novas entram no mesmo acesso, sem pagar de novo.</p>
         <span class="junto__selo">Incluído</span>
       </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BÔNUS (22/09) =======================
+     Formato das paginas que estao escalando no nicho: caixa 3D, tarja
+     "BÔNUS N" e uma linha do que e. Os quatro EXISTEM: o app e o calendario
+     sairam do "vem junto" logo acima pra nao aparecerem duas vezes, e o mapa
+     e o pacote de sessoes foram feitos pra ca (scripts/build-bonus-profissional.js).
+     O selo diz em qual plano cada um entra: inventar "bonus" que o plano de
+     PDF nao recebe seria promessa quebrada no e-mail de entrega. -->
+<section id="p_bonus" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">E não para por aí</span>
+      <h2 class="section-title">Ainda vem com <span class="hl">estes bônus</span></h2>
+      <p class="section-sub">Ferramentas para você não precisar decidir sozinha qual ficha usar em quem.</p>
+    </div>
+
+    <div class="bonus">
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-mapa.webp" type="image/webp" />
+          <img src="assets/bonus-mapa.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="O mapa das 12 etapas" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 1</span>
+        <b>O mapa das 12 etapas</b>
+        <p>Uma folha só, com o caminho inteiro da avaliação até a alta e onde cada ficha entra. Para imprimir e deixar na parede.</p>
+        <span class="bonus__selo">Nos dois planos</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-pacote.webp" type="image/webp" />
+          <img src="assets/bonus-pacote.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="Pacote de 8 sessões" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 2</span>
+        <b>Pacote de 8 sessões</b>
+        <p>O que fazer em cada consulta: a ficha que você aplica, o que observar e a ficha que a família leva pra casa até a próxima.</p>
+        <span class="bonus__selo">Nos dois planos</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-app.webp" type="image/webp" />
+          <img src="assets/bonus-app.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="O aplicativo da Edição Profissional" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 3</span>
+        <b>O aplicativo</b>
+        <p>Aba Consultório com as 60 fichas na tela do tablet, e o link da família com o jogo dos 20 personagens.</p>
+        <span class="bonus__selo">Plano completo</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-calendario.webp" type="image/webp" />
+          <img src="assets/bonus-calendario.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="Calendário, cartelas e quadro de progresso" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 4</span>
+        <b>Calendário, cartelas e quadro de progresso</b>
+        <p>Para a família acompanhar entre uma consulta e outra, sem depender da memória de ninguém.</p>
+        <span class="bonus__selo">Plano completo</span>
+      </div>
+    </div>
+
+    <div style="text-align:center;margin-top:22px">
+      <a href="#checkout" class="btn">Quero o kit completo →</a>
+      <p class="btn-note">Pagamento único · acesso na hora</p>
     </div>
   </div>
 </section>
@@ -1180,7 +1254,7 @@ function getVisitorId(){
 }
 
 // Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
+const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_bonus','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
 let proAtual = 'p_topo';
 let proMaxIdx = 0;
 let bateAgora = () => {};
@@ -1203,7 +1277,7 @@ function marcaPro(id){
 
   // id do elemento na pagina -> passo do funil
   const alvos = { p_topo:'p_topo', p_dentro:'p_dentro', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
-                  p_app:'p_app', p_junto:'p_junto', p_licenca:'p_licenca', checkout:'p_checkout' };
+                  p_app:'p_app', p_junto:'p_junto', p_bonus:'p_bonus', p_licenca:'p_licenca', checkout:'p_checkout' };
   if ('IntersectionObserver' in window) {
     const visiveis = {};
     const obs = new IntersectionObserver((entradas) => {

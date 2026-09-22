@@ -57,12 +57,16 @@ const PRO_STEPS = [
   { id: 'p_ficha', label: '5. Ficha por dentro' },
   { id: 'p_app', label: '6. O aplicativo' },
   { id: 'p_junto', label: '7. Vem junto' },
-  { id: 'p_licenca', label: '8. Licença de uso' },
-  { id: 'p_checkout', label: '9. Chegou no checkout' },
-  { id: 'p_plano', label: '10. Escolheu um plano' },
-  { id: 'p_dados', label: '11. Começou a preencher' },
-  { id: 'p_pix', label: '12. Gerou o Pix' },
-  { id: 'p_pago', label: '13. Pagou' },
+  // 22/09: a secao de bonus entrou aqui no meio. Nao renumera nada no banco:
+  // o que fica gravado no visitor e o ID do passo, e o indice e calculado na
+  // leitura (ver funnel-data), entao visita antiga continua no lugar certo.
+  { id: 'p_bonus', label: '8. Os bônus' },
+  { id: 'p_licenca', label: '9. Licença de uso' },
+  { id: 'p_checkout', label: '10. Chegou no checkout' },
+  { id: 'p_plano', label: '11. Escolheu um plano' },
+  { id: 'p_dados', label: '12. Começou a preencher' },
+  { id: 'p_pix', label: '13. Gerou o Pix' },
+  { id: 'p_pago', label: '14. Pagou' },
 ];
 
 // Trilha do QUIZ PROFISSIONAL (/quiz-pro). Quarta trilha do painel. Separada
