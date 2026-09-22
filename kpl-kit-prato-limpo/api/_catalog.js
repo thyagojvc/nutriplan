@@ -39,7 +39,7 @@ const TIERS = {
   profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 3700 }, // 21/09: sem cupom, preco direto
   // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
   // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
-  // 22/09: R$ 27,90, ancorado em R$ 42,90 na pagina. Antes disso foi R$ 29,90,
+  // 22/09: R$ 27,90, ancorado em R$ 49,90 na pagina. Antes disso foi R$ 29,90,
   // que era o MESMO valor do KPL Completo das maes. Foi por causa dessa colisao
   // que a entrega parou de adivinhar o produto pelo valor e passou a ler o
   // tierId gravado no pedido (ver create-charge e deliver-kit).
