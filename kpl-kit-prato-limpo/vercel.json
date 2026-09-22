@@ -58,7 +58,7 @@
   ],
   "redirects": [
     {
-      "source": "/quiz-pro",
+      "source": "/kit-profissional",
       "destination": "/profissional",
       "permanent": false
     }
