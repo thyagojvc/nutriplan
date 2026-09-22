@@ -242,56 +242,50 @@
     padding:4px 10px;border-radius:999px}
   @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
 
-  /* ---------- dois planos (19/09), mesmo desenho da /mae ---------- */
-  .planos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  .plano{position:relative;border:2px solid var(--border);border-radius:var(--radius);background:var(--card);
-    padding:20px 16px 16px;cursor:pointer;display:flex;flex-direction:column;transition:border-color .15s,box-shadow .15s}
+  /* ---------- oferta em cards (22/09) ---------- */
+  .oferta__titulo{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1.1;text-align:center;
+    color:var(--ink);margin:0 0 18px}
+  .planos{display:grid;grid-template-columns:1fr;gap:16px}
+  .plano{position:relative;display:flex;flex-direction:column;background:var(--card);border:2px solid var(--border);
+    border-radius:20px;padding:22px 16px 18px;box-shadow:var(--shadow-sm);cursor:pointer;
+    transition:border-color .15s, box-shadow .15s}
   .plano input{position:absolute;opacity:0;pointer-events:none}
-  .plano:hover{border-color:var(--mint-2)}
-  .plano--premium{border-color:var(--orange)}
-  .plano:has(input:checked){border-color:var(--green);box-shadow:0 10px 26px rgba(92,167,65,.20)}
-  .plano:has(input:focus-visible){outline:3px solid var(--mint-2);outline-offset:2px}
-  .plano__badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);white-space:nowrap;background:var(--orange);
-    color:#fff;font-family:var(--heading);font-weight:800;font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;
-    padding:4px 12px;border-radius:999px}
-  .plano__radio{position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:50%;border:2px solid var(--border);background:#fff}
-  .plano:has(input:checked) .plano__radio{border-color:var(--green);background:var(--green);box-shadow:inset 0 0 0 4px #fff}
-  .plano__name{font-family:var(--heading);font-weight:800;color:var(--ink);font-size:1.05rem;margin-bottom:2px;padding-right:26px}
-  .plano__tagline{font-size:.9rem;color:var(--muted);margin-bottom:12px;min-height:2.2em}
-  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:1.9rem;line-height:1}
-  .plano__price .cents{font-size:1rem}
-  .plano__list{list-style:none;padding:0;margin:14px 0 0;display:flex;flex-direction:column;gap:7px}
-  .plano__list li{font-size:.92rem;color:var(--text);display:flex;align-items:flex-start;gap:6px;line-height:1.35}
+  .plano:has(input:checked){border-color:var(--green);box-shadow:0 12px 30px rgba(92,167,65,.18)}
+  .plano--premium{border-color:var(--green)}
+  .plano__badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    background:var(--green);color:#fff;font-family:var(--heading);font-weight:800;font-size:.76rem;
+    letter-spacing:.04em;text-transform:uppercase;padding:6px 16px;border-radius:999px;box-shadow:var(--shadow-sm)}
+  .plano__name{font-family:var(--heading);font-weight:800;font-size:1.25rem;letter-spacing:.06em;
+    text-transform:uppercase;text-align:center;color:var(--ink);margin-bottom:10px}
+  .plano--premium .plano__name{color:var(--green-dark)}
+  .plano__faixa{background:var(--mint);color:var(--green-dark);font-family:var(--heading);font-weight:800;
+    font-size:.92rem;text-align:center;padding:10px 12px;border-radius:999px;margin-bottom:12px}
+  .plano__foto{display:block;width:100%;margin:0 0 12px}
+  .plano__foto img{width:100%;height:auto;display:block}
+  .plano__recebe{font-family:var(--heading);font-weight:800;font-size:.8rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 10px}
+  .plano__list{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-direction:column;gap:9px}
+  .plano__list li{font-size:.95rem;color:var(--text);display:flex;align-items:flex-start;gap:8px;line-height:1.35}
   .plano__list li .ic{flex:0 0 auto;margin-top:1px}
-  .plano__list li.off{color:var(--muted);opacity:.7;text-decoration:line-through;text-decoration-color:#D64545;text-decoration-thickness:1.5px}
+  .plano__list li.off{color:var(--muted);opacity:.75;text-decoration:line-through;
+    text-decoration-color:#D64545;text-decoration-thickness:1.5px}
   .plano__list li.off .ic{text-decoration:none}
   .plano__hl{background:linear-gradient(transparent 60%,var(--orange-soft) 60%);font-weight:700}
-  .plano__guarantee{margin-top:auto;padding-top:12px;font-size:.78rem;font-weight:700;color:var(--green-dark)}
-  /* Parcelamento: o numero grande passa a ser a parcela, nao o preco cheio.
-     So aparece quando PARCELAMENTO.ativo e true (ver o bloco no script). */
-  .plano__parcela{display:block;font-family:var(--heading);font-weight:800;font-size:1.05rem;color:var(--green-dark);
-    line-height:1.15;margin-top:2px}
-  .plano__avista{display:block;font-size:.78rem;font-weight:700;color:var(--muted);margin-top:2px}
-  .planos__titulo{text-align:center;font-family:var(--heading);font-weight:700;color:var(--ink);margin:0 0 14px}
-  .planos__nota{color:var(--muted);font-size:.85rem;text-align:center;margin:12px 0 0}
-  /* Respiro entre o CTA do meio da pagina e a secao seguinte: com o padding
-     cheio das duas secoes mais a margem do cabecalho, sobrava um vazio grande. */
-  #p_pecas{padding-bottom:22px}
-  #p_ficha{padding-top:24px}
-  /* 21/09: os dois planos ficam lado a lado tambem no celular. Empilhado, a
-     pessoa via um plano por vez e nao comparava, que e o ponto de ter dois. */
-  @media(max-width:560px){
-    .planos{gap:8px}
-    .plano{padding:16px 10px 12px;border-radius:14px}
-    .plano__name{font-size:.92rem;padding-right:20px}
-    .plano__tagline{font-size:.78rem;min-height:2.6em;margin-bottom:8px}
-    .plano__price{font-size:1.45rem}
-    .plano__price .cents{font-size:.8rem}
-    .plano__price-old{font-size:.76rem}
-    .plano__radio{width:18px;height:18px;top:12px;right:10px}
-    .plano__badge{font-size:.58rem;padding:3px 8px}
-    .plano__list li{font-size:.78rem;gap:4px;line-height:1.3}
-    .plano__guarantee{font-size:.7rem}
+  .plano__preco-box{margin-top:auto;text-align:center}
+  .plano__de{font-size:.92rem;color:var(--muted);font-weight:700;margin:0 0 2px}
+  .plano__de s{color:var(--coral)}
+  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.6rem;line-height:1}
+  .plano__price .cents{font-size:1.2rem}
+  .plano__parcela{display:block;font-size:.95rem;font-weight:700;color:var(--text);margin-top:4px}
+  .plano__avista{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-top:2px}
+  .plano__economia{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-weight:800;font-size:.86rem;padding:6px 14px;border-radius:999px}
+  .plano__btn{margin-top:14px}
+  .plano__guarantee{margin-top:12px;text-align:center;font-size:.82rem;font-weight:700;color:var(--green-dark)}
+  .planos__nota{color:var(--muted);font-size:.9rem;text-align:center;margin:16px 0 0}
+  @media(min-width:760px){
+    .planos{grid-template-columns:1fr 1fr;gap:20px;align-items:stretch}
+    .oferta__titulo{font-size:2.4rem}
   }
 
   .field{margin-bottom:14px}
@@ -856,46 +850,72 @@
 
     <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
          _catalog: o servidor recalcula o valor por ele. -->
-    <p class="planos__titulo">Escolha o seu plano:</p>
-    <div class="planos" role="radiogroup" aria-label="Escolha o plano">
-      <label class="plano">
-        <input type="radio" name="plano" value="profissional_pdf" data-cents="2990" data-nome="KPL Edição Profissional (PDF)">
-        <span class="plano__radio" aria-hidden="true"></span>
-        <div class="plano__name">Fichas em PDF</div>
-        <div class="plano__tagline">Para imprimir e aplicar.</div>
-        <div class="plano__price">R$ 29<span class="cents">,90</span></div>
-        <span class="plano__parcela" data-parcela="profissional_pdf" hidden></span>
-        <span class="plano__avista" data-avista="profissional_pdf" hidden></span>
-        <ul class="plano__list">
-          <li><span class="ic">✅</span><span class="plano__hl">189 atividades prontas para consultório e casa</span></li>
-          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
-          <li class="off"><span class="ic">➖</span>Acesso pelo aplicativo</li>
-          <li class="off"><span class="ic">➖</span>Aba Consultório no tablet</li>
-          <li class="off"><span class="ic">➖</span>Jogo dos 20 personagens</li>
-          <li class="off"><span class="ic">➖</span>Calendário e cartelas</li>
-        </ul>
-        <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
-      </label>
+    <h2 class="oferta__titulo">Escolha a opção <span class="hl">ideal para você</span></h2>
 
-      <label class="plano plano--premium">
-        <span class="plano__badge">Kit completo</span>
-        <input type="radio" name="plano" value="profissional" data-cents="3700" data-nome="KPL Edição Profissional" checked>
-        <span class="plano__radio" aria-hidden="true"></span>
-        <div class="plano__name">PDF + Aplicativo</div>
-        <div class="plano__tagline">Tudo da Edição Profissional.</div>
-        <div class="plano__price">R$ 37<span class="cents">,00</span></div>
-        <span class="plano__parcela" data-parcela="profissional" hidden></span>
-        <span class="plano__avista" data-avista="profissional" hidden></span>
+    <!-- OFERTA (22/09) no formato das paginas de atlas do nicho: mockup no
+         card, lista do que recebe, preco riscado e botao proprio em cada plano.
+         No CELULAR o plano barato vem primeiro e o completo embaixo, que e a
+         ordem que essas paginas usam: a pessoa le o basico, sente que falta
+         coisa, e o completo aparece como solucao. No desktop ficam lado a lado.
+         Os radios continuam existindo (escondidos): sao eles que o checkout le. -->
+    <div class="planos" role="radiogroup" aria-label="Escolha o plano">
+
+      <div class="plano" data-plano="profissional_pdf">
+        <input type="radio" name="plano" value="profissional_pdf" data-cents="2990" data-nome="KPL Edição Profissional (PDF)">
+        <div class="plano__name">PLANO BÁSICO</div>
+        <picture class="plano__foto">
+          <source srcset="assets/plano-pdf.webp" type="image/webp" />
+          <img src="assets/plano-pdf.jpg" width="900" height="900" loading="lazy" decoding="async"
+               alt="As fichas do Kit Prato Limpo Profissional em PDF" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <p class="plano__recebe">VOCÊ RECEBE:</p>
         <ul class="plano__list">
-          <li><span class="ic">✅</span><span class="plano__hl">As 189 fichas em PDF</span></li>
-          <li><span class="ic">✅</span>Tudo do PDF, e mais:</li>
-          <li><span class="ic">📱</span><span class="plano__hl">Acesso pelo aplicativo</span></li>
-          <li><span class="ic">🩺</span><span class="plano__hl">Aba Consultório, com as 60 fichas na tela do tablet</span></li>
-          <li><span class="ic">🎲</span><span class="plano__hl">Jogo dos 20 personagens para a criança entre as consultas</span></li>
-          <li><span class="ic">📅</span><span class="plano__hl">Calendário, cartelas e quadro de progresso</span></li>
+          <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
+          <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
+          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
+          <li><span class="ic">✅</span>Acesso imediato, em PDF</li>
+          <li class="off"><span class="ic">➖</span>Sem o aplicativo</li>
         </ul>
+        <div class="plano__preco-box">
+          <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+          <span class="plano__parcela" data-parcela="profissional_pdf" hidden></span>
+          <span class="plano__avista" data-avista="profissional_pdf" hidden></span>
+        </div>
+        <button type="button" class="btn btn--linha plano__btn">Quero somente o PDF</button>
         <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
-      </label>
+      </div>
+
+      <div class="plano plano--premium" data-plano="profissional">
+        <span class="plano__badge">⚡ Mais completo</span>
+        <input type="radio" name="plano" value="profissional" data-cents="3700" data-nome="KPL Edição Profissional" checked>
+        <div class="plano__name">PLANO COMPLETO</div>
+        <div class="plano__faixa">⚡ O kit inteiro + o aplicativo</div>
+        <picture class="plano__foto">
+          <source srcset="assets/plano-completo.webp" type="image/webp" />
+          <img src="assets/plano-completo.jpg" width="900" height="900" loading="lazy" decoding="async"
+               alt="As fichas do Kit Prato Limpo Profissional e o aplicativo no tablet" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <p class="plano__recebe">VOCÊ RECEBE:</p>
+        <ul class="plano__list">
+          <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
+          <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
+          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
+          <li><span class="ic">📱</span><span class="plano__hl">Aplicativo com a aba Consultório no tablet</span></li>
+          <li><span class="ic">👨‍👩‍👧</span><span class="plano__hl">Link da família, com o jogo dos 20 personagens</span></li>
+          <li><span class="ic">📅</span><span class="plano__hl">Calendário, cartelas e quadro de progresso</span></li>
+          <li><span class="ic">🆕</span><span class="plano__hl">Atualizações do material, sem pagar de novo</span></li>
+        </ul>
+        <div class="plano__preco-box">
+          <p class="plano__de">De <s>R$ 67,00</s> por:</p>
+          <div class="plano__price">R$ 37<span class="cents">,00</span></div>
+          <span class="plano__parcela" data-parcela="profissional" hidden></span>
+          <span class="plano__avista" data-avista="profissional" hidden></span>
+          <span class="plano__economia">Você economiza R$ 30,00</span>
+        </div>
+        <button type="button" class="btn plano__btn">Quero o kit completo</button>
+        <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
+      </div>
+
     </div>
     <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
 
@@ -1401,6 +1421,23 @@ $('#email').addEventListener('focus', disparaInitiate);
 $('#telefone').addEventListener('focus', disparaInitiate);
 
 /* ---- checkout ---- */
+// Card inteiro seleciona o plano; o botao do card leva pro formulario.
+document.querySelectorAll('.plano').forEach((card) => {
+  const radio = card.querySelector('input[name="plano"]');
+  const btn = card.querySelector('.plano__btn');
+  card.addEventListener('click', (ev) => {
+    if (radio.checked) return;
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  btn?.addEventListener('click', () => {
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+    document.getElementById('f-nome')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => document.getElementById('nome')?.focus({ preventScroll: true }), 420);
+  });
+});
+
 document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
   pixelCustom('PlanoEscolhido', { plano: r.value });
   marcaPro('p_plano');
