@@ -39,10 +39,11 @@ const TIERS = {
   profissional: { id: 'profissional', name: 'KPL Edição Profissional', priceCents: 3700 }, // 21/09: sem cupom, preco direto
   // Plano de entrada da /profissional (19/09): as mesmas 189 fichas e a licenca,
   // so o PDF, sem o app. Recebe o link direto do PDF, nao o /mi-kit.
-  // 21/09: R$ 29,90. ATENCAO: e o MESMO valor do KPL Completo das maes. Por
-  // isso a entrega parou de adivinhar o produto pelo valor e passou a ler o
+  // 22/09: R$ 27,90, ancorado em R$ 42,90 na pagina. Antes disso foi R$ 29,90,
+  // que era o MESMO valor do KPL Completo das maes. Foi por causa dessa colisao
+  // que a entrega parou de adivinhar o produto pelo valor e passou a ler o
   // tierId gravado no pedido (ver create-charge e deliver-kit).
-  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 2990 },
+  profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 2790 },
 };
 const DEFAULT_TIER = 'completo';
 
@@ -72,13 +73,15 @@ const BUMPS = {
 // de bump (32,90 + 10 = 42,90) dava o Bloco de Evolução de graça pra quem nao
 // comprou. Por isso os valores da /profissional sao uma tabela explicita.
 // So entram valores que NAO colidem com os planos das maes. O plano de PDF
-// custa R$ 29,90, igual ao Completo das maes, entao ele NAO pode ser inferido
-// por valor: quem diz que aquela venda foi profissional e o tierId gravado no
-// pedido. Os valores historicos ficam pra reconhecer venda antiga.
+// chegou a custar R$ 29,90, igual ao Completo das maes, e por isso esse valor
+// nunca entrou nesta tabela: quem diz que aquela venda foi profissional e o
+// tierId gravado no pedido. Os valores historicos ficam pra reconhecer venda
+// antiga.
 const BASES_PRO = [
   { valor: 3700, tier: 'profissional' },      // completo, hoje
   { valor: 6700, tier: 'profissional' },      // completo, ate 19/09
   { valor: 4700, tier: 'profissional' },      // completo, 19 a 21/09
+  { valor: 2790, tier: 'profissional_pdf' },  // so PDF, hoje
   { valor: 4690, tier: 'profissional_pdf' },  // so PDF, por algumas horas em 21/09
   { valor: 3290, tier: 'profissional_pdf' },  // so PDF com o cupom que existiu em 21/09
 ];
