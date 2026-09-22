@@ -48,13 +48,20 @@
   /* 21/09: a pagina inteira subiu de peso. Nunito 400 num fundo creme fica
      lavado no celular, e o dono comparou com paginas de low ticket que usam
      600 a 900 em tudo. Texto corrido vai a 600, titulo a 800. */
-  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.6;font-weight:600}
+  /* 22/09: tipo maior em toda a pagina. As paginas de atlas que estao
+     escalando (patologias, eletrodos, pontos riscados) rodam texto de 18 a
+     20px com peso 600+ e titulo de 2rem pra cima. No celular, tipo pequeno
+     em fundo creme desaparece. */
+  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:19px;line-height:1.55;font-weight:600}
   .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
   section{padding:38px 0}
   /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
      com display proprio (inline-block, flex) aparece mesmo escondido, que foi
      o que fez a linha do Bloco de Evolução aparecer antes de ser escolhida. */
   [hidden]{display:none !important}
+  .tarja-topo{background:var(--ink);color:#fff;text-align:center;font-family:var(--heading);font-weight:800;
+    font-size:.92rem;letter-spacing:.02em;padding:10px 14px;line-height:1.3}
+  .tarja-topo strong{color:var(--orange)}
   h1,h2,h3{font-family:var(--heading);font-weight:800;color:var(--ink);line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
   b,strong{font-weight:800}
   p{margin-bottom:14px}
@@ -64,12 +71,12 @@
 
   /* Cabeçalho de seção centralizado, igual ao da /mae. Era isso que fazia a
      página parecer documento: títulos pequenos e alinhados à esquerda. */
-  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.82rem;
+  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.9rem;
     letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
     padding:6px 14px;border-radius:999px;margin-bottom:12px}
   .section-head{text-align:center;margin-bottom:24px}
-  .section-title{font-size:1.85rem;text-align:center;margin-bottom:10px}
-  .section-sub{text-align:center;color:var(--text);max-width:30rem;margin:0 auto;font-size:1rem;font-weight:600}
+  .section-title{font-size:2.15rem;line-height:1.08;text-align:center;margin-bottom:12px}
+  .section-sub{text-align:center;color:var(--text);max-width:32rem;margin:0 auto;font-size:1.05rem;font-weight:600}
 
   /* ---------- hero ---------- */
   .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
@@ -83,8 +90,8 @@
   .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
     letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
   .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
-  .hero__h1{font-size:1.9rem;line-height:1.1;margin-bottom:12px}
-  .hero__sub{font-size:1.02rem;color:var(--text);font-weight:600;margin-bottom:16px}
+  .hero__h1{font-size:2.3rem;line-height:1.05;margin-bottom:14px}
+  .hero__sub{font-size:1.1rem;color:var(--text);font-weight:600;margin-bottom:16px}
   .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
     border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
   .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
@@ -196,6 +203,30 @@
   .resumo{list-style:none;text-align:left;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
   .resumo li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
   .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
+
+  /* ---------- mosaico do "por dentro" ---------- */
+  .mosaico{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  .mosaico__item{margin:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+    box-shadow:var(--shadow-sm)}
+  .mosaico__item img{width:100%;height:auto;display:block}
+  .mosaico__item figcaption{font-family:var(--heading);font-weight:800;font-size:.82rem;color:var(--ink);
+    padding:8px 10px 10px;line-height:1.2}
+  .mosaico__item figcaption span{display:block;font-family:var(--body);font-weight:600;font-size:.72rem;
+    color:var(--muted);margin-top:2px}
+  .mosaico__nota{text-align:center;font-size:1rem;margin:16px 0 0;color:var(--text)}
+
+  /* ---------- cards do "vem junto" ---------- */
+  .junto{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:640px){ .junto{grid-template-columns:1fr 1fr} }
+  .junto__card{position:relative;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);
+    padding:18px 16px;box-shadow:var(--shadow-sm)}
+  .junto__ic{font-size:1.7rem;line-height:1;display:block;margin-bottom:8px}
+  .junto__card b{display:block;font-family:var(--heading);font-weight:800;font-size:1.12rem;color:var(--ink);margin-bottom:6px}
+  .junto__card p{font-size:.95rem;margin:0}
+  .junto__selo{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-family:var(--heading);font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px}
+  @media(min-width:640px){ .mosaico{grid-template-columns:repeat(3,1fr)} }
 
   /* ---------- dois planos (19/09), mesmo desenho da /mae ---------- */
   .planos{display:grid;grid-template-columns:1fr 1fr;gap:12px}
@@ -392,14 +423,18 @@
   @media(min-width:640px){ .trilha{max-width:none}
     .hero__kpl{font-size:1.24rem}
     .hero__full{font-size:1.1rem}
-    .hero__h1{font-size:2.3rem}
+    .hero__h1{font-size:2.9rem}
     .hero__sub{font-size:1.08rem}
-    .section-title{font-size:2rem}
+    .section-title{font-size:2.5rem}
     section{padding:46px 0}
   }
 </style>
 </head>
 <body>
+<!-- Tarja de topo com a data de hoje: padrao das paginas de atlas que rodam
+     nesse mercado. A urgencia e real no sentido de que o preco de amanha e
+     decisao do dono, nao promessa quebrada de contador. -->
+<div class="tarja-topo">⚡ OFERTA DISPONÍVEL HOJE, <strong id="tarja-data">22/09/2026</strong></div>
 
 <!-- ======================= HERO ======================= -->
 <header class="hero" id="p_topo">
@@ -439,6 +474,110 @@
     </div>
   </div>
 </header>
+
+<!-- ======================= VEJA POR DENTRO =======================
+     Vem ANTES da dor de proposito: nas paginas que estao escalando nesse
+     mercado, mostrar o material e o primeiro trabalho da pagina. Quem clicou
+     no anuncio quer ver o que esta comprando, nao ler argumento. -->
+<section id="p_dentro" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Veja por dentro</span>
+      <h2 class="section-title">Olha o material <span class="hl">por dentro</span></h2>
+      <p class="section-sub">Estas são 16 das 60 fichas de consultório. Todas no mesmo padrão, prontas para imprimir ou abrir no tablet.</p>
+    </div>
+
+    <div class="mosaico">
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C01.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O mapa do prato, da etapa Avaliação inicial" />
+        <figcaption>O mapa do prato<span>Avaliação inicial</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C03.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A caixa fechada, da etapa Avaliação inicial" />
+        <figcaption>A caixa fechada<span>Avaliação inicial</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C05.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O que a boca aceita, da etapa Avaliação inicial" />
+        <figcaption>O que a boca aceita<span>Avaliação inicial</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C07.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Retrato do alimento, da etapa Aproximação sem contato" />
+        <figcaption>Retrato do alimento<span>Aproximação sem contato</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C11.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Carimbo de pimentão, da etapa Toque e manipulação" />
+        <figcaption>Carimbo de pimentão<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C13.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Boliche de tomate, da etapa Toque e manipulação" />
+        <figcaption>Boliche de tomate<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C16.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Quebra-cabeça de fruta, da etapa Toque e manipulação" />
+        <figcaption>Quebra-cabeça de fruta<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C21.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Mágica da gelatina, da etapa Som, corte e transformação" />
+        <figcaption>Mágica da gelatina<span>Som, corte e transformação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C24.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A lambida secreta, da etapa Aproximação da boca" />
+        <figcaption>A lambida secreta<span>Aproximação da boca</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C27.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O júri do sabor, da etapa Prova e registro" />
+        <figcaption>O júri do sabor<span>Prova e registro</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C31.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O termômetro do não, da etapa Recusa e crise" />
+        <figcaption>O termômetro do não<span>Recusa e crise</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C36.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O mapa da mesa, da etapa A ficha do adulto" />
+        <figcaption>O mapa da mesa<span>A ficha do adulto</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C41.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A linha do dia, da etapa Rotina e ambiente" />
+        <figcaption>A linha do dia<span>Rotina e ambiente</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C47.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Só triturado, da etapa Casos difíceis" />
+        <figcaption>Só triturado<span>Casos difíceis</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C52.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O cardápio de três colunas, da etapa Expansão do repertório" />
+        <figcaption>O cardápio de três colunas<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C58.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O teste da avó, da etapa Manutenção e alta" />
+        <figcaption>O teste da avó<span>Manutenção e alta</span></figcaption>
+      </figure>
+    </div>
+
+    <p class="mosaico__nota">E ainda tem as <b>129 fichas da família</b>, que você entrega no fim da consulta.</p>
+
+    <div style="text-align:center;margin-top:20px">
+      <a href="#checkout" class="btn">Quero o kit completo →</a>
+      <p class="btn-note">Pagamento único · acesso na hora</p>
+    </div>
+  </div>
+</section>
 
 <!-- ======================= A DOR ======================= -->
 <section id="p_dor">
@@ -561,6 +700,57 @@
       <img src="assets/colorir-thumb/manu-morango.webp" alt="Personagem Manu, o morango" loading="lazy" />
     </div>
     <p class="legenda">5 dos 20 amigos do prato.</p>
+  </div>
+</section>
+
+<!-- ======================= VEM JUNTO =======================
+     Mesmo formato dos cards de bonus das paginas do nicho, sem valor riscado
+     inventado: tudo aqui ja esta incluso e e verdade. -->
+<section id="p_junto">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vem junto</span>
+      <h2 class="section-title">Tudo o que você <span class="hl">recebe hoje</span></h2>
+    </div>
+
+    <div class="junto">
+      <div class="junto__card">
+        <span class="junto__ic">📋</span>
+        <b>60 fichas de consultório</b>
+        <p>Em 12 etapas, da avaliação até a alta. Cada uma cabe em 10 a 20 minutos de atendimento.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">🏠</span>
+        <b>129 fichas para a família</b>
+        <p>Em 11 blocos. Você imprime e entrega conforme a etapa da criança, sem preparar nada.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">📱</span>
+        <b>O aplicativo</b>
+        <p>Aba Consultório com as 60 fichas na tela do tablet, e o link da família com o jogo dos 20 personagens.</p>
+        <span class="junto__selo">Plano completo</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">📅</span>
+        <b>Calendário, cartelas e quadro de progresso</b>
+        <p>Para a família acompanhar entre uma consulta e outra.</p>
+        <span class="junto__selo">Plano completo</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">📜</span>
+        <b>Licença de uso com seus pacientes</b>
+        <p>Sem limite de cópias, sem prazo, sem pagar por paciente. Vale em consultório, escola e oficina.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">🆕</span>
+        <b>Atualizações do material</b>
+        <p>Fichas novas entram no mesmo acesso, sem pagar de novo.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -777,6 +967,7 @@
     </div>
 
     <a class="btn" href="#checkout" style="margin-top:22px">Quero o kit completo →</a>
+    <p class="btn-note">R$ 29,90 só o PDF · R$ 37,00 com o aplicativo · pagamento único</p>
   </div>
 </section>
 
@@ -826,8 +1017,11 @@ const $ = s => document.querySelector(s);
 (function initTodayDate(){
   const el = document.getElementById('today-date');
   if (!el) return;
-  el.textContent = new Date().toLocaleDateString('pt-BR',
+  const hoje = new Date().toLocaleDateString('pt-BR',
     { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
+  el.textContent = hoje;
+  const tarja = document.getElementById('tarja-data');
+  if (tarja) tarja.textContent = hoje;
 })();
 
 /* =========================================================
@@ -873,7 +1067,7 @@ function getVisitorId(){
 }
 
 // Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
-const PRO_IDS = ['p_topo','p_dor','p_pecas','p_ficha','p_app','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
+const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
 let proAtual = 'p_topo';
 let proMaxIdx = 0;
 let bateAgora = () => {};
@@ -895,8 +1089,8 @@ function marcaPro(id){
   }catch(e){}
 
   // id do elemento na pagina -> passo do funil
-  const alvos = { p_topo:'p_topo', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
-                  p_app:'p_app', p_licenca:'p_licenca', checkout:'p_checkout' };
+  const alvos = { p_topo:'p_topo', p_dentro:'p_dentro', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
+                  p_app:'p_app', p_junto:'p_junto', p_licenca:'p_licenca', checkout:'p_checkout' };
   if ('IntersectionObserver' in window) {
     const visiveis = {};
     const obs = new IntersectionObserver((entradas) => {

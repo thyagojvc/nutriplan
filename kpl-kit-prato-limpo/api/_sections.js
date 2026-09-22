@@ -51,16 +51,18 @@ const PRO_STEPS = [
   // 22/09: a secao da dor ficava ENTRE o topo e as tres pecas sem ser medida,
   // entao quem rolava ate ela e saia era contado como "parou no topo". Era isso
   // que fazia o abandono do topo parecer maior do que e.
-  { id: 'p_dor', label: '2. A dor' },
-  { id: 'p_pecas', label: '3. As três peças' },
-  { id: 'p_ficha', label: '4. Ficha por dentro' },
-  { id: 'p_app', label: '5. O aplicativo' },
-  { id: 'p_licenca', label: '6. Licença de uso' },
-  { id: 'p_checkout', label: '7. Chegou no checkout' },
-  { id: 'p_plano', label: '8. Escolheu um plano' },
-  { id: 'p_dados', label: '9. Começou a preencher' },
-  { id: 'p_pix', label: '10. Gerou o Pix' },
-  { id: 'p_pago', label: '11. Pagou' },
+  { id: 'p_dentro', label: '2. Viu o material por dentro' },
+  { id: 'p_dor', label: '3. A dor' },
+  { id: 'p_pecas', label: '4. As três peças' },
+  { id: 'p_ficha', label: '5. Ficha por dentro' },
+  { id: 'p_app', label: '6. O aplicativo' },
+  { id: 'p_junto', label: '7. Vem junto' },
+  { id: 'p_licenca', label: '8. Licença de uso' },
+  { id: 'p_checkout', label: '9. Chegou no checkout' },
+  { id: 'p_plano', label: '10. Escolheu um plano' },
+  { id: 'p_dados', label: '11. Começou a preencher' },
+  { id: 'p_pix', label: '12. Gerou o Pix' },
+  { id: 'p_pago', label: '13. Pagou' },
 ];
 
 // Trilha do QUIZ PROFISSIONAL (/quiz-pro). Quarta trilha do painel. Separada
