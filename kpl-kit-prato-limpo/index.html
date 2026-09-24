@@ -2210,9 +2210,21 @@ function initPresenceTracking() {
       keepalive: true,
     }).catch(() => {});
   }
+  // TRAVA DO PULSO (24/09). Antes daqui o setInterval batia a cada 8s pra
+  // SEMPRE: aba esquecida aberta aparecia "ao vivo" e parada no checkout por
+  // horas, e cada batida gasta ~6 comandos do Redis. Agora o pulso so sai com
+  // a aba na frente E com a pessoa tendo mexido nos ultimos 5 minutos. Quem
+  // voltar pra aba e rolar a pagina volta a aparecer na hora.
+  const OCIO_MS = 5 * 60 * 1000;
+  let ultimaAcao = Date.now();
+  const marcaAcao = () => { ultimaAcao = Date.now(); };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach((ev) => {
+    addEventListener(ev, marcaAcao, { passive: true });
+  });
+  const pulsoVivo = () => !document.hidden && (Date.now() - ultimaAcao) < OCIO_MS;
   triggerHeartbeat = sendHeartbeat; // deixa fireInitiate() disparar um beat imediato
   sendHeartbeat();
-  setInterval(sendHeartbeat, CONFIG.PRESENCE_MS);
+  setInterval(() => { if (pulsoVivo()) sendHeartbeat(); }, CONFIG.PRESENCE_MS);
 }
 
 /* =========================================================

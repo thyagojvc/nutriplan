@@ -37,22 +37,18 @@
     --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
     --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
     --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A; --coral-soft:#FBE0D5;
-    --ink:#1E2721; --text:#3A443D; --muted:#69736B; --card:#FFFFFF; --border:#E3DCCB;
+    --ink:#1E2721; --text:#3A443D; --muted:#58645B; --card:#FFFFFF; --border:#E3DCCB;
     --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
     --radius:20px; --radius-sm:14px;
     --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
     --body:"Nunito",system-ui,"Segoe UI",Roboto,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{scroll-behavior:smooth}
-  /* 21/09: a pagina inteira subiu de peso. Nunito 400 num fundo creme fica
-     lavado no celular, e o dono comparou com paginas de low ticket que usam
-     600 a 900 em tudo. Texto corrido vai a 600, titulo a 800. */
-  /* 22/09: tipo maior em toda a pagina. As paginas de atlas que estao
-     escalando (patologias, eletrodos, pontos riscados) rodam texto de 18 a
-     20px com peso 600+ e titulo de 2rem pra cima. No celular, tipo pequeno
-     em fundo creme desaparece. */
-  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:19px;line-height:1.55;font-weight:600}
+  html{scroll-behavior:smooth;font-size:18px}
+  /* Texto de leitura em Nunito 700 para manter contraste no fundo creme.
+     A escala rem amplia os textos menores; headlines e precos grandes ficam
+     em px para preservar o tamanho anterior nas larguras responsivas. */
+  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:20px;line-height:1.55;font-weight:700}
   .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
   section{padding:28px 0}
   /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
@@ -65,7 +61,7 @@
   .prova-real{background:var(--mint);border-top:2px solid var(--mint-2);border-bottom:2px solid var(--mint-2);
     padding:14px 0;text-align:center;font-size:1rem;color:var(--green-dark);font-weight:700}
   .prova-real b{font-family:var(--heading);font-weight:800;font-size:1.15rem;color:var(--ink)}
-  .prova-real span{display:block;font-size:.88rem;font-weight:600;color:var(--text);margin-top:4px}
+  .prova-real span{display:block;font-size:.88rem;font-weight:700;color:var(--text);margin-top:4px}
   h1,h2,h3{font-family:var(--heading);font-weight:800;color:var(--ink);line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
   b,strong{font-weight:800}
   p{margin-bottom:14px}
@@ -79,8 +75,8 @@
     letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
     padding:6px 14px;border-radius:999px;margin-bottom:12px}
   .section-head{text-align:center;margin-bottom:18px}
-  .section-title{font-size:2.15rem;line-height:1.08;text-align:center;margin-bottom:12px}
-  .section-sub{text-align:center;color:var(--text);max-width:32rem;margin:0 auto;font-size:1.05rem;font-weight:600}
+  .section-title{font-size:34.4px;line-height:1.08;text-align:center;margin-bottom:12px}
+  .section-sub{text-align:center;color:var(--text);max-width:32rem;margin:0 auto;font-size:1.05rem;font-weight:700}
 
   /* ---------- hero ---------- */
   .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
@@ -94,8 +90,8 @@
   .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
     letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
   .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
-  .hero__h1{font-size:2.3rem;line-height:1.05;margin-bottom:14px}
-  .hero__sub{font-size:1.1rem;color:var(--text);font-weight:600;margin-bottom:16px}
+  .hero__h1{font-size:36.8px;line-height:1.05;margin-bottom:14px}
+  .hero__sub{font-size:1.1rem;color:var(--text);font-weight:700;margin-bottom:16px}
   .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
     border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
   .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
@@ -137,7 +133,7 @@
   .pilar:nth-child(2){border-top-color:var(--orange)}
   .pilar:nth-child(3){border-top-color:var(--coral)}
   .pilar .ic{font-size:1.7rem;line-height:1}
-  .pilar .num{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1;color:var(--ink);margin:6px 0 2px}
+  .pilar .num{font-family:var(--heading);font-weight:800;font-size:32px;line-height:1;color:var(--ink);margin:6px 0 2px}
   .pilar .num--palavra{font-size:1.42rem}
   .pilar .rot{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:.98rem;margin-bottom:6px}
   .pilar p{font-size:.89rem;color:var(--muted);margin:0}
@@ -201,7 +197,7 @@
   /* ---------- preço e checkout ---------- */
   .preco{background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:24px 18px;
     text-align:center;box-shadow:var(--shadow)}
-  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.9rem;line-height:1;margin:4px 0 6px}
+  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:46.4px;line-height:1;margin:4px 0 6px}
   .preco .valor small{font-size:1.1rem}
   .preco .comp{color:var(--muted);font-size:.88rem;margin:0}
   .resumo{list-style:none;text-align:left;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
@@ -225,7 +221,7 @@
   .mosaico__item img{width:100%;height:auto;display:block}
   .mosaico__item figcaption{font-family:var(--heading);font-weight:800;font-size:.82rem;color:var(--ink);
     padding:8px 10px 10px;line-height:1.2}
-  .mosaico__item figcaption span{display:block;font-family:var(--body);font-weight:600;font-size:.72rem;
+  .mosaico__item figcaption span{display:block;font-family:var(--body);font-weight:700;font-size:.78rem;
     color:var(--muted);margin-top:2px}
   .mosaico__nota{text-align:center;font-size:1rem;margin:16px 0 0;color:var(--text)}
   .mosaico__intro{text-align:center;font-size:1rem;margin:18px 0 12px;color:var(--text)}
@@ -244,18 +240,37 @@
     padding:4px 10px;border-radius:999px}
   @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
 
-  /* ---------- depoimentos (22/09) ---------- */
-  .depo{display:grid;grid-template-columns:1fr;gap:14px}
-  .depo__card{margin:0;background:var(--card);border:1px solid var(--border);border-radius:16px;
-    padding:20px 18px;box-shadow:var(--shadow-sm)}
-  .depo__card blockquote{margin:0 0 14px;font-size:1.02rem;line-height:1.5;color:var(--text)}
-  .depo__card figcaption{display:flex;align-items:center;gap:10px}
-  .depo__card figcaption span:last-child{display:flex;flex-direction:column;font-size:.82rem;color:var(--muted)}
-  .depo__card figcaption b{font-family:var(--heading);font-size:.98rem;color:var(--ink)}
-  .depo__ini{flex:0 0 auto;width:38px;height:38px;border-radius:50%;background:var(--mint);
-    color:var(--green-dark);font-family:var(--heading);font-weight:800;font-size:1.05rem;
-    display:flex;align-items:center;justify-content:center}
-  @media(min-width:640px){ .depo{grid-template-columns:1fr 1fr;gap:16px} }
+  /* ---------- depoimentos em prints (23/09) ---------- */
+  .depo{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:4px 4px 18px;margin:0 -4px;overscroll-behavior-inline:contain;
+    scrollbar-color:var(--green) var(--mint);scrollbar-width:thin}
+  .depo::-webkit-scrollbar{height:8px}
+  .depo::-webkit-scrollbar-track{background:var(--mint);border-radius:999px}
+  .depo::-webkit-scrollbar-thumb{background:var(--green);border-radius:999px}
+  .depo__card{flex:0 0 min(82vw,350px);margin:0;scroll-snap-align:start}
+  .depo__abrir{display:block;width:100%;padding:0;overflow:hidden;background:var(--card);border:1px solid var(--border);
+    border-radius:18px;box-shadow:var(--shadow-sm);cursor:zoom-in;transition:transform .2s ease,box-shadow .2s ease}
+  .depo__abrir:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .depo__abrir:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
+  .depo__link{display:block;overflow:hidden;background:var(--card);border:1px solid var(--border);
+    border-radius:18px;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease}
+  .depo__link:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .depo__link:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
+  .depo__foto{display:block;width:100%;height:auto;aspect-ratio:941/1672;object-fit:cover}
+  .depo__hint{margin:12px 0 0;text-align:center;font-size:.84rem;color:var(--muted)}
+  .depo__modal{position:fixed;left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);
+    width:min(94vw,760px);max-width:none;max-height:92dvh;box-sizing:border-box;margin:0;
+    padding:52px 14px 14px;border:0;border-radius:18px;background:var(--cream);overflow:auto}
+  .depo__modal::backdrop{background:rgba(18,25,20,.82);backdrop-filter:blur(3px)}
+  .depo__modal-img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(92dvh - 66px);margin:auto;object-fit:contain}
+  .depo__fechar{position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;border-radius:50%;
+    background:var(--green-dark);color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+  .depo__fechar:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  @media(min-width:760px){
+    .depo{gap:20px;padding-bottom:20px}
+    .depo__card{flex-basis:340px}
+  }
+  @media(prefers-reduced-motion:reduce){.depo__link,.depo__abrir{transition:none}}
   /* ---------- bonus com caixa 3D (22/09) ---------- */
   .bonus{display:grid;grid-template-columns:1fr;gap:14px}
   .bonus__card{background:var(--card);border:1px solid var(--border);border-radius:16px;
@@ -271,7 +286,7 @@
     font-weight:800;font-size:.76rem;padding:4px 12px;border-radius:999px}
   @media(min-width:640px){ .bonus{grid-template-columns:1fr 1fr;gap:16px} }
   /* ---------- oferta em cards (22/09) ---------- */
-  .oferta__titulo{font-family:var(--heading);font-weight:800;font-size:2rem;line-height:1.1;text-align:center;
+  .oferta__titulo{font-family:var(--heading);font-weight:800;font-size:32px;line-height:1.1;text-align:center;
     color:var(--ink);margin:0 0 18px}
   .planos{display:grid;grid-template-columns:1fr;gap:16px}
   .plano{position:relative;display:flex;flex-direction:column;background:var(--card);border:2px solid var(--border);
@@ -288,6 +303,16 @@
   .plano--premium .plano__name{color:var(--green-dark)}
   .plano__faixa{background:var(--mint);color:var(--green-dark);font-family:var(--heading);font-weight:800;
     font-size:.92rem;text-align:center;padding:10px 12px;border-radius:999px;margin-bottom:12px}
+  .plano__diferenca{font-size:.9rem;font-weight:700;line-height:1.4;text-align:center;
+    padding:11px 13px;border-radius:14px;margin:0 0 12px}
+  .plano__diferenca--basico{background:var(--cream-2);color:var(--muted);border:1px solid var(--border)}
+  .plano__diferenca--completo{background:var(--mint);color:var(--green-dark);border:1px solid var(--mint-2)}
+  .plano__delta{display:block;margin-top:8px;color:var(--green-dark);font-size:.84rem;font-weight:800}
+  .plano__separador{list-style:none;border-top:1px solid var(--border);padding-top:9px;
+    margin-top:3px;font-size:.82rem;font-weight:800;color:var(--green-dark);letter-spacing:.02em}
+  .cta-depo{max-width:28rem;margin:28px auto 4px;text-align:center}
+  .cta-depo .btn{max-width:26rem;margin:auto}
+  .cta-depo p{margin:10px 0 0;color:var(--muted);font-size:.88rem}
   .plano__foto{display:block;width:100%;margin:0 0 12px}
   .plano__foto img{width:100%;height:auto;display:block}
   .plano__recebe{font-family:var(--heading);font-weight:800;font-size:.8rem;letter-spacing:.08em;
@@ -299,21 +324,28 @@
     text-decoration-color:#D64545;text-decoration-thickness:1.5px}
   .plano__list li.off .ic{text-decoration:none}
   .plano__hl{background:linear-gradient(transparent 60%,var(--orange-soft) 60%);font-weight:700}
+  .plano__list li.plano__app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;
+    width:100%;box-sizing:border-box}
+  .plano__app-tile{min-width:0;background:var(--cream-2);border:1px solid var(--border);
+    border-radius:10px;padding:9px 10px}
+  .plano__app-tile b{display:block;font-family:var(--heading);font-size:.82rem;color:var(--green-dark);margin-bottom:3px}
+  .plano__app-tile small{display:block;font-size:.875rem;line-height:1.3;color:var(--text)}
   .plano__preco-box{text-align:center}
   .plano__de{font-size:.92rem;color:var(--muted);font-weight:700;margin:0 0 2px}
   .plano__de s{color:var(--coral)}
-  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:2.6rem;line-height:1}
+  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:41.6px;line-height:1}
   .plano__price .cents{font-size:1.2rem}
   .plano__parcela{display:block;font-size:.95rem;font-weight:700;color:var(--text);margin-top:4px}
-  .plano__avista{display:block;font-size:.8rem;font-weight:700;color:var(--muted);margin-top:2px}
+  .plano__avista{display:block;font-size:.84rem;font-weight:700;color:var(--muted);margin-top:2px}
   .plano__economia{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
     font-weight:800;font-size:.86rem;padding:6px 14px;border-radius:999px}
   .plano__btn{margin-top:14px}
   .plano__guarantee{margin-top:12px;text-align:center;font-size:.82rem;font-weight:700;color:var(--green-dark)}
+  .plano__secure-badge{display:block;width:min(100%,330px);height:auto;margin:12px auto 0}
   .planos__nota{color:var(--muted);font-size:.9rem;text-align:center;margin:16px 0 0}
   @media(min-width:760px){
     .planos{grid-template-columns:1fr 1fr;gap:20px;align-items:start}
-    .oferta__titulo{font-size:2.4rem}
+    .oferta__titulo{font-size:38.4px}
   }
 
   .field{margin-bottom:14px}
@@ -412,7 +444,7 @@
   .pay-opt{flex:1;border:2px solid var(--green);background:var(--mint);border-radius:12px;
     padding:12px;text-align:center;font-weight:800;color:var(--green-dark);
     font-family:var(--heading);display:flex;flex-direction:column;align-items:center;gap:4px}
-  .pay-opt small{font-weight:600;font-size:.72rem;color:var(--green-dark)}
+  .pay-opt small{font-weight:700;font-size:.8rem;color:var(--green-dark)}
 
   .pay-steps{display:flex;flex-direction:column;gap:8px;margin:4px 0 18px}
   .pay-step{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--text);
@@ -436,7 +468,7 @@
     border:1px solid #B7EAE5;border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px}
   .pix-trust__icon{flex:0 0 34px;width:34px;height:34px;border-radius:50%;
     background:#32BCAD;display:flex;align-items:center;justify-content:center}
-  .pix-trust__text{font-size:.8rem;color:#1F6E66;line-height:1.4}
+  .pix-trust__text{font-size:.85rem;color:#1F6E66;line-height:1.4}
   .pix-trust__text b{color:#17504A;font-family:var(--heading)}
 
   .secure-badges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;
@@ -446,7 +478,7 @@
   .cartao-box p{font-size:.92rem;margin:0 0 10px}
   .btn--linha{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none;min-height:54px}
   .btn--linha:active{transform:none}
-  .pay-note{text-align:center;color:var(--muted);font-size:.78rem;margin:10px auto 0;max-width:32rem;line-height:1.5}
+  .pay-note{text-align:center;color:var(--muted);font-size:.84rem;margin:10px auto 0;max-width:32rem;line-height:1.5}
 
   .garantia{display:flex;gap:11px;align-items:flex-start;background:var(--orange-soft);border:1px solid #F6D9A8;
     border-radius:var(--radius-sm);padding:14px 16px;font-size:.92rem;margin-top:16px}
@@ -468,9 +500,9 @@
   @media(min-width:640px){ .trilha{max-width:none}
     .hero__kpl{font-size:1.24rem}
     .hero__full{font-size:1.1rem}
-    .hero__h1{font-size:2.9rem}
+    .hero__h1{font-size:46.4px}
     .hero__sub{font-size:1.08rem}
-    .section-title{font-size:2.5rem}
+    .section-title{font-size:40px}
     section{padding:36px 0}
   }
 </style>
@@ -489,13 +521,13 @@
        traduzir "189 atividades" pra aquilo que acabou de ver. -->
   <div class="wrap">
     <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
-    <h1 class="hero__h1">189 atividades prontas <span class="hl">pra usar com a criança na própria consulta</span></h1>
+    <h1 class="hero__h1">189 atividades prontas <span class="hl">para trabalhar a alimentação infantil de forma lúdica</span></h1>
     <p class="hero__sub">Você abre a ficha, põe o alimento na mesa e já sabe o que fazer. Sem montar atividade do zero pra cada paciente.</p>
 
     <picture>
-      <source srcset="assets/mockup-pro-transp.webp" type="image/webp" />
-      <img class="hero__mockup" src="assets/mockup-pro.jpg" width="1536" height="1024" fetchpriority="high"
-           alt="Seis fichas do kit espalhadas e o aplicativo aberto num celular, na turma de amigos" />
+      <source srcset="assets/mockup-pro-v4.webp" type="image/webp" />
+      <img class="hero__mockup" src="assets/mockup-pro-v4.jpg" width="1536" height="1024" fetchpriority="high"
+           alt="Três fichas do Kit Prato Limpo Profissional à frente de outras e o aplicativo aberto em um tablet" />
     </picture>
 
     <div class="hero__promise">
@@ -508,9 +540,6 @@
       <span><b>129</b> pra mandar pra casa</span>
       <span><b>App</b> entre as consultas</span>
     </div>
-
-    <a href="#checkout" class="btn">Ver o kit por dentro →</a>
-    <p class="btn-note">Pagamento único · licença de uso com seus pacientes</p>
 
     <div class="hero__reinforce">
       <span>🍎 Aplique na sessão</span>
@@ -604,10 +633,6 @@
 
     <p class="mosaico__nota">E ainda tem as <b>129 fichas da família</b>, que você entrega no fim da consulta.</p>
 
-    <div style="text-align:center;margin-top:20px">
-      <a href="#checkout" class="btn">Quero o kit completo →</a>
-      <p class="btn-note">Pagamento único · acesso na hora</p>
-    </div>
   </div>
 </section>
 
@@ -664,12 +689,6 @@
       <p>O kit completo, do jeito que a família recebe, mais o protocolo de sessão que só existe nesta edição.</p>
     </div>
 
-    <!-- CTA saiu do topo (20/09): aqui ela ja viu as tres pecas, entao o
-         botao chega depois do argumento, nao antes dele. -->
-    <div style="text-align:center;margin-top:22px">
-      <a href="#checkout" class="btn">Quero as 189 atividades →</a>
-      <p class="btn-note">Pagamento único · sem mensalidade</p>
-    </div>
   </div>
 </section>
 
@@ -699,7 +718,7 @@
          o que a pessoa acabou de ver la em cima. Passou a mostrar o OUTRO
          material, o que a familia leva pra casa, que ate entao so aparecia
          citado em texto. -->
-    <p class="mosaico__intro">E estas são das <b>129 fichas que a família leva pra casa</b>, no fim da consulta.</p>
+    <p class="mosaico__intro">E estas são <b>5 das 129 fichas que a família leva pra casa</b>, no fim da consulta.</p>
     <div class="mosaico-wrap">
       <button type="button" class="mosaico__seta mosaico__seta--ant" aria-label="Ver fichas anteriores">‹</button>
       <button type="button" class="mosaico__seta mosaico__seta--prox" aria-label="Ver próximas fichas">›</button>
@@ -866,58 +885,60 @@
       </div>
     </div>
 
-    <div style="text-align:center;margin-top:22px">
-      <a href="#checkout" class="btn">Quero o kit completo →</a>
-      <p class="btn-note">Pagamento único · acesso na hora</p>
-    </div>
   </div>
 </section>
 
-<!-- ======================= DEPOIMENTOS (22/09) =======================
-     As falas sao reais: vieram do WhatsApp de quem comprou a Edicao
-     Profissional por fora, antes da pagina existir. Os prints originais se
-     perderam, entao aqui vai o TEXTO, com o primeiro nome, e nao uma imagem
-     de conversa reconstruida: print remontado com foto de banco e cena de
-     produto que a cliente nunca mandou e documento inventado, mesmo quando a
-     frase dentro dele e verdadeira. Sem foto de rosto, sem sobrenome, sem
-     numero de avaliacao. Quando chegarem prints de verdade, eles entram aqui
-     no lugar dos cartoes. -->
+<!-- ======================= DEPOIMENTOS EM PRINTS (23/09) ======================= -->
 <section id="p_depo">
   <div class="wrap">
     <div class="section-head">
       <span class="eyebrow">Quem já está usando</span>
       <h2 class="section-title">O que as nutricionistas <span class="hl">falaram depois da consulta</span></h2>
-      <p class="section-sub">Mensagens de quem comprou a Edição Profissional antes desta página existir.</p>
     </div>
 
-    <div class="depo">
+    <div class="depo" aria-label="Depoimentos de nutricionistas">
       <figure class="depo__card">
-        <blockquote>“Hoje mesmo usei uma das atividades da primeira etapa e a criança se envolveu demais. A mãe ficou surpresa e me falou que nunca tinha visto o filho tão interessado em experimentar um alimento novo.”</blockquote>
-        <figcaption><span class="depo__ini">P</span><span><b>Patrícia</b>Nutricionista</span></figcaption>
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/patricia.webp" aria-label="Ampliar depoimento de Patrícia">
+          <img class="depo__foto" src="assets/depoimentos/patricia.webp" alt="Conversa no WhatsApp com o depoimento de Patrícia sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
       </figure>
 
       <figure class="depo__card">
-        <blockquote>“Usei hoje a atividade da caixa fechada e foi um sucesso. As crianças ficaram super curiosas e participaram muito bem. Já me deu várias ideias de como conduzir as próximas consultas.”</blockquote>
-        <figcaption><span class="depo__ini">J</span><span><b>Juliana</b>Nutricionista</span></figcaption>
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/juliana.webp" aria-label="Ampliar depoimento de Juliana">
+          <img class="depo__foto" src="assets/depoimentos/juliana.webp" alt="Conversa no WhatsApp com o depoimento de Juliana sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
       </figure>
 
       <figure class="depo__card">
-        <blockquote>“Já usei com uma criança que tinha muita resistência a legumes. Ela se envolveu bastante e até pediu pra fazer de novo. Tem me ajudado a conduzir as consultas de forma mais leve e lúdica.”</blockquote>
-        <figcaption><span class="depo__ini">C</span><span><b>Camila</b>Nutricionista</span></figcaption>
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/camila.webp" aria-label="Ampliar depoimento de Camila">
+          <img class="depo__foto" src="assets/depoimentos/camila.webp" alt="Conversa no WhatsApp com o depoimento de Camila sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
       </figure>
 
       <figure class="depo__card">
-        <blockquote>“As fichas são bem organizadas e com uma linguagem que as famílias entendem. Facilitou muito meu trabalho. Já indiquei para outras colegas da clínica.”</blockquote>
-        <figcaption><span class="depo__ini">L</span><span><b>Larissa</b>Nutricionista</span></figcaption>
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/larissa.webp" aria-label="Ampliar depoimento de Larissa">
+          <img class="depo__foto" src="assets/depoimentos/larissa.webp" alt="Conversa no WhatsApp com o depoimento de Larissa sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
       </figure>
 
       <figure class="depo__card">
-        <blockquote>“Achei o material muito bom, bem didático e fácil de aplicar. A criança gostou bastante e participou mais do que eu esperava.”</blockquote>
-        <figcaption><span class="depo__ini">F</span><span><b>Fernanda</b>Nutricionista</span></figcaption>
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/fernanda.webp" aria-label="Ampliar depoimento de Fernanda">
+          <img class="depo__foto" src="assets/depoimentos/fernanda.webp" alt="Conversa no WhatsApp com o depoimento de Fernanda sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
       </figure>
+    </div>
+    <p class="depo__hint">Deslize para ver mais · toque em uma conversa para ampliar</p>
+    <div class="cta-depo">
+      <a href="#checkout" class="btn">Escolher meu plano →</a>
+      <p>Planos a partir de R$ 27,90 · pagamento único</p>
     </div>
   </div>
 </section>
+
+<dialog class="depo__modal" id="depo-modal" aria-label="Depoimento ampliado">
+  <button class="depo__fechar" type="button" aria-label="Fechar imagem">×</button>
+  <img class="depo__modal-img" alt="" decoding="async">
+</dialog>
 
 <!-- ======================= LICENÇA ======================= -->
 <section id="p_licenca" style="background:var(--cream-2)">
@@ -993,6 +1014,7 @@
       <div class="plano" data-plano="profissional_pdf">
         <input type="radio" name="plano" value="profissional_pdf" data-cents="2790" data-nome="KPL Edição Profissional (PDF)">
         <div class="plano__name">PLANO BÁSICO</div>
+        <p class="plano__diferenca plano__diferenca--basico">189 atividades em PDF<br>Para imprimir ou abrir na tela · sem aplicativo</p>
         <picture class="plano__foto">
           <source srcset="assets/plano-pdf.webp" type="image/webp" />
           <img src="assets/plano-pdf.jpg" width="900" height="900" loading="lazy" decoding="async"
@@ -1013,7 +1035,7 @@
           <span class="plano__avista" data-avista="profissional_pdf" hidden></span>
           <span class="plano__economia">Você economiza R$ 22,00</span>
         </div>
-        <button type="button" class="btn btn--linha plano__btn">Quero somente o PDF</button>
+        <button type="button" class="btn btn--linha plano__btn">Quero o plano básico</button>
         <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
       </div>
 
@@ -1021,7 +1043,7 @@
         <span class="plano__badge">⚡ Mais completo</span>
         <input type="radio" name="plano" value="profissional" data-cents="3700" data-nome="KPL Edição Profissional" checked>
         <div class="plano__name">PLANO COMPLETO</div>
-        <div class="plano__faixa">⚡ O kit inteiro + o aplicativo</div>
+        <p class="plano__diferenca plano__diferenca--completo">189 atividades + aplicativo<br>Para a criança e a família continuarem entre consultas</p>
         <picture class="plano__foto">
           <source srcset="assets/plano-completo.webp" type="image/webp" />
           <img src="assets/plano-completo.jpg" width="900" height="900" loading="lazy" decoding="async"
@@ -1032,8 +1054,15 @@
           <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
           <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
           <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
+          <li class="plano__separador">EXCLUSIVO DO PLANO COMPLETO</li>
           <li><span class="ic">📱</span><span class="plano__hl">Aplicativo com a aba Consultório no tablet</span></li>
-          <li><span class="ic">👨‍👩‍👧</span><span class="plano__hl">Link da família, com o jogo dos 20 personagens</span></li>
+          <li class="plano__separador">APP DA FAMÍLIA · 4 ABAS</li>
+          <li class="plano__app-grid" aria-label="Recursos do aplicativo da família">
+            <span class="plano__app-tile"><b>🎲 Jogar</b><small>Roleta sorteia a missão do dia</small></span>
+            <span class="plano__app-tile"><b>👥 Turma</b><small>Marque os personagens provados</small></span>
+            <span class="plano__app-tile"><b>🖍️ Pintar</b><small>Pinte com o dedo no celular</small></span>
+            <span class="plano__app-tile"><b>🏠 Família</b><small>Todas as fichas para casa</small></span>
+          </li>
           <li><span class="ic">📅</span><span class="plano__hl">Calendário, cartelas e quadro de progresso</span></li>
           <li><span class="ic">🆕</span><span class="plano__hl">Atualizações do material, sem pagar de novo</span></li>
         </ul>
@@ -1043,9 +1072,10 @@
           <span class="plano__parcela" data-parcela="profissional" hidden></span>
           <span class="plano__avista" data-avista="profissional" hidden></span>
           <span class="plano__economia">Você economiza R$ 30,00</span>
+          <span class="plano__delta">Só R$ 9,10 a mais que o Básico</span>
         </div>
         <button type="button" class="btn plano__btn">Quero o kit completo</button>
-        <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
+        <img class="plano__secure-badge" src="assets/selo-pix-compra-segura.svg" width="760" height="220" loading="lazy" decoding="async" alt="PIX · Compra segura · Pagamento via PIX">
       </div>
 
     </div>
@@ -1171,8 +1201,6 @@
       </details>
     </div>
 
-    <a class="btn" href="#checkout" style="margin-top:22px">Quero o kit completo →</a>
-    <p class="btn-note">R$ 27,90 só o PDF · R$ 37,00 com o aplicativo · pagamento único</p>
   </div>
 </section>
 
@@ -1182,7 +1210,7 @@
   <div class="bump-step__card">
     <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
     <h3 id="bump-step-titulo">Quer acompanhar a evolução entre as consultas?</h3>
-    <p class="bump-step__sub"><b>Bloco de Evolução</b>: capa e 4 folhas para imprimir, por mais R$ 10,00.</p>
+    <p class="bump-step__sub"><b>Bloco de Evolução</b>: acompanhe o progresso entre as consultas com registros da criança e dos pais em um checklist semanal simples. Adicione por mais R$ 10,00.</p>
     <!-- Mostrar o material vale mais que descrever: sem foto, o painel falava de
          4 folhas que a pessoa nunca tinha visto. -->
     <picture>
@@ -1192,7 +1220,7 @@
            alt="O Bloco de Evolução impresso e encadernado sobre uma mesa, aberto na folha Como foi em casa, com a folha Linha do tempo ao lado" />
     </picture>
     <ul class="bump-step__lista">
-      <li><span class="tick">✓</span><span>Como foi em casa <b>(a família preenche)</b></span></li>
+      <li><span class="tick">✓</span><span>Como foi em casa <b>(criança e pais registram juntos)</b></span></li>
       <li><span class="tick">✓</span><span>Linha do tempo, semana a semana</span></li>
       <li><span class="tick">✓</span><span>Resumo para a família</span></li>
       <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
@@ -1386,9 +1414,21 @@ function marcaPro(id){
       keepalive: true,
     }).catch(()=>{});
   }
+  // TRAVA DO PULSO (24/09). Antes daqui o setInterval batia a cada 8s pra
+  // SEMPRE: aba esquecida aberta aparecia "ao vivo" e parada no checkout por
+  // horas, e cada batida gasta ~6 comandos do Redis. Agora o pulso so sai com
+  // a aba na frente E com a pessoa tendo mexido nos ultimos 5 minutos. Quem
+  // voltar pra aba e rolar a pagina volta a aparecer na hora.
+  const OCIO_MS = 5 * 60 * 1000;
+  let ultimaAcao = Date.now();
+  const marcaAcao = () => { ultimaAcao = Date.now(); };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach((ev) => {
+    addEventListener(ev, marcaAcao, { passive: true });
+  });
+  const pulsoVivo = () => !document.hidden && (Date.now() - ultimaAcao) < OCIO_MS;
   bateAgora = bate;
   bate();
-  setInterval(bate, PRESENCE_MS);
+  setInterval(() => { if (pulsoVivo()) bate(); }, PRESENCE_MS);
 })();
 
 let timer=null, paymentId=null, cliente=null;
@@ -1739,11 +1779,30 @@ function pago(){
 
   // mesma chamada do checkout principal: é ela que gera o acesso e manda o
   // e-mail. Se falhar aqui, o webhook da PushInPay é a rede de segurança.
-  fetch(API.entregar, {
+fetch(API.entregar, {
     method:'POST', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone, adRef:'profissional' })
-  }).catch(()=>{});
+}).catch(()=>{});
 }
+
+const depoModal = document.getElementById('depo-modal');
+const depoModalImg = depoModal.querySelector('.depo__modal-img');
+document.querySelectorAll('[data-depo-img]').forEach((botao) => {
+  botao.addEventListener('click', () => {
+    const miniatura = botao.querySelector('img');
+    depoModalImg.src = botao.dataset.depoImg;
+    depoModalImg.alt = miniatura.alt;
+    depoModal.showModal();
+  });
+});
+depoModal.querySelector('.depo__fechar').addEventListener('click', () => depoModal.close());
+depoModal.addEventListener('click', (evento) => {
+  if (evento.target === depoModal) depoModal.close();
+});
+depoModal.addEventListener('close', () => {
+  depoModalImg.removeAttribute('src');
+  depoModalImg.alt = '';
+});
 </script>
 </body>
 </html>

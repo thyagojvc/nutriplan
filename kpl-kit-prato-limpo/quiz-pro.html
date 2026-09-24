@@ -538,7 +538,17 @@ function initPresence() {
     }).catch(() => {});
   };
   sendBeat();
-  setInterval(sendBeat, CONFIG.PRESENCE_MS);
+  // Mesma trava do pulso da pagina de vendas (24/09): aba em segundo plano ou
+  // 5 minutos sem a pessoa mexer param de bater, pra o painel nao mostrar
+  // "ao vivo" eterno e pra nao queimar a cota do Redis a toa.
+  const OCIO_MS = 5 * 60 * 1000;
+  let ultimaAcao = Date.now();
+  const marcaAcao = () => { ultimaAcao = Date.now(); };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach((ev) => {
+    addEventListener(ev, marcaAcao, { passive: true });
+  });
+  const pulsoVivo = () => !document.hidden && (Date.now() - ultimaAcao) < OCIO_MS;
+  setInterval(() => { if (pulsoVivo()) sendBeat(); }, CONFIG.PRESENCE_MS);
 }
 function markStep(i, id) {
   currentQuizStep = id;
