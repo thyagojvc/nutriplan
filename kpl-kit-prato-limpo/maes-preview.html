@@ -5,14 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Kit Prato Limpo | Atividades para explorar alimentos em família</title>
 <meta name="description" content="Atividades prontas para aproximar crianças de alimentos novos com brincadeiras, no próprio ritmo. Escolha entre 86 fichas no Essencial ou 149 atividades e aplicativo no Completo." />
-<!-- Página principal para famílias. A edição para nutricionistas continua em /profissional. -->
+<meta name="robots" content="noindex, nofollow" />
+
+<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 10,00,
+     Completo R$ 29,90) é de novo o
+     destino de kitpratolimpo.com.br. A Edição Profissional (nutricionistas,
+     R$ 47 desde 19/09) continua inteira e funcionando em /profissional, escondida da busca.
+     PRA TROCAR DE NOVO: `git mv index.html mae.html && git mv profissional.html
+     index.html`, mexer no noindex das duas e nos og:url. Nada mais depende disso.
+     ATENÇÃO: os criativos de nutricionista mostram kitpratolimpo.com.br no botão;
+     se rodar aquele tráfego, o destino tem que ser /profissional. -->
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="KPL - Kit Prato Limpo" />
 <meta property="og:description" content="Fichas prontas para brincar e explorar alimentos em casa, com opções em PDF e aplicativo." />
 <meta property="og:image" content="assets/og-image.png" />
-<meta property="og:url" content="https://kitpratolimpo.com.br/" />
+<meta property="og:url" content="https://kitpratolimpo.com.br/maes-preview" />
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:site_name" content="Kit Prato Limpo" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -52,12 +61,14 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; font-size: 18px; }
+  html { scroll-behavior: smooth; }
 
   body {
     font-family: var(--body);
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 18px;
+    /* 500 em vez do 400 padrao: o texto corrido estava fino demais na tela do
+       celular. Titulos e componentes que definem o proprio peso nao mudam. */
+    font-weight: 500;
     line-height: 1.6;
     color: var(--text);
     background: var(--cream);
@@ -197,7 +208,7 @@
     letter-spacing: .01em;
   }
   .hero__h1 { font-size: 1.62rem; line-height: 1.14; margin-bottom: 12px; }
-  .hero__sub { font-size: .98rem; color: var(--text); font-weight: 700; margin-bottom: 16px; }
+  .hero__sub { font-size: .98rem; color: var(--text); font-weight: 600; margin-bottom: 16px; }
   .hero__promise {
     display: flex; gap: 9px; align-items: flex-start; text-align: left;
     background: var(--orange-soft); border: 1px solid #F6D9A8; border-radius: var(--radius-sm);
@@ -222,8 +233,8 @@
     text-align: center; padding: 18px; color: var(--muted); font-weight: 700;
     overflow: hidden;
   }
-  .placeholder small { font-weight: 700; font-size: .78rem; opacity: .8; margin-top: 4px; }
-  .placeholder .ph-icon { font-size: 32px; margin-bottom: 6px; }
+  .placeholder small { font-weight: 600; font-size: .78rem; opacity: .8; margin-top: 4px; }
+  .placeholder .ph-icon { font-size: 2rem; margin-bottom: 6px; }
   .ratio-4-3 { aspect-ratio: 4 / 3; }
   .ratio-3-4 { aspect-ratio: 3 / 4; }
   /* 3/2 é a proporção real do mockup-hero (1200x800). Estava em 4/3 com
@@ -418,7 +429,7 @@
     position: absolute; top: 8px; right: 10px; border: none; background: none;
     font-size: 1.6rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 8px;
   }
-  .downsell__emoji { font-size: 38.4px; margin-bottom: 6px; }
+  .downsell__emoji { font-size: 2.4rem; margin-bottom: 6px; }
   .downsell__title { font-family: var(--heading); color: var(--ink); font-size: 1.35rem; margin: 0 0 10px; }
   .downsell__text { font-size: .98rem; color: var(--text); margin: 0 0 16px; line-height: 1.55; }
   .downsell__price { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-bottom: 4px; }
@@ -504,7 +515,7 @@
     padding: 20px 16px 14px; margin: 18px 0 4px;
   }
   .ficha__recusa .ficha__label { color: var(--coral); }
-  .ficha__recusa p { color: #8a3417; font-weight: 700; }
+  .ficha__recusa p { color: #8a3417; font-weight: 600; }
   .ficha__recusa__flag {
     position: absolute; top: -11px; left: 14px;
     background: var(--coral); color: #fff; border-radius: 999px;
@@ -545,9 +556,6 @@
     position: absolute; top: 22px; right: 12px; z-index: 2;
     background: var(--green); color: #fff; font-family: var(--heading); font-weight: 700;
     font-size: .68rem; padding: 4px 10px; border-radius: 999px; box-shadow: var(--shadow-sm);
-  }
-  @media (max-width: 640px) {
-    .worksheet__print { position: static; display: table; margin: 8px 16px 0 auto; }
   }
   .worksheet__head { padding: 14px 16px 6px; }
   .worksheet__kicker { font-family: var(--heading); font-weight: 700; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
@@ -639,9 +647,9 @@
     margin-top: 20px; text-align: center; background: var(--ink); color: #fff;
     border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
   }
-  .blocos-total .num { font-family: var(--heading); font-weight: 800; font-size: 48px; color: #fff; line-height: 1; }
+  .blocos-total .num { font-family: var(--heading); font-weight: 800; font-size: 3rem; color: #fff; line-height: 1; }
   .blocos-total .num .plus { color: var(--orange); }
-  .blocos-total p { color: #d7dcd6; margin-top: 4px; font-weight: 700; }
+  .blocos-total p { color: #d7dcd6; margin-top: 4px; font-weight: 600; }
 
   /* MATERIAIS */
   .materiais { background: var(--mint); }
@@ -700,7 +708,7 @@
     box-shadow: var(--shadow-sm);
   }
   .story-featured { background: var(--coral-soft); transform: rotate(-1.5deg); }
-  .story-quote { height: 40px; color: var(--coral); font-family: Georgia, serif; font-size: 64px; line-height: .9; }
+  .story-quote { height: 40px; color: var(--coral); font-family: Georgia, serif; font-size: 4rem; line-height: .9; }
   .story-card p { margin: 12px 0 20px; font-size: .98rem; color: var(--text); line-height: 1.55; }
   .story-footer {
     display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 11px;
@@ -728,18 +736,13 @@
     .stories-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .story-featured { transform: none; }
     .story-card { padding: 12px 11px; min-height: 0; }
-    .story-quote { height: 22px; font-size: 35.2px; }
+    .story-quote { height: 22px; font-size: 2.2rem; }
     .story-card p { font-size: .92rem; line-height: 1.5; margin: 6px 0 14px; }
-    .story-footer { grid-template-columns: 32px minmax(0, 1fr); gap: 7px; padding-top: 8px; }
-    .story-footer img,
+    .story-footer { grid-template-columns: 32px 1fr; gap: 7px; padding-top: 8px; }
     .story-footer .depo__avatar { width: 32px; height: 32px; border-width: 1.5px; }
-    .story-footer span { min-width: 0; }
     .story-footer b { font-size: .74rem; }
     .story-footer small { font-size: .66rem; }
     .story-footer i { font-size: .66rem; }
-  }
-  @media (max-width: 360px) {
-    .stories-grid { grid-template-columns: 1fr; }
   }
 
   /* GARANTIA */
@@ -747,7 +750,7 @@
     background: var(--card); border: 2px solid var(--green); border-radius: var(--radius);
     padding: 28px 22px; text-align: center; box-shadow: var(--shadow); position: relative;
   }
-  .garantia-box .seal { font-size: 41.6px; margin-bottom: 8px; }
+  .garantia-box .seal { font-size: 2.6rem; margin-bottom: 8px; }
   .garantia-box h2 { font-size: 1.5rem; margin-bottom: 10px; }
   .garantia-box p { color: var(--text); }
   .garantia-box .support { margin-top: 14px; font-weight: 700; color: var(--green-dark); font-size: .95rem; }
@@ -778,7 +781,7 @@
     padding: 12px; text-align: center; font-weight: 800; color: var(--green-dark);
     font-family: var(--heading); display: flex; flex-direction: column; align-items: center; gap: 4px;
   }
-  .pay-opt small { font-weight: 700; font-size: .8rem; color: var(--green-dark); }
+  .pay-opt small { font-weight: 600; font-size: .72rem; color: var(--green-dark); }
 
   .pay-steps { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 18px; }
   .pay-step {
@@ -905,7 +908,7 @@
   /* Success */
   .success { display: none; text-align: center; padding: 10px 0; }
   .success.show { display: block; }
-  .success .check { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size: 38.4px; box-shadow: 0 8px 20px rgba(92,167,65,.35); }
+  .success .check { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size: 2.4rem; box-shadow: 0 8px 20px rgba(92,167,65,.35); }
   .success h2 { font-size: 1.5rem; margin-bottom: 10px; }
 
   /* FAQ */
@@ -952,19 +955,18 @@
   .hero { padding-bottom: 14px; }
   #dores { padding-top: 30px; }
 
-  /* Mesma escala de leitura da edição profissional; títulos grandes mantêm
-     seu tamanho anterior em cada largura de tela. */
-  :root { --ink:#1E2721; --text:#3A443D; --muted:#58645B; --border:#E3DCCB; }
-  body { font-size:20px; line-height:1.55; font-weight:700; }
+  /* Prévia para famílias: a mesma escala e clareza visual da edição profissional. */
+  :root { --ink:#1E2721; --text:#3A443D; --muted:#69736B; --border:#E3DCCB; }
+  body { font-size:19px; line-height:1.55; font-weight:600; }
   b,strong { font-weight:800; }
   section { padding:36px 0; }
-  .section-title { font-size:32.8px; line-height:1.08; text-wrap:balance; margin-bottom:12px; }
-  .section-sub { color:var(--text); font-size:1.04rem; font-weight:700; max-width:32rem; margin-bottom:24px; }
+  .section-title { font-size:2.05rem; line-height:1.08; text-wrap:balance; margin-bottom:12px; }
+  .section-sub { color:var(--text); font-size:1.04rem; font-weight:600; max-width:32rem; margin-bottom:24px; }
   .eyebrow { font-size:.9rem; font-weight:800; }
   .hero { padding:28px 0 16px; background:linear-gradient(180deg,var(--cream),#FBF6EC 65%); }
   .hero__badge { font-size:.88rem; }
   .hero__brand { display:none; }
-  .hero__h1 { font-size:37.6px; line-height:1.06; text-wrap:balance; margin:0 auto 14px; }
+  .hero__h1 { font-size:2.35rem; line-height:1.06; text-wrap:balance; margin:0 auto 14px; }
   .hero__sub { font-size:1.1rem; line-height:1.48; margin-bottom:16px; }
   .hero__mockup { margin:2px -8px 8px; width:calc(100% + 16px); }
   .hero__mockup img { width:100%; height:auto !important; display:block; }
@@ -978,7 +980,7 @@
     border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow-sm); }
   .inside-card img { display:block; width:100%; height:auto; aspect-ratio:2/3; object-fit:contain; background:#fff; border-radius:8px; }
   .inside-card figcaption { color:var(--ink); font-weight:800; font-size:.86rem; line-height:1.25; padding:9px 5px 4px; }
-  .inside-card figcaption span { display:block; color:var(--muted); font-weight:700; font-size:.78rem; margin-top:3px; }
+  .inside-card figcaption span { display:block; color:var(--muted); font-weight:600; font-size:.76rem; margin-top:3px; }
   .inside-hint { color:var(--muted); text-align:center; font-size:.82rem; font-weight:700; margin:0 0 16px; }
   .inside-note { background:#fff; border-left:4px solid var(--orange); padding:13px 15px; border-radius:0 12px 12px 0; font-size:.94rem; color:var(--text); }
   #dores { padding-top:36px; }
@@ -1019,9 +1021,9 @@
   .plano__pricing { margin-top:auto; }
   .plano__price-old { margin:0 0 4px; text-decoration:none; font-size:.9rem; }
   .plano__price-old s { color:var(--coral); text-decoration-thickness:1.5px; }
-  .plano__price { font-size:36.8px; margin-top:0; }
+  .plano__price { font-size:2.3rem; margin-top:0; }
   .plano__list { margin:14px 0 16px; }
-  .plano__list li { font-size:.95rem; }
+  .plano__list li { font-size:.9rem; }
   .plano__choose { margin-top:14px; min-height:48px; font-size:.93rem; padding:9px 12px; }
   .plano__choose--light { background:#fff; border:2px solid var(--green); color:var(--green-dark); box-shadow:none; }
   .plano__secure-badge { display:block; width:min(100%,260px); height:auto; margin:10px auto 0; }
@@ -1029,23 +1031,26 @@
   .checkout .today-banner { display:none; }
   .checkout .plan-intro { text-align:center; margin:0 0 22px; font-size:1.05rem; }
   .checkout .plan-intro strong { color:var(--green-dark); }
+  .preview-note { background:var(--ink); color:#fff; text-align:center; padding:8px 16px; font-size:.8rem; font-weight:800; }
+  .preview-note a { color:#fff; text-decoration:underline; }
   @media(max-width:560px){
     .planos { grid-template-columns:1fr; }
     .plano__photo,.plano__triptych { height:190px; }
     .plano__triptych img { max-width:115px; }
   }
   @media(max-width:390px){
-    .hero__h1 { font-size:32.8px; }
-    .section-title { font-size:29.6px; }
+    .hero__h1 { font-size:2.05rem; }
+    .section-title { font-size:1.85rem; }
     .system-three { grid-template-columns:1fr; }
     .system-three div { display:grid; grid-template-columns:30px 1fr; gap:0 10px; align-items:center; }
     .system-three .ic { grid-row:span 2; }
     .system-three b { margin:0; }
   }
-  @media(min-width:720px){ .hero__h1 { font-size:44px; } .section-title { font-size:36px; } }
+  @media(min-width:720px){ .hero__h1 { font-size:2.75rem; } .section-title { font-size:2.25rem; } }
 </style>
 </head>
 <body>
+<div class="preview-note">PRÉVIA DA NOVA PÁGINA PARA FAMÍLIAS</div>
 
 <!-- ======================= 1. HERO ======================= -->
 <header class="hero" id="hero">
@@ -1387,14 +1392,14 @@
 
     <div class="autor">
       <div class="autor__topo">
-        <img class="autor__foto" src="assets/autor-thyago.jpg" width="640" height="800"
-             loading="lazy" decoding="async" alt="Thyago Vieira, nutricionista, de jaleco branco" />
+        <img class="autor__foto" src="assets/autor-cristina.jpg" width="640" height="800"
+             loading="lazy" decoding="async" alt="Cristina Campos, nutricionista, de jaleco branco em um consultório" />
         <div>
-          <div class="autor__nome">Thyago Vieira</div>
-          <div class="autor__cargo">Nutricionista · UFF</div>
+          <div class="autor__nome">Cristina Campos</div>
+          <div class="autor__cargo">Nutricionista · USP</div>
         </div>
       </div>
-      <p>Nutricionista formado pela Universidade Federal Fluminense, com experiência em nutrição infantil e seletividade alimentar.</p>
+      <p>Nutricionista formada pela Universidade de São Paulo, com experiência em nutrição infantil e seletividade alimentar.</p>
       <p class="autor__frase">O kit reúne atividades visuais para aproximar a criança dos alimentos em etapas que você consegue acompanhar em casa.</p>
     </div>
 
@@ -1414,7 +1419,7 @@
 
     <div class="cta-meio">
       <a href="#checkout" class="btn" data-cta="depoimentos">Ver os planos do Kit Prato Limpo →</a>
-      <p class="btn-note">Pagamento único · 14 dias de garantia</p>
+      <p class="btn-note">Pagamento único · garantia conforme o plano</p>
     </div>
   </div>
 </section>
@@ -1430,7 +1435,7 @@
       <span class="eyebrow">Na prática</span>
     </div>
     <h2 class="section-title">Primeiro ela conhece. <span class="hl">Depois, no tempo dela, explora.</span></h2>
-    <p class="section-sub">O aplicativo deixa a criança pintar alimentos com o dedo e brincar entre uma atividade e outra.</p>
+    <p class="section-sub">No plano Completo, o aplicativo deixa a criança pintar alimentos com o dedo e brincar entre uma atividade e outra.</p>
 
     <div class="pintar-demo">
       <!-- PEGADINHA (corrigida 19/08): `autoplay` no HTML ANULA o preload="metadata".
@@ -1460,8 +1465,8 @@
   <div class="wrap">
     <div class="garantia-box">
       <div class="seal">🛡️</div>
-      <h2>14 dias de garantia incondicional</h2>
-      <p>Aplique com o seu filho sem risco: <strong>14 dias de garantia</strong>. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
+      <h2>Até 30 dias de garantia incondicional</h2>
+      <p>Aplique com o seu filho sem risco: <strong>30 dias de garantia no plano Completo</strong> e 7 dias no Essencial. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
       <p class="support">Suporte pelo e-mail <a href="mailto:kitpratolimpo@gmail.com" style="color:inherit">kitpratolimpo@gmail.com</a></p>
     </div>
   </div>
@@ -1495,6 +1500,7 @@
           <p class="plano__summary">86 atividades · PDF para imprimir ou abrir na tela</p>
           <ul class="plano__list">
             <li><span class="ic">✅</span>86 atividades em 11 blocos</li>
+            <li><span class="ic">✅</span>Índice para encontrar uma atividade</li>
             <li><span class="ic">✅</span>Acesso digital imediato</li>
             <li class="off"><span class="ic">➖</span>Sem aplicativo e materiais extras</li>
           </ul>
@@ -1503,7 +1509,7 @@
             <div class="plano__price">R$ 10<span class="cents">,00</span></div>
           </div>
           <button type="button" class="btn plano__choose plano__choose--light">Quero o Essencial</button>
-          <div class="plano__guarantee">🛡️ 14 dias de garantia</div>
+          <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
         </div>
 
         <div class="plano plano--premium selected" data-tier="completo" role="radio" aria-checked="true" tabindex="0">
@@ -1606,7 +1612,7 @@
         <div class="secure-badges">
           <span>🔒 Site seguro (HTTPS)</span>
           <span>🏦 Pago direto pelo seu banco via Pix</span>
-          <span id="guarantee-badge">🛡️ Garantia de 14 dias</span>
+          <span id="guarantee-badge">🛡️ Garantia de 30 dias</span>
         </div>
         <p class="pay-note">Nunca pedimos senha, número de cartão ou dados bancários. Você só escaneia o QR Code (ou copia o código) e confirma no aplicativo do seu próprio banco.</p>
       </form>
@@ -1666,7 +1672,7 @@
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false"><span>Como funciona a garantia?</span><span class="ico">+</span></button>
-        <div class="faq-a"><p>Você tem 14 dias para testar o kit. Se não gostar, é só enviar um e-mail para o suporte e devolvemos 100% do valor, sem precisar justificar.</p></div>
+        <div class="faq-a"><p>No plano Completo você tem 30 dias para testar, e no Essencial, 7 dias. Se não gostar, é só enviar um e-mail para o suporte e devolvemos 100% do valor, sem precisar justificar.</p></div>
       </div>
     </div>
   </div>
@@ -1703,7 +1709,7 @@
       <span class="downsell__old">De R$ 29,90</span>
       <span class="downsell__now">por R$ 19,90</span>
     </div>
-    <p class="downsell__note">Por R$ 9,90 a mais que o Essencial, leve também o app e os materiais extras.</p>
+    <p class="downsell__note">Só R$ 4 a mais que o Essencial pra levar tudo pronto.</p>
     <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 19,90</button>
     <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10,00</button>
   </div>
@@ -1714,7 +1720,7 @@
    CONFIG — edite aqui
    ========================================================= */
 const CONFIG = {
-  META_PIXEL_ID: '2794485957574762',
+  META_PIXEL_ID: '', // prévia: sem eventos de anúncio
   API_CREATE:  '/api/create-charge',
   API_STATUS:  '/api/payment-status',
   API_DELIVER: '/api/deliver-kit',
@@ -1723,6 +1729,7 @@ const CONFIG = {
   PRESENCE_MS: 8000,
   POLL_MS: 5000,                         // polling a cada 5s
 };
+const IS_PREVIEW = true;
 
 /* Planos (valores em CENTAVOS). Mantenha em sincronia com api/_catalog.js. */
 const TIERS = {
@@ -1935,9 +1942,9 @@ function selectTier(tier) {
   // O preço final da caixa de valor acompanha o Completo (29,90) ou o promo (19,90).
   const stackNow = $('#stack-now');
   if (stackNow && base === 'completo') stackNow.textContent = brl(TIERS[tier].priceCents);
-  // A garantia de 14 dias vale para os dois planos.
+  // Selo de garantia perto do botão precisa bater com o plano real (30d Completo / 7d Essencial).
   const guaranteeBadge = $('#guarantee-badge');
-  if (guaranteeBadge) guaranteeBadge.textContent = '🛡️ Garantia de 14 dias';
+  if (guaranteeBadge) guaranteeBadge.textContent = base === 'completo' ? '🛡️ Garantia de 30 dias' : '🛡️ Garantia de 7 dias';
   recalcTotal();
   pixelCustom('PlanSelect', { tier });
 }
@@ -2035,6 +2042,7 @@ function rememberFbclid() {
  * opts: { custom: bool, eventId: string (opcional, senão gera um aleatório) }
  */
 function pixelDual(event, data, opts) {
+  if (IS_PREVIEW) return '';
   opts = opts || {};
   const eventId = opts.eventId || (
     (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (event + '_' + Date.now() + '_' + Math.random().toString(36).slice(2))
@@ -2210,21 +2218,9 @@ function initPresenceTracking() {
       keepalive: true,
     }).catch(() => {});
   }
-  // TRAVA DO PULSO (24/09). Antes daqui o setInterval batia a cada 8s pra
-  // SEMPRE: aba esquecida aberta aparecia "ao vivo" e parada no checkout por
-  // horas, e cada batida gasta ~6 comandos do Redis. Agora o pulso so sai com
-  // a aba na frente E com a pessoa tendo mexido nos ultimos 5 minutos. Quem
-  // voltar pra aba e rolar a pagina volta a aparecer na hora.
-  const OCIO_MS = 5 * 60 * 1000;
-  let ultimaAcao = Date.now();
-  const marcaAcao = () => { ultimaAcao = Date.now(); };
-  ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach((ev) => {
-    addEventListener(ev, marcaAcao, { passive: true });
-  });
-  const pulsoVivo = () => !document.hidden && (Date.now() - ultimaAcao) < OCIO_MS;
   triggerHeartbeat = sendHeartbeat; // deixa fireInitiate() disparar um beat imediato
   sendHeartbeat();
-  setInterval(() => { if (pulsoVivo()) sendHeartbeat(); }, CONFIG.PRESENCE_MS);
+  setInterval(sendHeartbeat, CONFIG.PRESENCE_MS);
 }
 
 /* =========================================================
@@ -2255,6 +2251,7 @@ function fireInitiate() {
 async function handleSubmit(e) {
   e.preventDefault();
   $('#api-error').classList.remove('show');
+  if (IS_PREVIEW) { showPreviewCheckoutNotice(); return; }
 
   if (!validateForm()) {
     $('.invalid input')?.focus();
@@ -2271,7 +2268,15 @@ async function handleSubmit(e) {
   startCharge();
 }
 
+function showPreviewCheckoutNotice() {
+  const aviso = $('#api-error');
+  aviso.innerHTML = 'Esta página é uma prévia visual. Para comprar agora, use o <a href="https://kitpratolimpo.com.br/#checkout">checkout da página atual</a>.';
+  aviso.classList.add('show');
+  aviso.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
 async function startCharge() {
+  if (IS_PREVIEW) { showPreviewCheckoutNotice(); return; }
   setPixelAdvancedMatching($('#email').value, $('#nome').value, $('#telefone').value);
   fireInitiate();
 
@@ -2590,7 +2595,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initFAQ();
   initReveal();
   initPixel();
-  initPresenceTracking();
+  if (!IS_PREVIEW) initPresenceTracking();
 
   // máscaras
   $('#telefone').addEventListener('input', e => e.target.value = maskPhone(e.target.value));

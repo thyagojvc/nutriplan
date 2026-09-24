@@ -432,10 +432,10 @@ function getAdRef() {
  *  só no painel, não duas. */
 function getVisitorId() {
   try {
-    let id = sessionStorage.getItem(VISITOR_ID_KEY);
+    let id = localStorage.getItem(VISITOR_ID_KEY);
     if (!id) {
       id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
-      sessionStorage.setItem(VISITOR_ID_KEY, id);
+      localStorage.setItem(VISITOR_ID_KEY, id);
     }
     return id;
   } catch (e) { return 'v_' + Date.now(); }
