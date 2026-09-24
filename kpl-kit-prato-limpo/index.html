@@ -3,24 +3,16 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>KPL - Kit Prato Limpo | Sistema de 149 atividades para destravar a alimentação infantil</title>
-<meta name="description" content="Kit digital com 149 atividades prontas para aplicar e destravar a alimentação do seu filho. Fichas padronizadas, materiais imprimíveis e índice de consulta rápida. Recebimento automático por e-mail após a compra." />
-
-<!-- VOLTOU A SER A RAIZ EM 27/08. A página das mães (Essencial R$ 10,00,
-     Completo R$ 29,90) é de novo o
-     destino de kitpratolimpo.com.br. A Edição Profissional (nutricionistas,
-     R$ 47 desde 19/09) continua inteira e funcionando em /profissional, escondida da busca.
-     PRA TROCAR DE NOVO: `git mv index.html mae.html && git mv profissional.html
-     index.html`, mexer no noindex das duas e nos og:url. Nada mais depende disso.
-     ATENÇÃO: os criativos de nutricionista mostram kitpratolimpo.com.br no botão;
-     se rodar aquele tráfego, o destino tem que ser /profissional. -->
+<title>Kit Prato Limpo | Atividades para explorar alimentos em família</title>
+<meta name="description" content="Atividades prontas para aproximar crianças de alimentos novos com brincadeiras, no próprio ritmo. Escolha entre 86 fichas no Essencial ou 149 atividades e aplicativo no Completo." />
+<!-- Página principal para famílias. A edição para nutricionistas continua em /profissional. -->
 
 <!-- Open Graph -->
 <meta property="og:type" content="website" />
 <meta property="og:title" content="KPL - Kit Prato Limpo" />
-<meta property="og:description" content="Sistema de 149 atividades para destravar a alimentação infantil. Fichas prontas para aplicar hoje, com o que você já tem em casa." />
+<meta property="og:description" content="Fichas prontas para brincar e explorar alimentos em casa, com opções em PDF e aplicativo." />
 <meta property="og:image" content="assets/og-image.png" />
-<meta property="og:url" content="https://kitpratolimpo.com.br" />
+<meta property="og:url" content="https://kitpratolimpo.com.br/" />
 <meta property="og:locale" content="pt_BR" />
 <meta property="og:site_name" content="Kit Prato Limpo" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -60,14 +52,12 @@
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; font-size: 18px; }
 
   body {
     font-family: var(--body);
-    font-size: 18px;
-    /* 500 em vez do 400 padrao: o texto corrido estava fino demais na tela do
-       celular. Titulos e componentes que definem o proprio peso nao mudam. */
-    font-weight: 500;
+    font-size: 20px;
+    font-weight: 700;
     line-height: 1.6;
     color: var(--text);
     background: var(--cream);
@@ -207,7 +197,7 @@
     letter-spacing: .01em;
   }
   .hero__h1 { font-size: 1.62rem; line-height: 1.14; margin-bottom: 12px; }
-  .hero__sub { font-size: .98rem; color: var(--text); font-weight: 600; margin-bottom: 16px; }
+  .hero__sub { font-size: .98rem; color: var(--text); font-weight: 700; margin-bottom: 16px; }
   .hero__promise {
     display: flex; gap: 9px; align-items: flex-start; text-align: left;
     background: var(--orange-soft); border: 1px solid #F6D9A8; border-radius: var(--radius-sm);
@@ -232,8 +222,8 @@
     text-align: center; padding: 18px; color: var(--muted); font-weight: 700;
     overflow: hidden;
   }
-  .placeholder small { font-weight: 600; font-size: .78rem; opacity: .8; margin-top: 4px; }
-  .placeholder .ph-icon { font-size: 2rem; margin-bottom: 6px; }
+  .placeholder small { font-weight: 700; font-size: .78rem; opacity: .8; margin-top: 4px; }
+  .placeholder .ph-icon { font-size: 32px; margin-bottom: 6px; }
   .ratio-4-3 { aspect-ratio: 4 / 3; }
   .ratio-3-4 { aspect-ratio: 3 / 4; }
   /* 3/2 é a proporção real do mockup-hero (1200x800). Estava em 4/3 com
@@ -428,7 +418,7 @@
     position: absolute; top: 8px; right: 10px; border: none; background: none;
     font-size: 1.6rem; line-height: 1; color: var(--muted); cursor: pointer; padding: 4px 8px;
   }
-  .downsell__emoji { font-size: 2.4rem; margin-bottom: 6px; }
+  .downsell__emoji { font-size: 38.4px; margin-bottom: 6px; }
   .downsell__title { font-family: var(--heading); color: var(--ink); font-size: 1.35rem; margin: 0 0 10px; }
   .downsell__text { font-size: .98rem; color: var(--text); margin: 0 0 16px; line-height: 1.55; }
   .downsell__price { display: flex; align-items: baseline; justify-content: center; gap: 10px; margin-bottom: 4px; }
@@ -514,7 +504,7 @@
     padding: 20px 16px 14px; margin: 18px 0 4px;
   }
   .ficha__recusa .ficha__label { color: var(--coral); }
-  .ficha__recusa p { color: #8a3417; font-weight: 600; }
+  .ficha__recusa p { color: #8a3417; font-weight: 700; }
   .ficha__recusa__flag {
     position: absolute; top: -11px; left: 14px;
     background: var(--coral); color: #fff; border-radius: 999px;
@@ -555,6 +545,9 @@
     position: absolute; top: 22px; right: 12px; z-index: 2;
     background: var(--green); color: #fff; font-family: var(--heading); font-weight: 700;
     font-size: .68rem; padding: 4px 10px; border-radius: 999px; box-shadow: var(--shadow-sm);
+  }
+  @media (max-width: 640px) {
+    .worksheet__print { position: static; display: table; margin: 8px 16px 0 auto; }
   }
   .worksheet__head { padding: 14px 16px 6px; }
   .worksheet__kicker { font-family: var(--heading); font-weight: 700; font-size: .7rem; letter-spacing: .06em; text-transform: uppercase; color: var(--orange); }
@@ -646,9 +639,9 @@
     margin-top: 20px; text-align: center; background: var(--ink); color: #fff;
     border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
   }
-  .blocos-total .num { font-family: var(--heading); font-weight: 800; font-size: 3rem; color: #fff; line-height: 1; }
+  .blocos-total .num { font-family: var(--heading); font-weight: 800; font-size: 48px; color: #fff; line-height: 1; }
   .blocos-total .num .plus { color: var(--orange); }
-  .blocos-total p { color: #d7dcd6; margin-top: 4px; font-weight: 600; }
+  .blocos-total p { color: #d7dcd6; margin-top: 4px; font-weight: 700; }
 
   /* MATERIAIS */
   .materiais { background: var(--mint); }
@@ -707,7 +700,7 @@
     box-shadow: var(--shadow-sm);
   }
   .story-featured { background: var(--coral-soft); transform: rotate(-1.5deg); }
-  .story-quote { height: 40px; color: var(--coral); font-family: Georgia, serif; font-size: 4rem; line-height: .9; }
+  .story-quote { height: 40px; color: var(--coral); font-family: Georgia, serif; font-size: 64px; line-height: .9; }
   .story-card p { margin: 12px 0 20px; font-size: .98rem; color: var(--text); line-height: 1.55; }
   .story-footer {
     display: grid; grid-template-columns: 44px 1fr; align-items: center; gap: 11px;
@@ -735,13 +728,18 @@
     .stories-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
     .story-featured { transform: none; }
     .story-card { padding: 12px 11px; min-height: 0; }
-    .story-quote { height: 22px; font-size: 2.2rem; }
+    .story-quote { height: 22px; font-size: 35.2px; }
     .story-card p { font-size: .92rem; line-height: 1.5; margin: 6px 0 14px; }
-    .story-footer { grid-template-columns: 32px 1fr; gap: 7px; padding-top: 8px; }
+    .story-footer { grid-template-columns: 32px minmax(0, 1fr); gap: 7px; padding-top: 8px; }
+    .story-footer img,
     .story-footer .depo__avatar { width: 32px; height: 32px; border-width: 1.5px; }
+    .story-footer span { min-width: 0; }
     .story-footer b { font-size: .74rem; }
     .story-footer small { font-size: .66rem; }
     .story-footer i { font-size: .66rem; }
+  }
+  @media (max-width: 360px) {
+    .stories-grid { grid-template-columns: 1fr; }
   }
 
   /* GARANTIA */
@@ -749,7 +747,7 @@
     background: var(--card); border: 2px solid var(--green); border-radius: var(--radius);
     padding: 28px 22px; text-align: center; box-shadow: var(--shadow); position: relative;
   }
-  .garantia-box .seal { font-size: 2.6rem; margin-bottom: 8px; }
+  .garantia-box .seal { font-size: 41.6px; margin-bottom: 8px; }
   .garantia-box h2 { font-size: 1.5rem; margin-bottom: 10px; }
   .garantia-box p { color: var(--text); }
   .garantia-box .support { margin-top: 14px; font-weight: 700; color: var(--green-dark); font-size: .95rem; }
@@ -780,7 +778,7 @@
     padding: 12px; text-align: center; font-weight: 800; color: var(--green-dark);
     font-family: var(--heading); display: flex; flex-direction: column; align-items: center; gap: 4px;
   }
-  .pay-opt small { font-weight: 600; font-size: .72rem; color: var(--green-dark); }
+  .pay-opt small { font-weight: 700; font-size: .8rem; color: var(--green-dark); }
 
   .pay-steps { display: flex; flex-direction: column; gap: 8px; margin: 4px 0 18px; }
   .pay-step {
@@ -907,7 +905,7 @@
   /* Success */
   .success { display: none; text-align: center; padding: 10px 0; }
   .success.show { display: block; }
-  .success .check { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size: 2.4rem; box-shadow: 0 8px 20px rgba(92,167,65,.35); }
+  .success .check { width: 72px; height: 72px; margin: 0 auto 16px; border-radius: 50%; background: var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-size: 38.4px; box-shadow: 0 8px 20px rgba(92,167,65,.35); }
   .success h2 { font-size: 1.5rem; margin-bottom: 10px; }
 
   /* FAQ */
@@ -953,6 +951,98 @@
   .hero__mockup { margin-bottom: 0; }
   .hero { padding-bottom: 14px; }
   #dores { padding-top: 30px; }
+
+  /* Mesma escala de leitura da edição profissional; títulos grandes mantêm
+     seu tamanho anterior em cada largura de tela. */
+  :root { --ink:#1E2721; --text:#3A443D; --muted:#58645B; --border:#E3DCCB; }
+  body { font-size:20px; line-height:1.55; font-weight:700; }
+  b,strong { font-weight:800; }
+  section { padding:36px 0; }
+  .section-title { font-size:32.8px; line-height:1.08; text-wrap:balance; margin-bottom:12px; }
+  .section-sub { color:var(--text); font-size:1.04rem; font-weight:700; max-width:32rem; margin-bottom:24px; }
+  .eyebrow { font-size:.9rem; font-weight:800; }
+  .hero { padding:28px 0 16px; background:linear-gradient(180deg,var(--cream),#FBF6EC 65%); }
+  .hero__badge { font-size:.88rem; }
+  .hero__brand { display:none; }
+  .hero__h1 { font-size:37.6px; line-height:1.06; text-wrap:balance; margin:0 auto 14px; }
+  .hero__sub { font-size:1.1rem; line-height:1.48; margin-bottom:16px; }
+  .hero__mockup { margin:2px -8px 8px; width:calc(100% + 16px); }
+  .hero__mockup img { width:100%; height:auto !important; display:block; }
+  .hero__promise { margin:2px auto 14px; }
+  .hero__promise p { font-size:1rem; line-height:1.45; }
+  .hero__reinforce { margin:14px 0 0; }
+  #por-dentro { background:var(--cream-2); padding-top:32px; }
+  .inside-rail { display:flex; gap:14px; overflow-x:auto; scroll-snap-type:x mandatory; padding:4px 20px 18px; margin:0 -20px;
+    scrollbar-color:var(--green) var(--mint); -webkit-overflow-scrolling:touch; }
+  .inside-card { flex:0 0 48%; min-width:176px; max-width:228px; scroll-snap-align:start; background:#fff; padding:8px;
+    border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow-sm); }
+  .inside-card img { display:block; width:100%; height:auto; aspect-ratio:2/3; object-fit:contain; background:#fff; border-radius:8px; }
+  .inside-card figcaption { color:var(--ink); font-weight:800; font-size:.86rem; line-height:1.25; padding:9px 5px 4px; }
+  .inside-card figcaption span { display:block; color:var(--muted); font-weight:700; font-size:.78rem; margin-top:3px; }
+  .inside-hint { color:var(--muted); text-align:center; font-size:.82rem; font-weight:700; margin:0 0 16px; }
+  .inside-note { background:#fff; border-left:4px solid var(--orange); padding:13px 15px; border-radius:0 12px 12px 0; font-size:.94rem; color:var(--text); }
+  #dores { padding-top:36px; }
+  .dor-list { gap:10px; }
+  .dor { box-shadow:none; }
+  .dor p,.praquem p,.indice-row p,.step p,.ficha__body p,.pintar-lista li { font-size:.99rem; }
+  .dor-bridge { font-size:1.12rem; }
+  .indice { background:var(--cream-2); }
+  .system-three { display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin:0 0 20px; }
+  .system-three div { background:#fff; border:1px solid var(--border); border-radius:14px; padding:13px 10px; box-shadow:var(--shadow-sm); }
+  .system-three .ic { font-size:1.35rem; display:block; }
+  .system-three b { font-family:var(--heading); display:block; color:var(--ink); font-size:1.05rem; line-height:1.12; margin:5px 0; }
+  .system-three p { font-size:.8rem; line-height:1.3; margin:0; }
+  #ficha .ficha__ciencia p { font-size:.94rem; }
+  #blocos .blocos-total { margin-top:18px; }
+  .pintar { background:var(--cream-2); }
+  .pintar-lista li { font-size:1rem; }
+  .stories-grid { gap:12px; }
+  .story-card { padding:18px; }
+  .story-card p { font-size:.93rem; line-height:1.45; }
+  .garantia-box { padding:25px 20px; }
+  .checkout { background:var(--cream-2); }
+  .checkout-card { box-shadow:none; padding:0; background:transparent; }
+  .planos { gap:12px; margin-bottom:24px; }
+  .plano { padding:24px 16px 18px; box-shadow:var(--shadow-sm); }
+  .plano__name { font-size:1.28rem; }
+  .plano__tagline { font-size:.9rem; min-height:0; line-height:1.35; }
+  .plano__photo { display:block; width:100%; height:150px; object-fit:contain; background:var(--cream); border-radius:12px; margin:3px 0 12px; }
+  .plano__triptych { display:flex; justify-content:center; align-items:center; height:150px; overflow:hidden;
+    background:var(--cream); border:1px solid var(--border); border-radius:12px; margin:3px 0 12px; padding:9px 7px; }
+  .plano__triptych img { display:block; flex:0 0 auto; width:31%; max-width:95px; height:auto; aspect-ratio:2/3; object-fit:cover;
+    background:#fff; border:3px solid #fff; border-radius:5px; box-shadow:0 6px 14px rgba(30,39,33,.2); }
+  .plano__triptych img:first-child { transform:translate(7px,8px) rotate(-8deg); }
+  .plano__triptych img:nth-child(2) { position:relative; z-index:1; transform:translateY(-5px); }
+  .plano__triptych img:last-child { transform:translate(-7px,8px) rotate(8deg); }
+  .plano__summary { background:var(--mint); border-radius:10px; color:var(--green-dark); padding:9px 11px;
+    font-size:.88rem; font-weight:800; line-height:1.3; margin-bottom:10px; }
+  .plano__pricing { margin-top:auto; }
+  .plano__price-old { margin:0 0 4px; text-decoration:none; font-size:.9rem; }
+  .plano__price-old s { color:var(--coral); text-decoration-thickness:1.5px; }
+  .plano__price { font-size:36.8px; margin-top:0; }
+  .plano__list { margin:14px 0 16px; }
+  .plano__list li { font-size:.95rem; }
+  .plano__choose { margin-top:14px; min-height:48px; font-size:.93rem; padding:9px 12px; }
+  .plano__choose--light { background:#fff; border:2px solid var(--green); color:var(--green-dark); box-shadow:none; }
+  .plano__secure-badge { display:block; width:min(100%,260px); height:auto; margin:10px auto 0; }
+  #checkout-form { background:#fff; border:1px solid var(--border); border-radius:20px; padding:22px 18px; }
+  .checkout .today-banner { display:none; }
+  .checkout .plan-intro { text-align:center; margin:0 0 22px; font-size:1.05rem; }
+  .checkout .plan-intro strong { color:var(--green-dark); }
+  @media(max-width:560px){
+    .planos { grid-template-columns:1fr; }
+    .plano__photo,.plano__triptych { height:190px; }
+    .plano__triptych img { max-width:115px; }
+  }
+  @media(max-width:390px){
+    .hero__h1 { font-size:32.8px; }
+    .section-title { font-size:29.6px; }
+    .system-three { grid-template-columns:1fr; }
+    .system-three div { display:grid; grid-template-columns:30px 1fr; gap:0 10px; align-items:center; }
+    .system-three .ic { grid-row:span 2; }
+    .system-three b { margin:0; }
+  }
+  @media(min-width:720px){ .hero__h1 { font-size:44px; } .section-title { font-size:36px; } }
 </style>
 </head>
 <body>
@@ -960,36 +1050,43 @@
 <!-- ======================= 1. HERO ======================= -->
 <header class="hero" id="hero">
   <div class="wrap">
-    <div class="hero__brand">
-      <span class="hero__kpl">KPL</span>
-      <span class="hero__full">Kit Prato Limpo</span>
-    </div>
-    <h1 class="hero__h1">149 atividades prontas para <span class="hl">destravar a alimentação</span> do seu filho</h1>
-    <p class="hero__sub">Você procura o que o seu filho faz na hora da comida e já vê qual atividade usar.</p>
-    <div class="hero__promise">
-      <span class="ic">🍽️</span>
-      <p>A primeira ficha você aplica no jantar de hoje, com o que já tem na cozinha.</p>
-    </div>
-
-
-    <div class="hero__reinforce">
-      <span>🖐️ Aplicável hoje</span>
-      <span>🧩 Atividades de brincar</span>
-      <span>📱 No celular ou impresso</span>
-    </div>
+    <span class="hero__badge">🥕 Para famílias de crianças com seletividade alimentar</span>
+    <h1 class="hero__h1">Seu filho recusa comida nova? <span class="hl">149 atividades prontas para começar pela brincadeira</span></h1>
+    <p class="hero__sub">O Kit Prato Limpo ajuda você a encontrar uma atividade para a situação que acontece aí na mesa e usar com o que já tem em casa.</p>
     <figure class="hero__mockup ratio-3-2">
-      <!-- Fundo transparente: as fichas flutuam sobre o creme da página em vez de
-           ficarem dentro de um retângulo mais claro. `contain` em vez de `cover`
-           pra nunca mais cortar as fichas das pontas.
-           O .png é só rede de segurança pra navegador sem WebP (raríssimo hoje);
-           ele pesa 415 KB e o WebP 144 KB, então quem manda é o <source>. -->
       <picture>
         <source srcset="assets/mockup-hero-transp.webp" type="image/webp" />
         <img src="assets/mockup-hero-transp.png" alt="Mockup do Kit Prato Limpo: fichas de atividade, calendário, cartelas de alimentos e tablet com a versão digital" style="width:100%; height:100%; object-fit:contain; display:block;" fetchpriority="high" />
       </picture>
     </figure>
+    <div class="hero__promise">
+      <span class="ic">🍽️</span>
+      <p>O primeiro passo pode ser olhar, tocar ou brincar. Provar vem no tempo da criança, sem transformar a refeição em cobrança.</p>
+    </div>
+    <div class="hero__reinforce">
+      <span>🧩 Brincadeiras prontas</span>
+      <span>🖨️ Fichas para imprimir</span>
+      <span>📱 Digital e imediato</span>
+    </div>
   </div>
 </header>
+
+<section id="por-dentro" aria-labelledby="dentro-title">
+  <div class="wrap">
+    <div style="text-align:center"><span class="eyebrow">Veja por dentro</span></div>
+    <h2 class="section-title" id="dentro-title">Olha as atividades <span class="hl">de verdade</span></h2>
+    <p class="section-sub">São fichas para a criança fazer, não páginas de texto para você estudar. Estas cinco são exemplos do plano Completo.</p>
+    <div class="inside-rail" aria-label="Exemplos de fichas do kit">
+      <figure class="inside-card"><img src="assets/fichas-familia-web/F108.webp" width="560" height="791" loading="lazy" decoding="async" alt="Ficha Cada um com sua sombra"><figcaption>Cada um com sua sombra<span>Observar e ligar</span></figcaption></figure>
+      <figure class="inside-card"><img src="assets/fichas-familia-web/F52.webp" width="560" height="840" loading="lazy" decoding="async" alt="Ficha Memória dos alimentos"><figcaption>Memória dos alimentos<span>Brincar com as imagens</span></figcaption></figure>
+      <figure class="inside-card"><img src="assets/fichas-familia-web/F109.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Caça-palavras dos alimentos"><figcaption>Caça-palavras dos alimentos<span>Reconhecer pelo nome</span></figcaption></figure>
+      <figure class="inside-card"><img src="assets/fichas-familia-web/F114.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Ache as diferenças"><figcaption>Ache as diferenças<span>Olhar com atenção</span></figcaption></figure>
+      <figure class="inside-card"><img src="assets/fichas-familia-web/F117.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Quebra-cabeça da abóbora"><figcaption>Quebra-cabeça da abóbora<span>Montar e explorar</span></figcaption></figure>
+    </div>
+    <p class="inside-hint">Deslize para ver as cinco fichas →</p>
+    <p class="inside-note"><strong>O que chega:</strong> um material digital para escolher, abrir e usar no seu ritmo. Você pode imprimir as fichas ou usar a versão digital do plano Completo.</p>
+  </div>
+</section>
 
 <!-- ======================= 1.2 A DOR (agitação + identificação) ======================= -->
 <section id="dores" class="dores">
@@ -997,8 +1094,8 @@
     <div style="text-align:center">
       <span class="eyebrow">Talvez você se reconheça</span>
     </div>
-    <h2 class="section-title">A hora da comida virou <span class="hl">o pior momento</span> do dia?</h2>
-    <p class="section-sub">Se a cena abaixo é a sua rotina, o problema não é o seu filho, e nem você.</p>
+    <h2 class="section-title">Quando a comida nova chega, <span class="hl">a tensão chega junto?</span></h2>
+    <p class="section-sub">Você quer ajudar, mas nem sempre sabe o que tentar depois de uma recusa.</p>
 
     <div class="dor-list">
       <div class="dor">
@@ -1010,16 +1107,8 @@
         <p>Você cozinha, ela recusa, e a comida vai <strong>direto pro lixo</strong>. É dinheiro e tempo indo embora todo dia.</p>
       </div>
       <div class="dor">
-        <span class="dor__ic">😟</span>
-        <p>Bate aquela <strong>culpa e o medo</strong>: "será que ele está se nutrindo? será que fiz algo errado?"</p>
-      </div>
-      <div class="dor">
         <span class="dor__ic">⏰</span>
-        <p>Você <strong>não tem tempo</strong> de inventar uma estratégia nova a cada refeição, entre trabalho, casa e mil tarefas.</p>
-      </div>
-      <div class="dor">
-        <span class="dor__ic">🤷‍♀️</span>
-        <p>Já ouviu de tudo (<strong>"é só ter paciência", "uma hora ele come"</strong>) e nada disso resolveu de verdade.</p>
+        <p>Entre trabalho e casa, <strong>não sobra tempo</strong> para inventar uma atividade diferente a cada refeição.</p>
       </div>
     </div>
 
@@ -1031,11 +1120,10 @@
       <div class="praquem"><span class="ic">🥦</span><p>Recusa quase tudo que é verde ou colorido</p></div>
       <div class="praquem"><span class="ic">😝</span><p>Cospe ou empurra pedaços com textura diferente</p></div>
       <div class="praquem"><span class="ic">📺</span><p>Só come distraído, na frente da TV ou do celular</p></div>
-      <div class="praquem"><span class="ic">😭</span><p>Faz drama, chora ou fecha a boca na hora da comida</p></div>
-      <div class="praquem"><span class="ic">🔄</span><p>Come bem um dia e no outro rejeita tudo o que aceitava</p></div>
+      <div class="praquem"><span class="ic">🙅</span><p>Fecha a boca ou se afasta quando aparece um alimento novo</p></div>
     </div>
 
-    <p class="dor-bridge">A seletividade não se quebra na marra. Se quebra com <span class="hl">aproximação, no ritmo da criança</span>. E é exatamente isso que o Kit faz por você.</p>
+    <p class="dor-bridge">O kit começa pela <span class="hl">aproximação, no ritmo da criança</span>. Há atividades para olhar, brincar, tocar e explorar antes de pedir que ela prove.</p>
   </div>
 </section>
 
@@ -1043,10 +1131,16 @@
 <section id="indice" class="indice">
   <div class="wrap">
     <div style="text-align:center">
-      <span class="eyebrow">O mecanismo</span>
+      <span class="eyebrow">Como o kit ajuda</span>
     </div>
-    <h2 class="section-title">Como o kit <span class="hl">encontra a ficha certa</span></h2>
-    <p class="section-sub">Você não procura no escuro. Parte do comportamento que já vê em casa.</p>
+    <h2 class="section-title">Da situação à mesa <span class="hl">à brincadeira certa</span></h2>
+    <p class="section-sub">Você parte do que acontece em casa e encontra uma forma simples de começar.</p>
+
+    <div class="system-three" aria-label="Como usar o Kit Prato Limpo">
+      <div><span class="ic">🔎</span><b>Encontre</b><p>Procure a situação no índice de consulta.</p></div>
+      <div><span class="ic">🧩</span><b>Brinque</b><p>Abra uma ficha com materiais e passo a passo.</p></div>
+      <div><span class="ic">🏠</span><b>Continue</b><p>Retome em outro dia, sem pressionar.</p></div>
+    </div>
 
     <div class="indice-map">
       <div class="indice-row">
@@ -1084,7 +1178,7 @@
       </div>
     </div>
 
-    <p class="indice-close">O índice de consulta rápida cobre as <strong>149 fichas</strong>. Você não precisa ler o kit inteiro para começar.</p>
+    <p class="indice-close">O índice ajuda a encontrar uma atividade sem precisar ler o material inteiro antes. O plano Completo reúne 149 atividades; o Essencial, 86.</p>
   </div>
 </section>
 
@@ -1121,14 +1215,7 @@
       </div>
     </div>
 
-    <!-- Ilustra a cena que os 3 passos descrevem. Fica aqui e NÃO perto dos
-         depoimentos de propósito: é imagem produzida, não serve como prova, e
-         encostada na prova real ela contamina a leitura da prova. -->
-    <div class="cta-meio">
-      <a href="#checkout" class="btn" data-cta="como">Quero aplicar a primeira ficha hoje →</a>
-      <p class="btn-note">Pagamento único · recebimento automático</p>
-    </div>
-
+    <!-- Cena ilustrativa de uso em casa; fica longe dos depoimentos reais. -->
     <div class="foto foto--casa">
       <figure>
         <img src="assets/foto-uso-casa.jpg" width="820" height="1025" loading="lazy" decoding="async"
@@ -1197,8 +1284,7 @@
 
         <div class="ficha__ciencia">
           <div class="ficha__label">🔬 Por que ligar as sombras ajuda na hora de comer</div>
-          <p>Criança não prova o que não conhece, e conhecer não começa pela boca. Procurando a sombra de cada um, ela precisa olhar o formato do alimento com atenção, e passa minutos com cinco deles na frente sem ninguém pedir pra comer.</p>
-          <p>As pesquisas mostram que aceitar um alimento novo costuma exigir <b>vários encontros</b> com ele, e que esses encontros <b>não precisam ser comendo</b>. Já a cobrança afasta.</p>
+          <p>Ao ligar as sombras, a criança observa os alimentos de perto sem precisar prová-los. É um primeiro contato, sem cobrança.</p>
         </div>
 
         <div class="progression">
@@ -1274,26 +1360,18 @@
     <div style="text-align:center">
       <span class="eyebrow">O sistema</span>
     </div>
-    <h2 class="section-title">Os <span class="hl">11 blocos</span> do sistema</h2>
-    <p class="section-sub">Cada bloco ataca um lado da seletividade. Juntos, formam um caminho completo.</p>
+    <h2 class="section-title">Atividades para <span class="hl">momentos diferentes</span></h2>
+    <p class="section-sub">As fichas são organizadas em 11 blocos, da brincadeira no papel à participação na cozinha. Você escolhe o que faz sentido para seu filho.</p>
 
     <div class="blocos-grid" id="blocos-grid"><!-- preenchido via JS a partir do array BLOCOS --></div>
     <p class="blocos-hint">👉 Arraste para o lado para ver os 11</p>
 
     <div class="blocos-total">
       <div class="num"><span class="plus">+</span><span id="total-atividades">149</span></div>
-      <p>atividades prontas para aplicar</p>
+      <p>atividades no plano Completo</p>
     </div>
   </div>
 </section>
-
-<div class="wrap">
-  <div class="cta-meio cta-meio--solo">
-    <a href="#checkout" class="btn" data-cta="blocos">Quero as 149 atividades prontas →</a>
-    <p class="btn-note">Acesso imediato, pelo Pix</p>
-  </div>
-</div>
-
 
 <!-- =============== 6.5 APLICAÇÃO REAL (foto de prova) ===============
      Fora da lista de api/_sections.js de propósito, igual à seção "pintar": o
@@ -1304,20 +1382,20 @@
     <div style="text-align:center">
       <span class="eyebrow">Aplicação real</span>
     </div>
-    <h2 class="section-title">Testado e aprovado por <span class="hl">nutricionistas infantis</span></h2>
-    <p class="section-sub">Não é teoria montada na frente de uma tela. As mesmas atividades do kit já foram aplicadas com crianças que têm seletividade alimentar, em escolas.</p>
+    <h2 class="section-title">Criado com olhar de <span class="hl">nutrição infantil</span></h2>
+    <p class="section-sub">Atividades pensadas para caber na rotina, sem fazer da criança uma obrigação de comer.</p>
 
     <div class="autor">
       <div class="autor__topo">
-        <img class="autor__foto" src="assets/autor-cristina.jpg" width="640" height="800"
-             loading="lazy" decoding="async" alt="Cristina Campos, nutricionista, de jaleco branco em um consultório" />
+        <img class="autor__foto" src="assets/autor-thyago.jpg" width="640" height="800"
+             loading="lazy" decoding="async" alt="Thyago Vieira, nutricionista, de jaleco branco" />
         <div>
-          <div class="autor__nome">Cristina Campos</div>
-          <div class="autor__cargo">Nutricionista · USP</div>
+          <div class="autor__nome">Thyago Vieira</div>
+          <div class="autor__cargo">Nutricionista · UFF</div>
         </div>
       </div>
-      <p>Formada pela Universidade de São Paulo, com especialização em nutrição infantil e seletividade alimentar. Já atendeu mais de 1.720 crianças, em consultório e em escolas.</p>
-      <p class="autor__frase">Foi ela quem desenvolveu o método por trás do Kit Prato Limpo. Cada uma das 149 fichas foi montada em cima dele.</p>
+      <p>Nutricionista formado pela Universidade Federal Fluminense, com experiência em nutrição infantil e seletividade alimentar.</p>
+      <p class="autor__frase">O kit reúne atividades visuais para aproximar a criança dos alimentos em etapas que você consegue acompanhar em casa.</p>
     </div>
 
   </div>
@@ -1329,14 +1407,14 @@
     <div style="text-align:center">
       <span class="eyebrow">Quem já usa</span>
     </div>
-    <h2 class="section-title">Mães que <span class="hl">destravaram</span> a mesa</h2>
-    <p class="section-sub">Depoimentos reais de quem já aplicou o kit em casa.</p>
+    <h2 class="section-title">O que outras mães <span class="hl">contam</span></h2>
+    <p class="section-sub">Relatos de famílias que usaram as atividades em casa.</p>
 
     <div class="stories-grid" id="depo-scroll"><!-- preenchido via JS a partir de DEPOIMENTOS --></div>
 
     <div class="cta-meio">
-      <a href="#checkout" class="btn" data-cta="depoimentos">Quero isso na minha casa também →</a>
-      <p class="btn-note">30 dias de garantia</p>
+      <a href="#checkout" class="btn" data-cta="depoimentos">Ver os planos do Kit Prato Limpo →</a>
+      <p class="btn-note">Pagamento único · 14 dias de garantia</p>
     </div>
   </div>
 </section>
@@ -1351,8 +1429,8 @@
     <div style="text-align:center">
       <span class="eyebrow">Na prática</span>
     </div>
-    <h2 class="section-title">Pinta primeiro, <span class="hl">prova depois</span></h2>
-    <p class="section-sub">O alimento vira brincadeira antes de virar comida. É por aí que a aproximação começa, sem cobrança e sem "só mais uma colherada".</p>
+    <h2 class="section-title">Primeiro ela conhece. <span class="hl">Depois, no tempo dela, explora.</span></h2>
+    <p class="section-sub">O aplicativo deixa a criança pintar alimentos com o dedo e brincar entre uma atividade e outra.</p>
 
     <div class="pintar-demo">
       <!-- PEGADINHA (corrigida 19/08): `autoplay` no HTML ANULA o preload="metadata".
@@ -1382,8 +1460,8 @@
   <div class="wrap">
     <div class="garantia-box">
       <div class="seal">🛡️</div>
-      <h2>Até 30 dias de garantia incondicional</h2>
-      <p>Aplique com o seu filho sem risco: <strong>30 dias de garantia no plano Completo</strong> e 7 dias no Essencial. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
+      <h2>14 dias de garantia incondicional</h2>
+      <p>Aplique com o seu filho sem risco: <strong>14 dias de garantia</strong>. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
       <p class="support">Suporte pelo e-mail <a href="mailto:kitpratolimpo@gmail.com" style="color:inherit">kitpratolimpo@gmail.com</a></p>
     </div>
   </div>
@@ -1395,59 +1473,60 @@
     <div style="text-align:center">
       <span class="eyebrow">Garanta o seu</span>
     </div>
-    <h2 class="section-title">Finalize seu <span class="hl">pedido</span></h2>
+    <h2 class="section-title">Escolha o kit para <span class="hl">sua família</span></h2>
 
     <div class="checkout-card">
       <div class="today-banner" id="today-banner">
         ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
       </div>
       <!-- Escolha do plano -->
-      <p id="plano-heading" style="text-align:center; font-family:var(--heading); font-weight:700; color:var(--ink); margin-bottom:14px;">Escolha o seu plano:</p>
+      <p class="plan-intro" id="plano-heading"><strong>Essencial:</strong> 86 atividades em PDF. <strong>Completo:</strong> 149 atividades, aplicativo e materiais extras.</p>
       <div class="planos" id="planos" role="radiogroup" aria-label="Escolha o plano">
 
         <div class="plano" data-tier="essencial" role="radio" aria-checked="false" tabindex="0">
           <span class="plano__radio" aria-hidden="true"></span>
-          <div class="plano__name">Essencial</div>
-          <div class="plano__tagline">O sistema completo de atividades.</div>
-          <div class="plano__price">R$ 10<span class="cents">,00</span></div>
+          <div class="plano__name">Plano Essencial</div>
+          <div class="plano__tagline">Para começar com as fichas em PDF.</div>
+          <div class="plano__triptych" role="img" aria-label="Três atividades reais do plano Essencial: Adivinha pelo cheiro, Monte o seu sanduíche e Cadê o barulhinho">
+            <img src="assets/fichas-web/B1-F03-adivinha-pelo-cheiro.jpg" alt="" width="800" height="1200" loading="lazy" decoding="async" />
+            <img src="assets/fichas-web/B5-F43-monte-o-seu-sanduiche.jpg" alt="" width="800" height="1200" loading="lazy" decoding="async" />
+            <img src="assets/fichas-web/B1-F06-cade-o-barulhinho.jpg" alt="" width="800" height="1200" loading="lazy" decoding="async" />
+          </div>
+          <p class="plano__summary">86 atividades · PDF para imprimir ou abrir na tela</p>
           <ul class="plano__list">
             <li><span class="ic">✅</span>86 atividades em 11 blocos</li>
-            <li class="off"><span class="ic">➖</span>Cartelas recortáveis</li>
-            <li class="off"><span class="ic">➖</span>Acesso pelo app</li>
-            <li class="off"><span class="ic">➖</span>O jogo do Prato Limpo</li>
-            <li class="off"><span class="ic">➖</span>Atualizações semanais do kit</li>
-            <li class="off"><span class="ic">➖</span>Cardápio de 4 semanas</li>
-            <li class="off"><span class="ic">➖</span>Calendário de 30 dias</li>
-            <li class="off"><span class="ic">➖</span>Quadro de progresso</li>
-            <li class="off"><span class="ic">➖</span>Guia por textura e idade</li>
+            <li><span class="ic">✅</span>Acesso digital imediato</li>
+            <li class="off"><span class="ic">➖</span>Sem aplicativo e materiais extras</li>
           </ul>
-          <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
+          <div class="plano__pricing">
+            <p class="plano__price-old">De <s>R$ 27,90</s> por:</p>
+            <div class="plano__price">R$ 10<span class="cents">,00</span></div>
+          </div>
+          <button type="button" class="btn plano__choose plano__choose--light">Quero o Essencial</button>
+          <div class="plano__guarantee">🛡️ 14 dias de garantia</div>
         </div>
 
         <div class="plano plano--premium selected" data-tier="completo" role="radio" aria-checked="true" tabindex="0">
-          <span class="plano__badge">⭐ Mais escolhido</span>
+          <span class="plano__badge">⭐ Mais recursos</span>
           <span class="plano__radio" aria-hidden="true"></span>
-          <div class="plano__name">Completo</div>
-          <div class="plano__tagline">Tudo pronto pra facilitar a hora da comida.</div>
-          <div class="plano__price-old">Tudo separado: R$ 126</div>
-          <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+          <div class="plano__name">Plano Completo</div>
+          <div class="plano__tagline">Fichas, aplicativo e materiais para acompanhar em casa.</div>
+          <img class="plano__photo" src="assets/mockup-hero-transp.webp" alt="Fichas e aplicativo do Kit Prato Limpo Completo" width="1200" height="800" loading="lazy" decoding="async" />
+          <p class="plano__summary">149 atividades + aplicativo no celular</p>
           <ul class="plano__list">
             <li><span class="ic">✅</span><span class="plano__hl">149 atividades em 11 blocos</span></li>
-            <li><span class="ic">✅</span>Tudo do Essencial, e mais:</li>
-            <!-- ORDEM (27/08): app, jogo e atualizações vêm primeiro porque são os
-                 três de maior valor percebido, e eram justamente os três que estavam
-                 no fim da lista, onde quase ninguém lê. O resto segue depois, em
-                 ordem indiferente. A lista do Essencial espelha ESTA ordem: com as
-                 duas em ordens diferentes, comparar os planos vira trabalho. -->
-            <li><span class="ic">📱</span><span class="plano__hl">Acesso pelo app, exclusivo</span></li>
-            <li><span class="ic">🎲</span><span class="plano__hl">O jogo do Prato Limpo, com 20 amigos pra colecionar</span></li>
-            <li><span class="ic">🆕</span><span class="plano__hl">Atualizações semanais do kit</span></li>
-            <li><span class="ic">🍽️</span><span class="plano__hl">Cardápio de 4 semanas antisseletividade</span></li>
-            <li><span class="ic">📅</span><span class="plano__hl">Calendário de 30 dias</span></li>
-            <li><span class="ic">📊</span><span class="plano__hl">Quadro de progresso</span></li>
-            <li><span class="ic">📘</span><span class="plano__hl">Guia por textura e idade</span></li>
+            <li><span class="ic">📱</span><span class="plano__hl">Aplicativo para pintar e jogar</span></li>
+            <li><span class="ic">🎲</span><span class="plano__hl">20 amigos do prato para colecionar</span></li>
+            <li><span class="ic">📅</span>Calendário e quadro de progresso</li>
+            <li><span class="ic">🍽️</span>Cardápio de 4 semanas e guia por textura e idade</li>
+            <li><span class="ic">🆕</span>Atualizações semanais do kit</li>
           </ul>
-          <div class="plano__guarantee">🛡️ 30 dias de garantia</div>
+          <div class="plano__pricing">
+            <p class="plano__price-old">De <s>R$ 57,90</s> por:</p>
+            <div class="plano__price">R$ 29<span class="cents">,90</span></div>
+          </div>
+          <button type="button" class="btn plano__choose">Quero o Completo</button>
+          <img class="plano__secure-badge" src="assets/selo-pix-compra-segura-maes.svg" width="760" height="220" loading="lazy" decoding="async" alt="PIX · Compra segura · Pagamento via PIX" />
         </div>
 
       </div>
@@ -1527,7 +1606,7 @@
         <div class="secure-badges">
           <span>🔒 Site seguro (HTTPS)</span>
           <span>🏦 Pago direto pelo seu banco via Pix</span>
-          <span id="guarantee-badge">🛡️ Garantia de 30 dias</span>
+          <span id="guarantee-badge">🛡️ Garantia de 14 dias</span>
         </div>
         <p class="pay-note">Nunca pedimos senha, número de cartão ou dados bancários. Você só escaneia o QR Code (ou copia o código) e confirma no aplicativo do seu próprio banco.</p>
       </form>
@@ -1587,18 +1666,11 @@
       </div>
       <div class="faq-item">
         <button class="faq-q" aria-expanded="false"><span>Como funciona a garantia?</span><span class="ico">+</span></button>
-        <div class="faq-a"><p>No plano Completo você tem 30 dias para testar, e no Essencial, 7 dias. Se não gostar, é só enviar um e-mail para o suporte e devolvemos 100% do valor, sem precisar justificar.</p></div>
+        <div class="faq-a"><p>Você tem 14 dias para testar o kit. Se não gostar, é só enviar um e-mail para o suporte e devolvemos 100% do valor, sem precisar justificar.</p></div>
       </div>
     </div>
   </div>
 </section>
-
-<div class="wrap">
-  <div class="cta-meio cta-meio--solo">
-    <a href="#checkout" class="btn" data-cta="faq">Tirei minhas dúvidas, quero o kit →</a>
-    <p class="btn-note">Pagamento único · 30 dias de garantia</p>
-  </div>
-</div>
 
 <!-- ======================= 11. RODAPÉ ======================= -->
 <footer>
@@ -1631,7 +1703,7 @@
       <span class="downsell__old">De R$ 29,90</span>
       <span class="downsell__now">por R$ 19,90</span>
     </div>
-    <p class="downsell__note">Só R$ 4 a mais que o Essencial pra levar tudo pronto.</p>
+    <p class="downsell__note">Por R$ 9,90 a mais que o Essencial, leve também o app e os materiais extras.</p>
     <button type="button" class="btn downsell__accept" id="downsell-accept">Sim! Quero o Completo por R$ 19,90</button>
     <button type="button" class="downsell__skip" id="downsell-decline-2">Não, seguir com o Essencial de R$ 10,00</button>
   </div>
@@ -1642,7 +1714,7 @@
    CONFIG — edite aqui
    ========================================================= */
 const CONFIG = {
-  META_PIXEL_ID: '2794485957574762',   // ID do Pixel do Meta
+  META_PIXEL_ID: '2794485957574762',
   API_CREATE:  '/api/create-charge',
   API_STATUS:  '/api/payment-status',
   API_DELIVER: '/api/deliver-kit',
@@ -1863,9 +1935,9 @@ function selectTier(tier) {
   // O preço final da caixa de valor acompanha o Completo (29,90) ou o promo (19,90).
   const stackNow = $('#stack-now');
   if (stackNow && base === 'completo') stackNow.textContent = brl(TIERS[tier].priceCents);
-  // Selo de garantia perto do botão precisa bater com o plano real (30d Completo / 7d Essencial).
+  // A garantia de 14 dias vale para os dois planos.
   const guaranteeBadge = $('#guarantee-badge');
-  if (guaranteeBadge) guaranteeBadge.textContent = base === 'completo' ? '🛡️ Garantia de 30 dias' : '🛡️ Garantia de 7 dias';
+  if (guaranteeBadge) guaranteeBadge.textContent = '🛡️ Garantia de 14 dias';
   recalcTotal();
   pixelCustom('PlanSelect', { tier });
 }
@@ -1877,6 +1949,11 @@ function initPlanos() {
       if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); selectTier(c.dataset.tier); }
     });
   });
+  $$('#planos .plano__choose').forEach(btn => btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    selectTier(btn.closest('.plano').dataset.tier);
+    $('#checkout-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }));
 }
 
 /* =========================================================
@@ -2487,6 +2564,8 @@ function initVideoSobDemanda() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+  // O aplicativo é parte do argumento do plano Completo; aparece antes da prova social.
+  document.getElementById('blocos')?.after(document.getElementById('pintar'));
   renderAmigosPreview();
   initVideoSobDemanda();
   renderBlocos();
