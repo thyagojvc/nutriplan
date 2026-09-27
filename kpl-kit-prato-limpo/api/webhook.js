@@ -33,6 +33,7 @@ function marcaDoPedido(tierId) {
 const { TIERS, tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
 const { createDownloadLink, confirmationEmailHtml, linksDosBonus } = require('./_entrega');
+const { handleCaktoWebhook } = require('../lib/cakto-delivery');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
@@ -205,6 +206,14 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Método não permitido' });
+  }
+
+  // A Cakto usa o mesmo endpoint para não criar outra Serverless Function na
+  // Vercel. Só solicitações com o envelope dela seguem para o fluxo novo;
+  // as notificações da PushInPay continuam passando pelo código abaixo.
+  if (req.headers['x-cakto-signature'] ||
+      (req.body && typeof req.body === 'object' && 'event' in req.body && 'secret' in req.body)) {
+    return handleCaktoWebhook(req, res);
   }
 
   const expectedToken = process.env.PUSHINPAY_WEBHOOK_TOKEN;
