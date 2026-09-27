@@ -1640,7 +1640,8 @@ document.querySelectorAll('.plano').forEach((card) => {
     radio.checked = true;
     radio.dispatchEvent(new Event('change', { bubbles: true }));
     if (btn.matches('[data-cakto-checkout]')) {
-      pixel('InitiateCheckout', { value: Number(radio.dataset.cents)/100, currency:'BRL', content_name: radio.dataset.nome });
+      // A Cakto dispara InitiateCheckout quando o checkout abre. Disparar aqui
+      // tambem contaria duas finalizacoes iniciadas para a mesma visita.
       marcaPro('p_plano');
       return;
     }
