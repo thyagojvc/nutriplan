@@ -1035,7 +1035,7 @@
           <span class="plano__avista" data-avista="profissional_pdf" hidden></span>
           <span class="plano__economia">Você economiza R$ 22,00</span>
         </div>
-        <button type="button" class="btn btn--linha plano__btn">Quero o plano básico</button>
+        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-cakto-checkout="profissional_pdf">Quero o plano básico</a>
         <div class="plano__guarantee">🛡️ 7 dias de garantia</div>
       </div>
 
@@ -1074,14 +1074,15 @@
           <span class="plano__economia">Você economiza R$ 30,00</span>
           <span class="plano__delta">Só R$ 9,10 a mais que o Básico</span>
         </div>
-        <button type="button" class="btn plano__btn">Quero o kit completo</button>
+        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-cakto-checkout="profissional">Quero o kit completo</a>
         <img class="plano__secure-badge" src="assets/selo-pix-compra-segura.svg" width="760" height="220" loading="lazy" decoding="async" alt="PIX · Compra segura · Pagamento via PIX">
       </div>
 
     </div>
     <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
+    <p class="planos__nota">Ao escolher seu plano, você conclui a compra no checkout seguro da Cakto. O acesso chega por e-mail após a confirmação.</p>
 
-
+    <div id="legacy-checkout" hidden>
     <h2 class="section-title" style="margin-top:26px;font-size:1.3rem">Seus dados</h2>
     <div class="aviso" id="erro"></div>
 
@@ -1168,6 +1169,7 @@
       <h2>Pagamento confirmado 🎉</h2>
       <p>O acesso à Edição Profissional foi enviado para o seu e-mail. Se não aparecer em alguns minutos, confira o spam ou escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>.</p>
     </div>
+    </div>
   </div>
 </section>
 
@@ -1185,7 +1187,7 @@
       </details>
       <details>
         <summary>Como recebo, e quanto tempo demora?</summary>
-        <p>Logo depois do Pix confirmado, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
+        <p>Depois que a Cakto confirmar o pagamento, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
       </details>
       <details>
         <summary>Preciso de impressora?</summary>
@@ -1632,7 +1634,7 @@ $('#email').addEventListener('focus', disparaInitiate);
 $('#telefone').addEventListener('focus', disparaInitiate);
 
 /* ---- checkout ---- */
-// Card inteiro seleciona o plano; o botao do card leva pro formulario.
+// Card inteiro seleciona o plano; os botoes abrem os checkouts da Cakto.
 document.querySelectorAll('.plano').forEach((card) => {
   const radio = card.querySelector('input[name="plano"]');
   const btn = card.querySelector('.plano__btn');
@@ -1644,6 +1646,11 @@ document.querySelectorAll('.plano').forEach((card) => {
   btn?.addEventListener('click', () => {
     radio.checked = true;
     radio.dispatchEvent(new Event('change', { bubbles: true }));
+    if (btn.matches('[data-cakto-checkout]')) {
+      pixel('InitiateCheckout', { value: Number(radio.dataset.cents)/100, currency:'BRL', content_name: radio.dataset.nome });
+      marcaPro('p_plano');
+      return;
+    }
     document.getElementById('f-nome')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(() => document.getElementById('nome')?.focus({ preventScroll: true }), 420);
   });
