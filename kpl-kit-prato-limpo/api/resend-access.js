@@ -21,6 +21,7 @@
 const { sendEmail } = require('./_resend');
 const { TIERS } = require('./_catalog');
 const { createDownloadLink } = require('./_entrega');
+const { sendCapiPurchase } = require('./_fb-capi');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
@@ -59,6 +60,45 @@ module.exports = async (req, res) => {
 
     if (!process.env.FUNNEL_DASHBOARD_KEY || body.key !== process.env.FUNNEL_DASHBOARD_KEY) {
       return res.status(401).json({ error: 'Chave inválida' });
+    }
+
+    // COMPRA PERDIDA (30/09). { key, action: 'purchase', email, phone, name,
+    // orderId, valueCents, eventTime (ISO), tier } manda um Purchase pela API de
+    // Conversoes, pelo servidor. Existe pra venda que aconteceu FORA do nosso
+    // site (checkout da Cakto) e cujo pixel nao disparou, tipicamente Pix pago no
+    // app do banco com a aba do checkout ja fechada.
+    //
+    // Nao cria acesso nem manda e-mail: e so o registro da venda pro Meta. O
+    // capi-event.js publico recusa Purchase de proposito (qualquer um inventaria
+    // venda), por isso isto mora atras da chave do painel.
+    //
+    // event_source_url vai como /profissional pra conversao personalizada
+    // "Compra Profissional" (URL contem 'profissional') contar a venda.
+    if (body.action === 'purchase') {
+      const em = String(body.email || '').trim();
+      if (!isEmail(em)) return res.status(400).json({ error: 'E-mail inválido' });
+      const orderId = String(body.orderId || '').trim().slice(0, 80);
+      if (!orderId) return res.status(400).json({ error: 'Falta o número do pedido' });
+      const valueCents = Math.round(Number(body.valueCents));
+      if (!(valueCents >= 100 && valueCents <= 100000)) return res.status(400).json({ error: 'Valor inválido' });
+      const t = Math.floor(new Date(String(body.eventTime || '')).getTime() / 1000);
+      const agora = Math.floor(Date.now() / 1000);
+      // O Meta so aceita evento de ate 7 dias atras, e nunca do futuro.
+      if (!t || t > agora + 60 || t < agora - 7 * 24 * 3600) {
+        return res.status(400).json({ error: 'Horário fora da janela de 7 dias do Meta' });
+      }
+      const pdf = body.tier === 'profissional_pdf';
+      const r = await sendCapiPurchase({
+        paymentId: `cakto_${orderId}`,
+        email: em,
+        name: String(body.name || '').trim().slice(0, 80),
+        phone: String(body.phone || '').replace(/\D/g, ''),
+        valueCents,
+        eventTime: t,
+        contentName: pdf ? 'KPL Edição Profissional (PDF)' : 'KPL Edição Profissional',
+        sourceUrl: 'https://kitpratolimpo.com.br/profissional',
+      });
+      return res.status(r && r.ok ? 200 : 502).json({ enviado: !!(r && r.ok), meta: r });
     }
 
     const email = String(body.email || '').trim();

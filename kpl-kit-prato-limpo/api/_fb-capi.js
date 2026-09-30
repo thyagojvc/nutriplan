@@ -35,19 +35,19 @@ function resolveFbc(cookies, fbclid) {
 
 async function postToMeta(events) {
   const token = process.env.FB_CONVERSIONS_API_TOKEN;
-  if (!token) return;
+  if (!token) return { ok: false, erro: 'sem token' };
   try {
     const r = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ data: events, access_token: token }),
     });
-    if (!r.ok) {
-      const text = await r.text().catch(() => '');
-      console.error('[fb-capi] falhou', r.status, text);
-    }
+    const text = await r.text().catch(() => '');
+    if (!r.ok) console.error('[fb-capi] falhou', r.status, text);
+    return { ok: r.ok, status: r.status, resposta: text.slice(0, 500) };
   } catch (err) {
     console.error('[fb-capi] erro de rede', err);
+    return { ok: false, erro: 'rede' };
   }
 }
 
@@ -100,10 +100,10 @@ async function sendCapiPurchase({ paymentId, email, name, phone, valueCents, fbc
   // (backup do checkout não encontrado), e é isso que precisa ser investigado.
   if (Object.keys(userData).length === 0) {
     console.error(`[fb-capi] Purchase ${paymentId} SEM dado de cliente: o Meta rejeitaria. Venda NÃO reportada.`);
-    return;
+    return { ok: false, erro: 'sem dado de cliente' };
   }
 
-  await postToMeta([
+  return postToMeta([
     {
       event_name: 'Purchase',
       event_time: eventTime || Math.floor(Date.now() / 1000),
