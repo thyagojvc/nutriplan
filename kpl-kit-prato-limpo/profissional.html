@@ -318,6 +318,22 @@
   .plano__recebe{font-family:var(--heading);font-weight:800;font-size:.8rem;letter-spacing:.08em;
     text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 10px}
   .plano__list{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-direction:column;gap:9px}
+  /* ---------- licenca como item de adicionar (30/09) ----------
+     Todo mundo recebe a licenca de qualquer jeito (esta no material). O
+     toque aqui e a interacao que o Chrome exige pra liberar o popup de saida,
+     e chama a atencao de quem atende pra pergunta "posso usar com paciente?". */
+  .plano__list li.lic{display:block}
+  .lic__btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+    background:var(--orange-soft);border:2px dashed var(--orange);border-radius:12px;padding:10px 12px;
+    font:inherit;color:var(--text);transition:background .15s,border-color .15s}
+  .lic__box{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid var(--green-dark);background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff}
+  .lic__txt{flex:1 1 auto;font-size:.95rem;line-height:1.3}
+  .lic__tag{flex:0 0 auto;background:var(--green);color:#fff;font-family:var(--heading);font-weight:800;
+    font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+  .lic__btn[aria-pressed="true"]{background:var(--mint);border-style:solid;border-color:var(--green)}
+  .lic__btn[aria-pressed="true"] .lic__box{background:var(--green);border-color:var(--green)}
+  .lic__btn[aria-pressed="true"] .lic__box::after{content:"✓"}
   .plano__list li{font-size:.95rem;color:var(--text);display:flex;align-items:flex-start;gap:8px;line-height:1.35}
   .plano__list li .ic{flex:0 0 auto;margin-top:1px}
   .plano__list li.off{color:var(--muted);opacity:.75;text-decoration:line-through;
@@ -1040,7 +1056,11 @@
         <ul class="plano__list">
           <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
           <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
-          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
+          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
+            <span class="lic__box" aria-hidden="true"></span>
+            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
+            <span class="lic__tag">Grátis</span>
+          </button></li>
           <li><span class="ic">✅</span>Acesso imediato, em PDF</li>
           <li class="off"><span class="ic">➖</span>Sem o aplicativo</li>
         </ul>
@@ -1067,7 +1087,11 @@
         <ul class="plano__list">
           <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
           <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
-          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
+          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
+            <span class="lic__box" aria-hidden="true"></span>
+            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
+            <span class="lic__tag">Grátis</span>
+          </button></li>
           <li class="plano__separador">EXCLUSIVO DO PLANO COMPLETO</li>
           <li><span class="ic">📱</span><span class="plano__hl">Aplicativo com a aba Consultório no tablet</span></li>
           <li class="plano__separador">APP DA FAMÍLIA · 4 ABAS</li>
@@ -1844,6 +1868,27 @@ depoModal.addEventListener('close', () => {
   depoModalImg.removeAttribute('src');
   depoModalImg.alt = '';
 });
+
+
+/* ---- Licenca como item de adicionar (30/09) ----------------------------
+   Os dois cards andam juntos: marcou num, marca no outro. Nao muda o pedido
+   nem a entrega (a licenca vai pra todos). O toque nao seleciona o plano do
+   card, pra nao mexer na escolha da pessoa. */
+(function(){
+  const btns = [...document.querySelectorAll('.lic__btn')];
+  if (!btns.length) return;
+  btns.forEach((b) => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const marcar = b.getAttribute('aria-pressed') !== 'true';
+    btns.forEach((x) => {
+      x.setAttribute('aria-pressed', String(marcar));
+      x.querySelector('.lic__txt').innerHTML = marcar
+        ? '<b>Licença de uso com seus pacientes</b> adicionada'
+        : 'Adicionar a <b>licença de uso com seus pacientes</b>';
+    });
+    if (marcar) pixelCustom('LicencaAdicionada');
+  }));
+})();
 
 /* ---- OFERTA DE SAIDA (30/09) --------------------------------------------
    Arma quando os cards de preco entram na tela. Armada, espera um TOQUE novo
