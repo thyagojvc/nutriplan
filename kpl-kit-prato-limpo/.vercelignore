@@ -22,6 +22,9 @@ node_modules/
 .env
 .env.local
 .env*.local
+tmp/
+scripts/
+_recorta.js
 
 # soltos na raiz, não usados pelo site
 demo-app-kpl.mp4
@@ -45,6 +48,7 @@ PROMPTS-86-ATIVIDADES.md
 # responde com token válido conferido no Redis por api/download.js.
 assets/fichas-geradas/
 assets/fichas-consultorio/
+assets/screen-20260815-174637.mp4
 
 # CREDENCIAL (23/08). Keys/funneldashkey.txt é a chave do painel /funil e
 # estava sendo servida como arquivo estático: um GET em
@@ -57,3 +61,10 @@ Keys/
 # criativos e copias dos PDFs. Nada aqui e servido pelo site, e as fichas
 # ficariam PUBLICAS se subissem (mesmo motivo de assets/fichas-geradas).
 PROFISSIONAL/
+
+# PACOTES DE DEPLOY MONTADOS A PARTIR DO GIT (30/09). Cada um tem um zip de
+# ~500 MB e travava o deploy desta pasta com "File size limit exceeded". Pior:
+# publicar a partir deles sobe o site SEM entrega/, porque os PDFs sao
+# gitignorados de proposito. Resultado em 27/09: todo /entrega/*.pdf em 404 e
+# comprador sem conseguir baixar. Deploy de producao sai SEMPRE desta pasta.
+_deploy_staging_*/
