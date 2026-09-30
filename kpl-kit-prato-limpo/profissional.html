@@ -1915,6 +1915,14 @@ depoModal.addEventListener('close', () => {
     if (armada || !ents.some((e) => e.isIntersecting)) return;
     armada = true; obs.disconnect();
     log('chegou nos precos');
+    // Quem chegou nos precos CLICANDO num botao (os "Quero o kit completo" e
+    // "Escolher meu plano" levam direto pra #checkout) ainda tem a interacao
+    // valendo por alguns segundos. Aproveita ela, em vez de exigir outro toque.
+    if (navigator.userActivation && navigator.userActivation.isActive) {
+      log('chegou clicando num botao · navegador reconhece=true');
+      empurra();
+      return;
+    }
     esperaToque();
   }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
   obs.observe(oferta);
