@@ -144,7 +144,9 @@ function opcoes(page, itens, y, { colunas = 1, passo = 19 } = {}) {
     caixinha(page, x, ly - 9);
     text(page, t, x + 17, ly - 7, { size: 9.5 });
   });
-  return y - (Math.ceil(itens.length / colunas) - 1) * passo - passo;
+  // Deixa um respiro real depois da última linha antes da próxima seção.
+  // Sem isso, a barra de seção seguinte encostava nas opções finais.
+  return y - (Math.ceil(itens.length / colunas) - 1) * passo - 27;
 }
 
 function pauta(page, y, linhas, passo = 23) {
@@ -167,48 +169,70 @@ function nota(page, s, y) {
 function capa(pdf) {
   const p = pdf.addPage([W, H]);
   p.drawRectangle({ x: 0, y: 0, width: W, height: H, color: CREAM });
-  p.drawRectangle({ x: 0, y: H - 300, width: W, height: 300, color: GREEN });
+  // Capa editorial: título claro, um exemplo visual da folha e conteúdo
+  // organizado em cartões compactos, sem a grande área vazia da versão anterior.
+  p.drawRectangle({ x: 0, y: H - 310, width: W, height: 310, color: GREEN_DARK });
+  p.drawRectangle({ x: 0, y: H - 310, width: 9, height: 310, color: ORANGE });
+  text(p, 'KIT PRATO LIMPO  /  EDIÇÃO PROFISSIONAL', M, H - 58, { size: 9, font: bold, color: MINT });
+  text(p, 'MATERIAL DE APOIO AO ACOMPANHAMENTO', M, H - 103, { size: 8, font: bold, color: rgb(0.78, 0.88, 0.72) });
+  text(p, 'Bloco de', M, H - 151, { size: 31, font: bold, color: WHITE });
+  text(p, 'Evolução', M, H - 194, { size: 39, font: bold, color: WHITE });
+  text(p, 'Um jeito simples de acompanhar o que acontece', M, H - 225, { size: 10, color: WHITE });
+  text(p, 'entre uma consulta e outra — junto com a família.', M, H - 241, { size: 10, color: WHITE });
 
-  centered(p, 'KIT PRATO LIMPO', H - 74, { size: 10, font: bold, color: WHITE });
-  centered(p, 'EDIÇÃO PROFISSIONAL', H - 90, { size: 8, font: regular, color: rgb(0.85, 0.93, 0.80) });
+  // Miniatura ilustrada de uma folha real do bloco, como amostra do material.
+  const sx = 365, sy = H - 286, sw = 178, sh = 208;
+  p.drawRectangle({ x: sx + 4, y: sy - 5, width: sw, height: sh, color: INK, opacity: 0.16 });
+  p.drawRectangle({ x: sx, y: sy, width: sw, height: sh, color: WHITE, borderColor: BORDER, borderWidth: 1 });
+  p.drawRectangle({ x: sx, y: sy + sh - 37, width: sw, height: 37, color: GREEN });
+  text(p, 'COMO FOI EM CASA', sx + 12, sy + sh - 17, { size: 8, font: bold, color: WHITE });
+  text(p, 'Registro da semana', sx + 12, sy + sh - 29, { size: 7, color: MINT });
+  const amostra = [
+    ['1', 'Chegou perto', GREEN], ['2', 'Tocou / cheirou', ORANGE],
+    ['3', 'Experimentou', CORAL], ['4', 'Como se sentiu?', GREEN_DARK],
+  ];
+  amostra.forEach(([n, label, cor], i) => {
+    const ry = sy + sh - 66 - i * 31;
+    p.drawCircle({ x: sx + 20, y: ry + 3, size: 8, color: cor });
+    centered(p, n, ry, { size: 7, font: bold, color: WHITE, cx: sx + 20 });
+    text(p, label, sx + 36, ry + 1, { size: 7.5, font: bold, color: INK });
+    p.drawLine({ start: { x: sx + 36, y: ry - 8 }, end: { x: sx + sw - 12, y: ry - 8 }, thickness: 0.6, color: BORDER });
+  });
+  cenoura(p, sx + 126, sy + 12, 0.8);
+  maca(p, sx + 151, sy + 11, 0.7);
 
-  centered(p, 'Bloco de', H - 160, { size: 30, font: bold, color: WHITE });
-  centered(p, 'Evolução', H - 200, { size: 38, font: bold, color: WHITE });
-
-  centered(p, 'O que acontece entre uma consulta e outra,', H - 234, { size: 10.5, color: rgb(0.90, 0.96, 0.86) });
-  centered(p, 'registrado no papel.', H - 250, { size: 10.5, color: rgb(0.90, 0.96, 0.86) });
-
-  // Fileira de alimentos, montada na borda do bloco verde.
-  const larguraIcone = 74;
-  const x0 = (W - larguraIcone * ICONES.length) / 2;
-  ICONES.forEach((ic, i) => ic(p, x0 + i * larguraIcone + 20, H - 340, 1.5));
-
-  let y = H - 400;
-  centered(p, 'O QUE TEM DENTRO', y, { size: 9, font: bold, color: GREEN_DARK });
-  y -= 26;
+  let y = H - 347;
+  text(p, 'FEITO PARA ACOMPANHAR CADA ETAPA', M, y, { size: 8, font: bold, color: GREEN_DARK });
+  text(p, 'Quatro folhas práticas para conectar consultório e casa.', M, y - 19, { size: 12, font: bold, color: INK });
+  y -= 47;
 
   const dentro = [
-    ['1', 'Como foi em casa', 'A família preenche e traz na consulta seguinte', GREEN],
+    ['1', 'Como foi em casa', 'Criança e pais registram juntos a semana', GREEN],
     ['2', 'Linha do tempo', 'Uma semana por linha, pra ver o caminho de uma vez', ORANGE],
     ['3', 'Resumo para a família', 'O que trabalhou, o que avançou, o que segue', CORAL],
     ['4', 'Anotação clínica da sessão', 'Acompanha a ficha de consultório aplicada', GREEN_DARK],
   ];
-  dentro.forEach(([n, titulo, desc, cor]) => {
-    p.drawRectangle({ x: M + 20, y: y - 14, width: W - (M + 20) * 2, height: 52, color: WHITE, borderColor: BORDER, borderWidth: 1 });
-    p.drawRectangle({ x: M + 20, y: y - 14, width: 5, height: 52, color: cor });
-    p.drawCircle({ x: M + 48, y: y + 12, size: 12, color: cor });
-    centered(p, n, y + 8, { size: 12, font: bold, color: WHITE, cx: M + 48 });
-    text(p, titulo, M + 70, y + 14, { size: 11.5, font: bold, color: INK });
-    text(p, desc, M + 70, y, { size: 8.5, color: MUTED });
-    y -= 62;
+  dentro.forEach(([n, titulo, desc, cor], i) => {
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const x = M + col * 260;
+    const cy = y - row * 82;
+    p.drawRectangle({ x, y: cy - 58, width: 246, height: 68, color: WHITE, borderColor: BORDER, borderWidth: 0.8 });
+    p.drawRectangle({ x, y: cy - 58, width: 4, height: 68, color: cor });
+    p.drawCircle({ x: x + 23, y: cy - 2, size: 11, color: cor });
+    centered(p, n, cy - 6, { size: 10, font: bold, color: WHITE, cx: x + 23 });
+    text(p, titulo, x + 42, cy + 2, { size: 9.5, font: bold, color: INK });
+    text(p, desc, x + 42, cy - 15, { size: 7.2, color: MUTED });
   });
 
-  y -= 4;
-  p.drawRectangle({ x: M + 20, y: y - 22, width: W - (M + 20) * 2, height: 40, color: MINT });
-  centered(p, 'Imprima quantas cópias precisar. Licença de uso com seus pacientes.', y - 2, { size: 8.8, font: bold, color: GREEN_DARK });
-  marca(y - 22);
-
-  centered(p, 'kitpratolimpo.com.br', 40, { size: 8, color: MUTED });
+  p.drawRectangle({ x: M, y: 92, width: W - M * 2, height: 50, color: MINT });
+  text(p, 'IMPRIMA QUANTAS CÓPIAS PRECISAR', M + 16, 121, { size: 8, font: bold, color: GREEN_DARK });
+  text(p, 'Licença de uso profissional com seus pacientes.', M + 16, 104, { size: 8, color: TEXT });
+  ICONES.forEach((ic, i) => ic(p, W - M - 100 + i * 17, 108, 0.55));
+  p.drawLine({ start: { x: M, y: 66 }, end: { x: W - M, y: 66 }, thickness: 0.8, color: BORDER });
+  text(p, 'KIT PRATO LIMPO  |  MATERIAL DIGITAL PARA NUTRICIONISTAS', M, 51, { size: 7, font: bold, color: MUTED });
+  const site = 'kitpratolimpo.com.br';
+  text(p, site, W - M - regular.widthOfTextAtSize(site, 7), 51, { size: 7, color: MUTED });
 }
 
 /* =========================================================
@@ -220,7 +244,7 @@ function folhaCasa(pdf) {
   const p = pdf.addPage([W, H]);
   let y = cabecalho(p, {
     titulo: 'Como foi em casa',
-    subtitulo: 'A família preenche e traz na próxima consulta',
+    subtitulo: 'Criança e responsáveis registram juntos e levam à próxima consulta',
     cor: GREEN, icone: cenoura, folha: 1,
   });
 
@@ -293,7 +317,8 @@ function folhaLinhaDoTempo(pdf) {
   cols.forEach((c) => { text(p, c.t, cx + 6, y + 1.5, { size: 7.5, font: bold, color: WHITE }); cx += c.w; });
   y -= 5;
 
-  const LINHA = 30;
+  // 26 pt preserva espaço de escrita e deixa a observação acima do rodapé.
+  const LINHA = 26;
   const N = 20;
   for (let i = 0; i < N; i++) {
     const top = y - i * LINHA;
@@ -410,8 +435,16 @@ async function main() {
   bold = await pdf.embedFont(StandardFonts.HelveticaBold);
   regular = await pdf.embedFont(StandardFonts.Helvetica);
 
-  const paginas = { capa, 1: folhaCasa, 2: folhaLinhaDoTempo, 3: folhaResumo, 4: folhaClinica };
-  for (const [nome, fn] of Object.entries(paginas)) {
+  // Array explícito: chaves numéricas em objeto são enumeradas antes de
+  // chaves textuais em JavaScript, o que acabava empurrando a capa pro fim.
+  const paginas = [
+    ['capa', capa],
+    ['1', folhaCasa],
+    ['2', folhaLinhaDoTempo],
+    ['3', folhaResumo],
+    ['4', folhaClinica],
+  ];
+  for (const [nome, fn] of paginas) {
     minY = H;
     fn(pdf);
     const ok = minY > 48;
