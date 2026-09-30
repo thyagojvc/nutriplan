@@ -946,7 +946,7 @@
     <p class="depo__hint">Deslize para ver mais · toque em uma conversa para ampliar</p>
     <div class="cta-depo">
       <a href="#checkout" class="btn">Escolher meu plano →</a>
-      <p>Planos a partir de R$ 24,90 · pagamento único</p>
+      <p>Pagamento único · acesso na hora</p>
     </div>
   </div>
 </section>
@@ -1858,15 +1858,32 @@ depoModal.addEventListener('close', () => {
   const oferta = document.querySelector('#checkout .planos');
   if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
   const CHAVE = 'kpl_oferta_saida';
+  // ?saida=reset libera o popup de novo neste aparelho, pra testar.
+  try { if (new URLSearchParams(location.search).get('saida') === 'reset') localStorage.removeItem(CHAVE); } catch(e) {}
   const jaViu = () => { try { return localStorage.getItem(CHAVE) === '1'; } catch(e) { return false; } };
   if (jaViu()) return;
+
+  // O CHROME PULA A ENTRADA SEM TOQUE (30/09, achado no teste no Android).
+  // Protecao contra pagina que prende o voltar: entrada de historico criada
+  // antes de a pessoa TOCAR na pagina e ignorada no voltar, e ela sai direto.
+  // Rolar nao conta como toque. Entao a entrada so e criada com um toque ja
+  // dado; se ainda nao houve, espera o proximo toque em qualquer lugar.
+  let empurrada = false;
+  function empurra(){
+    if (empurrada || jaViu()) return;
+    empurrada = true;
+    history.pushState({ kplSaida: 1 }, '');
+    addEventListener('popstate', abre, { once: true });
+  }
+  const jaTocou = () => !!(navigator.userActivation && navigator.userActivation.hasBeenActive);
 
   let armada = false;
   const obs = new IntersectionObserver((ents) => {
     if (armada || !ents.some((e) => e.isIntersecting)) return;
     armada = true; obs.disconnect();
-    history.pushState({ kplSaida: 1 }, '');
-    addEventListener('popstate', abre, { once: true });
+    if (jaTocou() || !navigator.userActivation) { empurra(); return; }
+    ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) =>
+      addEventListener(ev, () => setTimeout(empurra, 0), { once: true, passive: true }));
   // Arma quando o topo dos cards passa da metade de baixo da tela: a pessoa
   // esta de fato olhando os precos, nao so passou rolando rapido.
   }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
