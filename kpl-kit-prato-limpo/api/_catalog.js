@@ -44,6 +44,14 @@ const TIERS = {
   // que a entrega parou de adivinhar o produto pelo valor e passou a ler o
   // tierId gravado no pedido (ver create-charge e deliver-kit).
   profissional_pdf: { id: 'profissional_pdf', name: 'KPL Edição Profissional (PDF)', priceCents: 2490 },
+  // OFERTA DE SAIDA (30/09): o MESMO plano de PDF, a R$ 10, no Pix pela
+  // PushInPay. So aparece uma vez, no popup de quem tenta voltar depois de ter
+  // visto a oferta na /profissional (o Basico normal segue na Cakto).
+  // `entregaComo`: create-charge grava o pedido como profissional_pdf, entao
+  // entrega, download, app e bonus tratam igual ao Basico sem conhecer este id.
+  // R$ 10 e o preco do Essencial das maes: quem separa os dois e o tierId
+  // gravado no pedido, nunca o valor (ver BASES_PRO, onde 1000 NAO entra).
+  profissional_saida: { id: 'profissional_saida', name: 'KPL Edição Profissional (PDF)', priceCents: 1000, entregaComo: 'profissional_pdf' },
 };
 const DEFAULT_TIER = 'completo';
 

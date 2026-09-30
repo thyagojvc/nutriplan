@@ -7,7 +7,7 @@
 //   PUSHINPAY_API_URL   -> opcional, default https://api.pushinpay.com.br
 //   PUBLIC_BASE_URL     -> ex.: https://seu-dominio.vercel.app (para montar o webhook_url)
 
-const { computeOrder } = require('./_catalog');
+const { computeOrder, TIERS } = require('./_catalog');
 const { normalizeId } = require('./_pushinpay');
 const { redis } = require('./_kv');
 
@@ -149,8 +149,11 @@ module.exports = async (req, res) => {
     const adset = cleanRef(body.adset);
     // normalizeId: a chave tem que casar com a que o webhook procura depois.
     const paymentId = normalizeId(pp.id);
+    // Oferta de saida (30/09): cobra o preco dela, mas grava o pedido com o
+    // tier que a entrega conhece (ver `entregaComo` no _catalog).
+    const tierEntrega = (TIERS[tierId] && TIERS[tierId].entregaComo) || tierId;
     if (paymentId) await saveCheckoutBackup(paymentId, { name, email, phone }, body.fbclid ? String(body.fbclid).slice(0, 500) : null, adRef, campaign, adset,
-      { tierId, bumps: items.filter((i) => i.id !== tierId).map((i) => i.id) });
+      { tierId: tierEntrega, bumps: items.filter((i) => i.id !== tierId).map((i) => i.id) });
 
     // PushInPay devolve: id, qr_code (copia e cola), qr_code_base64 (imagem), status, value
     const qrBase64 = pp.qr_code_base64 || pp.qrCodeBase64 || '';

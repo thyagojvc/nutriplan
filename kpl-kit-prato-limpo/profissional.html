@@ -502,6 +502,25 @@
     .section-title{font-size:40px}
     section{padding:36px 0}
   }
+  /* ---------- oferta de saida (30/09) ---------- */
+  .saida{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+    padding:16px;background:rgba(20,28,22,.62)}
+  .saida[hidden]{display:none !important}
+  .saida__caixa{position:relative;width:100%;max-width:420px;background:var(--card);border-radius:20px;
+    padding:26px 20px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .saida__fechar{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;background:none;
+    font-size:1.6rem;line-height:1;color:var(--muted);cursor:pointer}
+  .saida__selo{display:inline-block;background:var(--coral);color:#fff;font-family:var(--heading);font-weight:800;
+    font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:10px}
+  .saida__titulo{font-family:var(--heading);font-weight:800;font-size:1.6rem;line-height:1.12;color:var(--ink);margin:0 0 8px}
+  .saida__texto{font-size:.98rem;color:var(--text);margin:0 0 14px}
+  .saida__de{font-size:.95rem;color:var(--muted);font-weight:700;margin:0}
+  .saida__de s{color:var(--coral)}
+  .saida__preco{font-family:var(--heading);font-weight:800;font-size:2.8rem;line-height:1;color:var(--green-dark);margin:2px 0 4px}
+  .saida__preco small{font-size:1.1rem}
+  .saida__pix{font-size:.84rem;font-weight:800;color:var(--green-dark);margin:0 0 16px}
+  .saida__nao{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);
+    font-size:.88rem;text-decoration:underline;cursor:pointer}
 </style>
 </head>
 <body>
@@ -1076,6 +1095,9 @@
     <p class="planos__nota">Ao escolher seu plano, você conclui a compra no checkout seguro da Cakto. O acesso chega por e-mail após a confirmação.</p>
 
     <div id="legacy-checkout" hidden>
+    <!-- Oferta de saida (30/09): so e marcado pelo popup "Espera". Fica fora
+         dos cards de proposito, pra nunca aparecer como opcao normal. -->
+    <input type="radio" name="plano" value="profissional_saida" data-cents="1000" data-nome="Plano básico · condição especial" hidden>
     <h2 class="section-title" style="margin-top:26px;font-size:1.3rem">Seus dados</h2>
     <div class="aviso" id="erro"></div>
 
@@ -1226,6 +1248,24 @@
 </div>
 
 <p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
+
+<!-- ======================= OFERTA DE SAIDA (30/09) =======================
+     Aparece UMA vez por pessoa, so pra quem ja viu a oferta e aperta voltar.
+     Fecha no X, no "nao, obrigado" ou tocando fora, e o segundo voltar sai
+     normalmente: nao prende ninguem na pagina. -->
+<div class="saida" id="saida" role="dialog" aria-modal="true" aria-labelledby="saida-titulo" hidden>
+  <div class="saida__caixa">
+    <button type="button" class="saida__fechar" id="saida-fechar" aria-label="Fechar">×</button>
+    <span class="saida__selo">Só nesta tela</span>
+    <h2 class="saida__titulo" id="saida-titulo">Espera! Leva o plano básico por R$ 10</h2>
+    <p class="saida__texto">As mesmas 189 fichas em PDF, a licença de uso e os dois bônus. Essa condição aparece uma vez só e some quando você fechar esta janela.</p>
+    <p class="saida__de">De <s>R$ 24,90</s> por:</p>
+    <div class="saida__preco">R$ 10<small>,00</small></div>
+    <p class="saida__pix">⚡ No Pix, direto nesta página</p>
+    <button type="button" class="btn" id="saida-sim">Quero por R$ 10 no Pix</button>
+    <button type="button" class="saida__nao" id="saida-nao">Não, obrigado</button>
+  </div>
+</div>
 
 <script>
 const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
@@ -1804,6 +1844,64 @@ depoModal.addEventListener('close', () => {
   depoModalImg.removeAttribute('src');
   depoModalImg.alt = '';
 });
+
+/* ---- OFERTA DE SAIDA (30/09) --------------------------------------------
+   Arma quando a oferta (#checkout) entra na tela. Armada, empurra UMA entrada
+   no historico: o primeiro "voltar" cai nela e abre o popup em vez de sair.
+   So no Android isso funciona dentro do Instagram: no iPhone a pessoa sai
+   pelo X do navegador do app, que fecha a janela sem avisar a pagina.
+   Uma vez por pessoa (localStorage), inclusive se ela recarregar. */
+(function(){
+  const caixa = document.getElementById('saida');
+  // Os cards de preco, e nao a secao #checkout inteira: ela e mais alta que
+  // varias telas, e um limite de "25% visivel" nunca era atingido.
+  const oferta = document.querySelector('#checkout .planos');
+  if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
+  const CHAVE = 'kpl_oferta_saida';
+  const jaViu = () => { try { return localStorage.getItem(CHAVE) === '1'; } catch(e) { return false; } };
+  if (jaViu()) return;
+
+  let armada = false;
+  const obs = new IntersectionObserver((ents) => {
+    if (armada || !ents.some((e) => e.isIntersecting)) return;
+    armada = true; obs.disconnect();
+    history.pushState({ kplSaida: 1 }, '');
+    addEventListener('popstate', abre, { once: true });
+  // Arma quando o topo dos cards passa da metade de baixo da tela: a pessoa
+  // esta de fato olhando os precos, nao so passou rolando rapido.
+  }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
+  obs.observe(oferta);
+
+  function abre(){
+    if (jaViu()) { history.back(); return; }
+    try { localStorage.setItem(CHAVE, '1'); } catch(e) {}
+    caixa.hidden = false;
+    document.body.style.overflow = 'hidden';
+    pixelCustom('ExitOfferView', { value: 10, currency: 'BRL' });
+    document.getElementById('saida-sim').focus();
+  }
+  function fecha(){
+    caixa.hidden = true;
+    document.body.style.overflow = '';
+  }
+  function recusa(){ fecha(); pixelCustom('ExitOfferDecline'); }
+
+  document.getElementById('saida-fechar').addEventListener('click', recusa);
+  document.getElementById('saida-nao').addEventListener('click', recusa);
+  caixa.addEventListener('click', (e) => { if (e.target === caixa) recusa(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !caixa.hidden) recusa(); });
+
+  document.getElementById('saida-sim').addEventListener('click', () => {
+    fecha();
+    pixelCustom('ExitOfferAccept', { value: 10, currency: 'BRL' });
+    const radio = document.querySelector('input[name="plano"][value="profissional_saida"]');
+    if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+    const legado = document.getElementById('legacy-checkout');
+    if (legado) legado.hidden = false;
+    document.getElementById('f-nome')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => document.getElementById('nome')?.focus({ preventScroll: true }), 420);
+  });
+})();
 </script>
 </body>
 </html>
