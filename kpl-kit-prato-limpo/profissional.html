@@ -1894,14 +1894,21 @@ depoModal.addEventListener('close', () => {
     addEventListener('popstate', abre, { once: true });
     log('ponto de retorno criado · historico=' + history.length);
   }
+  // SO CLICK E TECLA (30/09, visto na caixinha de debug): `touchend` e
+  // `pointerup` disparam tambem no fim de um DESLIZE, e deslizar nao e
+  // interacao pro Chrome. A entrada criada ali era pulada no voltar. O `click`
+  // so sai de toque de verdade. E antes do pushState o proprio navegador e
+  // consultado (userActivation.isActive): se ele nao reconhece, espera o proximo.
   function esperaToque(){
     log('armada: toque na tela pra preparar o voltar');
     const vai = () => {
-      ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) => removeEventListener(ev, vai, true));
-      log('toque recebido');
+      const ativo = navigator.userActivation ? navigator.userActivation.isActive : true;
+      log('toque recebido · navegador reconhece=' + ativo);
+      if (!ativo) return;
+      ['click', 'keydown'].forEach((ev) => removeEventListener(ev, vai, true));
       empurra();
     };
-    ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) => addEventListener(ev, vai, true));
+    ['click', 'keydown'].forEach((ev) => addEventListener(ev, vai, true));
   }
 
   const obs = new IntersectionObserver((ents) => {
