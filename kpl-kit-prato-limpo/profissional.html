@@ -1846,60 +1846,87 @@ depoModal.addEventListener('close', () => {
 });
 
 /* ---- OFERTA DE SAIDA (30/09) --------------------------------------------
-   Arma quando a oferta (#checkout) entra na tela. Armada, empurra UMA entrada
-   no historico: o primeiro "voltar" cai nela e abre o popup em vez de sair.
-   So no Android isso funciona dentro do Instagram: no iPhone a pessoa sai
-   pelo X do navegador do app, que fecha a janela sem avisar a pagina.
-   Uma vez por pessoa (localStorage), inclusive se ela recarregar. */
+   Arma quando os cards de preco entram na tela. Armada, espera um TOQUE novo
+   na pagina e so entao empurra uma entrada no historico: o "voltar" seguinte
+   cai nela e abre o popup em vez de sair.
+
+   Por que o toque: o Chrome do Android pula entrada de historico criada sem
+   interacao da pessoa (protecao contra pagina que prende o voltar), e rolar
+   nao conta como interacao. O toque tem que ser DEPOIS de armar, pra ser
+   recente na hora do pushState.
+
+   No iPhone, dentro do Instagram, nao funciona: a pessoa sai pelo X do
+   navegador do app, que fecha a janela sem avisar a pagina.
+
+   UMA_VEZ: em producao e true (o popup diz "aparece uma vez so", e precisa
+   ser verdade). Esta em false TEMPORARIAMENTE, pra teste no celular.
+   ?saida=debug mostra uma caixinha com cada etapa ao vivo. */
 (function(){
+  const UMA_VEZ = false; // TESTE 30/09: voltar pra true depois do teste
   const caixa = document.getElementById('saida');
-  // Os cards de preco, e nao a secao #checkout inteira: ela e mais alta que
-  // varias telas, e um limite de "25% visivel" nunca era atingido.
   const oferta = document.querySelector('#checkout .planos');
   if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
   const CHAVE = 'kpl_oferta_saida';
-  // ?saida=reset libera o popup de novo neste aparelho, pra testar.
-  try { if (new URLSearchParams(location.search).get('saida') === 'reset') localStorage.removeItem(CHAVE); } catch(e) {}
-  const jaViu = () => { try { return localStorage.getItem(CHAVE) === '1'; } catch(e) { return false; } };
+  const qs = (() => { try { return new URLSearchParams(location.search).get('saida'); } catch(e) { return null; } })();
+  try { if (qs === 'reset') localStorage.removeItem(CHAVE); } catch(e) {}
+  const jaViu = () => { if (!UMA_VEZ) return false; try { return localStorage.getItem(CHAVE) === '1'; } catch(e) { return false; } };
+
+  // Caixinha de diagnostico (so com ?saida=debug)
+  let dbg = null;
+  const log = (txt) => {
+    if (qs !== 'debug') return;
+    if (!dbg) {
+      dbg = document.createElement('div');
+      dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:70vw;background:rgba(0,0,0,.82);color:#fff;font:12px/1.35 monospace;padding:8px 10px;border-radius:8px;pointer-events:none';
+      document.body.appendChild(dbg);
+    }
+    const h = new Date().toTimeString().slice(0, 8);
+    dbg.innerHTML = (h + ' ' + txt + '<br>' + dbg.innerHTML).split('<br>').slice(0, 8).join('<br>');
+  };
+  log('carregou · historico=' + history.length + (jaViu() ? ' · JA VIU' : ''));
   if (jaViu()) return;
 
-  // O CHROME PULA A ENTRADA SEM TOQUE (30/09, achado no teste no Android).
-  // Protecao contra pagina que prende o voltar: entrada de historico criada
-  // antes de a pessoa TOCAR na pagina e ignorada no voltar, e ela sai direto.
-  // Rolar nao conta como toque. Entao a entrada so e criada com um toque ja
-  // dado; se ainda nao houve, espera o proximo toque em qualquer lugar.
-  let empurrada = false;
+  let armada = false, empurrada = false;
   function empurra(){
     if (empurrada || jaViu()) return;
     empurrada = true;
     history.pushState({ kplSaida: 1 }, '');
     addEventListener('popstate', abre, { once: true });
+    log('ponto de retorno criado · historico=' + history.length);
   }
-  const jaTocou = () => !!(navigator.userActivation && navigator.userActivation.hasBeenActive);
+  function esperaToque(){
+    log('armada: toque na tela pra preparar o voltar');
+    const vai = () => {
+      ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) => removeEventListener(ev, vai, true));
+      log('toque recebido');
+      empurra();
+    };
+    ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) => addEventListener(ev, vai, true));
+  }
 
-  let armada = false;
   const obs = new IntersectionObserver((ents) => {
     if (armada || !ents.some((e) => e.isIntersecting)) return;
     armada = true; obs.disconnect();
-    if (jaTocou() || !navigator.userActivation) { empurra(); return; }
-    ['pointerup', 'touchend', 'click', 'keydown'].forEach((ev) =>
-      addEventListener(ev, () => setTimeout(empurra, 0), { once: true, passive: true }));
-  // Arma quando o topo dos cards passa da metade de baixo da tela: a pessoa
-  // esta de fato olhando os precos, nao so passou rolando rapido.
+    log('chegou nos precos');
+    esperaToque();
   }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
   obs.observe(oferta);
 
   function abre(){
+    log('VOLTAR percebido');
     if (jaViu()) { history.back(); return; }
-    try { localStorage.setItem(CHAVE, '1'); } catch(e) {}
+    if (UMA_VEZ) { try { localStorage.setItem(CHAVE, '1'); } catch(e) {} }
     caixa.hidden = false;
     document.body.style.overflow = 'hidden';
     pixelCustom('ExitOfferView', { value: 10, currency: 'BRL' });
     document.getElementById('saida-sim').focus();
+    log('popup aberto');
   }
   function fecha(){
     caixa.hidden = true;
     document.body.style.overflow = '';
+    // Em teste, deixa preparar de novo pra repetir sem recarregar.
+    if (!UMA_VEZ) { empurrada = false; esperaToque(); }
   }
   function recusa(){ fecha(); pixelCustom('ExitOfferDecline'); }
 
