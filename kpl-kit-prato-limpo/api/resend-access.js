@@ -119,6 +119,14 @@ module.exports = async (req, res) => {
     const url = await createDownloadLink(paymentId, email, name, tierId, { reenvio: true });
     if (!url) return res.status(503).json({ error: 'Não consegui criar o acesso agora. Tente de novo.' });
 
+    // soLink (01/10): so cria o acesso e devolve o link, sem mandar e-mail.
+    // Pra quando o dono prefere responder a cliente do proprio Gmail, na
+    // conversa que ela abriu: resposta em conversa existente nao cai no spam,
+    // e o nosso remetente pode ser justamente o que foi parar la.
+    if (body.soLink === true) {
+      return res.status(200).json({ ok: true, emailEnviado: false, tier: tierId, url });
+    }
+
     const enviado = await sendEmail({
       to: email,
       subject: 'Seu acesso ao Kit Prato Limpo',
