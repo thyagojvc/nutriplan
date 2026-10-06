@@ -67,6 +67,16 @@ function linksDosBonus(tierId, downloadUrl) {
   return { mapa: url('mapa'), pacote: url('pacote') };
 }
 
+// Link direto do PDF do Bloco de Evolucao (06/10). Sempre por /api/download:
+// no Completo o link de entrega e o do /mi-kit (o app), e colar &item= nele
+// mandava o botao "Baixar o Bloco de Evolucao" do e-mail pro app, nao pro PDF.
+function linkDoBloco(downloadUrl) {
+  const m = String(downloadUrl || '').match(/[?&]t=([a-f0-9]+)/i);
+  if (!m) return null;
+  const base = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
+  return `${base}/api/download?t=${m[1]}&item=devolutiva`;
+}
+
 function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, linkFamilia, bonus }) {
   const firstName = String(name || '').trim().split(' ')[0] || 'oi';
   const downloadBlock = downloadUrl
@@ -97,4 +107,4 @@ function confirmationEmailHtml({ name, tierName, downloadUrl, devolutivaUrl, lin
   </div>`;
 }
 
-module.exports = { createDownloadLink, confirmationEmailHtml, linksDosBonus, DOWNLOAD_TTL_SECONDS };
+module.exports = { createDownloadLink, confirmationEmailHtml, linksDosBonus, linkDoBloco, DOWNLOAD_TTL_SECONDS };

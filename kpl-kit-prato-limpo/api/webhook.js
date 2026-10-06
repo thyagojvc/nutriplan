@@ -32,7 +32,7 @@ function marcaDoPedido(tierId) {
 
 const { TIERS, tierFromValueCents, pedidoTemDevolutiva } = require('./_catalog');
 const { redis } = require('./_kv');
-const { createDownloadLink, confirmationEmailHtml, linksDosBonus } = require('./_entrega');
+const { createDownloadLink, confirmationEmailHtml, linksDosBonus, linkDoBloco } = require('./_entrega');
 const { handleCaktoWebhook } = require('../lib/cakto-delivery');
 
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
@@ -149,7 +149,7 @@ async function deliverKit(transaction) {
         paymentId, backup.email, backup.name, tierWh.id,
         temDevolutivaWh ? { devolutiva: true } : undefined);
       const devolutivaUrlWh = temDevolutivaWh && entregaUrl
-        ? entregaUrl + (entregaUrl.includes('?') ? '&' : '?') + 'item=devolutiva'
+        ? linkDoBloco(entregaUrl)
         : null;
       try {
         await sendEmail({

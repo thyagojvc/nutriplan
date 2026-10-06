@@ -518,6 +518,16 @@
     .section-title{font-size:40px}
     section{padding:36px 0}
   }
+  /* ---------- checkout em popup (06/10) ---------- */
+  .ck-modal{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;
+    padding:12px;background:rgba(20,28,22,.62)}
+  .ck-modal[hidden]{display:none !important}
+  .ck-modal__caixa{position:relative;width:100%;max-width:480px;max-height:calc(100dvh - 24px);overflow-y:auto;
+    overscroll-behavior:contain;background:var(--cream);border-radius:20px;padding:18px 16px 22px;
+    box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .ck-modal__caixa .section-title{margin-top:6px !important}
+  .ck-modal__fechar{position:sticky;top:0;float:right;width:40px;height:40px;margin:-6px -6px 0 0;border:0;
+    background:var(--card);border-radius:50%;font-size:1.6rem;line-height:1;color:var(--muted);cursor:pointer;z-index:2}
   /* ---------- oferta de saida (30/09) ---------- */
   .saida{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
     padding:16px;background:rgba(20,28,22,.62)}
@@ -1067,7 +1077,7 @@
           <span class="plano__avista">R$ 24,90 à vista</span>
           <span class="plano__economia">Você economiza R$ 25,00 à vista</span>
         </div>
-        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-cakto-checkout="profissional_pdf">Quero o plano básico</a>
+        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
       </div>
 
       <div class="plano plano--premium" data-plano="profissional">
@@ -1108,14 +1118,20 @@
           <span class="plano__economia">Você economiza R$ 30,00 à vista</span>
           <span class="plano__delta">Só R$ 12,10 a mais que o Básico à vista</span>
         </div>
-        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-cakto-checkout="profissional">Quero o kit completo</a>
+        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
       </div>
 
     </div>
     <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
-    <p class="planos__nota">Ao escolher seu plano, você conclui a compra no checkout seguro da Cakto. O acesso chega por e-mail após a confirmação.</p>
+    <p class="planos__nota">Pagamento por Pix, direto nesta página. O acesso chega no seu e-mail assim que o Pix cair.</p>
 
-    <div id="legacy-checkout" hidden>
+    <!-- CHECKOUT EM POPUP (06/10). Volta o Pix pela PushInPay: os botoes dos
+         cards abrem este bloco por cima da pagina, sem sair dela. O cartao
+         parcelado continua existindo, pela Cakto, num link dentro do popup
+         (ver PARCELAMENTO): e o que mantem verdadeiro o "5x de" dos cards. -->
+    <div id="legacy-checkout" class="ck-modal" role="dialog" aria-modal="true" aria-label="Finalizar compra" hidden>
+    <div class="ck-modal__caixa">
+    <button type="button" class="ck-modal__fechar" id="ck-fechar" aria-label="Fechar">×</button>
     <!-- Oferta de saida (30/09): so e marcado pelo popup "Espera". Fica fora
          dos cards de proposito, pra nunca aparecer como opcao normal. -->
     <input type="radio" name="plano" value="profissional_saida" data-cents="1000" data-nome="Plano básico · condição especial" hidden>
@@ -1205,7 +1221,8 @@
       <h2>Pagamento confirmado 🎉</h2>
       <p>O acesso à Edição Profissional foi enviado para o seu e-mail. Se não aparecer em alguns minutos, confira o spam ou escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>.</p>
     </div>
-    </div>
+    </div><!-- /ck-modal__caixa -->
+    </div><!-- /legacy-checkout -->
   </div>
 </section>
 
@@ -1223,7 +1240,7 @@
       </details>
       <details>
         <summary>Como recebo, e quanto tempo demora?</summary>
-        <p>Depois que a Cakto confirmar o pagamento, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
+        <p>Assim que o Pix é confirmado, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
       </details>
       <details>
         <summary>Preciso de impressora?</summary>
@@ -1312,11 +1329,13 @@ const PRECO_CENTS = 3700; // plano de referencia pro ViewContent
      parcela= valor de UMA parcela, EXATAMENTE como a plataforma exibe
      url    = link do checkout daquele plano na plataforma
    ========================================================= */
+// 06/10: ligado com os checkouts da Cakto, que sao os que parcelam. Os
+// valores das parcelas sao os mesmos que os cards mostram.
 const PARCELAMENTO = {
-  ativo: false,
+  ativo: true,
   planos: {
-    profissional_pdf: { vezes: 0, parcela: '', url: '' },
-    profissional:     { vezes: 0, parcela: '', url: '' },
+    profissional_pdf: { vezes: 5, parcela: '5,67', url: 'https://pay.cakto.com.br/8uf6w93_1146564' },
+    profissional:     { vezes: 6, parcela: '7,09', url: 'https://pay.cakto.com.br/n2yr82g_1146541' },
   },
 };
 
@@ -1509,6 +1528,9 @@ function atualizaTotal(){
   const p = plano();
   const cartao = PARCELAMENTO.ativo && PARCELAMENTO.planos[p.tier];
   const btnCartao = document.getElementById('cartao-btn');
+  // Plano sem cartao (a oferta de saida de R$ 10 e so Pix): esconde o link.
+  const boxCartao = document.getElementById('cartao-box');
+  if (boxCartao) boxCartao.hidden = !(cartao && cartao.url);
   if (btnCartao && cartao && cartao.url) {
     btnCartao.href = cartao.url;
     btnCartao.textContent = cartao.vezes
@@ -1688,7 +1710,32 @@ $('#email').addEventListener('focus', disparaInitiate);
 $('#telefone').addEventListener('focus', disparaInitiate);
 
 /* ---- checkout ---- */
-// Card inteiro seleciona o plano; os botoes abrem os checkouts da Cakto.
+// Checkout em popup (06/10). Abre por cima da pagina com o plano marcado.
+function checkoutAberto(){ const m = document.getElementById('legacy-checkout'); return !!(m && !m.hidden); }
+function abreCheckout(tier){
+  const radio = document.querySelector('input[name="plano"][value="' + tier + '"]');
+  if (radio && !radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+  document.getElementById('legacy-checkout').hidden = false;
+  document.querySelector('.ck-modal__caixa').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  marcaPro('p_plano');
+  // So foca o nome se o formulario ainda esta na tela (nao depois do Pix gerado).
+  const nome = document.getElementById('nome');
+  if (nome && nome.offsetParent) setTimeout(() => nome.focus({ preventScroll: true }), 120);
+}
+function fechaCheckout(){
+  document.getElementById('legacy-checkout').hidden = true;
+  document.body.style.overflow = '';
+}
+document.getElementById('ck-fechar').addEventListener('click', fechaCheckout);
+document.getElementById('legacy-checkout').addEventListener('click', (e) => { if (e.target.id === 'legacy-checkout') fechaCheckout(); });
+addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !checkoutAberto()) return;
+  if (document.getElementById('bump-step')?.classList.contains('show')) return; // ali o Esc volta pro form
+  fechaCheckout();
+});
+
+// Card inteiro seleciona o plano; o botao do card abre o checkout em popup.
 document.querySelectorAll('.plano').forEach((card) => {
   const radio = card.querySelector('input[name="plano"]');
   const btn = card.querySelector('.plano__btn');
@@ -1697,17 +1744,11 @@ document.querySelectorAll('.plano').forEach((card) => {
     radio.checked = true;
     radio.dispatchEvent(new Event('change', { bubbles: true }));
   });
-  btn?.addEventListener('click', () => {
-    radio.checked = true;
-    radio.dispatchEvent(new Event('change', { bubbles: true }));
-    if (btn.matches('[data-cakto-checkout]')) {
-      // A Cakto dispara InitiateCheckout quando o checkout abre. Disparar aqui
-      // tambem contaria duas finalizacoes iniciadas para a mesma visita.
-      marcaPro('p_plano');
-      return;
-    }
-    document.getElementById('f-nome')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => document.getElementById('nome')?.focus({ preventScroll: true }), 420);
+  btn?.addEventListener('click', (e) => {
+    // O href da Cakto fica no HTML so como reserva, se o script nao carregar.
+    e.preventDefault();
+    e.stopPropagation();
+    abreCheckout(btn.dataset.checkout || radio.value);
   });
 });
 
@@ -1971,6 +2012,9 @@ depoModal.addEventListener('close', () => {
 
   function abre(){
     log('VOLTAR percebido');
+    // Voltar com o checkout aberto fecha o checkout, como a pessoa espera, em
+    // vez de jogar a oferta de R$ 10 por cima de quem esta pagando.
+    if (checkoutAberto()) { fechaCheckout(); empurrada = false; esperaToque(); log('fechou o checkout'); return; }
     if (jaViu()) { history.back(); return; }
     if (UMA_VEZ) { try { localStorage.setItem(CHAVE, '1'); } catch(e) {} }
     caixa.hidden = false;
@@ -1995,12 +2039,7 @@ depoModal.addEventListener('close', () => {
   document.getElementById('saida-sim').addEventListener('click', () => {
     fecha();
     pixelCustom('ExitOfferAccept', { value: 10, currency: 'BRL' });
-    const radio = document.querySelector('input[name="plano"][value="profissional_saida"]');
-    if (radio) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
-    const legado = document.getElementById('legacy-checkout');
-    if (legado) legado.hidden = false;
-    document.getElementById('f-nome')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => document.getElementById('nome')?.focus({ preventScroll: true }), 420);
+    abreCheckout('profissional_saida');
   });
 })();
 </script>

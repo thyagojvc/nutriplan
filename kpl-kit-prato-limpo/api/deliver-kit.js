@@ -30,7 +30,7 @@
 
 const { fetchTransaction, normalizeId } = require('./_pushinpay');
 const { sendEmail } = require('./_resend');
-const { createDownloadLink, confirmationEmailHtml, linksDosBonus } = require('./_entrega');
+const { createDownloadLink, confirmationEmailHtml, linksDosBonus, linkDoBloco } = require('./_entrega');
 const { sendCapiPurchase, parseCookies, resolveFbc } = require('./_fb-capi');
 
 const BASE_URL = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br').replace(/\/+$/, '');
@@ -184,7 +184,7 @@ module.exports = async (req, res) => {
     const downloadUrl = await createDownloadLink(
       paymentId, email, name, tier.id, temDevolutiva ? { devolutiva: true } : undefined);
     const devolutivaUrl = temDevolutiva && downloadUrl
-      ? downloadUrl + (downloadUrl.includes('?') ? '&' : '?') + 'item=devolutiva'
+      ? linkDoBloco(downloadUrl)
       : null;
 
     const [customerResult] = await Promise.all([
