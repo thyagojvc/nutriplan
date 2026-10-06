@@ -1073,11 +1073,11 @@
         </ul>
         <div class="plano__preco-box">
           <p class="plano__de">De <s>R$ 49,90</s> por:</p>
-          <div class="plano__price">5x de R$ 5,67</div>
-          <span class="plano__avista">R$ 24,90 à vista</span>
-          <span class="plano__economia">Você economiza R$ 25,00 à vista</span>
+          <div class="plano__price">R$ 24<span class="cents">,90</span></div>
+          <span class="plano__avista">no Pix, pagamento único</span>
+          <span class="plano__economia">Você economiza R$ 25,00</span>
         </div>
-        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
+        <a href="#checkout" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
       </div>
 
       <div class="plano plano--premium" data-plano="profissional">
@@ -1113,12 +1113,12 @@
         </ul>
         <div class="plano__preco-box">
           <p class="plano__de">De <s>R$ 67,00</s> por:</p>
-          <div class="plano__price">6x de R$ 7,09</div>
-          <span class="plano__avista">R$ 37,00 à vista</span>
-          <span class="plano__economia">Você economiza R$ 30,00 à vista</span>
-          <span class="plano__delta">Só R$ 12,10 a mais que o Básico à vista</span>
+          <div class="plano__price">R$ 37<span class="cents">,00</span></div>
+          <span class="plano__avista">no Pix, pagamento único</span>
+          <span class="plano__economia">Você economiza R$ 30,00</span>
+          <span class="plano__delta">Só R$ 12,10 a mais que o Básico</span>
         </div>
-        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
+        <a href="#checkout" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
       </div>
 
     </div>
@@ -1127,8 +1127,8 @@
 
     <!-- CHECKOUT EM POPUP (06/10). Volta o Pix pela PushInPay: os botoes dos
          cards abrem este bloco por cima da pagina, sem sair dela. O cartao
-         parcelado continua existindo, pela Cakto, num link dentro do popup
-         (ver PARCELAMENTO): e o que mantem verdadeiro o "5x de" dos cards. -->
+         parcelado foi desligado em 06/10: o pagamento e so Pix, e os cards
+         mostram o preco cheio (ver PARCELAMENTO, ativo: false). -->
     <div id="legacy-checkout" class="ck-modal" role="dialog" aria-modal="true" aria-label="Finalizar compra" hidden>
     <div class="ck-modal__caixa">
     <button type="button" class="ck-modal__fechar" id="ck-fechar" aria-label="Fechar">×</button>
@@ -1329,10 +1329,10 @@ const PRECO_CENTS = 3700; // plano de referencia pro ViewContent
      parcela= valor de UMA parcela, EXATAMENTE como a plataforma exibe
      url    = link do checkout daquele plano na plataforma
    ========================================================= */
-// 06/10: ligado com os checkouts da Cakto, que sao os que parcelam. Os
-// valores das parcelas sao os mesmos que os cards mostram.
+// 06/10: desligado. O pagamento da /profissional e so Pix (PushInPay). Os
+// links da Cakto ficam guardados aqui caso o cartao volte.
 const PARCELAMENTO = {
-  ativo: true,
+  ativo: false,
   planos: {
     profissional_pdf: { vezes: 5, parcela: '5,67', url: 'https://pay.cakto.com.br/8uf6w93_1146564' },
     profissional:     { vezes: 6, parcela: '7,09', url: 'https://pay.cakto.com.br/n2yr82g_1146541' },
