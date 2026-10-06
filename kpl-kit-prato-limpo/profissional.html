@@ -1951,12 +1951,11 @@ depoModal.addEventListener('close', () => {
    ?saida=debug mostra uma caixinha com cada etapa ao vivo. */
 (function(){
   const UMA_VEZ = false; // TESTE 30/09: voltar pra true depois do teste
-  // DESLIGADO (06/10): o R$ 10 era cobrado pela PushInPay, que passou a dar
-  // alerta de golpe no banco. Volta quando houver oferta de R$ 10 na Cakto:
-  // preencha SAIDA_CAKTO_URL com o link dela e troque o texto "No Pix, direto
-  // nesta pagina" do popup.
+  // 06/10: os planos voltaram pra Cakto, mas o R$ 10 segue no Pix da
+  // PushInPay (popup na pagina) ate existir oferta de R$ 10 na Cakto. Quando
+  // existir: preencha SAIDA_CAKTO_URL e troque o texto "No Pix, direto nesta
+  // pagina" do popup.
   const SAIDA_CAKTO_URL = '';
-  if (CHECKOUT_CAKTO && !SAIDA_CAKTO_URL) return;
   const caixa = document.getElementById('saida');
   const oferta = document.querySelector('#checkout .planos');
   if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
@@ -2050,7 +2049,7 @@ depoModal.addEventListener('close', () => {
   document.getElementById('saida-sim').addEventListener('click', () => {
     fecha();
     pixelCustom('ExitOfferAccept', { value: 10, currency: 'BRL' });
-    if (CHECKOUT_CAKTO) { location.href = SAIDA_CAKTO_URL; return; }
+    if (SAIDA_CAKTO_URL) { location.href = SAIDA_CAKTO_URL; return; }
     abreCheckout('profissional_saida');
   });
 })();
