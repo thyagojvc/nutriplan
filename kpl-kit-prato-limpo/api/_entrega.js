@@ -10,7 +10,12 @@
 const crypto = require('crypto');
 const { redis } = require('./_kv');
 
-// Um ano: a cliente compra hoje e pode querer reimprimir a ficha daqui a meses.
+// ACESSO VITALICIO (06/10). O token da compra (dl:) e o caminho inverso
+// (dltok:) nao expiram mais: a pagina profissional promete "acesso vitalicio",
+// e com o prazo antigo de um ano o app pararia de abrir em 12 meses. Tokens
+// criados antes desta data continuam com o prazo de um ano que ja tinham.
+// DOWNLOAD_TTL_SECONDS segue exportado: o lib/cakto-delivery usa pra marca de
+// pedido ja entregue, que e trava de duplicidade e nao acesso.
 const DOWNLOAD_TTL_SECONDS = 365 * 24 * 60 * 60;
 
 // Cria o acesso exclusivo da compra. O Completo ganha o link pra /mi-kit (a
@@ -25,10 +30,10 @@ async function createDownloadLink(paymentId, email, name, tierId, extra) {
   try {
     const token = crypto.randomBytes(24).toString('hex');
     const registro = Object.assign({ paymentId, email, name, tierId, ts: Date.now() }, extra || {});
-    await redis('SET', `dl:${token}`, JSON.stringify(registro), 'EX', DOWNLOAD_TTL_SECONDS);
+    await redis('SET', `dl:${token}`, JSON.stringify(registro));
     // Guarda o caminho inverso pra dar suporte ("perdi o e-mail") sem precisar
     // varrer o banco atrás do token.
-    await redis('SET', `dltok:${paymentId}`, token, 'EX', DOWNLOAD_TTL_SECONDS);
+    await redis('SET', `dltok:${paymentId}`, token);
 
     // Fila do e-mail de upgrade (só Essencial). É um zset com a data como
     // score, então o cron lê só quem já passou do prazo, em vez de varrer

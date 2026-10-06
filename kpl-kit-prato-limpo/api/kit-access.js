@@ -100,7 +100,6 @@ module.exports = async (req, res) => {
 // abas da família (fichas de casa, jogo, pintar, turma).
 // ---------------------------------------------------------------------------
 
-const TTL_FAMILIA_SECONDS = 365 * 24 * 60 * 60;
 
 function tokenDaFamilia(tokenPro) {
   const salt = process.env.KIT_TOKEN_SALT || 'kpl-familia';
@@ -146,7 +145,9 @@ async function linkDaFamilia(req, res) {
   };
 
   try {
-    await redis('SET', `dl:${famToken}`, JSON.stringify(registro), 'EX', String(TTL_FAMILIA_SECONDS));
+    // Sem prazo (06/10), igual ao acesso da nutricionista: se o dela e
+    // vitalicio, o link que ela mandou pros pacientes nao pode morrer antes.
+    await redis('SET', `dl:${famToken}`, JSON.stringify(registro));
   } catch (err) {
     console.error('link da família: falhou ao gravar o token', err);
     return res.status(503).json({ error: 'Não conseguimos gerar o link agora. Tente de novo.' });
