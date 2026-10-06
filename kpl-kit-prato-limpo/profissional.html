@@ -1073,11 +1073,11 @@
         </ul>
         <div class="plano__preco-box">
           <p class="plano__de">De <s>R$ 49,90</s> por:</p>
-          <div class="plano__price">R$ 24<span class="cents">,90</span></div>
-          <span class="plano__avista">no Pix, pagamento único e acesso vitalício</span>
-          <span class="plano__economia">Você economiza R$ 25,00</span>
+          <div class="plano__price">5x de R$ 5,67</div>
+          <span class="plano__avista">R$ 24,90 à vista · acesso vitalício</span>
+          <span class="plano__economia">Você economiza R$ 25,00 à vista</span>
         </div>
-        <a href="#checkout" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
+        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
       </div>
 
       <div class="plano plano--premium" data-plano="profissional">
@@ -1113,17 +1113,17 @@
         </ul>
         <div class="plano__preco-box">
           <p class="plano__de">De <s>R$ 67,00</s> por:</p>
-          <div class="plano__price">R$ 37<span class="cents">,00</span></div>
-          <span class="plano__avista">no Pix, pagamento único e acesso vitalício</span>
-          <span class="plano__economia">Você economiza R$ 30,00</span>
-          <span class="plano__delta">Só R$ 12,10 a mais que o Básico</span>
+          <div class="plano__price">6x de R$ 7,09</div>
+          <span class="plano__avista">R$ 37,00 à vista · acesso vitalício</span>
+          <span class="plano__economia">Você economiza R$ 30,00 à vista</span>
+          <span class="plano__delta">Só R$ 12,10 a mais que o Básico à vista</span>
         </div>
-        <a href="#checkout" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
+        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
       </div>
 
     </div>
     <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
-    <p class="planos__nota">Pagamento por Pix, direto nesta página. O acesso chega no seu e-mail assim que o Pix cair.</p>
+    <p class="planos__nota">Ao escolher seu plano, você conclui a compra no checkout seguro da Cakto. O acesso chega por e-mail após a confirmação.</p>
 
     <!-- CHECKOUT EM POPUP (06/10). Volta o Pix pela PushInPay: os botoes dos
          cards abrem este bloco por cima da pagina, sem sair dela. O cartao
@@ -1233,7 +1233,7 @@
       </details>
       <details>
         <summary>Como recebo, e quanto tempo demora?</summary>
-        <p>Assim que o Pix é confirmado, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
+        <p>Depois que a Cakto confirmar o pagamento, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
       </details>
       <details>
         <summary>Preciso de impressora?</summary>
@@ -1703,6 +1703,12 @@ $('#email').addEventListener('focus', disparaInitiate);
 $('#telefone').addEventListener('focus', disparaInitiate);
 
 /* ---- checkout ---- */
+// CHECKOUT_CAKTO (06/10): o Pix da PushInPay passou a aparecer como alerta
+// de golpe no app do banco de quem pagava, entao a venda voltou pra Cakto. Os
+// botoes seguem o link deles. O checkout em popup abaixo fica pronto, so
+// desligado: mudar pra false volta tudo pro Pix na pagina.
+const CHECKOUT_CAKTO = true;
+
 // Checkout em popup (06/10). Abre por cima da pagina com o plano marcado.
 function checkoutAberto(){ const m = document.getElementById('legacy-checkout'); return !!(m && !m.hidden); }
 function abreCheckout(tier){
@@ -1738,7 +1744,13 @@ document.querySelectorAll('.plano').forEach((card) => {
     radio.dispatchEvent(new Event('change', { bubbles: true }));
   });
   btn?.addEventListener('click', (e) => {
-    // O href da Cakto fica no HTML so como reserva, se o script nao carregar.
+    if (CHECKOUT_CAKTO) {
+      // Segue o link da Cakto. Nao dispara InitiateCheckout aqui: a Cakto
+      // dispara quando o checkout abre, e seriam dois pra mesma visita.
+      if (!radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+      marcaPro('p_plano');
+      return;
+    }
     e.preventDefault();
     e.stopPropagation();
     abreCheckout(btn.dataset.checkout || radio.value);
@@ -1939,6 +1951,12 @@ depoModal.addEventListener('close', () => {
    ?saida=debug mostra uma caixinha com cada etapa ao vivo. */
 (function(){
   const UMA_VEZ = false; // TESTE 30/09: voltar pra true depois do teste
+  // DESLIGADO (06/10): o R$ 10 era cobrado pela PushInPay, que passou a dar
+  // alerta de golpe no banco. Volta quando houver oferta de R$ 10 na Cakto:
+  // preencha SAIDA_CAKTO_URL com o link dela e troque o texto "No Pix, direto
+  // nesta pagina" do popup.
+  const SAIDA_CAKTO_URL = '';
+  if (CHECKOUT_CAKTO && !SAIDA_CAKTO_URL) return;
   const caixa = document.getElementById('saida');
   const oferta = document.querySelector('#checkout .planos');
   if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
@@ -2032,6 +2050,7 @@ depoModal.addEventListener('close', () => {
   document.getElementById('saida-sim').addEventListener('click', () => {
     fecha();
     pixelCustom('ExitOfferAccept', { value: 10, currency: 'BRL' });
+    if (CHECKOUT_CAKTO) { location.href = SAIDA_CAKTO_URL; return; }
     abreCheckout('profissional_saida');
   });
 })();
