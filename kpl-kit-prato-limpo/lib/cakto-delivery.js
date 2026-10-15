@@ -74,6 +74,44 @@ async function revokeAccess(orderId, services) {
   await services.redis('DEL', `dltok:${paymentId}`);
 }
 
+// VENDA NO PAINEL (15/10). Desde que o profissional voltou pra Cakto (06/10),
+// a venda nao passava pelo deliver-kit e nao entrava em kpl:sales: o /funil
+// mostrava visitas do profissional e nenhuma venda. Grava no mesmo formato.
+// Os UTMs chegam porque a /profissional repassa os dela no link da Cakto; o
+// nome exato do campo no payload varia, entao procura nos lugares possiveis.
+function utmDoPedido(order, nome) {
+  const curto = nome.replace('utm_', '');
+  const v = order[nome] || (order.utm && (order.utm[nome] || order.utm[curto]))
+    || (order.tracking && (order.tracking[nome] || order.tracking[curto]));
+  if (v) return String(v).slice(0, 120);
+  try {
+    const url = order.checkoutUrl || order.checkout_url || order.url || '';
+    return url ? (new URL(url).searchParams.get(nome) || '').slice(0, 120) : '';
+  } catch { return ''; }
+}
+
+// Valor em centavos. A Cakto manda em reais (37 ou 37.0); se vier um numero
+// grande e inteiro, ja esta em centavos.
+function centavos(order) {
+  const bruto = Number(order.amount ?? order.baseAmount ?? order.total ?? 0) || 0;
+  return Number.isInteger(bruto) && bruto >= 1000 ? bruto : Math.round(bruto * 100);
+}
+
+async function registraVenda(order, tierName, services) {
+  const marca = `cakto:sale:${order.id}`;
+  if ((await services.redis('SET', marca, '1', 'NX', 'EX', 60 * 60 * 24 * 90)) !== 'OK') return;
+  const firstName = String((order.customer && order.customer.name) || '').trim().split(/\s+/)[0] || 'Cliente';
+  const now = Date.now();
+  await services.redis('ZADD', 'kpl:sales', String(now), JSON.stringify({
+    n: firstName.slice(0, 40), t: tierName, v: centavos(order),
+    a: utmDoPedido(order, 'utm_content') || null,
+    c: utmDoPedido(order, 'utm_campaign') || null,
+    s: utmDoPedido(order, 'utm_medium') || utmDoPedido(order, 'utm_term') || null,
+    i: null, p: null, ts: now,
+  }));
+  await services.redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501);
+}
+
 async function deliverOrder(order, services) {
   // O mesmo produto pode ser vendido como oferta principal ou upsell; o ID
   // do produto, não o tipo da oferta, define qual acesso liberar.
@@ -104,6 +142,10 @@ async function deliverOrder(order, services) {
     if (!sent || !sent.ok) throw new Error('E-mail de acesso não enviado');
 
     await services.redis('SET', `cakto:delivered:${orderId}`, '1', 'EX', DOWNLOAD_TTL_SECONDS);
+    // Painel e secundario: falha aqui nao pode virar 503 (a Cakto reenviaria
+    // e o cliente ja recebeu o acesso).
+    await registraVenda(order, 'KPL Edição Profissional', services)
+      .catch((err) => console.error('cakto: venda nao entrou no painel', err));
     return { delivered: true };
   } finally {
     await services.redis('DEL', lockKey).catch((err) => {
@@ -116,6 +158,9 @@ async function handleCaktoWebhook(req, res, overrides = {}) {
   res.setHeader('Cache-Control', 'no-store');
   const secret = process.env.CAKTO_WEBHOOK_SECRET;
   const productId = process.env.CAKTO_PRO_COMPLETE_PRODUCT_ID;
+  // Opcional: o Basico tem entrega propria na Cakto. Com o ID dele aqui (e o
+  // webhook do produto apontado pra ca), a venda so entra no painel.
+  const basicId = process.env.CAKTO_PRO_BASIC_PRODUCT_ID || '';
   if (!secret || !productId) return res.status(503).json({ error: 'Entrega Cakto não configurada' });
 
   let payload;
@@ -132,7 +177,17 @@ async function handleCaktoWebhook(req, res, overrides = {}) {
   try {
     const results = [];
     for (const order of orders) {
-      if (!order || String((order.product && order.product.id) || '') !== productId) {
+      const idProduto = String((order && order.product && order.product.id) || '');
+      if (order && basicId && idProduto === basicId) {
+        if (payload.event === 'purchase_approved' && order.status === 'paid'
+            && /^[a-zA-Z0-9_-]{8,100}$/.test(String(order.id || ''))) {
+          await registraVenda(order, 'KPL Edição Profissional (PDF)', services)
+            .catch((err) => console.error('cakto: venda do basico nao entrou no painel', err));
+          results.push({ recorded: true });
+        } else results.push({ ignored: true });
+        continue;
+      }
+      if (!order || idProduto !== productId) {
         results.push({ ignored: true });
         continue;
       }
@@ -155,4 +210,4 @@ async function handleCaktoWebhook(req, res, overrides = {}) {
   }
 }
 
-module.exports = { handleCaktoWebhook, sameSecret, accessEmailHtml };
+module.exports = { handleCaktoWebhook, sameSecret, accessEmailHtml, centavos, utmDoPedido };

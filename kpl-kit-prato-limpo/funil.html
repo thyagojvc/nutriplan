@@ -24,6 +24,12 @@
   .ranges { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
   .range-btn { border: 1px solid var(--border); background: var(--card); color: var(--text); border-radius: 999px; padding: 6px 14px; font-size: .82rem; font-weight: 600; cursor: pointer; }
   .range-btn.active { background: var(--green); color: #fff; border-color: var(--green); }
+  /* Seletor de produto (15/10): cada um ve so o proprio funil e as proprias vendas */
+  .scopes { display: inline-flex; background: #EDE6D6; border-radius: 999px; padding: 4px; margin-bottom: 14px; }
+  .scope-btn { border: none; background: transparent; color: var(--text); border-radius: 999px; padding: 8px 18px; font-size: .9rem; font-weight: 700; cursor: pointer; }
+  .scope-btn.active { background: var(--ink); color: #fff; }
+  [data-only] { display: none; }
+  body[data-scope="maes"] [data-only="maes"], body[data-scope="pro"] [data-only="pro"] { display: block; }
 
   .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
   .stat { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; min-width: 130px; flex: 1; }
@@ -76,8 +82,13 @@
     </div>
 
     <div id="dashboard" style="display:none">
-      <h1>Funil ao vivo — Kit Prato Limpo</h1>
+      <h1>Funil ao vivo — Kit Prato Limpo · <span id="scope-name">Profissional</span></h1>
       <p class="sub" id="updated"></p>
+
+      <div class="scopes" id="scopes">
+        <button class="scope-btn" data-scope="maes" type="button">Mães</button>
+        <button class="scope-btn" data-scope="pro" type="button">Profissional</button>
+      </div>
 
       <div class="ranges" id="ranges">
         <button class="range-btn active" data-range="today">Hoje</button>
@@ -90,7 +101,7 @@
       <div class="cards">
         <div class="stat live"><div class="n"><span class="dot"></span><span id="live-count">0</span></div><div class="l">Na página agora</div></div>
         <div class="stat"><div class="n" id="total-count">0</div><div class="l">Visitas no período</div></div>
-        <div class="stat"><div class="n" id="checkout-started-count">0</div><div class="l">Iniciaram checkout</div></div>
+        <div class="stat"><div class="n" id="checkout-started-count">0</div><div class="l" id="checkout-label">Iniciaram checkout</div></div>
         <div class="stat"><div class="n" id="sales-count">0</div><div class="l">Vendas</div></div>
         <div class="stat"><div class="n" id="revenue">R$ 0</div><div class="l">Faturamento</div></div>
       </div>
@@ -116,6 +127,7 @@
       </table>
       <p class="note">É o corte que separa "iPhone vai mal" de "webview do Instagram vai mal". Se uma linha destoar muito das outras, o problema é do ambiente, não do site.</p>
 
+      <div data-only="maes">
       <h2>Funil por seção</h2>
       <table>
         <thead><tr><th>Seção</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
@@ -129,6 +141,9 @@
         <tbody id="quiz-body"></tbody>
       </table>
       <p class="note">Contado só entre quem entrou no /quiz. Quem cai direto na página de vendas não aparece aqui.</p>
+      </div>
+
+      <div data-only="pro">
 
       <h2>Funil da Edição Profissional <span id="pro-total" class="note" style="font-weight:400"></span></h2>
       <table>
@@ -146,10 +161,13 @@
 
       <h2>Anúncios da Edição Profissional</h2>
       <table>
-        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">Checkout</th><th class="num">Pix</th></tr></thead>
+        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">Viu os planos</th><th class="num">Foi pra Cakto</th><th class="num">Vendas</th></tr></thead>
         <tbody id="pro-creatives-body"></tbody>
       </table>
-      <p class="note">Checkout = rolou até os planos. Pix = gerou o código pra pagar.</p>
+      <p class="note">Viu os planos = rolou até a seção de preço. Foi pra Cakto = tocou no botão de um plano. Vendas = compras confirmadas pela Cakto com esse anúncio (o anúncio só vem nas vendas feitas a partir de 15/10).</p>
+      </div>
+
+      <div data-only="maes">
 
       <h2>Criativos (anúncio de origem)</h2>
       <table>
@@ -157,6 +175,7 @@
         <tbody id="creatives-body"></tbody>
       </table>
       <p class="note">Configure utm_content={{ad.name}} na URL do anúncio no Meta pra cada criativo aparecer aqui.</p>
+      </div>
 
       <h2>Dispositivo</h2>
       <table>
@@ -170,12 +189,12 @@
         <tbody id="platforms-body"></tbody>
       </table>
 
-      <h2>Iniciaram o checkout</h2>
+      <h2 id="checkout-title">Iniciaram o checkout</h2>
       <table>
         <thead><tr><th>Quando</th><th>Anúncio</th><th>Onde abriu</th><th>Parou em</th></tr></thead>
         <tbody id="checkout-started-body"></tbody>
       </table>
-      <p class="note">Nome preenchido + avançou pro e-mail. Mais forte que "chegou na seção checkout" (que só mostra que rolou até lá) — mas não cruza com quem já comprou, então tem gente aqui que já está na lista de Vendas.</p>
+      <p class="note" id="checkout-note">Nome preenchido + avançou pro e-mail. Mais forte que "chegou na seção checkout" (que só mostra que rolou até lá) — mas não cruza com quem já comprou, então tem gente aqui que já está na lista de Vendas.</p>
 
       <h2>Vendas por sistema</h2>
       <table>
@@ -213,6 +232,22 @@ if (KEY) sessionStorage.setItem('funil_key', KEY);
 // O botao marcado como active la em cima tem que continuar batendo com este
 // valor, senao a pilha destaca um periodo e a tela mostra outro.
 let RANGE = 'today';
+// Produto do painel (15/10). Fica lembrado neste navegador; abre no
+// Profissional, que e onde a campanha esta rodando agora.
+let SCOPE = 'pro';
+try { SCOPE = localStorage.getItem('funil_scope') || 'pro'; } catch (e) {}
+function aplicaScope() {
+  document.body.dataset.scope = SCOPE;
+  document.querySelectorAll('.scope-btn').forEach((b) => b.classList.toggle('active', b.dataset.scope === SCOPE));
+  const pro = SCOPE === 'pro';
+  $('#scope-name').textContent = pro ? 'Profissional' : 'Mães';
+  $('#checkout-label').textContent = pro ? 'Foram pra Cakto' : 'Iniciaram checkout';
+  $('#checkout-title').textContent = pro ? 'Foram pro checkout da Cakto' : 'Iniciaram o checkout';
+  $('#checkout-note').textContent = pro
+    ? 'Tocou no botão de um plano e saiu pra Cakto. O que acontece lá dentro a página não vê: a venda aparece na tabela de Vendas quando a Cakto confirma.'
+    : 'Nome preenchido + avançou pro e-mail. Mais forte que "chegou na seção checkout" (que só mostra que rolou até lá), mas não cruza com quem já comprou, então tem gente aqui que já está na lista de Vendas.';
+}
+aplicaScope();
 
 const DEVICE_LABELS = { mobile: 'Celular', tablet: 'Tablet', desktop: 'Computador' };
 const PLATFORM_LABELS = { iOS: 'iPhone/iPad', Android: 'Android', Windows: 'Windows', Mac: 'Mac', Other: 'Outro' };
@@ -237,9 +272,11 @@ function fmtBRL(cents) {
 
 async function loadData() {
   try {
-    const res = await fetch('/api/funnel-data?key=' + encodeURIComponent(KEY) + '&range=' + RANGE);
+    const pedido = SCOPE;
+    const res = await fetch('/api/funnel-data?key=' + encodeURIComponent(KEY) + '&range=' + RANGE + '&scope=' + pedido);
     if (res.status === 401) { showGate(true); return; }
     const data = await res.json();
+    if (pedido !== SCOPE) return; // trocou de produto enquanto carregava
     render(data);
   } catch (e) { /* erro pontual de rede: mantém a última tela */ }
 }
@@ -321,7 +358,7 @@ function render(data) {
   const starts = data.checkoutStarts || [];
   $('#checkout-started-body').innerHTML = starts.length
     ? starts.map((v) => {
-        const parou = SECTION_LABELS[v.maxSection] || v.maxSection || '—';
+        const parou = SECTION_LABELS[v.proMax || v.maxSection] || v.proMax || v.maxSection || '—';
         const onde = [PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ') || '—';
         const vivo = v.isLive ? '<span class="live-dot"></span>' : '';
         return `<tr>
@@ -394,9 +431,10 @@ function render(data) {
         <td>${esc(c.key)}</td>
         <td class="num">${c.count}</td>
         <td class="num">${c.checkout || 0}</td>
-        <td class="num">${c.pix || 0}</td>
+        <td class="num">${c.plano || 0}</td>
+        <td class="num">${c.vendas ? '<b>' + c.vendas + '</b>' : 0}</td>
       </tr>`).join('')
-    : '<tr><td colspan="4" class="muted">Sem anúncio registrado no período.</td></tr>';
+    : '<tr><td colspan="5" class="muted">Sem anúncio registrado no período.</td></tr>';
 
   // Criativos / Dispositivo / Sistema
   const totalVisits = data.total || 1;
@@ -533,6 +571,16 @@ function showGate(err) {
   $('#dashboard').style.display = 'none';
   $('#gate-err').style.display = err ? '' : 'none';
 }
+
+$('#scopes').addEventListener('click', (e) => {
+  const btn = e.target.closest('.scope-btn');
+  if (!btn || btn.dataset.scope === SCOPE) return;
+  SCOPE = btn.dataset.scope;
+  try { localStorage.setItem('funil_scope', SCOPE); } catch (err) {}
+  aplicaScope();
+  selectedIds.clear();
+  loadData();
+});
 
 $('#ranges').addEventListener('click', (e) => {
   const btn = e.target.closest('.range-btn');

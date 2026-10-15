@@ -1,4 +1,6 @@
-// GET /api/funnel-data?key=<FUNNEL_DASHBOARD_KEY>&range=today|7d|30d|all
+// GET /api/funnel-data?key=<FUNNEL_DASHBOARD_KEY>&range=today|7d|30d|all&scope=maes|pro
+// scope (15/10): o painel tem um seletor Mães / Profissional. Cada um conta
+// so as visitas e as vendas do seu produto. Sem scope, soma tudo (como antes).
 // Alimenta o painel em /funil.html. Tudo é derivado dos visitantes recentes
 // (sorted set `individuals` + hash de cada um) e filtrável por período:
 //   - ao vivo agora, funil de abandono (por seção mais profunda alcançada),
@@ -10,7 +12,10 @@
 const { redis, redisPipeline } = require('./_kv');
 const { SECTIONS, QUIZ_STEPS, PRO_STEPS, PRO_QUIZ_STEPS } = require('./_sections');
 
-const MAX = 100;
+// 15/10: 100 -> 200. Com os dois produtos rodando anuncio, 100 visitas
+// recentes cobriam pouco mais de um dia de um deles. O painel so le quando
+// alguem abre ou clica em Atualizar, entao o custo extra do Redis e pequeno.
+const MAX = 200;
 // O painel fica aberto e recalcula o funil inteiro (pipeline de até 2×MAX
 // leituras) a cada poll do front. Sem isso, deixar a aba aberta por um dia
 // sozinha estourava as 500 mil requisições/mês do plano free do Redis
@@ -181,7 +186,9 @@ module.exports = async (req, res) => {
   const range = ((req.query && req.query.range) || url.searchParams.get('range') || 'all').toLowerCase();
   const now = Date.now();
   const sinceTs = computeSince(range, now);
-  const cacheKey = `funnel-cache:${range}`;
+  const scopeRaw = ((req.query && req.query.scope) || url.searchParams.get('scope') || '').toLowerCase();
+  const scope = scopeRaw === 'pro' || scopeRaw === 'maes' ? scopeRaw : 'all';
+  const cacheKey = `funnel-cache:${range}:${scope}`;
 
   try {
     const cached = await redis('GET', cacheKey);
@@ -232,7 +239,10 @@ module.exports = async (req, res) => {
     const noPeriodo = range === 'all'
       ? all
       : all.filter((v) => v.lastSeen && v.lastSeen >= sinceTs);
-    const rows = juntarMesmaPessoa(noPeriodo, idxOf);
+    const ehPro = (v) => !!(v.proMax || v.proQuizMax);
+    const doEscopo = scope === 'pro' ? noPeriodo.filter(ehPro)
+      : scope === 'maes' ? noPeriodo.filter((v) => !ehPro(v)) : noPeriodo;
+    const rows = juntarMesmaPessoa(doEscopo, idxOf);
 
     const liveCount = rows.filter((v) => v.isLive).length;
 
@@ -281,6 +291,7 @@ module.exports = async (req, res) => {
     const proCreatives = groupCount(proRows, 'adRef').map((c) => Object.assign({}, c, {
       pix: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_pix).length,
       checkout: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_checkout).length,
+      plano: proRows.filter((v) => v.adRef === c.key && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_plano).length,
     }));
 
     const creatives = groupCount(rows, 'adRef');
@@ -330,22 +341,40 @@ module.exports = async (req, res) => {
     // INICIARAM CHECKOUT: nome preenchido + avançou pro e-mail (sinal mais forte
     // que só ter rolado até a seção). `rows` já vem do mais recente pro mais
     // antigo, então os primeiros 30 já são os mais recentes.
-    const checkoutStarts = rows.filter((v) => v.checkoutStarted).slice(0, 30).map((v) => ({
+    // No profissional a venda fecha na Cakto: "foi pro checkout" e tocar no
+    // botao do plano (p_plano), que e o que a pagina consegue ver.
+    const iniciou = scope === 'pro'
+      ? (v) => v.checkoutStarted || (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_plano
+      : (v) => v.checkoutStarted;
+    const checkoutStarts = rows.filter(iniciou).slice(0, 30).map((v) => ({
       id: v.id,
       lastSeen: v.lastSeen,
       adRef: v.adRef,
       platform: v.platform,
       browserEnv: v.browserEnv ? (BROWSER_ENV_LABELS[v.browserEnv] || v.browserEnv) : null,
       maxSection: v.maxSection,
+      proMax: v.proMax,
       isLive: v.isLive,
     }));
-    const checkoutStartedCount = rows.filter((v) => v.checkoutStarted).length;
+    const checkoutStartedCount = rows.filter(iniciou).length;
 
     // Vendas (member = JSON, score = timestamp). Filtra pelo período.
     const salesRaw = await redis('ZREVRANGE', 'kpl:sales', 0, 199, 'WITHSCORES');
+    const vendaPro = (s) => /profissional/i.test(s.tierName || '');
     const sales = parseSales(salesRaw)
       .filter((s) => range === 'all' || s.ts >= sinceTs)
+      .filter((s) => (scope === 'pro' ? vendaPro(s) : scope === 'maes' ? !vendaPro(s) : true))
       .slice(0, 50);
+    // Vendas por anuncio dentro do profissional: o corte que diz qual criativo
+    // vende, e nao so qual traz clique.
+    proCreatives.forEach((c) => { c.vendas = sales.filter((s) => s.adRef === c.key).length; });
+    // Venda de anuncio que nao aparece entre as visitas do periodo (visita
+    // antiga, outro aparelho) tambem entra, pra soma por anuncio fechar.
+    if (scope === 'pro') {
+      groupCount(sales, 'adRef').forEach((g) => {
+        if (!proCreatives.some((c) => c.key === g.key)) proCreatives.push({ key: g.key, count: 0, checkout: 0, plano: 0, pix: 0, vendas: g.count });
+      });
+    }
     const revenueCents = sales.reduce((acc, s) => acc + (s.valueCents || 0), 0);
     // Sai do array de vendas que ja foi lido acima: nenhuma leitura nova no
     // Redis. groupCount ja transforma null em '—', que o painel rotula.
@@ -354,6 +383,7 @@ module.exports = async (req, res) => {
     const payload = {
       now,
       range,
+      scope,
       liveCount,
       total: rows.length,
       sections,

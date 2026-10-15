@@ -1393,8 +1393,24 @@ function getUtmRef(param, chave){
   }catch(e){ return ''; }
 }
 const getCampaignRef = () => getUtmRef('utm_campaign', 'kpl_campaign');
-const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset');
-getCampaignRef(); getAdsetRef();
+// 15/10: o guia de anuncios manda o conjunto em utm_medium ({{adset.name}}).
+// utm_term continua valendo pros anuncios antigos.
+const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset') || getUtmRef('utm_medium', 'kpl_adset');
+const getSourceRef = () => getUtmRef('utm_source', 'kpl_source');
+getCampaignRef(); getAdsetRef(); getSourceRef();
+
+// UTM ATE A CAKTO (15/10). A venda fecha no checkout da Cakto, e sem os
+// parametros na URL dela o webhook chega sem saber de qual anuncio veio: o
+// painel mostrava a visita com anuncio e a venda sem. Repassa os mesmos
+// valores que a pagina recebeu.
+function comUtm(url){
+  try{
+    const u = new URL(url);
+    const pares = { utm_source: getSourceRef(), utm_campaign: getCampaignRef(), utm_medium: getAdsetRef(), utm_content: getAdRef() };
+    Object.keys(pares).forEach((k) => { if (pares[k] && !u.searchParams.get(k)) u.searchParams.set(k, pares[k]); });
+    return u.toString();
+  }catch(e){ return url; }
+}
 
 function getVisitorId(){
   try{
@@ -1749,6 +1765,8 @@ document.querySelectorAll('.plano').forEach((card) => {
       // dispara quando o checkout abre, e seriam dois pra mesma visita.
       if (!radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
       marcaPro('p_plano');
+      if (!btn.dataset.base) btn.dataset.base = btn.href;
+      btn.href = comUtm(btn.dataset.base);
       return;
     }
     e.preventDefault();
