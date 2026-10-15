@@ -61,6 +61,41 @@
       "source": "/kit-profissional",
       "destination": "/profissional",
       "permanent": false
+    },
+    {
+      "source": "/",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/index",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/index.html",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/quiz",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/quiz.html",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/maes-preview",
+      "destination": "/profissional",
+      "permanent": false
+    },
+    {
+      "source": "/maes-preview.html",
+      "destination": "/profissional",
+      "permanent": false
     }
   ]
 }

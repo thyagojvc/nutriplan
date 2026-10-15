@@ -37,7 +37,8 @@ const BASE_URL = (process.env.PUBLIC_BASE_URL || 'https://kitpratolimpo.com.br')
 // Nome e URL por produto: e o que a conversao personalizada do Gerenciador de
 // Eventos usa pra separar a venda profissional da venda das maes.
 function marcaDoPedido(tierId) {
-  const pro = tierId === 'profissional' || tierId === 'profissional_pdf';
+  // profissional_saida (oferta de R$ 10 da /profissional) tambem e venda profissional.
+  const pro = tierId === 'profissional' || tierId === 'profissional_pdf' || tierId === 'profissional_saida';
   return {
     contentName: pro ? 'KPL Edicao Profissional' : 'Kit Prato Limpo',
     sourceUrl: pro ? `${BASE_URL}/profissional` : `${BASE_URL}/`,
