@@ -87,6 +87,8 @@ module.exports = async (req, res) => {
     let proMax = String(body.proMax || '');
     if (!VALID_PRO_IDS.has(proMax)) proMax = proStep;
     const isProBeat = VALID_PRO_IDS.has(proStep);
+    // Plano em que a pessoa tocou (15/10). Abre o "foi pra Cakto" por plano no painel.
+    const plano = ['profissional', 'profissional_pdf', 'profissional_saida'].includes(body.plano) ? body.plano : '';
 
     // Batida vinda do /quiz-pro (21/09): quarta trilha, ver PRO_QUIZ_STEPS.
     const proQuizStep = String(body.proQuizStep || '');
@@ -120,7 +122,7 @@ module.exports = async (req, res) => {
     const progress = isProQuizBeat
       ? ['HSET', `visitor:${visitorId}`, 'proQuizStep', proQuizStep, 'proQuizMax', proQuizMax, ...comum]
       : isProBeat
-      ? ['HSET', `visitor:${visitorId}`, 'proStep', proStep, 'proMax', proMax, ...comum]
+      ? ['HSET', `visitor:${visitorId}`, 'proStep', proStep, 'proMax', proMax, ...(plano ? ['plano', plano] : []), ...comum]
       : isQuizBeat
         ? ['HSET', `visitor:${visitorId}`, 'quizStep', quizStep, 'quizMax', quizMax, ...comum]
         : ['HSET', `visitor:${visitorId}`, 'lastSection', section, 'maxSection', maxSection, ...comum];

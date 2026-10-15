@@ -1407,6 +1407,8 @@ function comUtm(url){
   try{
     const u = new URL(url);
     const pares = { utm_source: getSourceRef(), utm_campaign: getCampaignRef(), utm_medium: getAdsetRef(), utm_content: getAdRef() };
+    // sck = id do visitante: a Cakto devolve no webhook e o painel casa a venda com a visita.
+    pares.sck = getVisitorId();
     Object.keys(pares).forEach((k) => { if (pares[k] && !u.searchParams.get(k)) u.searchParams.set(k, pares[k]); });
     return u.toString();
   }catch(e){ return url; }
@@ -1491,6 +1493,7 @@ function marcaPro(id){
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
         visitorId, proStep: proAtual, proMax: PRO_IDS[proMaxIdx] || proAtual, adRef,
+        plano: proMaxIdx >= PRO_IDS.indexOf('p_plano') ? (document.querySelector('input[name="plano"]:checked')?.value || '') : '',
         hiddenLoad, visible, touched,
         // checkoutStarted e o mesmo sinal da pagina das maes: dados preenchidos.
         checkoutStarted: proMaxIdx >= PRO_IDS.indexOf('p_dados'),
@@ -1907,7 +1910,9 @@ function pago(){
   // e-mail. Se falhar aqui, o webhook da PushInPay é a rede de segurança.
 fetch(API.entregar, {
     method:'POST', headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone, adRef:'profissional' })
+    // 15/10: manda o anuncio de verdade (antes ia fixo 'profissional') e o visitante.
+    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone,
+      adRef: getAdRef() || 'profissional', campaign: getCampaignRef(), adset: getAdsetRef(), vid: getVisitorId() })
 }).catch(()=>{});
 }
 

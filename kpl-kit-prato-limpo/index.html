@@ -2450,6 +2450,7 @@ async function deliverKit() {
         adRef: getAdRef(),
         campaign: getCampaignRef(),
         adset: getAdsetRef(),
+        vid: getVisitorId(),
         ...(fbclid ? { fbclid } : {}),
       }),
     });

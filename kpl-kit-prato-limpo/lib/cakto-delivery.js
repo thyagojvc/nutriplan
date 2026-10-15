@@ -101,13 +101,19 @@ async function registraVenda(order, tierName, services) {
   const marca = `cakto:sale:${order.id}`;
   if ((await services.redis('SET', marca, '1', 'NX', 'EX', 60 * 60 * 24 * 90)) !== 'OK') return;
   const firstName = String((order.customer && order.customer.name) || '').trim().split(/\s+/)[0] || 'Cliente';
-  const now = Date.now();
+  // Data da compra, nao a do webhook: um evento reenviado dias depois tem que
+  // cair no dia em que a venda aconteceu, nao em "hoje".
+  const quando = Date.parse(order.paidAt || order.paid_at || order.createdAt || order.created_at || '');
+  const now = Number.isFinite(quando) && quando <= Date.now() ? quando : Date.now();
   await services.redis('ZADD', 'kpl:sales', String(now), JSON.stringify({
     n: firstName.slice(0, 40), t: tierName, v: centavos(order),
     a: utmDoPedido(order, 'utm_content') || null,
     c: utmDoPedido(order, 'utm_campaign') || null,
     s: utmDoPedido(order, 'utm_medium') || utmDoPedido(order, 'utm_term') || null,
-    i: null, p: null, ts: now,
+    i: null, p: null,
+    // sck = id do visitante, que a /profissional poe no link da Cakto
+    vid: (utmDoPedido(order, 'sck').replace(/[^\w-]/g, '') || null),
+    ts: now,
   }));
   await services.redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501);
 }

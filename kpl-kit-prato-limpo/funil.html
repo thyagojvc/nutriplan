@@ -29,6 +29,14 @@
   .scope-btn { border: none; background: transparent; color: var(--text); border-radius: 999px; padding: 8px 18px; font-size: .9rem; font-weight: 700; cursor: pointer; }
   .scope-btn.active { background: var(--ink); color: #fff; }
   [data-only] { display: none; }
+  /* 15/10: linhas de plano dentro do funil e tabelas por grupo (vindas do painel do Mesa a Mesa) */
+  tr.sub td { color: var(--muted); font-size: .78rem; padding-top: 3px; padding-bottom: 3px; }
+  tr.sub td:first-child { padding-left: 26px; }
+  tr.forte td { font-weight: 700; }
+  .ok-pill { display: inline-block; border-radius: 999px; padding: 2px 9px; font-size: .74rem; font-weight: 700; background: #E4F3DC; color: #2F6B22; }
+  .grupos-2 { display: grid; gap: 0 16px; }
+  @media (min-width: 900px) { .grupos-2 { grid-template-columns: 1fr 1fr 1fr; } }
+  .tbl-scroll { overflow-x: auto; }
   body[data-scope="maes"] [data-only="maes"], body[data-scope="pro"] [data-only="pro"] { display: block; }
 
   .cards { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px; }
@@ -92,7 +100,9 @@
 
       <div class="ranges" id="ranges">
         <button class="range-btn active" data-range="today">Hoje</button>
+        <button class="range-btn" data-range="ontem">Ontem</button>
         <button class="range-btn" data-range="7d">7 dias</button>
+        <button class="range-btn" data-range="14d">14 dias</button>
         <button class="range-btn" data-range="30d">30 dias</button>
         <button class="range-btn" data-range="all">Tudo</button>
         <button class="range-btn" id="refresh-btn" type="button" style="margin-left:auto">↻ Atualizar</button>
@@ -102,9 +112,17 @@
         <div class="stat live"><div class="n"><span class="dot"></span><span id="live-count">0</span></div><div class="l">Na página agora</div></div>
         <div class="stat"><div class="n" id="total-count">0</div><div class="l">Visitas no período</div></div>
         <div class="stat"><div class="n" id="checkout-started-count">0</div><div class="l" id="checkout-label">Iniciaram checkout</div></div>
+        <div class="stat"><div class="n" id="planos-pct">0%</div><div class="l">Chegaram nos planos</div></div>
         <div class="stat"><div class="n" id="sales-count">0</div><div class="l">Vendas</div></div>
         <div class="stat"><div class="n" id="revenue">R$ 0</div><div class="l">Faturamento</div></div>
+        <div class="stat"><div class="n" id="conv-pct">0%</div><div class="l">Conversão da página</div></div>
       </div>
+
+      <h2>Ao vivo agora</h2>
+      <div class="tbl-scroll"><table>
+        <thead><tr><th>Lendo agora</th><th>Mais fundo</th><th>Anúncio</th><th>Aparelho</th><th class="num">Na página</th></tr></thead>
+        <tbody id="live-body"></tbody>
+      </table></div>
 
       <h2>Últimos acessos</h2>
       <table>
@@ -130,14 +148,14 @@
       <div data-only="maes">
       <h2>Funil por seção</h2>
       <table>
-        <thead><tr><th>Seção</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <thead><tr><th>Seção</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th><th class="num">Pararam aqui</th></tr></thead>
         <tbody id="sections-body"></tbody>
       </table>
       <p class="note">Abandono ⚠ = queda de 20% ou mais vs a seção anterior. É onde a página perde mais gente.</p>
 
       <h2>Funil do quiz <span id="quiz-total" class="note" style="font-weight:400"></span></h2>
       <table>
-        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th><th class="num">Pararam aqui</th></tr></thead>
         <tbody id="quiz-body"></tbody>
       </table>
       <p class="note">Contado só entre quem entrou no /quiz. Quem cai direto na página de vendas não aparece aqui.</p>
@@ -147,47 +165,22 @@
 
       <h2>Funil da Edição Profissional <span id="pro-total" class="note" style="font-weight:400"></span></h2>
       <table>
-        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th><th class="num">Pararam aqui</th></tr></thead>
         <tbody id="pro-body"></tbody>
       </table>
       <p class="note">Só quem chegou na /profissional. Outro público e outro preço, por isso conta separado.</p>
 
       <h2>Funil do quiz profissional <span id="proquiz-total" class="note" style="font-weight:400"></span></h2>
       <table>
-        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th></tr></thead>
+        <thead><tr><th>Etapa</th><th class="num">Chegaram</th><th>% do topo</th><th>Abandono</th><th class="num">Pararam aqui</th></tr></thead>
         <tbody id="proquiz-body"></tbody>
       </table>
       <p class="note">Só quem entrou no /quiz-pro, que hoje está fora do caminho do anúncio. Quem cai direto na /profissional não aparece aqui.</p>
 
-      <h2>Anúncios da Edição Profissional</h2>
-      <table>
-        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">Viu os planos</th><th class="num">Foi pra Cakto</th><th class="num">Vendas</th></tr></thead>
-        <tbody id="pro-creatives-body"></tbody>
-      </table>
-      <p class="note">Viu os planos = rolou até a seção de preço. Foi pra Cakto = tocou no botão de um plano. Vendas = compras confirmadas pela Cakto com esse anúncio (o anúncio só vem nas vendas feitas a partir de 15/10).</p>
       </div>
 
-      <div data-only="maes">
-
-      <h2>Criativos (anúncio de origem)</h2>
-      <table>
-        <thead><tr><th>Anúncio</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
-        <tbody id="creatives-body"></tbody>
-      </table>
-      <p class="note">Configure utm_content={{ad.name}} na URL do anúncio no Meta pra cada criativo aparecer aqui.</p>
-      </div>
-
-      <h2>Dispositivo</h2>
-      <table>
-        <thead><tr><th>Dispositivo</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
-        <tbody id="devices-body"></tbody>
-      </table>
-
-      <h2>Sistema</h2>
-      <table>
-        <thead><tr><th>Sistema</th><th class="num">Visitas</th><th class="num">%</th></tr></thead>
-        <tbody id="platforms-body"></tbody>
-      </table>
+      <div id="grupos"></div>
+      <p class="note">Viu os planos = chegou na seção de preço. Checkout = <span id="grupos-checkout"></span>. Compras casam com a visita pelo id do visitante (vendas a partir de 15/10); venda sem visita registrada entra pelo anúncio gravado nela.</p>
 
       <h2 id="checkout-title">Iniciaram o checkout</h2>
       <table>
@@ -216,10 +209,10 @@
         <button type="button" class="btn-del" id="del-btn" disabled>Apagar selecionados</button>
       </div>
       <table>
-        <thead><tr><th class="chk-col"></th><th>ID</th><th>Entrou</th><th>Dispositivo</th><th>Sistema</th><th>Onde abriu</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>IP</th><th>Parou em</th><th>Status</th></tr></thead>
+        <thead><tr><th class="chk-col"></th><th>ID</th><th>Entrou</th><th>Dispositivo</th><th>Sistema</th><th>Onde abriu</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>IP</th><th class="num">Tempo</th><th>Parou em</th><th class="num">Abriu</th><th>Status</th></tr></thead>
         <tbody id="individuals-body"></tbody>
       </table>
-      <p class="note">Para limpar teste seu ou bot que passou pelo filtro. Só apaga o que estiver marcado, e não tem como desfazer (o dado mora só no Redis, sem backup).</p>
+      <p class="note">Tempo = da primeira à última batida na página (quem fica parado mais de 5 min com a aba aberta para de contar). "Abriu 3x" = a mesma pessoa (mesmo IP e anúncio, em até 30 min) abriu a página mais de uma vez e conta como uma visita só. Para limpar teste seu ou bot que passou pelo filtro. Só apaga o que estiver marcado, e não tem como desfazer (o dado mora só no Redis, sem backup).</p>
     </div>
   </div>
 
@@ -296,7 +289,21 @@ function pill(pct) {
 
 /** Linhas de um funil (etapa, chegaram, % do topo, abandono vs etapa anterior).
  *  Serve tanto pro funil da página quanto pro do quiz. */
-function funnelRows(list) {
+function fmtDur(ms) {
+  const s = Math.round((ms || 0) / 1000);
+  if (s < 60) return s + ' s';
+  return Math.floor(s / 60) + ' min ' + String(s % 60).padStart(2, '0') + ' s';
+}
+
+/** Linhas pequenas embaixo de uma etapa (ex.: qual plano). itens = { nome: n } */
+function subRows(itens, base) {
+  return Object.entries(itens || {}).sort((a, b) => b[1] - a[1]).map(([nome, n]) => {
+    const pct = base > 0 ? Math.round((n / base) * 100) : 0;
+    return `<tr class="sub"><td>↳ ${esc(nome)}</td><td class="num">${n}</td><td>${pct}% da etapa</td><td></td><td></td></tr>`;
+  }).join('');
+}
+
+function funnelRows(list, subs) {
   const top = list[0]?.count || 1;
   return list.map((s, i) => {
     const pct = top > 0 ? Math.round((s.count / top) * 100) : 0;
@@ -306,13 +313,31 @@ function funnelRows(list) {
     const dropCell = i === 0
       ? '<span class="muted">—</span>'
       : `<span class="${highDrop ? 'drop-hi' : 'muted'}">${highDrop ? '⚠ ' : ''}${drop}%</span>`;
+    // Pararam aqui = chegaram nesta etapa e nao passaram pra proxima.
+    const pararam = i < list.length - 1 ? s.count - (list[i + 1].count || 0) : '';
     return `<tr>
       <td>${s.label}</td>
       <td class="num">${s.count}</td>
       <td><span class="bar-wrap"><span class="bar" style="width:${pct}%"></span></span>${pill(pct)}</td>
       <td>${dropCell}</td>
-    </tr>`;
+      <td class="num muted">${pararam}</td>
+    </tr>` + (subs && subs[s.id] ? subRows(subs[s.id], s.count) : '');
   }).join('');
+}
+
+const GRUPOS = [
+  ['anuncio', 'Por anúncio'], ['campanha', 'Por campanha'], ['conjunto', 'Por conjunto'],
+  ['dispositivo', 'Por dispositivo'], ['sistema', 'Por sistema'], ['navegador', 'Por navegador'],
+];
+function grupoTabela(lista, titulo, rotulo) {
+  const linhas = (lista || []).map((g) => {
+    const nome = rotulo ? (rotulo(g.key) || g.key) : g.key;
+    const viu = g.visitas ? Math.round((g.planos / g.visitas) * 100) + '%' : '·';
+    const conv = g.visitas ? ((g.compras / g.visitas) * 100).toFixed(1).replace('.', ',') + '%' : '·';
+    return `<tr><td>${esc(nome)}</td><td class="num">${g.visitas}</td><td class="num">${viu}</td><td class="num">${g.checkout}</td>
+      <td class="num">${g.compras ? '<b>' + g.compras + '</b>' : 0}</td><td class="num">${g.faturado ? fmtBRL(g.faturado) : '·'}</td><td class="num">${conv}</td></tr>`;
+  }).join('');
+  return `<h2>${titulo}</h2><div class="tbl-scroll"><table><thead><tr><th>${titulo.replace('Por ', '')}</th><th class="num">Visitas</th><th class="num">Viu planos</th><th class="num">Checkout</th><th class="num">Compras</th><th class="num">Faturado</th><th class="num">Conversão</th></tr></thead><tbody>${linhas || '<tr><td colspan="7" class="muted">Sem dados no período.</td></tr>'}</tbody></table></div>`;
 }
 
 function fmtDateTime(ts) {
@@ -332,11 +357,35 @@ function render(data) {
   $('#checkout-started-count').textContent = data.checkoutStartedCount || 0;
   $('#sales-count').textContent = data.salesCount;
   $('#revenue').textContent = fmtBRL(data.revenueCents);
+  $('#planos-pct').textContent = data.total ? Math.round(((data.planosCount || 0) / data.total) * 100) + '%' : '0%';
+  $('#conv-pct').textContent = data.total ? ((data.salesCount / data.total) * 100).toFixed(1).replace('.', ',') + '%' : '0%';
 
   (data.sections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.quizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.proSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
   (data.proQuizSections || []).forEach((s) => { SECTION_LABELS[s.id] = s.label; });
+
+  // Ao vivo agora: onde cada pessoa esta lendo e ha quanto tempo
+  const vivos = data.aoVivo || [];
+  $('#live-body').innerHTML = vivos.length
+    ? vivos.map((v) => {
+        const fundo = v.proQuizMax || v.proMax || v.quizMax || v.maxSection;
+        const ap = [DEVICE_LABELS[v.device] || v.device, PLATFORM_LABELS[v.platform] || v.platform, v.browserEnv].filter(Boolean).join(' · ');
+        return `<tr><td><span class="live-dot"></span>${esc(SECTION_LABELS[v.agora] || v.agora || '—')}</td>
+          <td>${esc(SECTION_LABELS[fundo] || fundo || '—')}</td><td>${esc(v.adRef)}</td>
+          <td class="muted">${esc(ap || '—')}</td><td class="num">${fmtDur(v.dur)}</td></tr>`;
+      }).join('')
+    : '<tr><td colspan="5" class="muted">Ninguém na página neste momento.</td></tr>';
+
+  // Tabelas por grupo (anuncio, campanha, conjunto, aparelho...)
+  const g = data.grupos || {};
+  const rot = {
+    dispositivo: (k) => DEVICE_LABELS[k],
+    sistema: (k) => PLATFORM_LABELS[k],
+  };
+  $('#grupos').innerHTML = GRUPOS.slice(0, 3).map(([k, tit]) => grupoTabela(g[k], tit, rot[k])).join('')
+    + '<div class="grupos-2">' + GRUPOS.slice(3).map(([k, tit]) => '<div>' + grupoTabela(g[k], tit, rot[k]) + '</div>').join('') + '</div>';
+  $('#grupos-checkout').textContent = SCOPE === 'pro' ? 'tocou no botão de um plano e foi pra Cakto' : 'preencheu o nome e avançou pro e-mail';
 
   // Últimos acessos (pulso ao vivo)
   const last = data.lastVisits || [];
@@ -409,44 +458,26 @@ function render(data) {
   $('#quiz-total').textContent = quizEntered ? `· ${quizEntered} entraram` : '· ninguém entrou ainda';
   $('#quiz-body').innerHTML = quizEntered
     ? funnelRows(quizSteps)
-    : '<tr><td colspan="4" class="muted">Sem dados do quiz no período.</td></tr>';
+    : '<tr><td colspan="5" class="muted">Sem dados do quiz no período.</td></tr>';
 
   // Funil da Edição Profissional (trilha separada: só quem passou pela /profissional)
   const proSteps = data.proSections || [];
   const proEntered = proSteps[0]?.count || 0;
   $('#pro-total').textContent = proEntered ? `· ${proEntered} entraram` : '· ninguém entrou ainda';
+  // Comprou: venda confirmada (Cakto ou Pix), aberta por plano. A pagina nao
+  // ve o pagamento na Cakto, por isso essa linha vem das vendas e nao da rolagem.
+  const linhaCompra = proEntered ? `<tr class="forte"><td>Comprou</td><td class="num">${data.salesCount}</td>
+      <td>${pill(Math.round((data.salesCount / proEntered) * 100))}</td><td></td><td></td></tr>` + subRows(data.planosVenda, data.salesCount) : '';
   $('#pro-body').innerHTML = proEntered
-    ? funnelRows(proSteps)
-    : '<tr><td colspan="4" class="muted">Sem visitas na /profissional no período.</td></tr>';
+    ? funnelRows(proSteps, { p_plano: data.planosClique }) + linhaCompra
+    : '<tr><td colspan="5" class="muted">Sem visitas na /profissional no período.</td></tr>';
   const proQuizSteps = data.proQuizSections || [];
   const proQuizEntered = proQuizSteps[0]?.count || 0;
   $('#proquiz-total').textContent = proQuizEntered ? `· ${proQuizEntered} entraram` : '· ninguém entrou ainda';
   $('#proquiz-body').innerHTML = proQuizEntered
     ? funnelRows(proQuizSteps)
-    : '<tr><td colspan="4" class="muted">Sem ninguém no quiz profissional no período.</td></tr>';
+    : '<tr><td colspan="5" class="muted">Sem ninguém no quiz profissional no período.</td></tr>';
 
-  const proAds = data.proCreatives || [];
-  $('#pro-creatives-body').innerHTML = proAds.length
-    ? proAds.map((c) => `<tr>
-        <td>${esc(c.key)}</td>
-        <td class="num">${c.count}</td>
-        <td class="num">${c.checkout || 0}</td>
-        <td class="num">${c.plano || 0}</td>
-        <td class="num">${c.vendas ? '<b>' + c.vendas + '</b>' : 0}</td>
-      </tr>`).join('')
-    : '<tr><td colspan="5" class="muted">Sem anúncio registrado no período.</td></tr>';
-
-  // Criativos / Dispositivo / Sistema
-  const totalVisits = data.total || 1;
-  $('#creatives-body').innerHTML = data.creatives.length
-    ? pctRows(data.creatives, totalVisits)
-    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
-  $('#devices-body').innerHTML = data.devices.length
-    ? pctRows(data.devices.map((r) => ({ ...r, label: DEVICE_LABELS[r.key] || r.key })), totalVisits)
-    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
-  $('#platforms-body').innerHTML = data.platforms.length
-    ? pctRows(data.platforms.map((r) => ({ ...r, label: PLATFORM_LABELS[r.key] || r.key })), totalVisits)
-    : '<tr><td colspan="3" class="muted">Sem dados no período.</td></tr>';
 
   // Vendas por sistema. A base do % e o total de VENDAS do periodo, e nao o
   // de visitas: a pergunta aqui e "de quem comprou, quantos eram iPhone".
@@ -492,11 +523,13 @@ function render(data) {
           <td class="muted">${esc(ind.adRef)}</td>
           <td class="muted">${esc([ind.campaign, ind.adset].filter(Boolean).join(' · ') || '—')}</td>
           <td class="muted">${esc(ind.ip || '—')}</td>
+          <td class="num">${fmtDur(ind.dur)}</td>
           <td>${esc(stopLabel)}</td>
-          <td>${ind.isLive ? '<span class="live-dot"></span>Ao vivo' : '<span class="muted">Saiu</span>'}</td>
+          <td class="num muted">${ind.aberturas > 1 ? ind.aberturas + 'x' : ''}</td>
+          <td>${ind.venda ? '<span class="ok-pill">Comprou ' + fmtBRL(ind.venda.valueCents) + '</span>' : ind.isLive ? '<span class="live-dot"></span>Ao vivo' : '<span class="muted">Saiu</span>'}</td>
         </tr>`;
       }).join('')
-    : '<tr><td colspan="11" class="muted">Sem visitantes no período.</td></tr>';
+    : '<tr><td colspan="13" class="muted">Sem visitantes no período.</td></tr>';
 
   // Só sobram marcados os que ainda existem na tela (mudou o período, por ex.)
   const visiveis = new Set(data.individuals.map((i) => (i.ids || [i.id]).join(',')));

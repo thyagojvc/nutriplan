@@ -157,7 +157,11 @@ module.exports = async (req, res) => {
     // assinatura do webhook). Com essa trava extra, só quem chegar primeiro
     // grava a venda; o outro vê o lock já tomado e não duplica.
     const now = Date.now();
-    const adRef = String(body.adRef || '').replace(/[^\w\s\-.|:/]/g, '').trim().slice(0, 120) || 'Sem anúncio';
+    // 15/10: \p{L} em vez de \w, pra nome de anuncio com acento nao perder letra.
+    const adRef = String(body.adRef || '').replace(/[^\p{L}\p{N}\s\-.|:/_]/gu, '').trim().slice(0, 120) || 'Sem anúncio';
+    // Id do visitante (15/10): casa a venda com a visita no /funil, pra saber
+    // de que anuncio, aparelho e etapa veio quem comprou.
+    const vid = String(body.vid || '').replace(/[^\w-]/g, '').slice(0, 64) || null;
     const firstName = (name || '').trim().split(/\s+/)[0] || 'Cliente';
     const cleanRef = (v) => String(v || '').replace(/[^\p{L}\p{N}\s\-–—.|:/_+()]/gu, '').trim().slice(0, 120) || null;
     const campaign = cleanRef(body.campaign);
@@ -166,7 +170,7 @@ module.exports = async (req, res) => {
       .then((lock) => {
         if (lock !== 'OK') return null;
         return Promise.resolve()
-          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, c: campaign, s: adset, i: clientIpAddress, p: platform, ts: now })))
+          .then(() => redis('ZADD', 'kpl:sales', String(now), JSON.stringify({ n: firstName, t: tierName, v: valorCents, a: adRef, c: campaign, s: adset, i: clientIpAddress, p: platform, vid, ts: now })))
           .then(() => redis('ZREMRANGEBYRANK', 'kpl:sales', 0, -501));
       })
       .catch((err) => console.error('sales record error', err));

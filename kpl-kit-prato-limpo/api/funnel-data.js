@@ -28,7 +28,22 @@ const MAX = 200;
 // de TTL vs 20s de poll, praticamente não economizava nada na prática).
 const CACHE_TTL_SECONDS = 60;
 
+function inicioDeHoje(now) {
+  const dateStr = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit',
+  }).format(new Date(now));
+  const t = Date.parse(`${dateStr}T00:00:00-03:00`);
+  return Number.isNaN(t) ? 0 : t;
+}
+
+// Fim do periodo. So "ontem" tem fim antes de agora.
+function computeUntil(range, now) {
+  return range === 'ontem' ? inicioDeHoje(now) : Infinity;
+}
+
 function computeSince(range, now) {
+  if (range === 'ontem') return inicioDeHoje(now) - 86400000;
+  if (range === '14d') return now - 14 * 86400000;
   if (range === '7d') return now - 7 * 86400000;
   if (range === '30d') return now - 30 * 86400000;
   if (range === 'today') {
@@ -133,6 +148,8 @@ function juntarMesmaPessoa(rows, idxOf) {
       g.visible = g.visible || v.visible;
       g.touched = g.touched || v.touched;
       g.checkoutStarted = g.checkoutStarted || v.checkoutStarted;
+      g.plano = v.plano || g.plano;
+      g.agora = v.agora || g.agora;
       g.isLive = g.isLive || v.isLive;
       continue;
     }
@@ -186,6 +203,7 @@ module.exports = async (req, res) => {
   const range = ((req.query && req.query.range) || url.searchParams.get('range') || 'all').toLowerCase();
   const now = Date.now();
   const sinceTs = computeSince(range, now);
+  const untilTs = computeUntil(range, now);
   const scopeRaw = ((req.query && req.query.scope) || url.searchParams.get('scope') || '').toLowerCase();
   const scope = scopeRaw === 'pro' || scopeRaw === 'maes' ? scopeRaw : 'all';
   const cacheKey = `funnel-cache:${range}:${scope}`;
@@ -232,13 +250,16 @@ module.exports = async (req, res) => {
         visible: h.visible === '1',
         touched: h.touched === '1',
         checkoutStarted: h.checkoutStarted === '1',
+        plano: h.plano || null,
         isLive: !!presence[i],
+        // Onde a pessoa esta AGORA (valor da chave de presenca, ex. "pro:p_dor").
+        agora: presence[i] ? String(presence[i]).replace(/^(pro|quiz|proquiz):/, '') : null,
       };
     });
 
     const noPeriodo = range === 'all'
       ? all
-      : all.filter((v) => v.lastSeen && v.lastSeen >= sinceTs);
+      : all.filter((v) => v.lastSeen && v.lastSeen >= sinceTs && (v.firstSeen || v.lastSeen) < untilTs);
     const ehPro = (v) => !!(v.proMax || v.proQuizMax);
     const doEscopo = scope === 'pro' ? noPeriodo.filter(ehPro)
       : scope === 'maes' ? noPeriodo.filter((v) => !ehPro(v)) : noPeriodo;
@@ -362,7 +383,7 @@ module.exports = async (req, res) => {
     const salesRaw = await redis('ZREVRANGE', 'kpl:sales', 0, 199, 'WITHSCORES');
     const vendaPro = (s) => /profissional/i.test(s.tierName || '');
     const sales = parseSales(salesRaw)
-      .filter((s) => range === 'all' || s.ts >= sinceTs)
+      .filter((s) => range === 'all' || (s.ts >= sinceTs && s.ts < untilTs))
       .filter((s) => (scope === 'pro' ? vendaPro(s) : scope === 'maes' ? !vendaPro(s) : true))
       .slice(0, 50);
     // Vendas por anuncio dentro do profissional: o corte que diz qual criativo
@@ -376,6 +397,75 @@ module.exports = async (req, res) => {
       });
     }
     const revenueCents = sales.reduce((acc, s) => acc + (s.valueCents || 0), 0);
+
+    // VENDA x VISITA (15/10, como no painel do Mesa a Mesa). A venda grava o id
+    // do visitante (vid); aqui ela vira o status "Comprou" da visita e entra nas
+    // tabelas por anuncio, aparelho etc. Venda sem vid (antiga, ou o visitante
+    // saiu da lista dos 200 recentes) entra nas tabelas pelos dados dela mesma.
+    const porId = {};
+    rows.forEach((v) => (v.ids || [v.id]).forEach((id) => { porId[id] = v; }));
+    for (const s of sales) {
+      const v = s.vid && porId[s.vid];
+      if (v) { v.venda = { valueCents: s.valueCents, tierName: s.tierName }; s.visitante = v.id; }
+    }
+
+    // Duracao e aberturas, pra lista de visitantes e o "ao vivo".
+    rows.forEach((v) => {
+      v.dur = v.firstSeen && v.lastSeen ? Math.max(0, v.lastSeen - v.firstSeen) : 0;
+      v.aberturas = (v.ids || [v.id]).length;
+    });
+
+    const viuPlanos = (v) => (scope !== 'maes' && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_checkout)
+      || (scope !== 'pro' && (idxOf[v.maxSection] ?? -1) >= (idxOf.checkout ?? 99));
+    const foiCheckout = (v) => v.checkoutStarted || (scope !== 'maes' && (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_plano);
+
+    // Tabela por grupo: visitas, viu os planos, foi pro checkout, compras,
+    // faturado e conversao. campoVenda = campo da venda pra quando ela nao
+    // casou com nenhuma visita.
+    const grupo = (rotulo, campoVenda) => {
+      const g = {};
+      const de = (k) => (g[k] ||= { key: k, visitas: 0, planos: 0, checkout: 0, compras: 0, faturado: 0 });
+      for (const v of rows) {
+        const x = de(rotulo(v) || '—');
+        x.visitas++; if (viuPlanos(v)) x.planos++; if (foiCheckout(v)) x.checkout++;
+        if (v.venda) { x.compras++; x.faturado += v.venda.valueCents || 0; }
+      }
+      for (const s of sales) {
+        if (s.visitante) continue;
+        const x = de((campoVenda && s[campoVenda]) || 'Sem visita registrada');
+        x.compras++; x.faturado += s.valueCents || 0;
+      }
+      return Object.values(g).sort((a, b) => b.compras - a.compras || b.visitas - a.visitas).slice(0, 30);
+    };
+    const envLabel = (v) => (v.browserEnv ? (BROWSER_ENV_LABELS[v.browserEnv] || v.browserEnv) : null);
+    const grupos = {
+      anuncio: grupo((v) => v.adRef, 'adRef'),
+      campanha: grupo((v) => v.campaign, 'campaign'),
+      conjunto: grupo((v) => v.adset, 'adset'),
+      dispositivo: grupo((v) => v.device, null),
+      sistema: grupo((v) => v.platform, 'platform'),
+      navegador: grupo(envLabel, null),
+    };
+
+    // Plano no profissional: em qual tocou (foi pra Cakto) e qual comprou.
+    const NOME_PLANO = { profissional: 'Plano completo', profissional_pdf: 'Plano básico', profissional_saida: 'Oferta de saída R$ 10' };
+    const planosClique = {};
+    rows.filter((v) => (proIdxOf[v.proMax] ?? -1) >= proIdxOf.p_plano).forEach((v) => {
+      const k = NOME_PLANO[v.plano] || 'Plano não identificado';
+      planosClique[k] = (planosClique[k] || 0) + 1;
+    });
+    const planosVenda = {};
+    sales.forEach((s) => {
+      const k = /\(PDF\)/.test(s.tierName || '') ? (s.valueCents === 1000 ? 'Oferta de saída R$ 10' : 'Plano básico') : /profissional/i.test(s.tierName || '') ? 'Plano completo' : (s.tierName || '—');
+      planosVenda[k] = (planosVenda[k] || 0) + 1;
+    });
+
+    // Ao vivo: quem esta na pagina agora, onde esta lendo e ha quanto tempo.
+    const aoVivo = rows.filter((v) => v.isLive).map((v) => ({
+      agora: v.agora, proMax: v.proMax, maxSection: v.maxSection, quizMax: v.quizMax, proQuizMax: v.proQuizMax,
+      adRef: v.adRef, device: v.device, platform: v.platform, browserEnv: envLabel(v), dur: v.dur,
+    }));
+    const planosCount = rows.filter(viuPlanos).length;
     // Sai do array de vendas que ja foi lido acima: nenhuma leitura nova no
     // Redis. groupCount ja transforma null em '—', que o painel rotula.
     const salesPlatforms = groupCount(sales, 'platform');
@@ -406,6 +496,11 @@ module.exports = async (req, res) => {
       salesCount: sales.length,
       salesPlatforms,
       revenueCents,
+      grupos,
+      planosClique,
+      planosVenda,
+      aoVivo,
+      planosCount,
       individuals: rows,
     };
 
@@ -466,6 +561,8 @@ function parseSales(arr) {
       // 'Sem dado' no painel em vez de sumir da tabela: sumindo, a
       // porcentagem mentiria por omissao.
       platform: obj.p || null,
+      // id do visitante (15/10), pra casar a venda com a visita
+      vid: obj.vid || null,
       ts: Number(arr[i + 1]) || obj.ts || 0,
     });
   }
