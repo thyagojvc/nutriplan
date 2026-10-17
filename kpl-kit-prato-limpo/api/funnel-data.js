@@ -377,7 +377,7 @@ module.exports = async (req, res) => {
       proMax: v.proMax,
       isLive: v.isLive,
     }));
-    const checkoutStartedCount = rows.filter(iniciou).length;
+    let checkoutStartedCount = rows.filter(iniciou).length;
 
     // Vendas (member = JSON, score = timestamp). Filtra pelo período.
     const salesRaw = await redis('ZREVRANGE', 'kpl:sales', 0, 199, 'WITHSCORES');
@@ -407,6 +407,19 @@ module.exports = async (req, res) => {
     for (const s of sales) {
       const v = s.vid && porId[s.vid];
       if (v) { v.venda = { valueCents: s.valueCents, tierName: s.tierName }; s.visitante = v.id; }
+    }
+    // Quem comprou passou pela escolha do plano, mesmo que a visita esteja
+    // gravada mais rasa (antes de 16/10 o progresso regredia quando a pessoa
+    // voltava da Cakto). Sobe a visita e recalcula o funil profissional.
+    let subiu = false;
+    for (const v of rows) {
+      if (!v.venda || !/profissional/i.test(v.venda.tierName || '')) continue;
+      if ((proIdxOf[v.proMax] ?? -1) < proIdxOf.p_plano) { v.proMax = 'p_plano'; subiu = true; }
+      if (!v.plano) v.plano = /\(PDF\)/.test(v.venda.tierName) ? (v.venda.valueCents === 1000 ? 'profissional_saida' : 'profissional_pdf') : 'profissional';
+    }
+    if (subiu) {
+      proSections.forEach((s, i) => { s.count = proRows.filter((v) => (proIdxOf[v.proMax] ?? -1) >= i).length; });
+      checkoutStartedCount = rows.filter(iniciou).length;
     }
 
     // Duracao e aberturas, pra lista de visitantes e o "ao vivo".
