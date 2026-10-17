@@ -222,6 +222,11 @@ async function corpoComoObjeto(req) {
   }
   if (Buffer.isBuffer(b)) b = b.toString('utf8');
   if (typeof b === 'string') { try { b = JSON.parse(b); } catch { return null; } }
+  // JSON enviado como formulario: o parser vira o texto inteiro numa chave so.
+  if (b && typeof b === 'object' && !Array.isArray(b)) {
+    const ks = Object.keys(b);
+    if (ks.length === 1 && ks[0].trim().startsWith('{')) { try { b = JSON.parse(ks[0]); } catch { /* segue */ } }
+  }
   return b && typeof b === 'object' ? b : null;
 }
 
