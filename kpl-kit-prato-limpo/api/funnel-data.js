@@ -547,6 +547,17 @@ const CAMPAIGN_NAMES = {
   '120251968043270180': 'Prezin',
 };
 
+// TAXA DA CAKTO NO VALOR (16/10). As vendas reenviadas antes da correcao do
+// cakto-delivery gravaram o `amount`, que soma a taxa cobrada da cliente
+// (37,00 virou 37,99). Na leitura, venda profissional ate R$ 3 acima do preco
+// de um plano volta pro preco do plano. Nao mexe no que esta gravado.
+const PRECOS_PRO = [3700, 2490, 1000];
+function precoDoPlano(tier, v) {
+  if (!/profissional/i.test(tier || '')) return v;
+  const p = PRECOS_PRO.find((x) => v > x && v - x <= 300);
+  return p || v;
+}
+
 // ZREVRANGE ... WITHSCORES devolve [member, score, member, score, ...].
 function parseSales(arr) {
   if (!Array.isArray(arr)) return [];
@@ -560,7 +571,7 @@ function parseSales(arr) {
       // Number(): a PushInPay às vezes devolve o valor como texto ("2990"), e
       // JSON.parse preserva isso como string. "+" concatena string em vez de
       // somar (0 + "2990" + "1000" virava "029901000" no faturamento total).
-      valueCents: Number(obj.v) || 0,
+      valueCents: precoDoPlano(obj.t, Number(obj.v) || 0),
       // decodeAdRef aqui tambem, pra venda com macro crua nao virar um
       // "anuncio" chamado ad.name na lista de vendas.
       adRef: decodeAdRef(obj.a),
