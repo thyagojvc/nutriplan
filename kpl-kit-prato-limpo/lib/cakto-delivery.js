@@ -98,6 +98,14 @@ function centavos(order) {
   return Number.isInteger(bruto) && bruto >= 1000 ? bruto : Math.round(bruto * 100);
 }
 
+// Quanto o produtor recebe: a comissao do tipo producer, que a Cakto ja manda
+// descontada das taxas. Sem ela, valor do produto menos as taxas.
+function liquidoCentavos(order) {
+  const c = (order.commissions || []).find((x) => x && x.type === 'producer');
+  const v = c ? Number(c.totalAmount) : (Number(order.baseAmount) || 0) - (Number(order.fees) || 0);
+  return Number.isFinite(v) && v > 0 ? Math.round(v * 100) : null;
+}
+
 async function registraVenda(order, tierName, services) {
   const marca = `cakto:sale:${order.id}`;
   if ((await services.redis('SET', marca, '1', 'NX', 'EX', 60 * 60 * 24 * 90)) !== 'OK') return;
@@ -107,7 +115,7 @@ async function registraVenda(order, tierName, services) {
   const quando = Date.parse(order.paidAt || order.paid_at || order.createdAt || order.created_at || '');
   const now = Number.isFinite(quando) && quando <= Date.now() ? quando : Date.now();
   await services.redis('ZADD', 'kpl:sales', String(now), JSON.stringify({
-    n: firstName.slice(0, 40), t: tierName, v: centavos(order),
+    n: firstName.slice(0, 40), t: tierName, v: centavos(order), l: liquidoCentavos(order),
     a: utmDoPedido(order, 'utm_content') || null,
     c: utmDoPedido(order, 'utm_campaign') || null,
     s: utmDoPedido(order, 'utm_medium') || utmDoPedido(order, 'utm_term') || null,

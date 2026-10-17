@@ -397,6 +397,8 @@ module.exports = async (req, res) => {
       });
     }
     const revenueCents = sales.reduce((acc, s) => acc + (s.valueCents || 0), 0);
+    const liquidoCents = sales.reduce((acc, s) => acc + (s.liquidoCents || 0), 0);
+    const liquidoEstimado = sales.some((s) => s.liquidoEstimado);
 
     // VENDA x VISITA (15/10, como no painel do Mesa a Mesa). A venda grava o id
     // do visitante (vid); aqui ela vira o status "Comprou" da visita e entra nas
@@ -406,7 +408,7 @@ module.exports = async (req, res) => {
     rows.forEach((v) => (v.ids || [v.id]).forEach((id) => { porId[id] = v; }));
     for (const s of sales) {
       const v = s.vid && porId[s.vid];
-      if (v) { v.venda = { valueCents: s.valueCents, tierName: s.tierName }; s.visitante = v.id; }
+      if (v) { v.venda = { valueCents: s.valueCents, liquidoCents: s.liquidoCents, tierName: s.tierName }; s.visitante = v.id; }
     }
     // Quem comprou passou pela escolha do plano, mesmo que a visita esteja
     // gravada mais rasa (antes de 16/10 o progresso regredia quando a pessoa
@@ -441,12 +443,12 @@ module.exports = async (req, res) => {
       for (const v of rows) {
         const x = de(rotulo(v) || '—');
         x.visitas++; if (viuPlanos(v)) x.planos++; if (foiCheckout(v)) x.checkout++;
-        if (v.venda) { x.compras++; x.faturado += v.venda.valueCents || 0; }
+        if (v.venda) { x.compras++; x.faturado += v.venda.liquidoCents || 0; }
       }
       for (const s of sales) {
         if (s.visitante) continue;
         const x = de((campoVenda && s[campoVenda]) || 'Sem visita registrada');
-        x.compras++; x.faturado += s.valueCents || 0;
+        x.compras++; x.faturado += s.liquidoCents || 0;
       }
       return Object.values(g).sort((a, b) => b.compras - a.compras || b.visitas - a.visitas).slice(0, 30);
     };
@@ -509,6 +511,8 @@ module.exports = async (req, res) => {
       salesCount: sales.length,
       salesPlatforms,
       revenueCents,
+      liquidoCents,
+      liquidoEstimado,
       grupos,
       planosClique,
       planosVenda,
@@ -558,6 +562,19 @@ function precoDoPlano(tier, v) {
   return p || v;
 }
 
+// LIQUIDO (16/10). Venda da Cakto grava `l` = comissao do produtor (exato).
+// Venda antiga da Cakto sem `l`: estima 93% (o que ficou das vendas do completo
+// no Pix, conta do Thyago em 16/10; basico 81%). Venda do Pix da PushInPay: a taxa e pequena
+// e nao vem no aviso, entao conta o valor cheio.
+function liquidoDe(obj) {
+  const bruto = precoDoPlano(obj.t, Number(obj.v) || 0);
+  if (obj.l) return { liquidoCents: Number(obj.l) || 0, liquidoEstimado: false };
+  const daCakto = /profissional/i.test(obj.t || '') && obj.i == null && obj.p == null && bruto !== 1000;
+  // Basico (PDF): 24,90 deu 20,17 no Apple Pay (81%); completo no Pix ~93%.
+  const taxa = /\(PDF\)/.test(obj.t || '') ? 0.81 : 0.93;
+  return { liquidoCents: daCakto ? Math.round(bruto * taxa) : bruto, liquidoEstimado: daCakto };
+}
+
 // ZREVRANGE ... WITHSCORES devolve [member, score, member, score, ...].
 function parseSales(arr) {
   if (!Array.isArray(arr)) return [];
@@ -572,6 +589,8 @@ function parseSales(arr) {
       // JSON.parse preserva isso como string. "+" concatena string em vez de
       // somar (0 + "2990" + "1000" virava "029901000" no faturamento total).
       valueCents: precoDoPlano(obj.t, Number(obj.v) || 0),
+      // Liquido (o que o Thyago recebe). Gravado pela Cakto desde 16/10; sem ele, estimado.
+      ...liquidoDe(obj),
       // decodeAdRef aqui tambem, pra venda com macro crua nao virar um
       // "anuncio" chamado ad.name na lista de vendas.
       adRef: decodeAdRef(obj.a),

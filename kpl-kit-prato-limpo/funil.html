@@ -114,7 +114,7 @@
         <div class="stat"><div class="n" id="checkout-started-count">0</div><div class="l" id="checkout-label">Iniciaram checkout</div></div>
         <div class="stat"><div class="n" id="planos-pct">0%</div><div class="l">Chegaram nos planos</div></div>
         <div class="stat"><div class="n" id="sales-count">0</div><div class="l">Vendas</div></div>
-        <div class="stat"><div class="n" id="revenue">R$ 0</div><div class="l">Faturamento</div></div>
+        <div class="stat"><div class="n" id="liquido">R$ 0</div><div class="l">Você recebe <span id="liq-est"></span></div><div class="hint" id="revenue-bruto"></div></div>
         <div class="stat"><div class="n" id="conv-pct">0%</div><div class="l">Conversão da página</div></div>
       </div>
 
@@ -198,7 +198,7 @@
 
       <h2>Vendas</h2>
       <table>
-        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>Sistema</th><th>IP</th><th class="num">Valor</th></tr></thead>
+        <thead><tr><th>Quando</th><th>Cliente</th><th>Plano</th><th>Anúncio</th><th>Campanha · Conjunto</th><th>Sistema</th><th>IP</th><th class="num">Cliente pagou</th><th class="num">Você recebe</th></tr></thead>
         <tbody id="sales-body"></tbody>
       </table>
 
@@ -337,7 +337,7 @@ function grupoTabela(lista, titulo, rotulo) {
     return `<tr><td>${esc(nome)}</td><td class="num">${g.visitas}</td><td class="num">${viu}</td><td class="num">${g.checkout}</td>
       <td class="num">${g.compras ? '<b>' + g.compras + '</b>' : 0}</td><td class="num">${g.faturado ? fmtBRL(g.faturado) : '·'}</td><td class="num">${conv}</td></tr>`;
   }).join('');
-  return `<h2>${titulo}</h2><div class="tbl-scroll"><table><thead><tr><th>${titulo.replace('Por ', '')}</th><th class="num">Visitas</th><th class="num">Viu planos</th><th class="num">Checkout</th><th class="num">Compras</th><th class="num">Faturado</th><th class="num">Conversão</th></tr></thead><tbody>${linhas || '<tr><td colspan="7" class="muted">Sem dados no período.</td></tr>'}</tbody></table></div>`;
+  return `<h2>${titulo}</h2><div class="tbl-scroll"><table><thead><tr><th>${titulo.replace('Por ', '')}</th><th class="num">Visitas</th><th class="num">Viu planos</th><th class="num">Checkout</th><th class="num">Compras</th><th class="num">Você recebe</th><th class="num">Conversão</th></tr></thead><tbody>${linhas || '<tr><td colspan="7" class="muted">Sem dados no período.</td></tr>'}</tbody></table></div>`;
 }
 
 function fmtDateTime(ts) {
@@ -356,7 +356,9 @@ function render(data) {
   $('#total-count').textContent = data.total;
   $('#checkout-started-count').textContent = data.checkoutStartedCount || 0;
   $('#sales-count').textContent = data.salesCount;
-  $('#revenue').textContent = fmtBRL(data.revenueCents);
+  $('#liquido').textContent = fmtBRL(data.liquidoCents ?? data.revenueCents);
+  $('#liq-est').textContent = data.liquidoEstimado ? '(parte estimada)' : '';
+  $('#revenue-bruto').textContent = 'cliente pagou ' + fmtBRL(data.revenueCents);
   $('#planos-pct').textContent = data.total ? Math.round(((data.planosCount || 0) / data.total) * 100) + '%' : '0%';
   $('#conv-pct').textContent = data.total ? ((data.salesCount / data.total) * 100).toFixed(1).replace('.', ',') + '%' : '0%';
 
@@ -497,9 +499,10 @@ function render(data) {
         <td class="muted">${esc([s.campaign, s.adset].filter(Boolean).join(' · ') || '—')}</td>
         <td class="muted">${esc(s.platform ? (PLATFORM_LABELS[s.platform] || s.platform) : '—')}</td>
         <td class="muted">${esc(s.ip || '—')}</td>
-        <td class="num">${fmtBRL(s.valueCents)}</td>
+        <td class="num muted">${fmtBRL(s.valueCents)}</td>
+        <td class="num"><b>${fmtBRL(s.liquidoCents ?? s.valueCents)}</b>${s.liquidoEstimado ? ' <span class="muted">~</span>' : ''}</td>
       </tr>`).join('')
-    : '<tr><td colspan="8" class="muted">Sem vendas no período.</td></tr>';
+    : '<tr><td colspan="9" class="muted">Sem vendas no período.</td></tr>';
 
   // Visitantes
   $('#individuals-body').innerHTML = data.individuals.length
