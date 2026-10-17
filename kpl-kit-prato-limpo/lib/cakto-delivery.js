@@ -91,9 +91,10 @@ function utmDoPedido(order, nome) {
 }
 
 // Valor em centavos. A Cakto manda em reais (37 ou 37.0); se vier um numero
-// grande e inteiro, ja esta em centavos.
+// grande e inteiro, ja esta em centavos. baseAmount primeiro: o amount inclui
+// a taxa cobrada da cliente (24,90 virava 25,89).
 function centavos(order) {
-  const bruto = Number(order.amount ?? order.baseAmount ?? order.total ?? 0) || 0;
+  const bruto = Number(order.baseAmount ?? (order.offer && order.offer.price) ?? order.amount ?? order.total ?? 0) || 0;
   return Number.isInteger(bruto) && bruto >= 1000 ? bruto : Math.round(bruto * 100);
 }
 
@@ -173,7 +174,11 @@ async function handleCaktoWebhook(req, res, overrides = {}) {
   try { payload = await readPayload(req); }
   catch { return res.status(400).json({ error: 'JSON inválido' }); }
 
-  if (!sameSecret(payload.secret, secret)) return res.status(401).json({ error: 'Não autorizado' });
+  // CAKTO_WEBHOOK_SECRET_EXTRA (opcional, separadas por virgula): chave antiga
+  // aceita por um tempo. O reenvio da Cakto repete a mensagem original, com a
+  // chave que estava valendo na hora da compra.
+  const extras = String(process.env.CAKTO_WEBHOOK_SECRET_EXTRA || '').split(',').map((s) => s.trim()).filter(Boolean);
+  if (![secret, ...extras].some((s) => sameSecret(payload.secret, s))) return res.status(401).json({ error: 'Não autorizado' });
   if (!['purchase_approved', 'refund', 'chargeback'].includes(payload.event)) {
     return res.status(200).json({ received: true, ignored: true });
   }
