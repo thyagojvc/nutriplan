@@ -571,7 +571,7 @@ function liquidoDe(obj) {
   if (obj.l) return { liquidoCents: Number(obj.l) || 0, liquidoEstimado: false };
   const daCakto = /profissional/i.test(obj.t || '') && obj.i == null && obj.p == null && bruto !== 1000;
   // Basico (PDF): 24,90 deu 20,17 no Apple Pay (81%); completo no Pix ~93%.
-  const taxa = /\(PDF\)/.test(obj.t || '') ? 0.81 : 0.93;
+  const taxa = /\(PDF\)/.test(obj.t || '') ? 0.81 : 0.9327; // 37,00 -> 34,51 (Cakto, 16/10)
   return { liquidoCents: daCakto ? Math.round(bruto * taxa) : bruto, liquidoEstimado: daCakto };
 }
 
