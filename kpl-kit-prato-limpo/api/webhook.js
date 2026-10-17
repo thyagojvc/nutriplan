@@ -39,7 +39,11 @@ const { handleCaktoWebhook } = require('../lib/cakto-delivery');
 const isEmail = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v || '');
 
 function readBody(req) {
-  if (req.body && typeof req.body === 'object') return Promise.resolve(req.body);
+  if (req.body && typeof req.body === 'object' && !Buffer.isBuffer(req.body)) return Promise.resolve(req.body);
+  // Ja lido como texto (corpoComoObjeto): nao tenta o stream de novo, ele acabou.
+  if (typeof req.body === 'string' || Buffer.isBuffer(req.body)) {
+    try { return Promise.resolve(JSON.parse(String(req.body) || '{}')); } catch { return Promise.resolve({}); }
+  }
   return new Promise((resolve) => {
     let raw = '';
     req.on('data', (c) => (raw += c));
@@ -203,6 +207,24 @@ async function deliverKit(transaction) {
   });
 }
 
+// Corpo do pedido como objeto, venha como objeto, texto, Buffer ou stream.
+// Se precisar ler o stream, guarda o texto em req.body pra quem vier depois.
+async function corpoComoObjeto(req) {
+  let b = req.body;
+  if (b === undefined) {
+    b = await new Promise((resolve) => {
+      let raw = '';
+      req.on('data', (c) => { raw += c; if (raw.length > 262144) req.destroy(); });
+      req.on('end', () => resolve(raw));
+      req.on('error', () => resolve(''));
+    });
+    req.body = b;
+  }
+  if (Buffer.isBuffer(b)) b = b.toString('utf8');
+  if (typeof b === 'string') { try { b = JSON.parse(b); } catch { return null; } }
+  return b && typeof b === 'object' ? b : null;
+}
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
@@ -212,8 +234,14 @@ module.exports = async (req, res) => {
   // A Cakto usa o mesmo endpoint para não criar outra Serverless Function na
   // Vercel. Só solicitações com o envelope dela seguem para o fluxo novo;
   // as notificações da PushInPay continuam passando pelo código abaixo.
+  // 16/10: a Cakto nao manda o aviso marcado como JSON, entao o corpo chegava
+  // como texto e o teste abaixo (que exigia objeto) falhava. O aviso caia no
+  // fluxo da PushInPay e voltava 401 "Token invalido": foi o que segurou as
+  // vendas do profissional por ~16 dias. Agora le o corpo em qualquer formato.
+  const corpo = await corpoComoObjeto(req);
   if (req.headers['x-cakto-signature'] ||
-      (req.body && typeof req.body === 'object' && 'event' in req.body && 'secret' in req.body)) {
+      (corpo && 'event' in corpo && 'secret' in corpo)) {
+    req.body = corpo;
     return handleCaktoWebhook(req, res);
   }
 
