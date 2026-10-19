@@ -1,0 +1,2409 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>PRÉVIA · Kit Prato Limpo Profissional</title>
+<meta name="description" content="O kit completo para nutricionista que atende seletividade infantil: 60 fichas para aplicar na sessão, 129 para a família levar pra casa, o aplicativo para a criança usar entre as consultas e licença de uso com seus pacientes." />
+
+<!-- SAIU DA RAIZ EM 27/08 e passou a morar em /profissional. A raiz voltou a
+     ser a página das mães (R$ 10,00 / R$ 29,90). Aqui não mudou nada além deste bloco e do
+     noindex: checkout, pixel e o funil de seções continuam idênticos, e
+     /profissional vende normalmente pra quem chegar.
+     Os criativos de nutricionista mostram kitpratolimpo.com.br no botão, então
+     o link do anúncio precisa apontar pra /profissional. -->
+<meta name="robots" content="noindex, nofollow" />
+
+<meta property="og:type" content="website" />
+<meta property="og:title" content="Kit Prato Limpo · Edição Profissional" />
+<meta property="og:description" content="189 fichas, o aplicativo e licença de uso com seus pacientes. Para nutricionistas que atendem seletividade alimentar infantil." />
+<!-- 1200x630 (1.91:1). O gerador entrega 3:2, então a arte foi encaixada
+     inteira sobre o creme da marca em vez de cortada: crop central comeria
+     21% da altura, e a linha de baixo do texto ia junto. -->
+<meta property="og:image" content="https://kitpratolimpo.com.br/assets/og-profissional.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://kitpratolimpo.com.br/profissional" />
+<meta property="og:locale" content="pt_BR" />
+<meta property="og:site_name" content="Kit Prato Limpo" />
+<meta name="twitter:card" content="summary_large_image" />
+
+<link rel="icon" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD; --mint-2:#DDEBCE;
+    --green:#5CA741; --green-hover:#4E9235; --green-dark:#3C7A2C;
+    --orange:#F2911F; --orange-soft:#FDEBCF; --coral:#F0673A; --coral-soft:#FBE0D5;
+    --ink:#1E2721; --text:#3A443D; --muted:#58645B; --card:#FFFFFF; --border:#E3DCCB;
+    --shadow:0 10px 30px rgba(38,48,42,.08); --shadow-sm:0 4px 14px rgba(38,48,42,.06);
+    --radius:20px; --radius-sm:14px;
+    --heading:"Baloo 2",system-ui,"Segoe UI",Roboto,sans-serif;
+    --body:"Nunito",system-ui,"Segoe UI",Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;font-size:18px}
+  /* Texto de leitura em Nunito 700 para manter contraste no fundo creme.
+     A escala rem amplia os textos menores; headlines e precos grandes ficam
+     em px para preservar o tamanho anterior nas larguras responsivas. */
+  body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:20px;line-height:1.55;font-weight:700}
+  .wrap{width:100%;max-width:640px;margin:0 auto;padding:0 20px}
+  section{padding:28px 0}
+  /* Regra geral: [hidden] vence o display do CSS. Sem isso, qualquer elemento
+     com display proprio (inline-block, flex) aparece mesmo escondido, que foi
+     o que fez a linha do Bloco de Evolução aparecer antes de ser escolhida. */
+  [hidden]{display:none !important}
+  .tarja-topo{background:var(--ink);color:#fff;text-align:center;font-family:var(--heading);font-weight:800;
+    font-size:.92rem;letter-spacing:.02em;padding:10px 14px;line-height:1.3}
+  .tarja-topo strong{color:var(--orange)}
+  .prova-real{background:var(--mint);border-top:2px solid var(--mint-2);border-bottom:2px solid var(--mint-2);
+    padding:14px 0;text-align:center;font-size:1rem;color:var(--green-dark);font-weight:700}
+  .prova-real b{font-family:var(--heading);font-weight:800;font-size:1.15rem;color:var(--ink)}
+  .prova-real span{display:block;font-size:.88rem;font-weight:700;color:var(--text);margin-top:4px}
+  h1,h2,h3{font-family:var(--heading);font-weight:800;color:var(--ink);line-height:1.12;text-wrap:balance;letter-spacing:-.01em}
+  b,strong{font-weight:800}
+  p{margin-bottom:14px}
+  p:last-child{margin-bottom:0}
+  .hl{color:var(--orange);font-weight:800}
+  a{color:var(--green-dark)}
+
+  /* Cabeçalho de seção centralizado, igual ao da /mae. Era isso que fazia a
+     página parecer documento: títulos pequenos e alinhados à esquerda. */
+  .eyebrow{display:inline-block;font-family:var(--heading);font-weight:800;font-size:.9rem;
+    letter-spacing:.06em;text-transform:uppercase;color:var(--green-dark);background:var(--mint);
+    padding:6px 14px;border-radius:999px;margin-bottom:12px}
+  .section-head{text-align:center;margin-bottom:18px}
+  .section-title{font-size:34.4px;line-height:1.08;text-align:center;margin-bottom:12px}
+  .section-sub{text-align:center;color:var(--text);max-width:32rem;margin:0 auto;font-size:1.05rem;font-weight:700}
+
+  /* ---------- hero ---------- */
+  .hero{background:linear-gradient(180deg,var(--cream) 0%,#FBF6EC 46%);padding:30px 0 12px;text-align:center}
+  /* O mockup ja traz margem branca dentro da propria imagem, entao o padding
+     cheio das duas secoes somava um vazio grande entre as dobras. */
+  .hero + section{padding-top:18px}
+  .hero .btn{max-width:26rem;margin:0 auto}
+  .hero__badge{display:inline-flex;align-items:center;gap:8px;background:var(--orange-soft);color:#a4610a;
+    font-family:var(--heading);font-weight:700;font-size:.85rem;padding:8px 16px;border-radius:999px;margin-bottom:14px}
+  .hero__brand{display:inline-flex;align-items:baseline;gap:8px;margin-bottom:14px}
+  .hero__kpl{font-family:var(--heading);font-weight:800;font-size:1.12rem;line-height:1;color:var(--green);
+    letter-spacing:.04em;text-shadow:0 2px 0 rgba(60,122,44,.15)}
+  .hero__full{font-family:var(--heading);font-weight:700;font-size:.98rem;color:var(--muted)}
+  .hero__h1{font-size:36.8px;line-height:1.05;margin-bottom:14px}
+  .hero__sub{font-size:1.1rem;color:var(--text);font-weight:700;margin-bottom:16px}
+  .hero__promise{display:flex;gap:9px;align-items:flex-start;text-align:left;background:var(--orange-soft);
+    border:1px solid #F6D9A8;border-radius:var(--radius-sm);padding:12px 14px;margin:0 auto 18px;max-width:26rem}
+  .hero__promise .ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
+  .hero__promise p{font-size:.94rem;margin:0}
+  .btn-note{text-align:center;font-size:.92rem;font-weight:700;color:var(--muted);margin:12px auto 0;max-width:22rem}
+  /* Linha de numeros logo abaixo da promessa: e o "o que vem no kit" numa
+     olhada, sem virar o primeiro assunto da pagina. */
+  .hero__numeros{display:flex;gap:8px;justify-content:center;margin:14px 0 16px;flex-wrap:wrap}
+  .hero__numeros span{flex:1 1 30%;min-width:92px;background:var(--mint);border-radius:12px;padding:10px 8px;
+    font-size:.82rem;font-weight:700;color:var(--green-dark);line-height:1.25}
+  .hero__numeros b{display:block;font-family:var(--heading);font-weight:800;font-size:1.3rem;color:var(--ink)}
+  .hero__reinforce{display:flex;flex-wrap:wrap;gap:8px 14px;justify-content:center;font-size:.95rem;
+    font-weight:700;color:var(--green-dark);margin:18px 0 6px}
+  /* height:auto é OBRIGATÓRIO em toda imagem com os atributos width/height no
+     HTML: sem ele o `height` vira altura fixa em px, `aspect-ratio` não tem
+     efeito (só age quando uma dimensão é auto) e a imagem estica na vertical.
+     Foi o que deformou as fichas, o mockup e o vídeo. */
+  .hero__mockup{width:100%;height:auto;display:block;margin:6px 0 4px;
+    animation:pulso-mockup 3.2s ease-in-out infinite;transform-origin:center 60%;will-change:transform}
+  /* Respiro lento no mockup do topo: da movimento sem virar enfeite piscando.
+     4% de escala e o suficiente pra prender o olho no primeiro segundo. */
+  @keyframes pulso-mockup{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+  /* Quem pediu menos animacao no sistema nao ve nada se mexer. */
+  @media (prefers-reduced-motion:reduce){ .hero__mockup{animation:none} }
+
+  /* ---------- cartões de dor ---------- */
+  .dor-list{display:flex;flex-direction:column;gap:10px}
+  .dor{display:flex;gap:12px;align-items:flex-start;background:var(--card);border:1px solid var(--border);
+    border-radius:var(--radius-sm);padding:14px 16px;box-shadow:var(--shadow-sm)}
+  .dor__ic{flex:0 0 auto;font-size:1.2rem;line-height:1.4}
+  .dor p{font-size:.96rem;margin:0}
+  .dor strong{color:var(--ink)}
+
+  /* ---------- os 3 pilares ---------- */
+  .pilares{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:620px){.pilares{grid-template-columns:repeat(3,1fr);gap:14px}}
+  .pilar{background:var(--card);border:1px solid var(--border);border-top:5px solid var(--green);
+    border-radius:var(--radius-sm);padding:18px 16px;text-align:center;box-shadow:var(--shadow-sm)}
+  .pilar:nth-child(2){border-top-color:var(--orange)}
+  .pilar:nth-child(3){border-top-color:var(--coral)}
+  .pilar .ic{font-size:1.7rem;line-height:1}
+  .pilar .num{font-family:var(--heading);font-weight:800;font-size:32px;line-height:1;color:var(--ink);margin:6px 0 2px}
+  .pilar .num--palavra{font-size:1.42rem}
+  .pilar .rot{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:.98rem;margin-bottom:6px}
+  .pilar p{font-size:.89rem;color:var(--muted);margin:0}
+  .tudo-junto{background:var(--green-dark);color:#fff;border-radius:var(--radius);padding:20px;text-align:center;margin-top:16px}
+  .tudo-junto b{font-family:var(--heading);font-size:1.1rem;display:block;margin-bottom:6px}
+  .tudo-junto p{color:var(--mint-2);font-size:.92rem;margin:0}
+
+  /* ---------- trilha das etapas ---------- */
+  /* Eram 12 itens com título e descrição: virava parede de texto e a pessoa
+     pulava a seção inteira. Agora são só as letras, e o que se lê é o começo
+     e o fim do caminho. */
+  .trilha{display:flex;flex-wrap:wrap;justify-content:center;gap:9px;max-width:305px;margin:0 auto}
+  .trilha b{width:40px;height:40px;border-radius:50%;background:var(--mint);color:var(--green-dark);
+    font-family:var(--heading);font-weight:800;font-size:1.02rem;display:flex;align-items:center;justify-content:center}
+  /* tom escurece da esquerda pra direita: le como caminho que avanca */
+  .trilha b:nth-child(n+5){background:#BFE0B0}
+  .trilha b:nth-child(n+9){background:var(--green);color:#fff}
+  .trilha__pontas{display:flex;justify-content:space-between;gap:16px;max-width:430px;margin:16px auto 0;
+    font-size:.84rem;color:var(--muted);text-align:center}
+  .trilha__pontas span{flex:1}
+  .trilha__pontas b{display:block;color:var(--ink);font-family:var(--heading);font-size:.95rem}
+  /* ---------- ficha em destaque ---------- */
+  .ficha-destaque{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+    padding:12px;box-shadow:var(--shadow-sm)}
+  .ficha-destaque img{width:100%;height:auto;display:block;border-radius:10px}
+  .anatomia{list-style:none;margin-top:16px;display:flex;flex-direction:column;gap:9px}
+  .anatomia li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
+  .anatomia .tag{flex:0 0 auto;font-family:var(--heading);font-weight:800;font-size:.66rem;letter-spacing:.05em;
+    text-transform:uppercase;padding:3px 8px;border-radius:999px;margin-top:3px;background:var(--mint);color:var(--green-dark)}
+  .anatomia .tag.so{background:var(--orange-soft);color:#8a5410}
+  .anatomia b{color:var(--ink);font-weight:800}
+  .grade-fichas{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+  .grade-fichas img{width:100%;height:auto;display:block;border-radius:10px;border:1px solid var(--border);background:var(--card)}
+  .legenda{text-align:center;color:var(--muted);font-size:.83rem;margin-top:10px}
+
+  /* ---------- app ---------- */
+  .app-bloco{display:grid;grid-template-columns:1fr;gap:18px;align-items:center}
+  @media(min-width:600px){.app-bloco{grid-template-columns:210px 1fr;gap:24px}}
+  /* height:auto pelo mesmo motivo do .hero__mockup: o atributo height="1280"
+     do <video> vira altura fixa e o vídeo renderiza 210x1280. O aspect-ratio
+     segue útil pra reservar o espaço antes do arquivo carregar. */
+  .app-bloco video{width:100%;max-width:210px;height:auto;aspect-ratio:9/16;background:var(--ink);object-fit:cover;
+    border-radius:var(--radius);box-shadow:var(--shadow);display:block;margin:0 auto}
+  .lista{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .lista li{display:flex;gap:10px;align-items:flex-start;font-size:.93rem}
+  .lista .ic{flex:0 0 auto;font-size:1.05rem;line-height:1.4}
+  .lista b{color:var(--ink);font-weight:800}
+  .personagens{display:flex;gap:8px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+  .personagens img{width:58px;height:58px;border-radius:50%;border:2px solid var(--mint-2);background:var(--card);object-fit:cover}
+
+  /* ---------- licença ---------- */
+  .licenca{background:var(--mint);border:1px solid var(--mint-2);border-radius:var(--radius);padding:22px 20px}
+  .licenca .eyebrow{background:var(--green-dark);color:#fff}
+  .licenca .section-title{font-size:1.4rem}
+  .licenca ul{list-style:none;margin-top:14px;display:flex;flex-direction:column;gap:8px}
+  .licenca li{display:flex;gap:9px;align-items:flex-start;font-size:.93rem}
+  .licenca .tick{color:var(--green-dark);font-weight:800;flex:0 0 auto}
+  .licenca .no{color:var(--coral);font-weight:800;flex:0 0 auto}
+  .conta{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow-sm)}
+
+  /* ---------- preço e checkout ---------- */
+  .preco{background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:24px 18px;
+    text-align:center;box-shadow:var(--shadow)}
+  .preco .valor{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:46.4px;line-height:1;margin:4px 0 6px}
+  .preco .valor small{font-size:1.1rem}
+  .preco .comp{color:var(--muted);font-size:.88rem;margin:0}
+  .resumo{list-style:none;text-align:left;margin:16px 0 0;display:flex;flex-direction:column;gap:8px}
+  .resumo li{display:flex;gap:9px;align-items:flex-start;font-size:.92rem}
+  .resumo .tick{color:var(--green);font-weight:800;flex:0 0 auto}
+
+  /* ---------- mosaico do "por dentro" ---------- */
+  /* Carrossel (22/09): 16 fichas empilhadas ocupavam meia pagina de rolagem.
+     Deitado, mostra o mesmo volume numa tela so, e arrastar de lado e o gesto
+     natural no celular. */
+  .mosaico-wrap{position:relative}
+  .mosaico{display:flex;gap:10px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:4px 2px 10px;-webkit-overflow-scrolling:touch}
+  .mosaico__seta{position:absolute;top:36%;width:42px;height:42px;border-radius:50%;border:2px solid var(--border);
+    background:#fff;color:var(--ink);font-size:1.4rem;font-weight:800;line-height:1;cursor:pointer;display:none;
+    box-shadow:var(--shadow-sm);z-index:2}
+  .mosaico__seta--ant{left:-8px} .mosaico__seta--prox{right:-8px}
+  .mosaico__dica{text-align:center;font-size:.85rem;font-weight:700;color:var(--muted);margin:2px 0 0}
+  .mosaico__item{flex:0 0 62%;max-width:260px;scroll-snap-align:center;margin:0;background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;
+    box-shadow:var(--shadow-sm)}
+  .mosaico__item img{width:100%;height:auto;display:block}
+  .mosaico__item figcaption{font-family:var(--heading);font-weight:800;font-size:.82rem;color:var(--ink);
+    padding:8px 10px 10px;line-height:1.2}
+  .mosaico__item figcaption span{display:block;font-family:var(--body);font-weight:700;font-size:.78rem;
+    color:var(--muted);margin-top:2px}
+  .mosaico__nota{text-align:center;font-size:1rem;margin:16px 0 0;color:var(--text)}
+  .mosaico__intro{text-align:center;font-size:1rem;margin:18px 0 12px;color:var(--text)}
+  .mosaico--fam .mosaico__item img{background:#fff}
+
+  /* ---------- cards do "vem junto" ---------- */
+  .junto{display:grid;grid-template-columns:1fr;gap:12px}
+  @media(min-width:640px){ .junto{grid-template-columns:1fr 1fr} }
+  .junto__card{position:relative;background:var(--card);border:2px solid var(--border);border-radius:var(--radius);
+    padding:18px 16px;box-shadow:var(--shadow-sm)}
+  .junto__ic{font-size:1.7rem;line-height:1;display:block;margin-bottom:8px}
+  .junto__card b{display:block;font-family:var(--heading);font-weight:800;font-size:1.12rem;color:var(--ink);margin-bottom:6px}
+  .junto__card p{font-size:.95rem;margin:0}
+  .junto__selo{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-family:var(--heading);font-weight:800;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;
+    padding:4px 10px;border-radius:999px}
+  @media(min-width:700px){ .mosaico__seta{display:block} .mosaico__item{flex-basis:32%} }
+
+  /* ---------- depoimentos em prints (23/09) ---------- */
+  .depo{display:flex;gap:16px;overflow-x:auto;scroll-snap-type:x mandatory;
+    padding:4px 4px 18px;margin:0 -4px;overscroll-behavior-inline:contain;
+    scrollbar-color:var(--green) var(--mint);scrollbar-width:thin}
+  .depo::-webkit-scrollbar{height:8px}
+  .depo::-webkit-scrollbar-track{background:var(--mint);border-radius:999px}
+  .depo::-webkit-scrollbar-thumb{background:var(--green);border-radius:999px}
+  .depo__card{flex:0 0 min(82vw,350px);margin:0;scroll-snap-align:start}
+  .depo__abrir{display:block;width:100%;padding:0;overflow:hidden;background:var(--card);border:1px solid var(--border);
+    border-radius:18px;box-shadow:var(--shadow-sm);cursor:zoom-in;transition:transform .2s ease,box-shadow .2s ease}
+  .depo__abrir:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .depo__abrir:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
+  .depo__link{display:block;overflow:hidden;background:var(--card);border:1px solid var(--border);
+    border-radius:18px;box-shadow:var(--shadow-sm);transition:transform .2s ease,box-shadow .2s ease}
+  .depo__link:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+  .depo__link:focus-visible{outline:3px solid var(--orange);outline-offset:4px}
+  .depo__foto{display:block;width:100%;height:auto;aspect-ratio:941/1672;object-fit:cover}
+  .depo__hint{margin:12px 0 0;text-align:center;font-size:.84rem;color:var(--muted)}
+  .depo__modal{position:fixed;left:50%;top:50%;right:auto;bottom:auto;transform:translate(-50%,-50%);
+    width:min(94vw,760px);max-width:none;max-height:92dvh;box-sizing:border-box;margin:0;
+    padding:52px 14px 14px;border:0;border-radius:18px;background:var(--cream);overflow:auto}
+  .depo__modal::backdrop{background:rgba(18,25,20,.82);backdrop-filter:blur(3px)}
+  .depo__modal-img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(92dvh - 66px);margin:auto;object-fit:contain}
+  .depo__fechar{position:absolute;top:10px;right:10px;width:38px;height:38px;border:0;border-radius:50%;
+    background:var(--green-dark);color:#fff;font-size:1.4rem;line-height:1;cursor:pointer}
+  .depo__fechar:focus-visible{outline:3px solid var(--orange);outline-offset:3px}
+  @media(min-width:760px){
+    .depo{gap:20px;padding-bottom:20px}
+    .depo__card{flex-basis:340px}
+  }
+  @media(prefers-reduced-motion:reduce){.depo__link,.depo__abrir{transition:none}}
+  /* ---------- bonus com caixa 3D (22/09) ---------- */
+  .bonus{display:grid;grid-template-columns:1fr;gap:14px}
+  .bonus__card{background:var(--card);border:1px solid var(--border);border-radius:16px;
+    padding:14px 16px 18px;box-shadow:var(--shadow-sm);text-align:center}
+  .bonus__foto{display:block;width:100%;max-width:230px;margin:0 auto 6px}
+  .bonus__foto img{width:100%;height:auto;display:block}
+  .bonus__tag{display:inline-block;background:var(--green);color:#fff;font-family:var(--heading);
+    font-weight:800;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;
+    padding:5px 14px;border-radius:999px;margin-bottom:8px}
+  .bonus__card b{display:block;font-family:var(--heading);font-size:1.12rem;color:var(--ink);margin-bottom:6px}
+  .bonus__card p{font-size:.95rem;color:var(--text);margin:0}
+  .bonus__selo{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-weight:800;font-size:.76rem;padding:4px 12px;border-radius:999px}
+  @media(min-width:640px){ .bonus{grid-template-columns:1fr 1fr;gap:16px} }
+  /* ---------- oferta em cards (22/09) ---------- */
+  .oferta__titulo{font-family:var(--heading);font-weight:800;font-size:32px;line-height:1.1;text-align:center;
+    color:var(--ink);margin:0 0 18px}
+  .planos{display:grid;grid-template-columns:1fr;gap:16px}
+  .plano{position:relative;display:flex;flex-direction:column;background:var(--card);border:2px solid var(--border);
+    border-radius:20px;padding:22px 16px 18px;box-shadow:var(--shadow-sm);cursor:pointer;
+    transition:border-color .15s, box-shadow .15s}
+  .plano input{position:absolute;opacity:0;pointer-events:none}
+  .plano:has(input:checked){border-color:var(--green);box-shadow:0 12px 30px rgba(92,167,65,.18)}
+  .plano--premium{border-color:var(--green)}
+  .plano__badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);white-space:nowrap;
+    background:var(--green);color:#fff;font-family:var(--heading);font-weight:800;font-size:.76rem;
+    letter-spacing:.04em;text-transform:uppercase;padding:6px 16px;border-radius:999px;box-shadow:var(--shadow-sm)}
+  .plano__name{font-family:var(--heading);font-weight:800;font-size:1.25rem;letter-spacing:.06em;
+    text-transform:uppercase;text-align:center;color:var(--ink);margin-bottom:10px}
+  .plano--premium .plano__name{color:var(--green-dark)}
+  .plano__faixa{background:var(--mint);color:var(--green-dark);font-family:var(--heading);font-weight:800;
+    font-size:.92rem;text-align:center;padding:10px 12px;border-radius:999px;margin-bottom:12px}
+  .plano__diferenca{font-size:.9rem;font-weight:700;line-height:1.4;text-align:center;
+    padding:11px 13px;border-radius:14px;margin:0 0 12px}
+  .plano__diferenca--basico{background:var(--cream-2);color:var(--muted);border:1px solid var(--border)}
+  .plano__diferenca--completo{background:var(--mint);color:var(--green-dark);border:1px solid var(--mint-2)}
+  .plano__delta{display:block;margin-top:8px;color:var(--green-dark);font-size:.84rem;font-weight:800}
+  .plano__separador{list-style:none;border-top:1px solid var(--border);padding-top:9px;
+    margin-top:3px;font-size:.82rem;font-weight:800;color:var(--green-dark);letter-spacing:.02em}
+  .cta-depo{max-width:28rem;margin:28px auto 4px;text-align:center}
+  .cta-depo .btn{max-width:26rem;margin:auto}
+  .cta-depo p{margin:10px 0 0;color:var(--muted);font-size:.88rem}
+  .plano__foto{display:block;width:100%;margin:0 0 12px}
+  .plano__foto img{width:100%;height:auto;display:block}
+  .plano__recebe{font-family:var(--heading);font-weight:800;font-size:.8rem;letter-spacing:.08em;
+    text-transform:uppercase;color:var(--muted);text-align:center;margin:0 0 10px}
+  .plano__list{list-style:none;padding:0;margin:0 0 16px;display:flex;flex-direction:column;gap:9px}
+  /* ---------- licenca como item de adicionar (30/09) ----------
+     Todo mundo recebe a licenca de qualquer jeito (esta no material). O
+     toque aqui e a interacao que o Chrome exige pra liberar o popup de saida,
+     e chama a atencao de quem atende pra pergunta "posso usar com paciente?". */
+  .plano__list li.lic{display:block}
+  .lic__btn{display:flex;align-items:center;gap:10px;width:100%;text-align:left;cursor:pointer;
+    background:var(--orange-soft);border:2px dashed var(--orange);border-radius:12px;padding:10px 12px;
+    font:inherit;color:var(--text);transition:background .15s,border-color .15s}
+  .lic__box{flex:0 0 auto;width:22px;height:22px;border-radius:6px;border:2px solid var(--green-dark);background:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:900;color:#fff}
+  .lic__txt{flex:1 1 auto;font-size:.95rem;line-height:1.3}
+  .lic__tag{flex:0 0 auto;background:var(--green);color:#fff;font-family:var(--heading);font-weight:800;
+    font-size:.7rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border-radius:999px}
+  .lic__btn[aria-pressed="true"]{background:var(--mint);border-style:solid;border-color:var(--green)}
+  .lic__btn[aria-pressed="true"] .lic__box{background:var(--green);border-color:var(--green)}
+  .lic__btn[aria-pressed="true"] .lic__box::after{content:"✓"}
+  .plano__list li{font-size:.95rem;color:var(--text);display:flex;align-items:flex-start;gap:8px;line-height:1.35}
+  .plano__list li .ic{flex:0 0 auto;margin-top:1px}
+  .plano__list li.off{color:var(--muted);opacity:.75;text-decoration:line-through;
+    text-decoration-color:#D64545;text-decoration-thickness:1.5px}
+  .plano__list li.off .ic{text-decoration:none}
+  .plano__hl{background:linear-gradient(transparent 60%,var(--orange-soft) 60%);font-weight:700}
+  .plano__list li.plano__app-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;
+    width:100%;box-sizing:border-box}
+  .plano__app-tile{min-width:0;background:var(--cream-2);border:1px solid var(--border);
+    border-radius:10px;padding:9px 10px}
+  .plano__app-tile b{display:block;font-family:var(--heading);font-size:.82rem;color:var(--green-dark);margin-bottom:3px}
+  .plano__app-tile small{display:block;font-size:.875rem;line-height:1.3;color:var(--text)}
+  .plano__preco-box{text-align:center}
+  .plano__de{font-size:.92rem;color:var(--muted);font-weight:700;margin:0 0 2px}
+  .plano__de s{color:var(--coral)}
+  .plano__price{font-family:var(--heading);font-weight:800;color:var(--green-dark);font-size:clamp(1.65rem,4vw,2rem);line-height:1.15;white-space:nowrap}
+  .plano__parcela{display:block;font-size:.95rem;font-weight:700;color:var(--text);margin-top:4px}
+  .plano__avista{display:block;font-size:1rem;font-weight:700;color:var(--muted);margin-top:4px}
+  .plano__economia{display:inline-block;margin-top:10px;background:var(--mint);color:var(--green-dark);
+    font-weight:800;font-size:.86rem;padding:6px 14px;border-radius:999px}
+  .plano__btn{margin-top:14px;text-align:center;line-height:1.3}
+  .planos__nota{color:var(--muted);font-size:.9rem;text-align:center;margin:16px 0 0}
+  @media(min-width:760px){
+    .planos{grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+    .oferta__titulo{font-size:38.4px}
+  }
+
+  .field{margin-bottom:14px}
+  .field label{display:block;font-weight:700;color:var(--ink);font-size:.88rem;margin-bottom:5px}
+  .field input{width:100%;padding:13px 14px;font-size:1rem;font-family:var(--body);color:var(--ink);
+    background:var(--card);border:2px solid var(--border);border-radius:var(--radius-sm);outline:none}
+  .field input:focus{border-color:var(--green)}
+  .field .err{display:none;color:#D64545;font-size:.8rem;margin-top:4px}
+  .field.invalid input{border-color:#D64545}
+  .field.invalid .err{display:block}
+
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;min-height:62px;padding:16px 22px;
+    font-family:var(--heading);font-weight:800;font-size:1.12rem;letter-spacing:.02em;text-transform:uppercase;
+    color:#fff;text-decoration:none;
+    background:linear-gradient(180deg,#6DC050,var(--green));border:none;border-radius:999px;cursor:pointer;
+    box-shadow:0 10px 0 -2px rgba(60,122,44,.35), 0 14px 26px rgba(38,48,42,.18);
+    transition:filter .15s, transform .1s, box-shadow .1s}
+  .btn:hover{filter:brightness(1.05)}
+  /* Afunda no toque: o botao "responde" e parece fisico, que e o que as paginas
+     de low ticket usam pra dar sensacao de clique. */
+  .btn:active{transform:translateY(3px);box-shadow:0 6px 0 -2px rgba(60,122,44,.35), 0 8px 16px rgba(38,48,42,.16)}
+  .btn:disabled{opacity:.65;cursor:default;transform:none}
+
+  .aviso{display:none;background:#FDECEC;border:2px solid #F3B4B4;color:#8a2b2b;border-radius:var(--radius-sm);
+    padding:12px 14px;font-size:.9rem;margin-bottom:14px}
+  .aviso.show{display:block}
+  .pix{display:none;background:var(--card);border:2px solid var(--mint-2);border-radius:var(--radius);padding:22px 18px;text-align:center}
+  .pix.show{display:block}
+  .pix h3{font-size:1.05rem;margin-bottom:4px}
+  .pix-qr img{width:100%;max-width:260px;border-radius:12px}
+  .pix-copy{display:flex;gap:8px;margin:12px 0}
+  .pix-code{flex:1;min-width:0;padding:12px;font-size:.82rem;color:var(--ink);background:var(--cream);
+    border:2px solid var(--border);border-radius:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:monospace}
+  /* width:auto obrigatorio: .btn tem width:100% e com flex-basis auto o botao
+     esmagaria o campo do codigo (mesmo bug ja corrigido na /mae e no /upgrade) */
+  .pix-copy .btn{flex:0 0 auto;width:auto;min-height:48px;padding:0 18px;font-size:1rem}
+  .status{display:inline-flex;align-items:center;gap:8px;color:var(--green-dark);font-weight:700;margin-top:8px}
+  .spin{width:15px;height:15px;border:2px solid var(--mint-2);border-top-color:var(--green);border-radius:50%;animation:g .8s linear infinite}
+  @keyframes g{to{transform:rotate(360deg)}}
+  .ok{display:none;background:var(--mint);border:2px solid var(--green);border-radius:var(--radius);padding:24px 18px;text-align:center}
+  .ok.show{display:block}
+  .ok h2{font-size:1.3rem;margin-bottom:10px}
+
+  /* Garantia, tarja e rodape do checkout: mesmo desenho da pagina das maes,
+     pra quem chega pelas duas nao sentir que sao sites diferentes. */
+  .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .garantia-box{background:var(--card);border:2px solid var(--green);border-radius:var(--radius);
+    padding:28px 22px;text-align:center;box-shadow:var(--shadow);position:relative}
+  .garantia-box .seal{display:block;width:112px;height:auto;margin:0 auto 12px}
+  .garantia-box h2{font-size:1.5rem;margin-bottom:10px}
+  .garantia-box p{color:var(--text)}
+  .garantia-box .support{margin-top:14px;font-weight:700;color:var(--green-dark);font-size:.95rem}
+
+  /* Painel do bump: aparece depois do formulario preenchido. */
+  .bump-step{display:none;position:fixed;inset:0;z-index:1000;align-items:center;justify-content:center;
+    background:rgba(38,48,42,.55);padding:18px}
+  .bump-step.show{display:flex}
+  .bump-step__card{background:var(--card);border-radius:var(--radius);padding:24px 20px;
+    max-width:440px;width:100%;box-shadow:0 20px 60px rgba(38,48,42,.3);max-height:92vh;overflow-y:auto}
+  .bump-step__eyebrow{font-size:.74rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--green-dark);text-align:center;margin-bottom:6px}
+  .bump-step__card h3{font-size:1.3rem;text-align:center;margin-bottom:8px}
+  .bump-step__sub{font-size:.92rem;color:var(--text);text-align:center;margin-bottom:16px}
+  .bump-step__foto{width:100%;height:auto;display:block;border-radius:var(--radius-sm);
+    margin:0 0 16px;box-shadow:var(--shadow-sm)}
+  .bump-step__lista{list-style:none;margin:0 0 18px;display:flex;flex-direction:column;gap:9px}
+  .bump-step__lista li{display:flex;gap:9px;align-items:flex-start;font-size:.9rem;color:var(--text)}
+  .bump-step__lista .tick{color:var(--green);font-weight:800;flex:0 0 auto}
+  .bump-step__recusa{display:block;width:100%;background:none;border:none;margin-top:12px;
+    color:var(--muted);font-size:.86rem;font-family:var(--body);text-decoration:underline;cursor:pointer}
+  .bump-step__recusa:hover{color:var(--text)}
+
+  .bumps{margin:8px 0 18px}
+  .bumps-title{font-family:var(--heading);font-weight:700;font-size:.95rem;color:var(--ink);
+    margin-bottom:10px;display:flex;align-items:center;gap:8px}
+  .bump{display:block;position:relative;cursor:pointer;border:2px solid var(--border);
+    border-radius:var(--radius-sm);padding:14px 14px 14px 46px;margin-bottom:10px;
+    background:var(--cream);transition:border-color .15s ease,background .15s ease,box-shadow .15s ease}
+  .bump:hover{border-color:var(--mint-2)}
+  .bump.checked{border-color:var(--green);background:#fff;box-shadow:0 6px 16px rgba(92,167,65,.15)}
+  .bump input{position:absolute;left:14px;top:16px;width:22px;height:22px;accent-color:var(--green);cursor:pointer}
+  .bump__name{font-family:var(--heading);font-weight:700;color:var(--ink);font-size:1rem;
+    display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+  .bump__tag{background:var(--orange-soft);color:#a4610a;font-size:.68rem;font-weight:800;
+    padding:2px 8px;border-radius:999px;text-transform:uppercase}
+  .bump__desc{font-size:.93rem;color:var(--text);margin:3px 0 6px}
+  .bump__price{font-weight:800;color:var(--green-dark);font-size:.95rem}
+
+  .today-banner{background:var(--ink);color:#fff;border-radius:var(--radius-sm);
+    padding:12px 16px;text-align:center;font-size:.9rem;margin-bottom:18px;line-height:1.4}
+  .today-banner strong{color:var(--orange)}
+  .today-banner .codigo{display:inline-block;background:var(--orange);color:#fff;font-weight:800;letter-spacing:.06em;
+    padding:2px 8px;border-radius:6px;margin:0 2px}
+
+  .pay-method{display:flex;gap:10px;margin:4px 0 20px}
+  .pay-opt{flex:1;border:2px solid var(--green);background:var(--mint);border-radius:12px;
+    padding:12px;text-align:center;font-weight:800;color:var(--green-dark);
+    font-family:var(--heading);display:flex;flex-direction:column;align-items:center;gap:4px}
+  .pay-opt small{font-weight:700;font-size:.8rem;color:var(--green-dark)}
+
+  .pay-steps{display:flex;flex-direction:column;gap:8px;margin:4px 0 18px}
+  .pay-step{display:flex;align-items:center;gap:10px;font-size:.88rem;color:var(--text);
+    background:var(--cream-2);border-radius:10px;padding:9px 12px}
+  .pay-step__n{flex:0 0 auto;width:20px;height:20px;border-radius:50%;background:var(--green);
+    color:#fff;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center}
+
+  /* .pedido-resumo e o .resumo do index renomeado: aqui .resumo ja e a lista
+     de entregaveis do bloco de preco. */
+  .pedido-resumo{background:var(--cream-2);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px}
+  .pedido-resumo .linha{display:flex;justify-content:space-between;font-size:.95rem;padding:4px 0;color:var(--text)}
+  /* display:flex vence o [hidden] do navegador: sem esta linha, o Bloco de
+     Evolução aparecia no resumo antes de ser escolhido. */
+  .pedido-resumo .linha[hidden]{display:none}
+  .pedido-resumo .linha.total{border-top:2px dashed var(--border);margin-top:8px;padding-top:12px;
+    font-family:var(--heading);font-weight:800;font-size:1.25rem;color:var(--ink)}
+
+  /* Selo do Pix: e a bandeira do meio de pagamento real, nao um selo de
+     certificacao de terceiro. */
+  .pix-trust{display:flex;align-items:center;gap:10px;background:#E6F8F6;
+    border:1px solid #B7EAE5;border-radius:var(--radius-sm);padding:10px 14px;margin-bottom:12px}
+  .pix-trust__icon{flex:0 0 34px;width:34px;height:34px;border-radius:50%;
+    background:#32BCAD;display:flex;align-items:center;justify-content:center}
+  .pix-trust__text{font-size:.85rem;color:#1F6E66;line-height:1.4}
+  .pix-trust__text b{color:#17504A;font-family:var(--heading)}
+
+  .secure-badges{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin-top:12px;
+    color:var(--muted);font-size:.82rem;font-weight:700}
+  .secure-badges span{display:inline-flex;align-items:center;gap:5px}
+  .cartao-box{border:2px dashed var(--border);border-radius:var(--radius-sm);padding:14px;margin:0 0 16px}
+  .cartao-box p{font-size:.92rem;margin:0 0 10px}
+  .btn--linha{background:#fff;color:var(--green-dark);border:2px solid var(--green);box-shadow:none;min-height:54px}
+  .btn--linha:active{transform:none}
+  .pay-note{text-align:center;color:var(--muted);font-size:.84rem;margin:10px auto 0;max-width:32rem;line-height:1.5}
+
+  .garantia{display:flex;gap:11px;align-items:flex-start;background:var(--orange-soft);border:1px solid #F6D9A8;
+    border-radius:var(--radius-sm);padding:14px 16px;font-size:.92rem;margin-top:16px}
+  .garantia .ic{flex:0 0 auto;font-size:1.3rem;line-height:1.3}
+
+  /* ---------- faq ---------- */
+  .faq details{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);
+    padding:14px 16px;margin-bottom:9px;box-shadow:var(--shadow-sm)}
+  .faq summary{font-family:var(--heading);font-weight:700;color:var(--ink);cursor:pointer;font-size:.97rem;list-style:none}
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";float:right;color:var(--green);font-weight:800;margin-left:10px}
+  .faq details[open] summary::after{content:"−"}
+  .faq p{font-size:.92rem;margin:10px 0 0}
+
+  .rodape{text-align:center;color:var(--muted);font-size:.8rem;padding:26px 0 40px}
+
+  /* Mesma quebra da /mae: o tipo cresce junto com a tela, senão o desktop fica
+     com cara de página de celular esticada. */
+  @media(min-width:640px){ .trilha{max-width:none}
+    .hero__kpl{font-size:1.24rem}
+    .hero__full{font-size:1.1rem}
+    .hero__h1{font-size:46.4px}
+    .hero__sub{font-size:1.08rem}
+    .section-title{font-size:40px}
+    section{padding:36px 0}
+  }
+  /* ---------- checkout em popup (06/10) ---------- */
+  .ck-modal{position:fixed;inset:0;z-index:95;display:flex;align-items:center;justify-content:center;
+    padding:12px;background:rgba(20,28,22,.62)}
+  .ck-modal[hidden]{display:none !important}
+  .ck-modal__caixa{position:relative;width:100%;max-width:480px;max-height:calc(100dvh - 24px);overflow-y:auto;
+    overscroll-behavior:contain;background:var(--cream);border-radius:20px;padding:18px 16px 22px;
+    box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .ck-modal__caixa .section-title{margin-top:6px !important}
+  .ck-modal__fechar{position:sticky;top:0;float:right;width:40px;height:40px;margin:-6px -6px 0 0;border:0;
+    background:var(--card);border-radius:50%;font-size:1.6rem;line-height:1;color:var(--muted);cursor:pointer;z-index:2}
+  /* ---------- oferta de saida (30/09) ---------- */
+  .saida{position:fixed;inset:0;z-index:90;display:flex;align-items:center;justify-content:center;
+    padding:16px;background:rgba(20,28,22,.62)}
+  .saida[hidden]{display:none !important}
+  .saida__caixa{position:relative;width:100%;max-width:420px;background:var(--card);border-radius:20px;
+    padding:26px 20px 20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.28)}
+  .saida__fechar{position:absolute;top:8px;right:10px;width:40px;height:40px;border:0;background:none;
+    font-size:1.6rem;line-height:1;color:var(--muted);cursor:pointer}
+  .saida__selo{display:inline-block;background:var(--coral);color:#fff;font-family:var(--heading);font-weight:800;
+    font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:999px;margin-bottom:10px}
+  .saida__titulo{font-family:var(--heading);font-weight:800;font-size:1.6rem;line-height:1.12;color:var(--ink);margin:0 0 8px}
+  .saida__texto{font-size:.98rem;color:var(--text);margin:0 0 14px}
+  .saida__de{font-size:.95rem;color:var(--muted);font-weight:700;margin:0}
+  .saida__de s{color:var(--coral)}
+  .saida__preco{font-family:var(--heading);font-weight:800;font-size:2.8rem;line-height:1;color:var(--green-dark);margin:2px 0 4px}
+  .saida__preco small{font-size:1.1rem}
+  .saida__pix{font-size:.84rem;font-weight:800;color:var(--green-dark);margin:0 0 16px}
+  .saida__nao{display:block;margin:12px auto 0;background:none;border:0;color:var(--muted);
+    font-size:.88rem;text-decoration:underline;cursor:pointer}
+
+  /* ===================== PRÉVIA 19/10 ===================== */
+  .previa-aviso{background:#1E2721;color:#fff;text-align:center;font-weight:800;font-size:.85rem;padding:8px 12px}
+  /* 1. vídeo no topo */
+  .hero-video{position:relative;width:min(100%,300px);margin:10px auto 6px;border-radius:22px;overflow:hidden;
+    box-shadow:0 18px 40px -14px rgba(30,39,33,.45);aspect-ratio:9/16;background:#000}
+  .hero-video video{width:100%;height:100%;object-fit:cover;display:block}
+  .hero-video__som{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);border:none;cursor:pointer;
+    background:rgba(255,255,255,.94);color:var(--ink);border-radius:14px;padding:8px 14px;white-space:nowrap;line-height:1.2;
+    font-family:var(--heading);font-weight:800;box-shadow:0 10px 30px rgba(0,0,0,.35);display:flex;flex-direction:column;align-items:center;gap:4px}
+  .hero-video__som small{font-family:inherit;font-size:.68rem;color:var(--green-dark);letter-spacing:.04em;text-transform:uppercase}
+  .hero-video__som b{font-size:1rem;display:flex;align-items:center;gap:8px}
+  .hero-video__som .pulso{width:10px;height:10px;border-radius:50%;background:var(--coral);animation:pulsa 1.2s infinite}
+  @keyframes pulsa{50%{opacity:.25;transform:scale(.7)}}
+  .hero-video.com-som .hero-video__som{display:none}
+  /* 6a. faixa correndo */
+  .faixa{background:var(--green-dark);color:#fff;overflow:hidden;white-space:nowrap;padding:11px 0;font-family:var(--heading);font-weight:800;font-size:.98rem}
+  .faixa__trilho{display:inline-flex;gap:0;animation:faixa 55s linear infinite}
+  .faixa__trilho span{padding:0 14px}
+  .faixa__trilho span::after{content:"✦";color:var(--orange);margin-left:28px}
+  @keyframes faixa{to{transform:translateX(-50%)}}
+  /* 2. seletor por dificuldade */
+  .dific__botoes{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 10px;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+  .dific__botoes button{flex:0 0 auto;scroll-snap-align:start;border:2px solid var(--border);background:#fff;color:var(--ink);
+    border-radius:999px;padding:10px 14px;font-family:var(--body);font-weight:800;font-size:.92rem;cursor:pointer}
+  .dific__botoes button[aria-selected="true"]{background:var(--green);border-color:var(--green);color:#fff}
+  .dific__card{display:grid;grid-template-columns:104px 1fr;gap:6px 14px;align-items:center;background:#fff;border:1px solid var(--border);border-radius:20px;padding:14px;margin-top:6px}
+  .dific__texto,.dific__meta{grid-column:1/-1}
+  @media(min-width:600px){.dific__card{grid-template-columns:220px 1fr;align-items:start;gap:4px 18px}
+    .dific__card img{grid-row:1/4}.dific__texto,.dific__meta{grid-column:2}}
+  .dific__card img{width:100%;height:auto;margin:0;border-radius:12px;box-shadow:0 8px 22px -10px rgba(0,0,0,.35);display:block}
+  .dific__etapa{display:inline-block;background:var(--mint);color:var(--green-dark);font-weight:800;font-size:.8rem;border-radius:999px;padding:4px 10px;margin-bottom:8px}
+  .dific__nome{font-family:var(--heading);font-size:1.25rem;line-height:1.1;color:var(--ink);margin:0 0 8px}
+  .dific__texto{margin:0 0 8px;font-size:.95rem}
+  .dific__meta{color:var(--muted);font-weight:700;font-size:.9rem;margin:0}
+  .dific__card.troca{animation:entra .35s ease}
+  @keyframes entra{from{opacity:0;transform:translateY(8px)}}
+  /* 5. cenas da semana */
+  .cenas{display:grid;gap:14px}
+  .cena{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px;display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center}
+  .cena__arte{height:96px;border-radius:16px;background:var(--cream-2);position:relative;overflow:hidden}
+  .cena h3{font-family:var(--heading);font-size:1.15rem;line-height:1.15;margin:0 0 4px;color:var(--ink)}
+  .cena p{margin:0;font-size:.95rem}
+  .cena__tag{font-size:.72rem;font-weight:900;letter-spacing:.06em;color:var(--coral);text-transform:uppercase}
+  .arte-papeis i{position:absolute;left:22px;width:52px;height:10px;border-radius:3px;background:#fff;border:1px solid var(--border);animation:empilha 3.2s infinite}
+  .arte-papeis i:nth-child(1){bottom:14px}.arte-papeis i:nth-child(2){bottom:26px;animation-delay:.4s}
+  .arte-papeis i:nth-child(3){bottom:38px;animation-delay:.8s}.arte-papeis i:nth-child(4){bottom:50px;animation-delay:1.2s}
+  .arte-papeis i:nth-child(5){bottom:62px;animation-delay:1.6s}
+  .arte-papeis b{position:absolute;top:8px;right:8px;font-size:.62rem;font-weight:900;color:var(--muted)}
+  @keyframes empilha{0%{opacity:0;transform:translateY(-14px)}20%,85%{opacity:1;transform:none}100%{opacity:0}}
+  .arte-balao span{position:absolute;left:10px;right:10px;font-size:.68rem;font-weight:800;background:#fff;border-radius:10px;padding:4px 6px;text-align:center;animation:some 4s infinite}
+  .arte-balao span:nth-child(1){top:10px}.arte-balao span:nth-child(2){top:38px;animation-delay:.5s}.arte-balao span:nth-child(3){top:66px;animation-delay:1s}
+  @keyframes some{0%,30%{opacity:1}70%,100%{opacity:.08;filter:blur(1.5px)}}
+  .arte-grafico{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding-bottom:16px}
+  .arte-grafico i{width:16px;border-radius:4px 4px 0 0;background:var(--orange);height:34px;animation:igual 3s infinite}
+  .arte-grafico i:nth-child(2){animation-delay:.3s}.arte-grafico i:nth-child(3){animation-delay:.6s}
+  .arte-grafico b{position:absolute;top:8px;left:0;right:0;text-align:center;font-size:.6rem;font-weight:900;color:var(--muted)}
+  @keyframes igual{50%{height:40px}}
+  /* 3. interruptor */
+  .chave{display:flex;align-items:center;justify-content:center;gap:12px;margin:4px 0 16px;font-weight:800}
+  .chave button{position:relative;width:64px;height:34px;border-radius:999px;border:none;background:#C9C2B1;cursor:pointer;transition:background .2s}
+  .chave button::after{content:"";position:absolute;top:4px;left:4px;width:26px;height:26px;border-radius:50%;background:#fff;transition:transform .25s;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+  .chave button[aria-pressed="true"]{background:var(--green)}
+  .chave button[aria-pressed="true"]::after{transform:translateX(30px)}
+  .chave span{color:var(--muted)} .chave span.on{color:var(--ink)}
+  .sessao{background:#fff;border:2px solid var(--border);border-radius:20px;padding:16px;transition:border-color .25s}
+  .sessao.com{border-color:var(--green)}
+  .sessao__titulo{font-family:var(--heading);font-size:1.2rem;margin:0 0 10px;color:var(--ink)}
+  .sessao ul{list-style:none;margin:0;padding:0;display:grid;gap:9px}
+  .sessao li{display:grid;grid-template-columns:28px 1fr;gap:8px;align-items:start;font-size:.97rem}
+  .sessao li.anima{animation:entra .35s ease both}
+  .sessao__resumo{margin:12px 0 0;font-weight:800;text-align:center;border-radius:12px;padding:10px}
+  .sessao:not(.com) .sessao__resumo{background:var(--coral-soft);color:#A33418}
+  .sessao.com .sessao__resumo{background:var(--mint);color:var(--green-dark)}
+  /* 4. da consulta à mesa */
+  .fluxo{background:#fff;border:1px solid var(--border);border-radius:20px;padding:16px}
+  .fluxo__barra{height:6px;border-radius:99px;background:var(--cream-2);overflow:hidden;margin:2px 0 14px}
+  .fluxo__barra i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--green),var(--orange));transition:width .6s ease}
+  .fluxo ol{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+  .fluxo li{display:grid;grid-template-columns:44px 1fr;gap:10px;align-items:center;padding:10px;border-radius:14px;opacity:.38;transition:opacity .35s,background .35s,transform .35s}
+  .fluxo li .ico{width:44px;height:44px;border-radius:12px;background:var(--cream-2);display:grid;place-items:center;font-size:1.35rem}
+  .fluxo li b{display:block;color:var(--ink)} .fluxo li small{color:var(--muted);font-weight:700}
+  .fluxo li.ativo{opacity:1;background:var(--mint);transform:scale(1.015)}
+  .fluxo li.feito{opacity:1}
+  .fluxo__onde{display:flex;justify-content:space-between;font-size:.72rem;font-weight:900;letter-spacing:.06em;color:var(--muted);text-transform:uppercase}
+  /* 6b. impressão opcional */
+  .impressao{display:flex;gap:10px;align-items:center;justify-content:center;background:#fff;border:1px dashed var(--green);border-radius:14px;
+    padding:10px 14px;margin:14px auto 4px;max-width:30rem;font-weight:700;font-size:.95rem;text-align:left}
+  .impressao b{color:var(--green-dark)}
+  @media (prefers-reduced-motion:reduce){
+    .faixa__trilho,.arte-papeis i,.arte-balao span,.arte-grafico i,.hero-video__som .pulso{animation:none}
+  }
+</style>
+</head>
+<body>
+<!-- Tarja de topo com a data de hoje: padrao das paginas de atlas que rodam
+     nesse mercado. A urgencia e real no sentido de que o preco de amanha e
+     decisao do dono, nao promessa quebrada de contador. -->
+<div class="previa-aviso">PRÉVIA · página de teste, não está no ar para clientes</div>
+<div class="tarja-topo">⚡ OFERTA DISPONÍVEL HOJE, <strong id="tarja-data">22/09/2026</strong></div>
+
+<!-- ======================= HERO ======================= -->
+<header class="hero" id="p_topo">
+  <!-- PRIMEIRA DOBRA REFEITA (22/09). Ordem: atividade concreta -> facilidade
+       -> o que vem no kit -> botao. Quem clica no video viu ATIVIDADE
+       acontecendo, nao um pacote com numeros, e chegava aqui tendo que
+       traduzir "189 atividades" pra aquilo que acabou de ver. -->
+  <div class="wrap">
+    <span class="hero__badge">🥕 Para quem atende seletividade alimentar infantil</span>
+    <h1 class="hero__h1">189 atividades prontas <span class="hl">para trabalhar a alimentação infantil de forma lúdica</span></h1>
+    <p class="hero__sub">Você abre a ficha, põe o alimento na mesa e já sabe o que fazer. Sem montar atividade do zero pra cada paciente.</p>
+
+    <!-- PRÉVIA 1: o mesmo POV do anúncio, tocando sem som. Quem chega do anúncio
+         vê a continuação do que fez clicar. -->
+    <div class="hero-video" id="hero-video">
+      <video src="assets/preview/hero-pov.mp4" poster="assets/preview/hero-pov-poster.webp" autoplay muted loop playsinline
+             aria-label="Mãos folheando as fichas impressas do kit e o aplicativo aberto no celular"></video>
+      <button type="button" class="hero-video__som" id="hero-som">
+        <small>Seu vídeo já começou</small>
+        <b><span class="pulso"></span> Toque para ouvir</b>
+      </button>
+    </div>
+
+    <div class="hero__promise">
+      <span class="ic">🍽️</span>
+      <p>Cada ficha cabe em 10 a 20 minutos de consulta e usa alimento de verdade. Você bate o olho e já sabe o que fazer.</p>
+    </div>
+
+    <div class="hero__numeros">
+      <span><b>60</b> pra aplicar na sessão</span>
+      <span><b>129</b> pra mandar pra casa</span>
+      <span><b>App</b> entre as consultas</span>
+    </div>
+
+    <div class="hero__reinforce">
+      <span>🍎 Aplique na sessão</span>
+      <span>🏠 Entregue pra família</span>
+      <span>📱 Sem impressora</span>
+    </div>
+  </div>
+</header>
+
+<!-- PROVA REAL (22/09). Conferido no painel da PushinPay com filtro de data:
+     207 vendas nos ultimos 30 dias (211 nos ultimos 32). Inclui checkout do
+     site e link direto do Instagram, por isso e maior que o numero do /funil,
+     que so grava quem passa pelo checkout daqui.
+     REVISAR ESTE NUMERO se ele cair: a frase tem recorte de tempo, entao ela
+     envelhece sozinha, ao contrario de um acumulado. -->
+<!-- PRÉVIA 6: faixa correndo com nomes de fichas de verdade -->
+<div class="faixa" aria-label="Algumas das fichas do kit"><div class="faixa__trilho"><span>O mapa do prato</span><span>Semáforo dos alimentos</span><span>A caixa fechada</span><span>Escadinha do medo</span><span>Adivinha pelo cheiro</span><span>Retrato do alimento</span><span>Detetive de cores</span><span>Carimbo de pimentão</span><span>Torre de legumes</span><span>Boliche de tomate</span><span>Massinha de comida</span><span>Pescaria de macarrão</span><span>Quebra-cabeça de fruta</span><span>Orquestra crocante</span><span>Chef de tesoura</span><span>Espremedor de laranja</span><span>Mágica da gelatina</span><span>Beijo no alimento</span><span>O bigode</span><span>Sopro de canudo</span><span>Dente de vampiro</span><span>O júri do sabor</span><span>Ponte de sabor</span><span>O contrato do provador</span><span>Diário de conquistas</span><span>A pausa de 30 segundos</span><span>O relógio da tempestade</span><span>O prato de saída</span><span>A mesa sem tela</span><span>Só cinco alimentos</span><span>Depois do engasgo</span><span>A marca de sempre</span><span>O teste da avó</span><span>Alta com plano de 90 dias</span><span>O mapa do prato</span><span>Semáforo dos alimentos</span><span>A caixa fechada</span><span>Escadinha do medo</span><span>Adivinha pelo cheiro</span><span>Retrato do alimento</span><span>Detetive de cores</span><span>Carimbo de pimentão</span><span>Torre de legumes</span><span>Boliche de tomate</span><span>Massinha de comida</span><span>Pescaria de macarrão</span><span>Quebra-cabeça de fruta</span><span>Orquestra crocante</span><span>Chef de tesoura</span><span>Espremedor de laranja</span><span>Mágica da gelatina</span><span>Beijo no alimento</span><span>O bigode</span><span>Sopro de canudo</span><span>Dente de vampiro</span><span>O júri do sabor</span><span>Ponte de sabor</span><span>O contrato do provador</span><span>Diário de conquistas</span><span>A pausa de 30 segundos</span><span>O relógio da tempestade</span><span>O prato de saída</span><span>A mesa sem tela</span><span>Só cinco alimentos</span><span>Depois do engasgo</span><span>A marca de sempre</span><span>O teste da avó</span><span>Alta com plano de 90 dias</span></div></div>
+
+<div class="prova-real">
+  <div class="wrap">
+    <b>+207 vendas</b> do Kit Prato Limpo nos últimos 30 dias
+  </div>
+</div>
+
+<!-- ======================= VEJA POR DENTRO =======================
+     Vem ANTES da dor de proposito: nas paginas que estao escalando nesse
+     mercado, mostrar o material e o primeiro trabalho da pagina. Quem clicou
+     no anuncio quer ver o que esta comprando, nao ler argumento. -->
+<section id="p_dentro" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Veja por dentro</span>
+      <h2 class="section-title">Olha o material <span class="hl">por dentro</span></h2>
+      <p class="section-sub">Estas são 10 das 60 fichas de consultório. Todas no mesmo padrão, prontas para imprimir ou abrir no tablet.</p>
+    </div>
+
+    <div class="mosaico-wrap">
+      <button type="button" class="mosaico__seta mosaico__seta--ant" id="mos-ant" aria-label="Ver fichas anteriores">‹</button>
+      <button type="button" class="mosaico__seta mosaico__seta--prox" id="mos-prox" aria-label="Ver próximas fichas">›</button>
+      <div class="mosaico" id="mosaico" data-auto>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C16.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Quebra-cabeça de fruta, da etapa Toque e manipulação" />
+        <figcaption>Quebra-cabeça de fruta<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C11.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Carimbo de pimentão, da etapa Toque e manipulação" />
+        <figcaption>Carimbo de pimentão<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C03.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A caixa fechada, da etapa Avaliação inicial" />
+        <figcaption>A caixa fechada<span>Avaliação inicial</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C07.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Retrato do alimento, da etapa Aproximação sem contato" />
+        <figcaption>Retrato do alimento<span>Aproximação sem contato</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C13.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Boliche de tomate, da etapa Toque e manipulação" />
+        <figcaption>Boliche de tomate<span>Toque e manipulação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C21.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha Mágica da gelatina, da etapa Som, corte e transformação" />
+        <figcaption>Mágica da gelatina<span>Som, corte e transformação</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C52.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O cardápio de três colunas, da etapa Expansão do repertório" />
+        <figcaption>O cardápio de três colunas<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C54.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha O alimento da semana, da etapa Expansão do repertório" />
+        <figcaption>O alimento da semana<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C51.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A regra do primo, da etapa Expansão do repertório" />
+        <figcaption>A regra do primo<span>Expansão do repertório</span></figcaption>
+      </figure>
+      <figure class="mosaico__item">
+        <img src="assets/fichas-consultorio-web/C32.webp" width="560" height="840" loading="lazy" decoding="async"
+             alt="Ficha A pausa de 30 segundos, da etapa Recusa e crise" />
+        <figcaption>A pausa de 30 segundos<span>Recusa e crise</span></figcaption>
+      </figure>
+      </div>
+    </div>
+    <p class="mosaico__dica">← passa sozinho, e dá pra arrastar →</p>
+
+    <p class="mosaico__nota">E ainda tem as <b>129 fichas da família</b>, que você entrega no fim da consulta.</p>
+
+  </div>
+</section>
+
+
+<!-- ======================= PRÉVIA 2: ESCOLHA A DIFICULDADE ======================= -->
+<section id="prev_dificuldade">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">O caso do seu paciente</span>
+      <h2 class="section-title">Toque na dificuldade <span class="hl">e veja a ficha</span></h2>
+      <p class="section-sub">Cada caso tem uma ficha pensada para ele, com o passo a passo e o que dizer.</p>
+    </div>
+    <div class="dific__botoes" role="tablist" id="dific-botoes"></div>
+    <div class="dific__card" id="dific-card" aria-live="polite">
+      <img id="dific-img" src="" alt="" width="560" height="840" loading="lazy" />
+      <div class="dific__head">
+        <span class="dific__etapa" id="dific-etapa"></span>
+        <h3 class="dific__nome" id="dific-nome"></h3>
+      </div>
+      <p class="dific__texto" id="dific-texto"></p>
+      <p class="dific__meta" id="dific-meta"></p>
+    </div>
+    <p class="legenda">6 das 60 fichas de consultório. Toque nos botões ou deslize para o lado.</p>
+  </div>
+</section>
+
+<!-- ======================= A DOR ======================= -->
+<section id="p_dor">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Talvez você reconheça</span>
+      <h2 class="section-title">Sua orientação morre <span class="hl">no caminho de casa</span></h2>
+      <p class="section-sub">A mãe sai da consulta convencida. Na terça já esqueceu metade, e volta em 30 dias sem nada aplicado.</p>
+    </div>
+
+    <!-- PRÉVIA 5: a dor em três cenas da semana, com animação pequena -->
+    <div class="cenas">
+      <div class="cena">
+        <div class="cena__arte arte-papeis" aria-hidden="true"><b>DOM 22h</b><i></i><i></i><i></i><i></i><i></i></div>
+        <div><span class="cena__tag">Domingo à noite</span><h3>Montando atividade para a semana</h3>
+        <p>Uma por paciente, do zero. Meia hora que não entra na agenda nem na nota fiscal.</p></div>
+      </div>
+      <div class="cena">
+        <div class="cena__arte arte-balao" aria-hidden="true"><span>oferece sem forçar</span><span>deixa no prato</span><span>não negocia</span></div>
+        <div><span class="cena__tag">Terça, em casa</span><h3>A mãe já esqueceu metade</h3>
+        <p>Saiu convencida da consulta. Sem nada na mão, a orientação se perde no caminho de casa.</p></div>
+      </div>
+      <div class="cena">
+        <div class="cena__arte arte-grafico" aria-hidden="true"><i></i><i></i><i></i><b>3 RETORNOS</b></div>
+        <div><span class="cena__tag">30 dias depois</span><h3>A criança volta igual</h3>
+        <p>E você não sabe o que a família fez de verdade entre uma consulta e outra.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= OS 3 PILARES ======================= -->
+<section id="p_pecas" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">O que você recebe</span>
+      <h2 class="section-title">Três peças que <span class="hl">trabalham juntas</span></h2>
+      <p class="section-sub">Uma para a sessão, uma para a casa, e uma para os dias entre uma consulta e outra.</p>
+    </div>
+
+    <div class="pilares">
+      <div class="pilar">
+        <div class="ic">🍎</div>
+        <div class="num">60</div>
+        <div class="rot">Fichas de consultório</div>
+        <p>Para aplicar na sessão, com alimento de verdade. Em 12 etapas, do mapeamento até a alta.</p>
+      </div>
+      <div class="pilar">
+        <div class="ic">🏠</div>
+        <div class="num">129</div>
+        <div class="rot">Fichas para casa</div>
+        <p>Em 11 blocos. Você imprime e entrega conforme a etapa da criança, sem preparar nada.</p>
+      </div>
+      <div class="pilar">
+        <div class="ic">📱</div>
+        <div class="num num--palavra">O aplicativo</div>
+        <div class="rot">no celular da família</div>
+        <p>A criança pinta na tela com o dedo e destrava um personagem a cada alimento que prova.</p>
+      </div>
+    </div>
+
+    <div class="tudo-junto">
+      <b>Não é um dos três. São os três juntos.</b>
+      <p>O kit completo, do jeito que a família recebe, mais o protocolo de sessão que só existe nesta edição.</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================= POR DENTRO DA FICHA ======================= -->
+<section id="p_ficha" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Por dentro</span>
+      <h2 class="section-title">Uma ficha inteira cabe <span class="hl">em uma página</span></h2>
+      <p class="section-sub">Você bate o olho e já sabe o que fazer. Sem estudar nada antes.</p>
+    </div>
+
+    <div class="ficha-destaque">
+      <img src="assets/fichas-consultorio-web/C16.webp" alt="Ficha Quebra-cabeça de fruta, da etapa de toque" loading="lazy" />
+    </div>
+
+    <ul class="anatomia">
+      <li><span class="tag">1</span><span><b>Por que funciona</b>: o racional da atividade, em duas linhas.</span></li>
+      <li><span class="tag">2</span><span><b>Material</b>: a lista do que separar antes de chamar a criança.</span></li>
+      <li><span class="tag">3</span><span><b>Como fazer</b>: passo a passo numerado, sem preparo prévio.</span></li>
+      <li><span class="tag so">4</span><span><b>O que observar</b>: o que olhar enquanto a criança brinca. É leitura clínica, vai direto pro prontuário.</span></li>
+      <li><span class="tag so">5</span><span><b>O que dizer e o que evitar</b>: a fala pronta, e a frase que costuma estragar a sessão.</span></li>
+      <li><span class="tag so">6</span><span><b>Leva para casa</b>: a tarefa da família até a próxima consulta.</span></li>
+    </ul>
+
+    <!-- 22/09: aqui embaixo ficavam 3 fichas de consultorio de novo, repetindo
+         o que a pessoa acabou de ver la em cima. Passou a mostrar o OUTRO
+         material, o que a familia leva pra casa, que ate entao so aparecia
+         citado em texto. -->
+    <p class="mosaico__intro">E estas são <b>5 das 129 fichas que a família leva pra casa</b>, no fim da consulta.</p>
+    <div class="mosaico-wrap">
+      <button type="button" class="mosaico__seta mosaico__seta--ant" aria-label="Ver fichas anteriores">‹</button>
+      <button type="button" class="mosaico__seta mosaico__seta--prox" aria-label="Ver próximas fichas">›</button>
+      <div class="mosaico mosaico--fam" data-auto>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F108.webp" width="560" height="791" loading="lazy" decoding="async" alt="Ficha Cada um com sua sombra" />
+          <figcaption>Cada um com sua sombra<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F52.webp" width="560" height="840" loading="lazy" decoding="async" alt="Ficha Memória dos alimentos" />
+          <figcaption>Memória dos alimentos<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F109.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Caça-palavras dos alimentos" />
+          <figcaption>Caça-palavras dos alimentos<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F114.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Ache as diferenças" />
+          <figcaption>Ache as diferenças<span>Para levar pra casa</span></figcaption>
+        </figure>
+        <figure class="mosaico__item">
+          <img src="assets/fichas-familia-web/F117.webp" width="560" height="747" loading="lazy" decoding="async" alt="Ficha Quebra-cabeça da abóbora" />
+          <figcaption>Quebra-cabeça da abóbora<span>Para levar pra casa</span></figcaption>
+        </figure>
+      </div>
+    </div>
+    <p class="legenda">Cinco das 129 fichas da família.</p>
+  </div>
+</section>
+
+
+<!-- ======================= PRÉVIA 3: SEM ROTEIRO x COM A FICHA ======================= -->
+<section id="prev_chave">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Veja a diferença</span>
+      <h2 class="section-title">A mesma consulta, <span class="hl">com e sem a ficha</span></h2>
+      <p class="section-sub">Ligue a chave e compare.</p>
+    </div>
+    <div class="chave">
+      <span id="chave-off" class="on">Sem roteiro</span>
+      <button type="button" id="chave-btn" aria-pressed="false" aria-label="Mostrar a consulta com a ficha"></button>
+      <span id="chave-on">Com a ficha</span>
+    </div>
+    <div class="sessao" id="sessao">
+      <p class="sessao__titulo" id="sessao-titulo"></p>
+      <ul id="sessao-lista"></ul>
+      <p class="sessao__resumo" id="sessao-resumo"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= O APP ======================= -->
+<section id="p_app">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Entre as consultas</span>
+      <h2 class="section-title">O aplicativo trabalha <span class="hl">quando você não está lá</span></h2>
+      <p class="section-sub">A criança já ia pedir o celular. Aqui ele passa a jogar a favor da comida em vez de contra.</p>
+    </div>
+
+    <div class="app-bloco">
+      <video class="app-video" data-src="assets/pintar-video.mp4" data-poster="assets/pintar-poster.webp"
+             width="720" height="1280" muted loop playsinline preload="none"
+             aria-label="Criança pinta uma laranja na tela do tablet e depois come uma laranja de verdade"></video>
+      <ul class="lista">
+        <li><span class="ic">🖐️</span><span><b>Pinta com o dedo, sem impressora.</b> A família que não tem impressora deixa de ser um problema seu.</span></li>
+        <li><span class="ic">🧩</span><span><b>Um personagem por alimento provado.</b> São 20 para colecionar, e é a criança que decide quando provar.</span></li>
+        <li><span class="ic">🎲</span><span><b>Roleta de missões.</b> A tarefa do dia sai sorteada, então não vira mais uma cobrança da mãe.</span></li>
+        <li><span class="ic">💾</span><span><b>O progresso fica salvo.</b> Dá pra retomar na consulta seguinte e ver o que andou.</span></li>
+      </ul>
+    </div>
+
+    <div class="personagens">
+      <img src="assets/colorir-thumb/marina-maca.webp" alt="Personagem Marina, a maçã" loading="lazy" />
+      <img src="assets/colorir-thumb/bia-brocolis.webp" alt="Personagem Bia, o brócolis" loading="lazy" />
+      <img src="assets/colorir-thumb/cadu-cenoura.webp" alt="Personagem Cadu, a cenoura" loading="lazy" />
+      <img src="assets/colorir-thumb/bruno-banana.webp" alt="Personagem Bruno, a banana" loading="lazy" />
+      <img src="assets/colorir-thumb/manu-morango.webp" alt="Personagem Manu, o morango" loading="lazy" />
+    </div>
+    <p class="legenda">5 dos 20 amigos do prato.</p>
+  </div>
+</section>
+
+
+<!-- ======================= PRÉVIA 4: DA CONSULTA À MESA ======================= -->
+<section id="prev_fluxo" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Como funciona na prática</span>
+      <h2 class="section-title">Da consulta <span class="hl">à mesa de casa</span></h2>
+      <p class="section-sub">O trabalho continua depois que a família sai do consultório.</p>
+    </div>
+    <div class="fluxo" id="fluxo">
+      <div class="fluxo__onde"><span>No consultório</span><span>Em casa</span><span>No retorno</span></div>
+      <div class="fluxo__barra"><i id="fluxo-barra"></i></div>
+      <ol>
+        <li><span class="ico">🍎</span><span><b>Você aplica a ficha na sessão</b><small>10 a 20 minutos, com alimento de verdade</small></span></li>
+        <li><span class="ico">🔗</span><span><b>Gera o link da família</b><small>Um toque na aba Consultório do app</small></span></li>
+        <li><span class="ico">🎲</span><span><b>A criança gira a roleta em casa</b><small>A missão do dia sai sorteada, sem cobrança</small></span></li>
+        <li><span class="ico">✅</span><span><b>A mãe marca o que ela provou</b><small>Cada alimento novo destrava um personagem</small></span></li>
+        <li><span class="ico">📈</span><span><b>Você vê o avanço no retorno</b><small>O progresso fica salvo para a próxima consulta</small></span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= VEM JUNTO =======================
+     Mesmo formato dos cards de bonus das paginas do nicho, sem valor riscado
+     inventado: tudo aqui ja esta incluso e e verdade. -->
+<section id="p_junto">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vem junto</span>
+      <h2 class="section-title">Tudo o que você <span class="hl">recebe hoje</span></h2>
+    </div>
+
+    <div class="junto">
+      <div class="junto__card">
+        <span class="junto__ic">📋</span>
+        <b>60 fichas de consultório</b>
+        <p>Em 12 etapas, da avaliação até a alta. Cada uma cabe em 10 a 20 minutos de atendimento.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">🏠</span>
+        <b>129 fichas para a família</b>
+        <p>Em 11 blocos. Você imprime e entrega conforme a etapa da criança, sem preparar nada.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">📜</span>
+        <b>Licença de uso com seus pacientes</b>
+        <p>Sem limite de cópias, sem prazo, sem pagar por paciente. Vale em consultório, escola e oficina.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+      <div class="junto__card">
+        <span class="junto__ic">🆕</span>
+        <b>Atualizações do material</b>
+        <p>Fichas novas entram no mesmo acesso, sem pagar de novo.</p>
+        <span class="junto__selo">Incluído</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BÔNUS (22/09) =======================
+     Formato das paginas que estao escalando no nicho: caixa 3D, tarja
+     "BÔNUS N" e uma linha do que e. Os quatro EXISTEM: o app e o calendario
+     sairam do "vem junto" logo acima pra nao aparecerem duas vezes, e o mapa
+     e o pacote de sessoes foram feitos pra ca (scripts/build-bonus-profissional.js).
+     O selo diz em qual plano cada um entra: inventar "bonus" que o plano de
+     PDF nao recebe seria promessa quebrada no e-mail de entrega. -->
+<section id="p_bonus" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">E não para por aí</span>
+      <h2 class="section-title">Ainda vem com <span class="hl">estes bônus</span></h2>
+      <p class="section-sub">Ferramentas para você não precisar decidir sozinha qual ficha usar em quem.</p>
+    </div>
+
+    <div class="bonus">
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-mapa.webp" type="image/webp" />
+          <img src="assets/bonus-mapa.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="O mapa das 12 etapas" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 1</span>
+        <b>O mapa das 12 etapas</b>
+        <p>Uma folha só, com o caminho inteiro da avaliação até a alta e onde cada ficha entra. Para imprimir e deixar na parede.</p>
+        <span class="bonus__selo">Nos dois planos</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-pacote.webp" type="image/webp" />
+          <img src="assets/bonus-pacote.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="Pacote de 8 sessões" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 2</span>
+        <b>Pacote de 8 sessões</b>
+        <p>O que fazer em cada consulta: a ficha que você aplica, o que observar e a ficha que a família leva pra casa até a próxima.</p>
+        <span class="bonus__selo">Nos dois planos</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-app.webp" type="image/webp" />
+          <img src="assets/bonus-app.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="O aplicativo da Edição Profissional" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 3</span>
+        <b>O aplicativo</b>
+        <p>Aba Consultório com as 60 fichas na tela do tablet, e o link da família com o jogo dos 20 personagens.</p>
+        <span class="bonus__selo">Plano completo</span>
+      </div>
+
+      <div class="bonus__card">
+        <picture class="bonus__foto">
+          <source srcset="assets/bonus-calendario.webp" type="image/webp" />
+          <img src="assets/bonus-calendario.jpg" width="800" height="800" loading="lazy" decoding="async"
+               alt="Calendário, cartelas e quadro de progresso" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <span class="bonus__tag">Bônus 4</span>
+        <b>Calendário, cartelas e quadro de progresso</b>
+        <p>Para a família acompanhar entre uma consulta e outra, sem depender da memória de ninguém.</p>
+        <span class="bonus__selo">Plano completo</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ======================= DEPOIMENTOS EM PRINTS (23/09) ======================= -->
+<section id="p_depo">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Quem já está usando</span>
+      <h2 class="section-title">O que as nutricionistas <span class="hl">falaram depois da consulta</span></h2>
+    </div>
+
+    <div class="depo" aria-label="Depoimentos de nutricionistas">
+      <figure class="depo__card">
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/patricia.webp" aria-label="Ampliar depoimento de Patrícia">
+          <img class="depo__foto" src="assets/depoimentos/patricia.webp" alt="Conversa no WhatsApp com o depoimento de Patrícia sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
+      </figure>
+
+      <figure class="depo__card">
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/juliana.webp" aria-label="Ampliar depoimento de Juliana">
+          <img class="depo__foto" src="assets/depoimentos/juliana.webp" alt="Conversa no WhatsApp com o depoimento de Juliana sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
+      </figure>
+
+      <figure class="depo__card">
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/camila.webp" aria-label="Ampliar depoimento de Camila">
+          <img class="depo__foto" src="assets/depoimentos/camila.webp" alt="Conversa no WhatsApp com o depoimento de Camila sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
+      </figure>
+
+      <figure class="depo__card">
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/larissa.webp" aria-label="Ampliar depoimento de Larissa">
+          <img class="depo__foto" src="assets/depoimentos/larissa.webp" alt="Conversa no WhatsApp com o depoimento de Larissa sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
+      </figure>
+
+      <figure class="depo__card">
+        <button class="depo__abrir" type="button" data-depo-img="assets/depoimentos/fernanda.webp" aria-label="Ampliar depoimento de Fernanda">
+          <img class="depo__foto" src="assets/depoimentos/fernanda.webp" alt="Conversa no WhatsApp com o depoimento de Fernanda sobre o Kit Prato Limpo Profissional" width="760" height="1350" loading="lazy" decoding="async">
+        </button>
+      </figure>
+    </div>
+    <p class="depo__hint">Deslize para ver mais · toque em uma conversa para ampliar</p>
+    <div class="cta-depo">
+      <a href="#checkout" class="btn">Escolher meu plano →</a>
+      <p>Pagamento único · acesso na hora</p>
+    </div>
+  </div>
+</section>
+
+<dialog class="depo__modal" id="depo-modal" aria-label="Depoimento ampliado">
+  <button class="depo__fechar" type="button" aria-label="Fechar imagem">×</button>
+  <img class="depo__modal-img" alt="" decoding="async">
+</dialog>
+
+<!-- ======================= LICENÇA ======================= -->
+<section id="p_licenca" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="licenca">
+      <div style="text-align:center"><span class="eyebrow">Licença de uso</span></div>
+      <h2 class="section-title">Pode usar com <span class="hl">seus pacientes</span></h2>
+      <ul>
+        <li><span class="tick">✓</span><span>Imprimir quantas cópias precisar</span></li>
+        <li><span class="tick">✓</span><span>Entregar as fichas impressas ao paciente</span></li>
+        <li><span class="tick">✓</span><span>Passar o link do aplicativo para a família instalar no celular</span></li>
+        <li><span class="tick">✓</span><span>Sem limite de pacientes e sem prazo de validade</span></li>
+        <li><span class="no">✕</span><span>Revender, compartilhar o arquivo ou publicar as fichas</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= A CONTA ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Vale a pena?</span>
+      <h2 class="section-title">Quanto custa o <span class="hl">seu tempo de preparo</span></h2>
+    </div>
+    <div class="conta">
+      <p>Montar uma atividade do zero para um paciente leva entre 20 e 30 minutos. Você não fatura esse tempo.</p>
+      <p>No primeiro paciente o kit já se pagou. E ele não acaba: são 189 fichas e um aplicativo para atender quantas crianças aparecerem, por quantos anos você quiser.</p>
+      <p style="color:var(--muted);font-size:.9rem">Uma consulta paga o kit inteiro e ainda sobra.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= GARANTIA ======================= -->
+<section>
+  <div class="wrap">
+    <div class="garantia-box">
+      <img class="seal" src="assets/Selo-de-Garantia-de-7-Dias-PNG-Transparente-Sem-Fundo-1.png" width="700" height="700" loading="lazy" decoding="async" alt="Selo de garantia de 7 dias">
+      <h2>7 dias de garantia incondicional</h2>
+      <p>Aplique com os seus pacientes sem risco. Se sentir que não é para você, devolvemos 100% do valor. Sem pergunta, sem burocracia.</p>
+      <p class="support">Suporte pelo e-mail <a href="mailto:kitpratolimpo@gmail.com" style="color:inherit">kitpratolimpo@gmail.com</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHECKOUT ======================= -->
+<section id="checkout" data-pro-step="p_checkout" style="background:var(--cream-2)">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Garanta o seu</span>
+      <h2 class="section-title">Finalize seu pedido</h2>
+    </div>
+
+    <div class="today-banner" id="today-banner">
+      ⏰ Oferta válida até <strong id="today-date">hoje</strong>.
+    </div>
+
+    <!-- Dois planos (19/09), mesmo desenho da /mae. O value do radio e o id do
+         _catalog: o servidor recalcula o valor por ele. -->
+    <h2 class="oferta__titulo">Escolha a opção <span class="hl">ideal para você</span></h2>
+
+    <!-- OFERTA (22/09) no formato das paginas de atlas do nicho: mockup no
+         card, lista do que recebe, preco riscado e botao proprio em cada plano.
+         No CELULAR o plano barato vem primeiro e o completo embaixo, que e a
+         ordem que essas paginas usam: a pessoa le o basico, sente que falta
+         coisa, e o completo aparece como solucao. No desktop ficam lado a lado.
+         Os radios continuam existindo (escondidos): sao eles que o checkout le. -->
+    <div class="planos" role="radiogroup" aria-label="Escolha o plano">
+
+      <div class="plano" data-plano="profissional_pdf">
+        <input type="radio" name="plano" value="profissional_pdf" data-cents="2490" data-nome="KPL Edição Profissional (PDF)">
+        <div class="plano__name">PLANO BÁSICO</div>
+        <p class="plano__diferenca plano__diferenca--basico">189 atividades em PDF<br>Para imprimir ou abrir na tela · sem aplicativo</p>
+        <picture class="plano__foto">
+          <source srcset="assets/plano-pdf.webp" type="image/webp" />
+          <img src="assets/plano-pdf.jpg" width="900" height="900" loading="lazy" decoding="async"
+               alt="As fichas do Kit Prato Limpo Profissional em PDF" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <p class="plano__recebe">VOCÊ RECEBE:</p>
+        <ul class="plano__list">
+          <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
+          <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
+          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
+            <span class="lic__box" aria-hidden="true"></span>
+            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
+            <span class="lic__tag">Grátis</span>
+          </button></li>
+          <li><span class="ic">✅</span>Acesso imediato, em PDF</li>
+          <li class="off"><span class="ic">➖</span>Sem o aplicativo</li>
+        </ul>
+        <div class="plano__preco-box">
+          <p class="plano__de">De <s>R$ 49,90</s> por:</p>
+          <div class="plano__price">5x de R$ 5,67</div>
+          <span class="plano__avista">R$ 24,90 à vista · acesso vitalício</span>
+          <span class="plano__economia">Você economiza R$ 25,00 à vista</span>
+        </div>
+        <a href="https://pay.cakto.com.br/8uf6w93_1146564" class="btn btn--linha plano__btn" data-checkout="profissional_pdf">Quero o plano básico</a>
+      </div>
+
+      <div class="plano plano--premium" data-plano="profissional">
+        <span class="plano__badge">⚡ Mais completo</span>
+        <input type="radio" name="plano" value="profissional" data-cents="3700" data-nome="KPL Edição Profissional" checked>
+        <div class="plano__name">PLANO COMPLETO</div>
+        <p class="plano__diferenca plano__diferenca--completo">189 atividades + aplicativo<br>Para a criança e a família continuarem entre consultas</p>
+        <picture class="plano__foto">
+          <source srcset="assets/plano-completo.webp" type="image/webp" />
+          <img src="assets/plano-completo.jpg" width="900" height="900" loading="lazy" decoding="async"
+               alt="As fichas do Kit Prato Limpo Profissional e o aplicativo no tablet" onerror="this.closest('picture').hidden=true" />
+        </picture>
+        <p class="plano__recebe">VOCÊ RECEBE:</p>
+        <ul class="plano__list">
+          <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
+          <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
+          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
+            <span class="lic__box" aria-hidden="true"></span>
+            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
+            <span class="lic__tag">Grátis</span>
+          </button></li>
+          <li class="plano__separador">EXCLUSIVO DO PLANO COMPLETO</li>
+          <li><span class="ic">📱</span><span class="plano__hl">Aplicativo com a aba Consultório no tablet</span></li>
+          <li class="plano__separador">APP DA FAMÍLIA · 4 ABAS</li>
+          <li class="plano__app-grid" aria-label="Recursos do aplicativo da família">
+            <span class="plano__app-tile"><b>🎲 Jogar</b><small>Roleta sorteia a missão do dia</small></span>
+            <span class="plano__app-tile"><b>👥 Turma</b><small>Marque os personagens provados</small></span>
+            <span class="plano__app-tile"><b>🖍️ Pintar</b><small>Pinte com o dedo no celular</small></span>
+            <span class="plano__app-tile"><b>🏠 Família</b><small>Todas as fichas para casa</small></span>
+          </li>
+          <li><span class="ic">📅</span><span class="plano__hl">Calendário, cartelas e quadro de progresso</span></li>
+          <li><span class="ic">🆕</span><span class="plano__hl">Atualizações do material, sem pagar de novo</span></li>
+        </ul>
+        <div class="plano__preco-box">
+          <p class="plano__de">De <s>R$ 67,00</s> por:</p>
+          <div class="plano__price">6x de R$ 7,09</div>
+          <span class="plano__avista">R$ 37,00 à vista · acesso vitalício</span>
+          <span class="plano__economia">Você economiza R$ 30,00 à vista</span>
+          <span class="plano__delta">Só R$ 12,10 a mais que o Básico à vista</span>
+        </div>
+        <a href="https://pay.cakto.com.br/n2yr82g_1146541" class="btn plano__btn" data-checkout="profissional">Quero o kit completo</a>
+      </div>
+
+    </div>
+    <!-- PRÉVIA 6: transparência perto do preço -->
+    <p class="impressao"><span>🖨️</span><span><b>Impressão opcional.</b> Use direto no tablet ou no celular, ou imprima só as fichas que for usar.</span></p>
+    <p class="planos__nota">Pagamento único, sem mensalidade. Atualizações incluídas nos dois planos.</p>
+    <p class="planos__nota">Ao escolher seu plano, você conclui a compra no checkout seguro da Cakto. O acesso chega por e-mail após a confirmação.</p>
+
+    <!-- CHECKOUT EM POPUP (06/10). Volta o Pix pela PushInPay: os botoes dos
+         cards abrem este bloco por cima da pagina, sem sair dela. O cartao
+         parcelado foi desligado em 06/10: o pagamento e so Pix, e os cards
+         mostram o preco cheio (ver PARCELAMENTO, ativo: false). -->
+    <div id="legacy-checkout" class="ck-modal" role="dialog" aria-modal="true" aria-label="Finalizar compra" hidden>
+    <div class="ck-modal__caixa">
+    <button type="button" class="ck-modal__fechar" id="ck-fechar" aria-label="Fechar">×</button>
+    <!-- Oferta de saida (30/09): so e marcado pelo popup "Espera". Fica fora
+         dos cards de proposito, pra nunca aparecer como opcao normal. -->
+    <input type="radio" name="plano" value="profissional_saida" data-cents="1000" data-nome="Plano básico · condição especial" hidden>
+    <h2 class="section-title" style="margin-top:26px;font-size:1.3rem">Seus dados</h2>
+    <div class="aviso" id="erro"></div>
+
+    <form id="form" novalidate>
+      <div class="field" id="f-nome">
+        <label for="nome">Nome completo</label>
+        <input type="text" id="nome" autocomplete="name" required />
+        <div class="err">Escreva seu nome e sobrenome.</div>
+      </div>
+      <div class="field" id="f-email">
+        <label for="email">E-mail (o acesso chega aqui)</label>
+        <input type="email" id="email" autocomplete="email" required />
+        <div class="err">Confira o e-mail digitado.</div>
+      </div>
+      <div class="field" id="f-tel">
+        <label for="telefone">WhatsApp</label>
+        <input type="tel" id="telefone" inputmode="numeric" placeholder="(00) 00000-0000" maxlength="16" required />
+        <div class="err">Digite um número com DDD.</div>
+      </div>
+
+
+      <!-- Tira a ansiedade de quem nao conhece a pagina: diz o que acontece
+           DEPOIS do clique, ja que o pagamento nao sai do site. -->
+      <div class="pay-steps">
+        <div class="pay-step"><span class="pay-step__n">1</span>Você paga direto pelo Pix do seu próprio banco</div>
+        <div class="pay-step"><span class="pay-step__n">2</span>A confirmação é automática, na hora</div>
+        <div class="pay-step"><span class="pay-step__n">3</span>O acesso chega sozinho no seu e-mail</div>
+      </div>
+
+      <div class="pedido-resumo">
+        <div class="linha"><span id="linha-plano-nome">KPL Edição Profissional</span><span id="linha-plano-valor">R$ 37,00</span></div>
+        <div class="linha" id="linha-devolutiva" hidden><span>Bloco de Evolução</span><span>R$ 10,00</span></div>
+        <div class="linha total"><span>Total</span><span id="total-valor">R$ 37,00</span></div>
+      </div>
+
+      <!-- Cartao parcelado: so aparece quando PARCELAMENTO.ativo e true. O Pix
+           continua sendo o caminho principal, porque cai na hora e sem taxa de
+           plataforma. -->
+      <div class="cartao-box" id="cartao-box" hidden>
+        <p><b>Prefere cartão?</b> Dá pra parcelar. Você sai daqui e termina a compra na plataforma, e o acesso chega no mesmo e-mail.</p>
+        <a class="btn btn--linha" id="cartao-btn" href="#" rel="noopener">Pagar parcelado no cartão</a>
+      </div>
+
+      <div class="pix-trust">
+        <span class="pix-trust__icon" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 3.5c1 0 1.96.4 2.67 1.1l2.6 2.6c.3.3.7.3 1 0l.9-.9a1 1 0 0 1 1.4 1.4l-.9.9a2.3 2.3 0 0 1-3.2 0l-2.6-2.6a2.3 2.3 0 0 0-3.2 0L8 8.6a2.3 2.3 0 0 1-3.2 0l-.9-.9a1 1 0 1 1 1.4-1.4l.9.9c.3.3.7.3 1 0l2.6-2.6A3.76 3.76 0 0 1 12 3.5Z" fill="#fff"/>
+            <path d="M12 20.5c-1 0-1.96-.4-2.67-1.1l-2.6-2.6c-.3-.3-.7-.3-1 0l-.9.9a1 1 0 0 1-1.4-1.4l.9-.9a2.3 2.3 0 0 1 3.2 0l2.6 2.6c.9.9 2.3.9 3.2 0l2.6-2.6a2.3 2.3 0 0 1 3.2 0l.9.9a1 1 0 1 1-1.4 1.4l-.9-.9c-.3-.3-.7-.3-1 0l-2.6 2.6a3.76 3.76 0 0 1-2.67 1.1Z" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="pix-trust__text"><b>Pagamento via Pix</b><br>Sistema de pagamento instantâneo do Banco Central. Cai na hora, direto no seu banco.</span>
+      </div>
+
+      <button type="submit" class="btn" id="btn"><span id="btn-label">Pagar R$ 37,00 com Pix</span></button>
+
+      <div class="secure-badges">
+        <span>🔒 Site seguro (HTTPS)</span>
+        <span>🏦 Pago direto pelo seu banco via Pix</span>
+        <span>🛡️ Garantia de 7 dias</span>
+      </div>
+      <p class="pay-note">Nunca pedimos senha, número de cartão ou dados bancários. Você só escaneia o QR Code (ou copia o código) e confirma no aplicativo do seu próprio banco.</p>
+    </form>
+
+    <div class="pix" id="pix">
+      <h3>Escaneie o QR Code</h3>
+      <p class="section-sub">Ou copie o código abaixo no app do seu banco.</p>
+      <div class="pix-qr" id="qr"></div>
+      <div class="pix-copy">
+        <div class="pix-code" id="codigo">—</div>
+        <button type="button" class="btn" id="copiar">Copiar</button>
+      </div>
+      <div class="status"><span class="spin"></span> Aguardando o pagamento...</div>
+      <p class="section-sub" style="margin-top:12px">Assim que o Pix cair, o acesso é liberado nesta tela e enviado por e-mail.</p>
+    </div>
+
+    <div class="ok" id="ok">
+      <h2>Pagamento confirmado 🎉</h2>
+      <p>O acesso à Edição Profissional foi enviado para o seu e-mail. Se não aparecer em alguns minutos, confira o spam ou escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a>.</p>
+    </div>
+    </div><!-- /ck-modal__caixa -->
+    </div><!-- /legacy-checkout -->
+  </div>
+</section>
+
+<!-- ======================= FAQ ======================= -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <span class="eyebrow">Dúvidas</span>
+      <h2 class="section-title">Antes de decidir</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>Posso mesmo entregar as fichas para os meus pacientes?</summary>
+        <p>Pode. É exatamente pra isso que existe a licença de uso profissional, e ela vem escrita dentro do material. Imprima quantas cópias precisar, entregue ao paciente, use em grupo e em oficina, sem limite e sem prazo. O que não pode é revender ou publicar as fichas.</p>
+      </details>
+      <details>
+        <summary>Como recebo, e quanto tempo demora?</summary>
+        <p>Depois que a Cakto confirmar o pagamento, o acesso chega no seu e-mail. No plano PDF + Aplicativo é o link do aplicativo, que já tem dentro o botão para baixar o PDF. No plano Fichas em PDF é o link direto do arquivo. Leva alguns minutos, não é entrega manual.</p>
+      </details>
+      <details>
+        <summary>Preciso de impressora?</summary>
+        <p>Não. Tudo pode ser impresso, e tudo pode ser usado direto na tela do celular ou do tablet. As atividades de pintar funcionam com o dedo.</p>
+      </details>
+      <details>
+        <summary>Serve para criança com autismo?</summary>
+        <p>As atividades trabalham aproximação sensorial em ritmo respeitado, sem pressão para comer, que é uma abordagem comum no acompanhamento de crianças autistas com seletividade. Mas quem decide o que cabe em cada caso é você, dentro da sua conduta e do seu plano terapêutico.</p>
+      </details>
+      <details>
+        <summary>É assinatura?</summary>
+        <p>Não. É pagamento único, nos dois planos. Você continua com o material e recebe as atualizações sem pagar de novo.</p>
+      </details>
+    </div>
+
+  </div>
+</section>
+
+<!-- Etapa do order bump: so abre depois do formulario validado, pra nao pedir
+     decisao de quem ainda nao se comprometeu com a compra. -->
+<div class="bump-step" id="bump-step" role="dialog" aria-modal="true" aria-labelledby="bump-step-titulo">
+  <div class="bump-step__card">
+    <p class="bump-step__eyebrow">Antes de gerar seu Pix</p>
+    <h3 id="bump-step-titulo">Quer acompanhar a evolução entre as consultas?</h3>
+    <p class="bump-step__sub"><b>Bloco de Evolução</b>: acompanhe o progresso entre as consultas com registros da criança e dos pais em um checklist semanal simples. Adicione por mais R$ 10,00.</p>
+    <!-- Mostrar o material vale mais que descrever: sem foto, o painel falava de
+         4 folhas que a pessoa nunca tinha visto. -->
+    <picture>
+      <source srcset="assets/bloco-evolucao.webp" type="image/webp">
+      <img class="bump-step__foto" src="assets/bloco-evolucao.jpg" width="880" height="660"
+           loading="lazy" decoding="async"
+           alt="O Bloco de Evolução impresso e encadernado sobre uma mesa, aberto na folha Como foi em casa, com a folha Linha do tempo ao lado" />
+    </picture>
+    <ul class="bump-step__lista">
+      <li><span class="tick">✓</span><span>Como foi em casa <b>(criança e pais registram juntos)</b></span></li>
+      <li><span class="tick">✓</span><span>Linha do tempo, semana a semana</span></li>
+      <li><span class="tick">✓</span><span>Resumo para a família</span></li>
+      <li><span class="tick">✓</span><span>Anotação clínica pro prontuário</span></li>
+    </ul>
+    <button type="button" class="btn" id="bump-sim">Adicionar e gerar Pix de <span id="bump-sim-valor">R$ 47,00</span></button>
+    <button type="button" class="bump-step__recusa" id="bump-nao">Não, quero só o kit por <span id="bump-nao-valor">R$ 37,00</span></button>
+  </div>
+</div>
+
+<p class="rodape">Kit Prato Limpo · <a href="/termos" style="color:var(--muted)">Termos</a> · <a href="/privacidade" style="color:var(--muted)">Privacidade</a></p>
+
+<!-- ======================= OFERTA DE SAIDA (30/09) =======================
+     Aparece UMA vez por pessoa, so pra quem ja viu a oferta e aperta voltar.
+     Fecha no X, no "nao, obrigado" ou tocando fora, e o segundo voltar sai
+     normalmente: nao prende ninguem na pagina. -->
+<div class="saida" id="saida" role="dialog" aria-modal="true" aria-labelledby="saida-titulo" hidden>
+  <div class="saida__caixa">
+    <button type="button" class="saida__fechar" id="saida-fechar" aria-label="Fechar">×</button>
+    <span class="saida__selo">Só nesta tela</span>
+    <h2 class="saida__titulo" id="saida-titulo">Espera! Leve o plano básico por apenas R$10</h2>
+    <p class="saida__texto">As mesmas 189 fichas em PDF, a licença de uso e os dois bônus. Essa condição aparece uma vez só e some quando você fechar esta janela.</p>
+    <p class="saida__de">De <s>R$ 24,90</s> por:</p>
+    <div class="saida__preco">R$ 10<small>,00</small></div>
+    <p class="saida__pix">⚡ No Pix, direto nesta página</p>
+    <button type="button" class="btn" id="saida-sim">Quero por R$ 10 no Pix</button>
+    <button type="button" class="saida__nao" id="saida-nao">Não, obrigado</button>
+  </div>
+</div>
+
+<script>
+const API = { criar:'/api/create-charge', status:'/api/payment-status', entregar:'/api/deliver-kit', capi:'/api/capi-event' };
+const POLL_MS = 5000;
+// PRÉVIA (/profissional-v2): sem pixel, sem CAPI e sem painel, pra não sujar
+// os dados da campanha. A página que vende continua sendo a /profissional.
+const PIXEL_ID = '';
+// Plano escolhido nos radios do checkout. Precos em sincronia com api/_catalog.js.
+const plano = () => {
+  const r = document.querySelector('input[name="plano"]:checked');
+  return { tier: r.value, cents: Number(r.dataset.cents), nome: r.dataset.nome };
+};
+const PRECO_CENTS = 3700; // plano de referencia pro ViewContent
+
+/* =========================================================
+   PARCELAMENTO NO CARTAO (22/09)
+
+   O Pix daqui continua existindo e e o caminho padrao. O parcelado depende de
+   um checkout de plataforma (Kirvano, Hotmart, Kiwify...), porque o valor de
+   cada parcela sai da TAXA da plataforma, nao de uma conta nossa. Enquanto o
+   link nao existir, nada disso aparece na tela.
+
+   Pra ligar, preencha os tres campos de cada plano e mude ativo pra true:
+     vezes  = numero de parcelas que a plataforma mostra
+     parcela= valor de UMA parcela, EXATAMENTE como a plataforma exibe
+     url    = link do checkout daquele plano na plataforma
+   ========================================================= */
+// 06/10: desligado. O pagamento da /profissional e so Pix (PushInPay). Os
+// links da Cakto ficam guardados aqui caso o cartao volte.
+const PARCELAMENTO = {
+  ativo: false,
+  planos: {
+    profissional_pdf: { vezes: 5, parcela: '5,67', url: 'https://pay.cakto.com.br/8uf6w93_1146564' },
+    profissional:     { vezes: 6, parcela: '7,09', url: 'https://pay.cakto.com.br/n2yr82g_1146541' },
+  },
+};
+
+function aplicaParcelamento(){
+  if (!PARCELAMENTO.ativo) return;
+  document.querySelectorAll('[data-parcela]').forEach((el) => {
+    const cfg = PARCELAMENTO.planos[el.dataset.parcela];
+    if (!cfg || !cfg.vezes || !cfg.parcela) return;
+    el.textContent = 'ou ' + cfg.vezes + 'x de R$ ' + cfg.parcela;
+    el.hidden = false;
+  });
+  document.querySelectorAll('[data-avista]').forEach((el) => {
+    const r = document.querySelector('input[name="plano"][value="' + el.dataset.avista + '"]');
+    if (!r) return;
+    el.textContent = 'à vista no Pix: ' + emReais(Number(r.dataset.cents));
+    el.hidden = false;
+  });
+  // Botao extra no checkout, abaixo do Pix: cartao vai pra plataforma.
+  const alvo = document.getElementById('cartao-box');
+  if (alvo) alvo.hidden = false;
+}
+const BUMP_DEVOLUTIVA_CENTS = 1000; // manter em sincronia com api/_catalog.js
+const $ = s => document.querySelector(s);
+
+// Tarja "Oferta valida ate": mostra a data de HOJE, entao a urgencia e real
+// (o preco de amanha e decisao do dono, nao promessa quebrada de contador).
+(function initTodayDate(){
+  const el = document.getElementById('today-date');
+  if (!el) return;
+  const hoje = new Date().toLocaleDateString('pt-BR',
+    { day:'2-digit', month:'2-digit', year:'numeric', timeZone:'America/Sao_Paulo' });
+  el.textContent = hoje;
+  const tarja = document.getElementById('tarja-data');
+  if (tarja) tarja.textContent = hoje;
+})();
+
+/* =========================================================
+   Presenca e funil da /profissional (20/09)
+   Mesma mecanica da pagina das maes, com trilha propria (PRO_STEPS em
+   api/_sections.js). Sem isso o painel so mostrava a VENDA profissional, e
+   nao dava pra saber quantas entraram, de qual anuncio vieram e onde pararam.
+   Anuncio, campanha e conjunto viajam empacotados num campo so ("~"), pra nao
+   gastar comandos a mais do Redis em cada batida.
+   ========================================================= */
+const PRESENCE_MS = 8000;
+const VISITOR_ID_KEY = 'kpl_visitor_id';
+const AD_REF_KEY = 'kpl_ad_ref';
+
+function getAdRef(){
+  try{
+    const q = new URLSearchParams(location.search);
+    const daUrl = q.get('utm_content') || q.get('ad_ref') || q.get('ad') || q.get('utm_campaign');
+    if (daUrl) { const v = daUrl.slice(0,120); sessionStorage.setItem(AD_REF_KEY, v); return v; }
+    return sessionStorage.getItem(AD_REF_KEY) || '';
+  }catch(e){ return ''; }
+}
+function getUtmRef(param, chave){
+  try{
+    const v = new URLSearchParams(location.search).get(param);
+    if (v) { const t = v.slice(0,120); sessionStorage.setItem(chave, t); return t; }
+    return sessionStorage.getItem(chave) || '';
+  }catch(e){ return ''; }
+}
+const getCampaignRef = () => getUtmRef('utm_campaign', 'kpl_campaign');
+// 15/10: o guia de anuncios manda o conjunto em utm_medium ({{adset.name}}).
+// utm_term continua valendo pros anuncios antigos.
+const getAdsetRef = () => getUtmRef('utm_term', 'kpl_adset') || getUtmRef('utm_medium', 'kpl_adset');
+const getSourceRef = () => getUtmRef('utm_source', 'kpl_source');
+getCampaignRef(); getAdsetRef(); getSourceRef();
+
+// UTM ATE A CAKTO (15/10). A venda fecha no checkout da Cakto, e sem os
+// parametros na URL dela o webhook chega sem saber de qual anuncio veio: o
+// painel mostrava a visita com anuncio e a venda sem. Repassa os mesmos
+// valores que a pagina recebeu.
+function comUtm(url){
+  try{
+    const u = new URL(url);
+    const pares = { utm_source: getSourceRef(), utm_campaign: getCampaignRef(), utm_medium: getAdsetRef(), utm_content: getAdRef() };
+    // sck = id do visitante: a Cakto devolve no webhook e o painel casa a venda com a visita.
+    pares.sck = getVisitorId();
+    Object.keys(pares).forEach((k) => { if (pares[k] && !u.searchParams.get(k)) u.searchParams.set(k, pares[k]); });
+    return u.toString();
+  }catch(e){ return url; }
+}
+
+function getVisitorId(){
+  try{
+    let id = localStorage.getItem(VISITOR_ID_KEY);
+    if (!id) {
+      id = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : ('v_' + Date.now() + '_' + Math.random().toString(36).slice(2));
+      localStorage.setItem(VISITOR_ID_KEY, id);
+    }
+    return id;
+  }catch(e){ return 'v_' + Date.now(); }
+}
+
+// Ordem IGUAL a de PRO_STEPS: o indice daqui vira a profundidade no funil.
+const PRO_IDS = ['p_topo','p_dentro','p_dor','p_pecas','p_ficha','p_app','p_junto','p_bonus','p_depo','p_licenca','p_checkout','p_plano','p_dados','p_pix','p_pago'];
+let proAtual = 'p_topo';
+let proMaxIdx = 0;
+// PROGRESSO NAO REGRIDE (16/10). O id do visitante fica no localStorage, mas o
+// progresso comecava do zero a cada abertura da pagina e a batida SOBRESCREVIA
+// o proMax no servidor. Quem escolhia o plano, ia pra Cakto e voltava pro site
+// (justo quem compra) caia de "Escolheu um plano" pra "Topo" no painel. Agora
+// o mais fundo ja alcancado fica guardado no aparelho e a batida manda o maior.
+const PRO_MAX_KEY = 'kpl_pro_max';
+const PRO_PLANO_KEY = 'kpl_pro_plano';
+let proMaxSalvo = 0;
+try { proMaxSalvo = Math.max(0, PRO_IDS.indexOf(localStorage.getItem(PRO_MAX_KEY) || '')); } catch (e) {}
+function proMaxFinal(){
+  const m = Math.max(proMaxIdx, proMaxSalvo);
+  if (m > proMaxSalvo) { proMaxSalvo = m; try { localStorage.setItem(PRO_MAX_KEY, PRO_IDS[m]); } catch (e) {} }
+  return m;
+}
+function planoEscolhido(){
+  const marcado = document.querySelector('input[name="plano"]:checked')?.value || '';
+  if (proMaxIdx >= PRO_IDS.indexOf('p_plano') && marcado) return marcado;
+  try { return localStorage.getItem(PRO_PLANO_KEY) || ''; } catch (e) { return ''; }
+}
+let bateAgora = () => {};
+// Marca uma acao (escolheu plano, gerou Pix...) e manda na hora, em vez de
+// esperar a proxima batida: quem gera o Pix costuma sair da pagina logo.
+function marcaPro(id){
+  const i = PRO_IDS.indexOf(id);
+  if (i > proMaxIdx) proMaxIdx = i;
+  if (i >= 0) proAtual = id;
+  bateAgora();
+}
+
+(function initPresenca(){
+  return; // prévia: não entra no /funil
+  try{
+    const q = new URLSearchParams(location.search);
+    if (q.has('track')) localStorage.removeItem('kpl_notrack');
+    if (q.has('notrack')) localStorage.setItem('kpl_notrack', '1');
+    if (localStorage.getItem('kpl_notrack') === '1') return;
+  }catch(e){}
+
+  // id do elemento na pagina -> passo do funil
+  const alvos = { p_topo:'p_topo', p_dentro:'p_dentro', p_dor:'p_dor', p_pecas:'p_pecas', p_ficha:'p_ficha',
+                  p_app:'p_app', p_junto:'p_junto', p_bonus:'p_bonus', p_depo:'p_depo', p_licenca:'p_licenca', checkout:'p_checkout' };
+  if ('IntersectionObserver' in window) {
+    const visiveis = {};
+    const obs = new IntersectionObserver((entradas) => {
+      entradas.forEach((e) => { visiveis[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0; });
+      let melhor = null, maior = 0;
+      Object.keys(alvos).forEach((id) => { if ((visiveis[id]||0) > maior) { maior = visiveis[id]; melhor = id; } });
+      if (melhor) {
+        const passo = alvos[melhor];
+        const i = PRO_IDS.indexOf(passo);
+        // Rolar pra cima nao desfaz progresso, mas tambem nao pode "desmarcar"
+        // uma acao ja feita: por isso o passo atual so volta pra rolagem se ela
+        // for mais funda que a ultima acao marcada.
+        if (i >= PRO_IDS.indexOf(proAtual) || proMaxIdx < PRO_IDS.indexOf('p_plano')) proAtual = passo;
+        if (i > proMaxIdx) proMaxIdx = i;
+      }
+    }, { threshold: [0, 0.25, 0.5, 0.75, 1] });
+    Object.keys(alvos).forEach((id) => { const el = document.getElementById(id); if (el) obs.observe(el); });
+  }
+
+  const visitorId = getVisitorId();
+  const packRef = (...partes) => partes.map((p) => String(p || '').split('~').join('')).join('~');
+  const adRef = packRef(getAdRef(), getCampaignRef(), getAdsetRef());
+
+  const hiddenLoad = document.visibilityState === 'hidden';
+  let visible = document.visibilityState === 'visible';
+  let touched = false;
+  if (!visible) {
+    document.addEventListener('visibilitychange', function aoVer(){
+      if (document.visibilityState !== 'visible') return;
+      visible = true;
+      document.removeEventListener('visibilitychange', aoVer);
+      bate();
+    });
+  }
+  const tocou = () => { touched = true; bate(); };
+  addEventListener('pointerdown', tocou, { once: true });
+  addEventListener('keydown', tocou, { once: true });
+
+  function bate(){
+    fetch('/api/presence', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({
+        visitorId, proStep: proAtual, proMax: PRO_IDS[proMaxFinal()] || proAtual, adRef,
+        plano: proMaxFinal() >= PRO_IDS.indexOf('p_plano') ? planoEscolhido() : '',
+        hiddenLoad, visible, touched,
+        // checkoutStarted e o mesmo sinal da pagina das maes: dados preenchidos.
+        checkoutStarted: proMaxFinal() >= PRO_IDS.indexOf('p_dados'),
+      }),
+      keepalive: true,
+    }).catch(()=>{});
+  }
+  // TRAVA DO PULSO (24/09). Antes daqui o setInterval batia a cada 8s pra
+  // SEMPRE: aba esquecida aberta aparecia "ao vivo" e parada no checkout por
+  // horas, e cada batida gasta ~6 comandos do Redis. Agora o pulso so sai com
+  // a aba na frente E com a pessoa tendo mexido nos ultimos 5 minutos. Quem
+  // voltar pra aba e rolar a pagina volta a aparecer na hora.
+  const OCIO_MS = 5 * 60 * 1000;
+  let ultimaAcao = Date.now();
+  const marcaAcao = () => { ultimaAcao = Date.now(); };
+  ['pointerdown', 'keydown', 'scroll', 'touchstart', 'mousemove'].forEach((ev) => {
+    addEventListener(ev, marcaAcao, { passive: true });
+  });
+  const pulsoVivo = () => !document.hidden && (Date.now() - ultimaAcao) < OCIO_MS;
+  bateAgora = bate;
+  bate();
+  setInterval(() => { if (pulsoVivo()) bate(); }, PRESENCE_MS);
+})();
+
+let timer=null, paymentId=null, cliente=null;
+// Desenha o resumo com o plano inicial assim que a pagina carrega.
+addEventListener('DOMContentLoaded', () => { aplicaParcelamento(); atualizaTotal(); });
+
+/* =========================================================
+   Order bump do Bloco de Evolução (id interno segue 'devolutiva')
+   O valor que vale e o que o servidor recalcula pelo _catalog a partir dos
+   ids enviados. O numero aqui e so o que a pessoa ve.
+   ========================================================= */
+let bumpAceito = false;
+const bumpsEscolhidos = () => (bumpAceito ? ['devolutiva'] : []);
+const totalCents = () => plano().cents + (bumpAceito ? BUMP_DEVOLUTIVA_CENTS : 0);
+const emReais = (c) => 'R$ ' + (c / 100).toFixed(2).replace('.', ',');
+
+function travaPlanos(sim){
+  document.querySelectorAll('input[name="plano"]').forEach((r) => { r.disabled = sim; });
+}
+
+function atualizaTotal(){
+  const p = plano();
+  const cartao = PARCELAMENTO.ativo && PARCELAMENTO.planos[p.tier];
+  const btnCartao = document.getElementById('cartao-btn');
+  // Plano sem cartao (a oferta de saida de R$ 10 e so Pix): esconde o link.
+  const boxCartao = document.getElementById('cartao-box');
+  if (boxCartao) boxCartao.hidden = !(cartao && cartao.url);
+  if (btnCartao && cartao && cartao.url) {
+    btnCartao.href = cartao.url;
+    btnCartao.textContent = cartao.vezes
+      ? 'Pagar em até ' + cartao.vezes + 'x no cartão'
+      : 'Pagar no cartão';
+  }
+  $('#linha-plano-nome').textContent = p.nome;
+  $('#linha-plano-valor').textContent = emReais(p.cents);
+  $('#bump-sim-valor').textContent = emReais(p.cents + BUMP_DEVOLUTIVA_CENTS);
+  $('#bump-nao-valor').textContent = emReais(p.cents);
+  if (!$('#btn').disabled) $('#btn-label').textContent = 'Pagar ' + emReais(totalCents()) + ' com Pix';
+  const linha = document.getElementById('linha-devolutiva');
+  if (linha) linha.hidden = !bumpAceito;
+  const total = document.getElementById('total-valor');
+  if (total) total.textContent = emReais(totalCents());
+}
+
+/* =========================================================
+   Meta Pixel
+   Mesmo pixel da página das mães de propósito: é a mesma conta de anúncio, e
+   separar públicos se faz por evento e por campanha, não por pixel novo (pixel
+   zerado começa sem nenhum aprendizado).
+   Sem o rastreamento de seção que a /mae tem: a lista de seções de
+   api/_sections.js descreve a /mae, e mexer nela remontaria o significado do
+   `maxSection` já coletado.
+   ========================================================= */
+function pixelCustom(nome, dados){
+  try{ if(window.fbq) fbq('trackCustom', nome, dados||{}); }catch(e){}
+}
+
+function idEvento(){ return 'kpl_' + Date.now() + '_' + Math.random().toString(36).slice(2,10); }
+
+/** Dispara no pixel do navegador E na CAPI com o MESMO event_id, pra o Meta
+ *  desduplicar em vez de contar duas vezes. Se o adblock derrubar o client, o
+ *  servidor ainda entrega o evento. */
+function pixel(evento, dados, eventId){
+  const id = eventId || idEvento();
+  if (!PIXEL_ID) return id; // prévia: não manda nada
+  try { if (window.fbq) fbq('track', evento, dados || {}, { eventID: id }); } catch(e){}
+  fetch(API.capi, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ event_name: evento, event_id: id, data: dados || {} }),
+    keepalive: true,
+  }).catch(()=>{});
+  return id;
+}
+
+(function initPixel(){
+  if (!PIXEL_ID) return;
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+  'https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', PIXEL_ID);
+  fbq('track', 'PageView');
+  pixel('ViewContent', {
+    content_name: 'KPL Edição Profissional', content_type: 'product',
+    value: PRECO_CENTS/100, currency: 'BRL',
+  });
+})();
+
+/* ---- carrossel das fichas: cada seta rola uma ficha ---- */
+(function(){
+  // Vale pros DOIS carrosseis (fichas de consultorio e fichas da familia): as
+  // setas sao procuradas dentro do proprio .mosaico-wrap, nao por id.
+  //
+  // data-auto = passa sozinho, mas SO enquanto o trilho esta na tela (o
+  // IntersectionObserver desliga fora dela) e so depois que a pessoa chegou
+  // ali. Qualquer toque, arrasto ou clique na seta para o automatico por 9s,
+  // pra nao brigar com quem esta olhando uma ficha especifica. Quem pediu
+  // menos animacao no sistema nao recebe o automatico.
+  const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  document.querySelectorAll('.mosaico-wrap').forEach((wrap) => {
+    const trilho = wrap.querySelector('.mosaico');
+    if (!trilho) return;
+    const passo = () => (trilho.querySelector('.mosaico__item')?.getBoundingClientRect().width || 240) + 10;
+    const anda = (dir) => trilho.scrollBy({ left: dir * passo(), behavior: 'smooth' });
+
+    let pausaAte = 0;
+    const segura = () => { pausaAte = Date.now() + 9000; };
+
+    wrap.querySelector('.mosaico__seta--ant')?.addEventListener('click', () => { segura(); anda(-1); });
+    wrap.querySelector('.mosaico__seta--prox')?.addEventListener('click', () => { segura(); anda(1); });
+
+    if (calmo || !trilho.hasAttribute('data-auto')) return;
+
+    trilho.addEventListener('pointerdown', segura);
+    trilho.addEventListener('touchstart', segura, { passive: true });
+    trilho.addEventListener('wheel', segura, { passive: true });
+    wrap.addEventListener('mouseenter', segura);
+
+    let relogio = null;
+    const tique = () => {
+      if (Date.now() < pausaAte || document.hidden) return;
+      // Chegou no fim? Volta pro comeco, senao o carrossel morre parado.
+      const fim = trilho.scrollWidth - trilho.clientWidth - 4;
+      if (trilho.scrollLeft >= fim) trilho.scrollTo({ left: 0, behavior: 'smooth' });
+      else anda(1);
+    };
+    new IntersectionObserver((ents) => {
+      for (const e of ents) {
+        if (e.isIntersecting && !relogio) relogio = setInterval(tique, 3200);
+        else if (!e.isIntersecting && relogio) { clearInterval(relogio); relogio = null; }
+      }
+    }, { threshold: 0.35 }).observe(trilho);
+  });
+})();
+
+/* ---- vídeo só carrega quando chega perto: autoplay no HTML baixaria o
+   arquivo junto com a página (mesma pegadinha já corrigida na /mae) ---- */
+(function(){
+  const v=document.querySelector('.app-video'); if(!v||!v.dataset.src) return;
+  const carregar=()=>{ if(v.dataset.on) return; v.dataset.on='1';
+    v.poster=v.dataset.poster; v.src=v.dataset.src; v.play().catch(()=>{ v.controls=true; }); };
+  const perto=()=>v.getBoundingClientRect().top < innerHeight+400;
+  const aoRolar=()=>{ if(v.dataset.on){remover();return;} if(perto()){carregar();remover();} };
+  const remover=()=>{ removeEventListener('scroll',aoRolar); document.removeEventListener('scroll',aoRolar,true); };
+  addEventListener('scroll',aoRolar,{passive:true});
+  // Em captura no document também: quando o body é o container de rolagem, o
+  // evento não sobe pra window.
+  document.addEventListener('scroll',aoRolar,{passive:true,capture:true});
+  if('IntersectionObserver' in window){
+    const o=new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){carregar();o.disconnect();remover();} }),{rootMargin:'400px 0px'});
+    o.observe(v);
+  }
+  if(perto()) carregar();
+  // Rede de segurança: se nem o observer nem o scroll dispararem (já vi os dois
+  // falharem juntos em navegador automatizado, e basta o body virar o container
+  // de rolagem pra o evento não subir), o vídeo carregaria nunca e a seção
+  // ficaria com um retângulo escuro vazio. 5s é depois da página já ter pintado,
+  // então não disputa banda com o topo, que era o motivo do lazy-load.
+  setTimeout(carregar, 5000);
+})();
+
+/* ---- validação: mesmas regras do checkout principal, sem CPF ---- */
+const okNome = v => v.trim().split(/\s+/).filter(Boolean).length >= 2 && v.trim().length >= 5;
+const okEmail = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim());
+const okTel = v => v.replace(/\D/g,'').length >= 10;
+function marca(id, ok){ $(id).classList.toggle('invalid', !ok); return ok; }
+function valida(){
+  const a=marca('#f-nome',okNome($('#nome').value));
+  const b=marca('#f-email',okEmail($('#email').value));
+  const c=marca('#f-tel',okTel($('#telefone').value));
+  return a&&b&&c;
+}
+function mascaraTel(v){
+  v=v.replace(/\D/g,'').slice(0,11);
+  if(v.length<=10) return v.replace(/(\d{2})(\d{0,4})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:b?`(${a}) ${b}`:`(${a}`);
+  return v.replace(/(\d{2})(\d{5})(\d{0,4})/,(m,a,b,c)=>c?`(${a}) ${b}-${c}`:`(${a}) ${b}`);
+}
+$('#telefone').addEventListener('input', e => e.target.value = mascaraTel(e.target.value));
+['nome','email','telefone'].forEach(id => $('#'+id).addEventListener('blur', valida));
+
+/* =========================================================
+   InitiateCheckout no NOME preenchido (22/09)
+
+   Antes ele so disparava no clique de "Pagar com Pix" com tudo validado, e
+   quem preenchia o nome e desistia no meio nao aparecia em lugar nenhum: nem
+   no Meta, nem no painel. Agora vale a mesma regra da pagina das maes, nome
+   com sobrenome + saiu do campo, que e o primeiro sinal real de intencao.
+   Dispara UMA vez por sessao; o submit so completa se ainda nao tiver ido.
+   ========================================================= */
+let initiateDisparado = false;
+function disparaInitiate(){
+  if (initiateDisparado) return;
+  if (!okNome($('#nome').value)) return;
+  initiateDisparado = true;
+  pixel('InitiateCheckout', { value: plano().cents/100, currency:'BRL', content_name: plano().nome });
+  pixelCustom('FormStart', {});
+  marcaPro('p_dados'); // marca no funil e manda a batida na hora
+}
+$('#nome').addEventListener('blur', disparaInitiate);
+// Tocar no campo seguinte conta como "avancou": no celular o blur as vezes nao
+// vem, porque a pessoa toca direto no proximo campo.
+$('#email').addEventListener('focus', disparaInitiate);
+$('#telefone').addEventListener('focus', disparaInitiate);
+
+/* ---- checkout ---- */
+// CHECKOUT_CAKTO (06/10): o Pix da PushInPay passou a aparecer como alerta
+// de golpe no app do banco de quem pagava, entao a venda voltou pra Cakto. Os
+// botoes seguem o link deles. O checkout em popup abaixo fica pronto, so
+// desligado: mudar pra false volta tudo pro Pix na pagina.
+const CHECKOUT_CAKTO = true;
+
+// Checkout em popup (06/10). Abre por cima da pagina com o plano marcado.
+function checkoutAberto(){ const m = document.getElementById('legacy-checkout'); return !!(m && !m.hidden); }
+function abreCheckout(tier){
+  const radio = document.querySelector('input[name="plano"][value="' + tier + '"]');
+  if (radio && !radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+  document.getElementById('legacy-checkout').hidden = false;
+  document.querySelector('.ck-modal__caixa').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+  marcaPro('p_plano');
+  // So foca o nome se o formulario ainda esta na tela (nao depois do Pix gerado).
+  const nome = document.getElementById('nome');
+  if (nome && nome.offsetParent) setTimeout(() => nome.focus({ preventScroll: true }), 120);
+}
+function fechaCheckout(){
+  document.getElementById('legacy-checkout').hidden = true;
+  document.body.style.overflow = '';
+}
+document.getElementById('ck-fechar').addEventListener('click', fechaCheckout);
+document.getElementById('legacy-checkout').addEventListener('click', (e) => { if (e.target.id === 'legacy-checkout') fechaCheckout(); });
+addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape' || !checkoutAberto()) return;
+  if (document.getElementById('bump-step')?.classList.contains('show')) return; // ali o Esc volta pro form
+  fechaCheckout();
+});
+
+// Card inteiro seleciona o plano; o botao do card abre o checkout em popup.
+document.querySelectorAll('.plano').forEach((card) => {
+  const radio = card.querySelector('input[name="plano"]');
+  const btn = card.querySelector('.plano__btn');
+  card.addEventListener('click', (ev) => {
+    if (radio.checked) return;
+    radio.checked = true;
+    radio.dispatchEvent(new Event('change', { bubbles: true }));
+  });
+  btn?.addEventListener('click', (e) => {
+    if (CHECKOUT_CAKTO) {
+      // Segue o link da Cakto. Nao dispara InitiateCheckout aqui: a Cakto
+      // dispara quando o checkout abre, e seriam dois pra mesma visita.
+      if (!radio.checked) { radio.checked = true; radio.dispatchEvent(new Event('change', { bubbles: true })); }
+      try { localStorage.setItem(PRO_PLANO_KEY, radio.value); } catch (err) {}
+      marcaPro('p_plano');
+      if (!btn.dataset.base) btn.dataset.base = btn.href;
+      btn.href = comUtm(btn.dataset.base);
+      return;
+    }
+    e.preventDefault();
+    e.stopPropagation();
+    abreCheckout(btn.dataset.checkout || radio.value);
+  });
+});
+
+document.querySelectorAll('input[name="plano"]').forEach((r) => r.addEventListener('change', () => {
+  pixelCustom('PlanoEscolhido', { plano: r.value });
+  try { localStorage.setItem(PRO_PLANO_KEY, r.value); } catch (e) {}
+  marcaPro('p_plano');
+  atualizaTotal();
+}));
+// ETAPA 1: valida e abre o painel do bump. Ninguem e cobrado aqui.
+$('#form').addEventListener('submit', e => {
+  e.preventDefault();
+  $('#erro').classList.remove('show');
+  if(!valida()){ $('.invalid input')?.focus(); return; }
+
+  cliente = { name:$('#nome').value.trim(), email:$('#email').value.trim(), phone:$('#telefone').value.replace(/\D/g,'') };
+  // Rede de seguranca: se o nome foi preenchido sem passar por blur nem pelo
+  // foco dos outros campos (autopreenchimento do navegador, por exemplo), o
+  // evento sai aqui. A trava interna impede contar duas vezes.
+  disparaInitiate();
+
+  marcaPro('p_dados');
+  $('#bump-step').classList.add('show');
+  document.getElementById('bump-sim').focus();
+});
+
+// ETAPA 2: a escolha do bump gera o Pix.
+document.getElementById('bump-sim').addEventListener('click', () => {
+  bumpAceito = true;
+  pixelCustom('BumpAceito', { bump_id: 'devolutiva' });
+  fechaBumpEGera();
+});
+// Volta pro formulario sem gerar nada. Sem isso, quem percebe que errou o
+// e-mail fica preso: os dois botoes do painel geram o Pix.
+function voltaPraForm(){
+  $('#bump-step').classList.remove('show');
+  $('#btn').focus();
+}
+$('#bump-step').addEventListener('click', (ev) => { if (ev.target.id === 'bump-step') voltaPraForm(); });
+document.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape' && $('#bump-step').classList.contains('show')) voltaPraForm();
+});
+
+document.getElementById('bump-nao').addEventListener('click', () => {
+  bumpAceito = false;
+  fechaBumpEGera();
+});
+
+async function fechaBumpEGera(){
+  $('#bump-step').classList.remove('show');
+  atualizaTotal();
+
+  const btn=$('#btn'), rotulo='Pagar ' + emReais(totalCents()) + ' com Pix';
+  $('#btn-label').textContent = rotulo;
+  btn.disabled=true; $('#btn-label').textContent='Gerando Pix...';
+
+  try{
+    const r = await fetch(API.criar, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      // tier 'profissional': o servidor recalcula o valor pelo _catalog e grava
+      // esse tierId no token, que é o que faz o download.js entregar o PDF
+      // profissional em vez do kit das mães.
+      body: JSON.stringify({ customer: cliente, method:'pix', tier: plano().tier,
+        bumps: bumpsEscolhidos(), adRef:'profissional' })
+    });
+    if(!r.ok) throw new Error('status '+r.status);
+    const d = await r.json();
+    if(!d.paymentId || !d.pix) throw new Error('resposta inválida');
+
+    paymentId = d.paymentId;
+    marcaPro('p_pix');
+    // Trava o plano com o Pix na tela: trocar agora mudaria o valor do Purchase
+    // no pixel sem mudar a cobranca.
+    travaPlanos(true);
+    $('#form').style.display='none';
+    $('#pix').classList.add('show');
+    const qr=d.pix.qrCodeImage||'';
+    $('#qr').innerHTML = qr ? `<img src="${qr.startsWith('data:')||qr.startsWith('http')?qr:'data:image/png;base64,'+qr}" alt="QR Code Pix">` : '';
+    $('#codigo').textContent = d.pix.copiaECola||'';
+    $('#codigo').dataset.full = d.pix.copiaECola||'';
+    $('#pix').scrollIntoView({behavior:'smooth',block:'start'});
+    poll();
+  }catch(err){
+    console.error(err);
+    $('#erro').textContent='Não conseguimos gerar seu Pix agora. Confira os dados e tente de novo. Se continuar, escreva para kitpratolimpo@gmail.com.';
+    $('#erro').classList.add('show');
+    btn.disabled=false; $('#btn-label').textContent=rotulo;
+  }
+}
+
+$('#copiar').addEventListener('click', async () => {
+  const c = $('#codigo').dataset.full || $('#codigo').textContent;
+  try{ await navigator.clipboard.writeText(c); }
+  catch(e){ const t=document.createElement('textarea'); t.value=c; document.body.appendChild(t); t.select(); document.execCommand('copy'); t.remove(); }
+  const b=$('#copiar'), o=b.textContent; b.textContent='Copiado ✓'; setTimeout(()=>b.textContent=o,1800);
+});
+
+function poll(){
+  clearInterval(timer);
+  timer = setInterval(async () => {
+    try{
+      const r = await fetch(`${API.status}?id=${encodeURIComponent(paymentId)}`);
+      if(!r.ok) return;
+      const { status } = await r.json();
+      if(status==='paid'||status==='approved'){ clearInterval(timer); pago(); }
+      else if(status==='expired'||status==='canceled'){
+        clearInterval(timer);
+        $('#pix').classList.remove('show'); $('#form').style.display='';
+        travaPlanos(false);
+        $('#btn').disabled=false;
+        $('#erro').textContent='O Pix expirou. Gere um novo para concluir.';
+        $('#erro').classList.add('show');
+      }
+    }catch(e){}
+  }, POLL_MS);
+}
+
+function pago(){
+  marcaPro('p_pago');
+  $('#pix').classList.remove('show');
+  $('#ok').classList.add('show');
+  $('#ok').scrollIntoView({behavior:'smooth',block:'center'});
+
+  // Purchase só no pixel do navegador. O event_id 'purchase_<paymentId>' é o
+  // MESMO que api/deliver-kit.js usa na CAPI logo abaixo, então o Meta conta
+  // uma venda só. Não mandar por /api/capi-event: Purchase nem está na lista
+  // de eventos de lá, e o deliver-kit manda a versão com e-mail e telefone
+  // hasheados, que casa muito melhor.
+  try { if (window.fbq) fbq('track', 'Purchase',
+    { value: totalCents()/100, currency:'BRL', content_name: plano().nome },
+    { eventID: 'purchase_' + paymentId }); } catch(e){}
+
+  // mesma chamada do checkout principal: é ela que gera o acesso e manda o
+  // e-mail. Se falhar aqui, o webhook da PushInPay é a rede de segurança.
+fetch(API.entregar, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    // 15/10: manda o anuncio de verdade (antes ia fixo 'profissional') e o visitante.
+    body: JSON.stringify({ paymentId, name:cliente.name, email:cliente.email, phone:cliente.phone,
+      adRef: getAdRef() || 'profissional', campaign: getCampaignRef(), adset: getAdsetRef(), vid: getVisitorId() })
+}).catch(()=>{});
+}
+
+const depoModal = document.getElementById('depo-modal');
+const depoModalImg = depoModal.querySelector('.depo__modal-img');
+document.querySelectorAll('[data-depo-img]').forEach((botao) => {
+  botao.addEventListener('click', () => {
+    const miniatura = botao.querySelector('img');
+    depoModalImg.src = botao.dataset.depoImg;
+    depoModalImg.alt = miniatura.alt;
+    depoModal.showModal();
+  });
+});
+depoModal.querySelector('.depo__fechar').addEventListener('click', () => depoModal.close());
+depoModal.addEventListener('click', (evento) => {
+  if (evento.target === depoModal) depoModal.close();
+});
+depoModal.addEventListener('close', () => {
+  depoModalImg.removeAttribute('src');
+  depoModalImg.alt = '';
+});
+
+
+/* ---- Licenca como item de adicionar (30/09) ----------------------------
+   Os dois cards andam juntos: marcou num, marca no outro. Nao muda o pedido
+   nem a entrega (a licenca vai pra todos). O toque nao seleciona o plano do
+   card, pra nao mexer na escolha da pessoa. */
+(function(){
+  const btns = [...document.querySelectorAll('.lic__btn')];
+  if (!btns.length) return;
+  btns.forEach((b) => b.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const marcar = b.getAttribute('aria-pressed') !== 'true';
+    btns.forEach((x) => {
+      x.setAttribute('aria-pressed', String(marcar));
+      x.querySelector('.lic__txt').innerHTML = marcar
+        ? '<b>Licença de uso com seus pacientes</b> adicionada'
+        : 'Adicionar a <b>licença de uso com seus pacientes</b>';
+    });
+    if (marcar) pixelCustom('LicencaAdicionada');
+  }));
+})();
+
+/* ---- OFERTA DE SAIDA (30/09) --------------------------------------------
+   Arma quando os cards de preco entram na tela. Armada, espera um TOQUE novo
+   na pagina e so entao empurra uma entrada no historico: o "voltar" seguinte
+   cai nela e abre o popup em vez de sair.
+
+   Por que o toque: o Chrome do Android pula entrada de historico criada sem
+   interacao da pessoa (protecao contra pagina que prende o voltar), e rolar
+   nao conta como interacao. O toque tem que ser DEPOIS de armar, pra ser
+   recente na hora do pushState.
+
+   No iPhone, dentro do Instagram, nao funciona: a pessoa sai pelo X do
+   navegador do app, que fecha a janela sem avisar a pagina.
+
+   UMA_VEZ: em producao e true (o popup diz "aparece uma vez so", e precisa
+   ser verdade). Esta em false TEMPORARIAMENTE, pra teste no celular.
+   ?saida=debug mostra uma caixinha com cada etapa ao vivo. */
+(function(){
+  const UMA_VEZ = false; // TESTE 30/09: voltar pra true depois do teste
+  // 06/10: os planos voltaram pra Cakto, mas o R$ 10 segue no Pix da
+  // PushInPay (popup na pagina) ate existir oferta de R$ 10 na Cakto. Quando
+  // existir: preencha SAIDA_CAKTO_URL e troque o texto "No Pix, direto nesta
+  // pagina" do popup.
+  const SAIDA_CAKTO_URL = '';
+  const caixa = document.getElementById('saida');
+  const oferta = document.querySelector('#checkout .planos');
+  if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
+  const CHAVE = 'kpl_oferta_saida';
+  const qs = (() => { try { return new URLSearchParams(location.search).get('saida'); } catch(e) { return null; } })();
+  try { if (qs === 'reset') localStorage.removeItem(CHAVE); } catch(e) {}
+  const jaViu = () => { if (!UMA_VEZ) return false; try { return localStorage.getItem(CHAVE) === '1'; } catch(e) { return false; } };
+
+  // Caixinha de diagnostico (so com ?saida=debug)
+  let dbg = null;
+  const log = (txt) => {
+    if (qs !== 'debug') return;
+    if (!dbg) {
+      dbg = document.createElement('div');
+      dbg.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99;max-width:70vw;background:rgba(0,0,0,.82);color:#fff;font:12px/1.35 monospace;padding:8px 10px;border-radius:8px;pointer-events:none';
+      document.body.appendChild(dbg);
+    }
+    const h = new Date().toTimeString().slice(0, 8);
+    dbg.innerHTML = (h + ' ' + txt + '<br>' + dbg.innerHTML).split('<br>').slice(0, 8).join('<br>');
+  };
+  log('carregou · historico=' + history.length + (jaViu() ? ' · JA VIU' : ''));
+  if (jaViu()) return;
+
+  let armada = false, empurrada = false;
+  function empurra(){
+    if (empurrada || jaViu()) return;
+    empurrada = true;
+    history.pushState({ kplSaida: 1 }, '');
+    addEventListener('popstate', abre, { once: true });
+    log('ponto de retorno criado · historico=' + history.length);
+  }
+  // SO CLICK E TECLA (30/09, visto na caixinha de debug): `touchend` e
+  // `pointerup` disparam tambem no fim de um DESLIZE, e deslizar nao e
+  // interacao pro Chrome. A entrada criada ali era pulada no voltar. O `click`
+  // so sai de toque de verdade. E antes do pushState o proprio navegador e
+  // consultado (userActivation.isActive): se ele nao reconhece, espera o proximo.
+  function esperaToque(){
+    log('armada: toque na tela pra preparar o voltar');
+    const vai = () => {
+      const ativo = navigator.userActivation ? navigator.userActivation.isActive : true;
+      log('toque recebido · navegador reconhece=' + ativo);
+      if (!ativo) return;
+      ['click', 'keydown'].forEach((ev) => removeEventListener(ev, vai, true));
+      empurra();
+    };
+    ['click', 'keydown'].forEach((ev) => addEventListener(ev, vai, true));
+  }
+
+  const obs = new IntersectionObserver((ents) => {
+    if (armada || !ents.some((e) => e.isIntersecting)) return;
+    armada = true; obs.disconnect();
+    log('chegou nos precos');
+    // Quem chegou nos precos CLICANDO num botao (os "Quero o kit completo" e
+    // "Escolher meu plano" levam direto pra #checkout) ainda tem a interacao
+    // valendo por alguns segundos. Aproveita ela, em vez de exigir outro toque.
+    if (navigator.userActivation && navigator.userActivation.isActive) {
+      log('chegou clicando num botao · navegador reconhece=true');
+      empurra();
+      return;
+    }
+    esperaToque();
+  }, { threshold: 0, rootMargin: '0px 0px -40% 0px' });
+  obs.observe(oferta);
+
+  function abre(){
+    log('VOLTAR percebido');
+    // Voltar com o checkout aberto fecha o checkout, como a pessoa espera, em
+    // vez de jogar a oferta de R$ 10 por cima de quem esta pagando.
+    if (checkoutAberto()) { fechaCheckout(); empurrada = false; esperaToque(); log('fechou o checkout'); return; }
+    if (jaViu()) { history.back(); return; }
+    if (UMA_VEZ) { try { localStorage.setItem(CHAVE, '1'); } catch(e) {} }
+    caixa.hidden = false;
+    document.body.style.overflow = 'hidden';
+    pixelCustom('ExitOfferView', { value: 10, currency: 'BRL' });
+    document.getElementById('saida-sim').focus();
+    log('popup aberto');
+  }
+  function fecha(){
+    caixa.hidden = true;
+    document.body.style.overflow = '';
+    // Em teste, deixa preparar de novo pra repetir sem recarregar.
+    if (!UMA_VEZ) { empurrada = false; esperaToque(); }
+  }
+  function recusa(){ fecha(); pixelCustom('ExitOfferDecline'); }
+
+  document.getElementById('saida-fechar').addEventListener('click', recusa);
+  document.getElementById('saida-nao').addEventListener('click', recusa);
+  caixa.addEventListener('click', (e) => { if (e.target === caixa) recusa(); });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !caixa.hidden) recusa(); });
+
+  document.getElementById('saida-sim').addEventListener('click', () => {
+    fecha();
+    pixelCustom('ExitOfferAccept', { value: 10, currency: 'BRL' });
+    if (SAIDA_CAKTO_URL) { location.href = SAIDA_CAKTO_URL; return; }
+    abreCheckout('profissional_saida');
+  });
+})();
+</script>
+
+<script>
+/* ===================== PRÉVIA 19/10: seções novas ===================== */
+(function(){
+  // 1. vídeo do topo: toque liga o som e volta o vídeo pro começo
+  const box = document.getElementById('hero-video');
+  const v = box && box.querySelector('video');
+  document.getElementById('hero-som')?.addEventListener('click', () => {
+    if (!v) return;
+    v.muted = false; v.currentTime = 0; v.play().catch(()=>{});
+    box.classList.add('com-som');
+  });
+
+  // 2. seletor por dificuldade
+  const CASOS = [
+    { bot:'Come só 5 alimentos', img:'C46', etapa:'Casos difíceis · 25 min', nome:'Só cinco alimentos',
+      texto:'Quando o repertório é mínimo, o alimento novo não entra do nada. Ele entra pela ponte: mesma cor, mesma textura ou o mesmo preparo do que a criança já aceita.',
+      meta:'Na ficha: como montar a lista de pontes e o que dizer em cada exposição.' },
+    { bot:'Recusa só de ver', img:'C07', etapa:'Aproximação sem contato', nome:'Retrato do alimento',
+      texto:'Para a criança que recusa antes de qualquer contato. O alimento entra pela distância e pelo olhar, sem pedir que ela toque ou prove.',
+      meta:'Na ficha: o passo a passo, o que observar e a tarefa para casa.' },
+    { bot:'Ânsia antes de comer', img:'C49', etapa:'Casos difíceis · 25 min', nome:'A náusea antes de comer',
+      texto:'Quando o enjoo aparece antes da primeira mordida, o gatilho é a antecipação. A ficha trabalha a distância e dessensibiliza sem forçar a boca.',
+      meta:'Na ficha: o registro da menor distância tolerada, sessão a sessão.' },
+    { bot:'Travou depois de engasgo', img:'C48', etapa:'Casos difíceis · 25 min', nome:'Depois do engasgo',
+      texto:'Um episódio de engasgo deixa medo de um alimento ou de uma textura. A reapresentação só funciona com a criança no controle de cada passo.',
+      meta:'Na ficha: começa com a liberação clínica e o alimento em versão macia.' },
+    { bot:'Chora e trava na mesa', img:'C35', etapa:'Recusa e crise · 15 min', nome:'O relógio da tempestade',
+      texto:'A família sente que o choro dura uma eternidade. Medir o tempo real costuma mostrar poucos minutos, e isso derruba o medo que faz o adulto ceder.',
+      meta:'Na ficha: o que dizer durante a crise e o que evitar.' },
+    { bot:'Só aceita uma marca', img:'C50', etapa:'Casos difíceis · 20 min', nome:'A marca de sempre',
+      texto:'A criança que só aceita uma marca costuma estar presa à embalagem, não ao sabor. O teste cego mostra isso para a família em uma rodada.',
+      meta:'Na ficha: as três rodadas do teste e como registrar.' },
+  ];
+  const bots = document.getElementById('dific-botoes');
+  const card = document.getElementById('dific-card');
+  const mostra = (i) => {
+    const c = CASOS[i];
+    bots.querySelectorAll('button').forEach((b, j) => b.setAttribute('aria-selected', j === i ? 'true' : 'false'));
+    const img = document.getElementById('dific-img');
+    img.src = 'assets/fichas-consultorio-web/' + c.img + '.webp';
+    img.alt = 'Ficha ' + c.nome;
+    document.getElementById('dific-etapa').textContent = c.etapa;
+    document.getElementById('dific-nome').textContent = c.nome;
+    document.getElementById('dific-texto').textContent = c.texto;
+    document.getElementById('dific-meta').textContent = c.meta;
+    card.classList.remove('troca'); void card.offsetWidth; card.classList.add('troca');
+  };
+  if (bots && card) {
+    CASOS.forEach((c, i) => {
+      const b = document.createElement('button');
+      b.type = 'button'; b.setAttribute('role', 'tab'); b.textContent = c.bot;
+      b.addEventListener('click', () => mostra(i));
+      bots.appendChild(b);
+    });
+    mostra(0);
+    // deslizar o card para o lado troca de caso
+    let x0 = null;
+    card.addEventListener('touchstart', (e) => { x0 = e.touches[0].clientX; }, { passive: true });
+    card.addEventListener('touchend', (e) => {
+      if (x0 === null) return;
+      const dx = e.changedTouches[0].clientX - x0; x0 = null;
+      if (Math.abs(dx) < 40) return;
+      const atual = [...bots.children].findIndex((b) => b.getAttribute('aria-selected') === 'true');
+      mostra((atual + (dx < 0 ? 1 : CASOS.length - 1)) % CASOS.length);
+    });
+  }
+
+  // 3. interruptor sem roteiro x com a ficha
+  const SEM = { titulo:'Consulta sem roteiro', resumo:'A próxima consulta recomeça do zero.', itens:[
+    ['🕐','Você improvisa a atividade na hora, com o que tem na sala'],
+    ['🤔','Não fica claro o que observar nem o que anotar'],
+    ['💬','A mãe pergunta "e em casa, o que eu faço?"'],
+    ['📝','Ela sai com uma lista de orientações escrita à mão'],
+    ['❓','No retorno, ninguém sabe o que foi feito em casa'] ] };
+  const COM = { titulo:'Consulta com a ficha', resumo:'O retorno começa de onde parou.', itens:[
+    ['📋','Material separado e passo a passo numerado'],
+    ['🔍','O que observar já vem escrito, direto para o prontuário'],
+    ['🗣️','A fala pronta e a frase que você deve evitar'],
+    ['🏠','A família leva a ficha da tarefa para casa'],
+    ['📱','O app registra o que a criança provou até o retorno'] ] };
+  const btn = document.getElementById('chave-btn');
+  const sessao = document.getElementById('sessao');
+  const pinta = (com) => {
+    const d = com ? COM : SEM;
+    btn.setAttribute('aria-pressed', com ? 'true' : 'false');
+    btn.setAttribute('aria-label', com ? 'Mostrar a consulta sem roteiro' : 'Mostrar a consulta com a ficha');
+    document.getElementById('chave-on').classList.toggle('on', com);
+    document.getElementById('chave-off').classList.toggle('on', !com);
+    sessao.classList.toggle('com', com);
+    document.getElementById('sessao-titulo').textContent = d.titulo;
+    document.getElementById('sessao-resumo').textContent = d.resumo;
+    document.getElementById('sessao-lista').innerHTML = d.itens.map(([ic, tx], i) =>
+      `<li class="anima" style="animation-delay:${i * 70}ms"><span>${ic}</span><span>${tx}</span></li>`).join('');
+  };
+  if (btn && sessao) {
+    pinta(false);
+    btn.addEventListener('click', () => pinta(btn.getAttribute('aria-pressed') !== 'true'));
+  }
+
+  // 4. da consulta à mesa: acende passo a passo enquanto a seção está na tela
+  const fluxo = document.getElementById('fluxo');
+  if (fluxo) {
+    const passos = [...fluxo.querySelectorAll('li')];
+    const barra = document.getElementById('fluxo-barra');
+    const calmo = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = -1, timer = null;
+    const anda = () => {
+      i = (i + 1) % (passos.length + 1);
+      passos.forEach((p, j) => { p.classList.toggle('ativo', j === i); p.classList.toggle('feito', j < i); });
+      barra.style.width = (Math.min(i + 1, passos.length) / passos.length * 100) + '%';
+    };
+    if (calmo) { passos.forEach((p) => p.classList.add('feito')); barra.style.width = '100%'; }
+    else new IntersectionObserver((es) => es.forEach((e) => {
+      if (e.isIntersecting && !timer) { anda(); timer = setInterval(anda, 1600); }
+      if (!e.isIntersecting && timer) { clearInterval(timer); timer = null; }
+    }), { threshold: .35 }).observe(fluxo);
+  }
+})();
+</script>
+</body>
+</html>
