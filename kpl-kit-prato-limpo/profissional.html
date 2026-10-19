@@ -1255,11 +1255,7 @@
         <ul class="plano__list">
           <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
           <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
-          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
-            <span class="lic__box" aria-hidden="true"></span>
-            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
-            <span class="lic__tag">Grátis</span>
-          </button></li>
+          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
           <li><span class="ic">✅</span>Acesso imediato, em PDF</li>
           <li class="off"><span class="ic">➖</span>Sem o aplicativo</li>
         </ul>
@@ -1286,11 +1282,7 @@
         <ul class="plano__list">
           <li><span class="ic">✅</span>60 fichas de consultório, em 12 etapas</li>
           <li><span class="ic">✅</span>129 fichas para a família levar pra casa</li>
-          <li class="lic"><button type="button" class="lic__btn" aria-pressed="false">
-            <span class="lic__box" aria-hidden="true"></span>
-            <span class="lic__txt">Adicionar a <b>licença de uso com seus pacientes</b></span>
-            <span class="lic__tag">Grátis</span>
-          </button></li>
+          <li><span class="ic">✅</span>Licença de uso com seus pacientes</li>
           <li class="plano__separador">EXCLUSIVO DO PLANO COMPLETO</li>
           <li><span class="ic">📱</span><span class="plano__hl">Aplicativo com a aba Consultório no tablet</span></li>
           <li class="plano__separador">APP DA FAMÍLIA · 4 ABAS</li>
@@ -2194,6 +2186,10 @@ depoModal.addEventListener('close', () => {
   // existir: preencha SAIDA_CAKTO_URL e troque o texto "No Pix, direto nesta
   // pagina" do popup.
   const SAIDA_CAKTO_URL = '';
+  // 20/10: popup de R$ 10 DESLIGADO por enquanto (pedido do Thyago).
+  // Pra religar, troque para true. Nada mais precisa mudar.
+  const OFERTA_SAIDA_LIGADA = false;
+  if (!OFERTA_SAIDA_LIGADA) return;
   const caixa = document.getElementById('saida');
   const oferta = document.querySelector('#checkout .planos');
   if (!caixa || !oferta || !('IntersectionObserver' in window) || !history.pushState) return;
