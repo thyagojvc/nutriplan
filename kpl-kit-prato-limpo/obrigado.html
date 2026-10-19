@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Compra confirmada · Kit Prato Limpo</title>
+<meta name="robots" content="noindex, nofollow" />
+<link rel="icon" href="assets/favicon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<!-- PÁGINA DE OBRIGADO (19/10). A Cakto abre esta página depois do pagamento.
+     O e-mail de acesso, vindo de um remetente novo, cai no lixo eletrônico do
+     Hotmail, e a cliente ficava esperando "o material que não chegou". Aqui o
+     acesso aparece na hora: a /profissional manda o id do visitante (sck) pra
+     Cakto, o webhook guarda o link por esse id, e esta página pergunta por ele
+     usando o id que está no aparelho de quem comprou. O e-mail vira reserva.
+     Sem pixel de propósito: a compra já é registrada pela Cakto e pelo
+     servidor; disparar aqui contaria a venda duas vezes. -->
+<style>
+  :root{
+    --cream:#FBF8F1; --cream-2:#F4EFE3; --mint:#E8F1DD;
+    --green:#5CA741; --green-dark:#3C7A2C; --orange:#F2911F; --coral-soft:#FBE0D5;
+    --ink:#1E2721; --text:#3A443D; --muted:#58645B; --border:#E3DCCB;
+    --heading:"Baloo 2",system-ui,sans-serif; --body:"Nunito",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--cream);color:var(--text);font-family:var(--body);font-weight:700;line-height:1.5}
+  .wrap{max-width:560px;margin:0 auto;padding:28px 20px 48px;text-align:center}
+  .logo{width:72px;height:72px;margin:0 auto 10px;display:block;border-radius:18px}
+  h1{font-family:var(--heading);font-size:2rem;line-height:1.1;color:var(--ink);margin:6px 0 8px}
+  .sub{margin:0 auto 22px;max-width:30rem;font-size:1.05rem}
+  .card{background:#fff;border:1px solid var(--border);border-radius:22px;padding:22px 18px;box-shadow:0 14px 34px -22px rgba(30,39,33,.45)}
+  .estado{display:none}
+  .estado.on{display:block}
+  .roda{width:44px;height:44px;border-radius:50%;border:5px solid var(--mint);border-top-color:var(--green);margin:6px auto 14px;animation:gira .9s linear infinite}
+  @keyframes gira{to{transform:rotate(360deg)}}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;min-height:62px;padding:16px 22px;margin:14px 0 6px;
+    font-family:var(--heading);font-weight:800;font-size:1.15rem;letter-spacing:.02em;text-transform:uppercase;color:#fff;text-decoration:none;
+    background:linear-gradient(180deg,#6DC050,var(--green));border-radius:999px;box-shadow:0 10px 0 -2px rgba(60,122,44,.35),0 14px 26px rgba(38,48,42,.18)}
+  .btn:active{transform:translateY(3px)}
+  .ok{font-size:2.6rem;line-height:1;margin-bottom:6px}
+  .dica{font-size:.92rem;color:var(--muted);margin:10px 0 0}
+  .passos{text-align:left;margin:18px 0 0;padding:0;list-style:none;display:grid;gap:10px}
+  .passos li{display:grid;grid-template-columns:30px 1fr;gap:8px;font-size:.97rem}
+  .aviso{background:var(--coral-soft);border-radius:14px;padding:12px 14px;text-align:left;font-size:.95rem;margin-top:14px}
+  .contato{margin-top:22px;font-size:.92rem;color:var(--muted)}
+  .contato a{color:var(--green-dark)}
+  @media (prefers-reduced-motion:reduce){.roda{animation:none}}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <img class="logo" src="assets/favicon.png" alt="" />
+  <h1>Compra confirmada! 🎉</h1>
+  <p class="sub">Obrigado pela confiança. Seu Kit Prato Limpo Profissional já está sendo liberado.</p>
+
+  <div class="card">
+    <!-- 1. esperando o aviso da Cakto -->
+    <div class="estado on" id="esperando">
+      <div class="roda" aria-hidden="true"></div>
+      <p><b>Liberando seu acesso...</b></p>
+      <p class="dica">Leva poucos segundos. Não feche esta página.</p>
+    </div>
+
+    <!-- 2. acesso liberado -->
+    <div class="estado" id="pronto">
+      <div class="ok" aria-hidden="true">✅</div>
+      <p><b id="pronto-titulo">Seu acesso está liberado</b></p>
+      <a class="btn" id="pronto-link" href="#">Acessar meu kit agora</a>
+      <p class="dica">Este link é só seu. Salve esta página nos favoritos ou guarde o e-mail de confirmação para entrar de novo.</p>
+      <ul class="passos" id="pronto-passos"></ul>
+    </div>
+
+    <!-- 3. não deu pra achar por aqui: o e-mail é o caminho -->
+    <div class="estado" id="email">
+      <div class="ok" aria-hidden="true">📩</div>
+      <p><b>Seu acesso foi enviado para o seu e-mail</b></p>
+      <p>Procure por <b>"Seu acesso ao Kit Prato Limpo"</b>, enviado por <b>acesso@kitpratolimpo.com.br</b>.</p>
+      <div class="aviso">⚠️ Se não estiver na caixa de entrada, confira as pastas <b>Lixo eletrônico</b>, <b>Spam</b> ou <b>Promoções</b>. No Hotmail e no Outlook ele costuma cair lá nos primeiros envios.</div>
+    </div>
+  </div>
+
+  <p class="contato">Precisa de ajuda? Escreva para <a href="mailto:kitpratolimpo@gmail.com">kitpratolimpo@gmail.com</a> com o e-mail usado na compra.</p>
+</main>
+
+<script>
+(function(){
+  const mostra = (id) => document.querySelectorAll('.estado').forEach((e) => e.classList.toggle('on', e.id === id));
+  let vid = '';
+  try { vid = localStorage.getItem('kpl_visitor_id') || ''; } catch (e) {}
+  // Sem o id (abriu em outro navegador ou aparelho), o e-mail é o caminho.
+  if (!vid) { mostra('email'); return; }
+
+  const PASSOS = {
+    completo: [
+      ['📱', 'No aplicativo você encontra as 60 fichas de consultório, as 129 da família e os bônus.'],
+      ['🔗', 'Para mandar o app às famílias, abra a aba Consultório e toque em "Gerar o link da família".'],
+    ],
+    basico: [
+      ['📄', 'O link abre as fichas em PDF, prontas para imprimir ou usar no tablet.'],
+      ['✉️', 'A Cakto também envia o seu acesso por e-mail.'],
+    ],
+  };
+  const inicio = Date.now();
+  const LIMITE = 4 * 60 * 1000; // depois disso, aponta pro e-mail
+
+  async function pergunta(){
+    try {
+      const r = await fetch('/api/payment-status?vid=' + encodeURIComponent(vid), { cache: 'no-store' });
+      const d = await r.json();
+      if (d.status === 'paid' && d.url) {
+        document.getElementById('pronto-link').href = d.url;
+        document.getElementById('pronto-titulo').textContent = d.plano === 'basico'
+          ? 'Seu Plano Básico está liberado' : 'Seu Plano Completo está liberado';
+        document.getElementById('pronto-passos').innerHTML = (PASSOS[d.plano] || PASSOS.completo)
+          .map(([ic, tx]) => '<li><span>' + ic + '</span><span>' + tx + '</span></li>').join('');
+        mostra('pronto');
+        return;
+      }
+    } catch (e) { /* rede instável: tenta de novo */ }
+    if (Date.now() - inicio > LIMITE) { mostra('email'); return; }
+    setTimeout(pergunta, 3000);
+  }
+  pergunta();
+})();
+</script>
+</body>
+</html>

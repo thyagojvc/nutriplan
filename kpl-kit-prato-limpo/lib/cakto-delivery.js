@@ -106,6 +106,21 @@ function liquidoCentavos(order) {
   return Number.isFinite(v) && v > 0 ? Math.round(v * 100) : null;
 }
 
+// ACESSO NA TELA (19/10). O e-mail de um remetente novo cai no lixo do
+// Hotmail, e a cliente fica esperando "o material que nao chegou". Guarda o
+// link do acesso pelo id do visitante (sck, que a /profissional poe no link da
+// Cakto). A pagina /obrigado, que a Cakto abre depois do pagamento, le esse id
+// do aparelho de quem comprou e mostra o botao na hora. O e-mail vira reserva.
+const ACESSO_TTL = 60 * 60 * 24 * 30;
+function vidDoPedido(order) {
+  return (utmDoPedido(order, 'sck') || '').replace(/[^\w-]/g, '').slice(0, 64);
+}
+async function guardaAcessoDoVisitante(order, url, plano, services) {
+  const vid = vidDoPedido(order);
+  if (!vid || !url) return;
+  await services.redis('SET', `vidacesso:${vid}`, JSON.stringify({ url, plano, ts: Date.now() }), 'EX', ACESSO_TTL);
+}
+
 async function registraVenda(order, tierName, services) {
   const marca = `cakto:sale:${order.id}`;
   if ((await services.redis('SET', marca, '1', 'NX', 'EX', 60 * 60 * 24 * 90)) !== 'OK') return;
@@ -147,6 +162,9 @@ async function deliverOrder(order, services) {
     const accessUrl = await services.createDownloadLink(
       `cakto-${orderId}`, email, name, 'profissional', { gateway: 'cakto' });
     if (!accessUrl) throw new Error('Não foi possível criar o acesso individual');
+    // Antes do e-mail: se o envio falhar, a pagina /obrigado ainda mostra o acesso.
+    await guardaAcessoDoVisitante(order, accessUrl, 'completo', services)
+      .catch((err) => console.error('cakto: acesso nao ficou pra pagina de obrigado', err));
 
     const sent = await services.sendEmail({
       to: email,
@@ -202,6 +220,16 @@ async function handleCaktoWebhook(req, res, overrides = {}) {
             && /^[a-zA-Z0-9_-]{8,100}$/.test(String(order.id || ''))) {
           await registraVenda(order, 'KPL Edição Profissional (PDF)', services)
             .catch((err) => console.error('cakto: venda do basico nao entrou no painel', err));
+          // A Cakto entrega o basico por e-mail. Aqui cria tambem um acesso nosso,
+          // so pra pagina /obrigado mostrar na hora (uma vez por pedido).
+          await (async () => {
+            if (!vidDoPedido(order)) return;
+            if ((await services.redis('SET', `cakto:acesso-basico:${order.id}`, '1', 'NX', 'EX', ACESSO_TTL)) !== 'OK') return;
+            const email = String((order.customer && order.customer.email) || '').trim();
+            const nome = String((order.customer && order.customer.name) || '').trim().slice(0, 80);
+            const url = await services.createDownloadLink(`cakto-${order.id}`, email, nome, 'profissional_pdf', { gateway: 'cakto' });
+            await guardaAcessoDoVisitante(order, url, 'basico', services);
+          })().catch((err) => console.error('cakto: acesso do basico nao ficou pra pagina de obrigado', err));
           results.push({ recorded: true });
         } else results.push({ ignored: true });
         continue;

@@ -12,10 +12,30 @@ function normalize(raw) {
   return 'pending';
 }
 
+const { redis } = require('./_kv');
+
 module.exports = async (req, res) => {
   if (req.method !== 'GET') {
     res.setHeader('Allow', 'GET');
     return res.status(405).json({ error: 'Método não permitido' });
+  }
+
+  // GET /api/payment-status?vid=<id do visitante> (19/10): a pagina /obrigado
+  // pergunta se a compra feita na Cakto ja liberou o acesso. Mora aqui pra nao
+  // criar outra funcao (o plano da Vercel esta no limite de 12).
+  const vid = String((req.query && req.query.vid) || new URL(req.url, 'http://x').searchParams.get('vid') || '')
+    .replace(/[^\w-]/g, '').slice(0, 64);
+  if (vid) {
+    res.setHeader('Cache-Control', 'no-store');
+    try {
+      const raw = await redis('GET', `vidacesso:${vid}`);
+      if (!raw) return res.status(200).json({ status: 'pending' });
+      const d = JSON.parse(raw);
+      return res.status(200).json({ status: 'paid', url: d.url, plano: d.plano });
+    } catch (err) {
+      console.error('payment-status vid error', err);
+      return res.status(200).json({ status: 'pending' });
+    }
   }
 
   const id = (req.query && req.query.id) || new URL(req.url, 'http://x').searchParams.get('id');
