@@ -597,9 +597,20 @@
   .arte-papeis i:nth-child(5){bottom:62px;animation-delay:1.6s}
   .arte-papeis b{position:absolute;top:8px;right:8px;font-size:.62rem;font-weight:900;color:var(--muted)}
   @keyframes empilha{0%{opacity:0;transform:translateY(-14px)}20%,85%{opacity:1;transform:none}100%{opacity:0}}
-  .arte-balao span{position:absolute;left:10px;right:10px;font-size:.68rem;font-weight:800;background:#fff;border-radius:10px;padding:4px 6px;text-align:center;animation:some 4s infinite}
-  .arte-balao span:nth-child(1){top:10px}.arte-balao span:nth-child(2){top:38px;animation-delay:.5s}.arte-balao span:nth-child(3){top:66px;animation-delay:1s}
-  @keyframes some{0%,30%{opacity:1}70%,100%{opacity:.08;filter:blur(1.5px)}}
+  /* 20/10: bilhete de orientações sem texto. As linhas se apagam uma a uma e
+     sobra um "?": a mãe esqueceu. Antes eram frases num quadro de 96px, que
+     quebravam em várias linhas e ninguém conseguia ler. */
+  .arte-nota{display:grid;place-items:center}
+  .arte-nota .bilhete{position:relative;width:58px;height:70px;background:#fff;border:1px solid var(--border);border-radius:8px;
+    box-shadow:0 4px 10px -6px rgba(0,0,0,.35);padding:12px 9px 0;display:flex;flex-direction:column;gap:8px}
+  .arte-nota .bilhete::before{content:"";position:absolute;top:-6px;left:50%;width:22px;height:10px;margin-left:-11px;background:var(--orange-soft);border-radius:3px}
+  .arte-nota .bilhete i{display:block;height:6px;border-radius:3px;background:var(--green);animation:apaga 4.5s infinite}
+  .arte-nota .bilhete i:nth-child(2){width:80%;animation-delay:.6s}
+  .arte-nota .bilhete i:nth-child(3){width:90%;animation-delay:1.2s}
+  .arte-nota .bilhete i:nth-child(4){width:65%;animation-delay:1.8s}
+  .arte-nota b{position:absolute;right:12px;bottom:8px;font-family:var(--heading);font-size:1.6rem;line-height:1;color:var(--coral);animation:duvida 4.5s infinite}
+  @keyframes apaga{0%,15%{opacity:1}45%,100%{opacity:.12}}
+  @keyframes duvida{0%,55%{opacity:0;transform:scale(.5)}70%,100%{opacity:1;transform:none}}
   .arte-grafico{display:flex;align-items:flex-end;justify-content:center;gap:8px;padding-bottom:16px}
   .arte-grafico i{width:16px;border-radius:4px 4px 0 0;background:var(--orange);height:34px;animation:igual 3s infinite}
   .arte-grafico i:nth-child(2){animation-delay:.3s}.arte-grafico i:nth-child(3){animation-delay:.6s}
@@ -637,7 +648,7 @@
     padding:10px 14px;margin:14px auto 4px;max-width:30rem;font-weight:700;font-size:.95rem;text-align:left}
   .impressao b{color:var(--green-dark)}
   @media (prefers-reduced-motion:reduce){
-    .faixa__trilho,.arte-papeis i,.arte-balao span,.arte-grafico i,.hero-video__som .pulso{animation:none}
+    .faixa__trilho,.arte-papeis i,.arte-nota i,.arte-nota b,.arte-grafico i,.hero-video__som .pulso{animation:none}
   }
 </style>
 </head>
@@ -820,7 +831,7 @@
         <p>Uma por paciente, do zero. Meia hora que não entra na agenda nem na nota fiscal.</p></div>
       </div>
       <div class="cena">
-        <div class="cena__arte arte-balao" aria-hidden="true"><span>oferece sem forçar</span><span>deixa no prato</span><span>não negocia</span></div>
+        <div class="cena__arte arte-nota" aria-hidden="true"><span class="bilhete"><i></i><i></i><i></i><i></i></span><b>?</b></div>
         <div><span class="cena__tag">Terça, em casa</span><h3>A mãe já esqueceu metade</h3>
         <p>Saiu convencida da consulta. Sem nada na mão, a orientação se perde no caminho de casa.</p></div>
       </div>
