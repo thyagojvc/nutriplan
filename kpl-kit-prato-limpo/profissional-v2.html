@@ -561,7 +561,7 @@
   .hero-video__som b{font-size:1rem;display:flex;align-items:center;gap:8px}
   .hero-video__som .pulso{width:10px;height:10px;border-radius:50%;background:var(--coral);animation:pulsa 1.2s infinite}
   @keyframes pulsa{50%{opacity:.25;transform:scale(.7)}}
-  .hero-video.com-som .hero-video__som{display:none}
+  .hero-video__som[hidden]{display:none}
   /* 6a. faixa correndo */
   .faixa{background:var(--green-dark);color:#fff;overflow:hidden;white-space:nowrap;padding:11px 0;font-family:var(--heading);font-weight:800;font-size:.98rem}
   .faixa__trilho{display:inline-flex;gap:0;animation:faixa 55s linear infinite}
@@ -662,11 +662,12 @@
     <!-- PRÉVIA 1: o mesmo POV do anúncio, tocando sem som. Quem chega do anúncio
          vê a continuação do que fez clicar. -->
     <div class="hero-video" id="hero-video">
-      <video src="assets/preview/hero-pov.mp4" poster="assets/preview/hero-pov-poster.webp" autoplay muted loop playsinline
+      <!-- Sem som e uma vez só. O corte termina antes do "Toque em ver detalhes",
+           que é a chamada do anúncio e não faz sentido aqui. -->
+      <video src="assets/preview/hero-pov.mp4" poster="assets/preview/hero-pov-poster.webp" autoplay muted playsinline
              aria-label="Mãos folheando as fichas impressas do kit e o aplicativo aberto no celular"></video>
-      <button type="button" class="hero-video__som" id="hero-som">
-        <small>Seu vídeo já começou</small>
-        <b><span class="pulso"></span> Toque para ouvir</b>
+      <button type="button" class="hero-video__som" id="hero-de-novo" hidden>
+        <b>↻ Assistir novamente</b>
       </button>
     </div>
 
@@ -798,7 +799,7 @@
       <p class="dific__texto" id="dific-texto"></p>
       <p class="dific__meta" id="dific-meta"></p>
     </div>
-    <p class="legenda">6 das 60 fichas de consultório. Toque nos botões ou deslize para o lado.</p>
+    <p class="legenda">5 das 60 fichas de consultório. Toque nos botões ou deslize para o lado.</p>
   </div>
 </section>
 
@@ -2289,36 +2290,34 @@ depoModal.addEventListener('close', () => {
 <script>
 /* ===================== PRÉVIA 19/10: seções novas ===================== */
 (function(){
-  // 1. vídeo do topo: toque liga o som e volta o vídeo pro começo
+  // 1. vídeo do topo: roda uma vez, sem som; no fim aparece "Assistir novamente"
   const box = document.getElementById('hero-video');
   const v = box && box.querySelector('video');
-  document.getElementById('hero-som')?.addEventListener('click', () => {
-    if (!v) return;
-    v.muted = false; v.currentTime = 0; v.play().catch(()=>{});
-    box.classList.add('com-som');
-  });
+  const deNovo = document.getElementById('hero-de-novo');
+  if (v && deNovo) {
+    v.addEventListener('ended', () => { deNovo.hidden = false; });
+    deNovo.addEventListener('click', () => { deNovo.hidden = true; v.currentTime = 0; v.play().catch(()=>{}); });
+  }
 
   // 2. seletor por dificuldade
   const CASOS = [
-    { bot:'Come só 5 alimentos', img:'C46', etapa:'Casos difíceis · 25 min', nome:'Só cinco alimentos',
-      texto:'Quando o repertório é mínimo, o alimento novo não entra do nada. Ele entra pela ponte: mesma cor, mesma textura ou o mesmo preparo do que a criança já aceita.',
-      meta:'Na ficha: como montar a lista de pontes e o que dizer em cada exposição.' },
-    { bot:'Recusa só de ver', img:'C07', etapa:'Aproximação sem contato', nome:'Retrato do alimento',
-      texto:'Para a criança que recusa antes de qualquer contato. O alimento entra pela distância e pelo olhar, sem pedir que ela toque ou prove.',
-      meta:'Na ficha: o passo a passo, o que observar e a tarefa para casa.' },
-    { bot:'Ânsia antes de comer', img:'C49', etapa:'Casos difíceis · 25 min', nome:'A náusea antes de comer',
-      texto:'Quando o enjoo aparece antes da primeira mordida, o gatilho é a antecipação. A ficha trabalha a distância e dessensibiliza sem forçar a boca.',
-      meta:'Na ficha: o registro da menor distância tolerada, sessão a sessão.' },
-    { bot:'Travou depois de engasgo', img:'C48', etapa:'Casos difíceis · 25 min', nome:'Depois do engasgo',
-      texto:'Um episódio de engasgo deixa medo de um alimento ou de uma textura. A reapresentação só funciona com a criança no controle de cada passo.',
-      meta:'Na ficha: começa com a liberação clínica e o alimento em versão macia.' },
-    { bot:'Chora e trava na mesa', img:'C35', etapa:'Recusa e crise · 15 min', nome:'O relógio da tempestade',
-      texto:'A família sente que o choro dura uma eternidade. Medir o tempo real costuma mostrar poucos minutos, e isso derruba o medo que faz o adulto ceder.',
-      meta:'Na ficha: o que dizer durante a crise e o que evitar.' },
+    { bot:'Recusa só de ver', img:'C07', etapa:'Aproximação sem contato · 15 min', nome:'Retrato do alimento',
+      texto:'Para desenhar, a criança precisa olhar com calma. São minutos de convívio com o alimento na frente dela, sem ninguém pedir que coma.',
+      meta:'O desenho vai para a geladeira, e o alimento vai para a mesa do jantar.' },
+    { bot:'Não quer tocar no alimento', img:'C11', etapa:'Toque e manipulação · 20 min', nome:'Carimbo de pimentão',
+      texto:'Cortado ao meio, o pimentão vira um carimbo de flor. A criança segura o alimento por vários minutos com a mão inteira, e a atenção fica no desenho, não nela.',
+      meta:'Em casa, a mãe repete com um buquê de brócolis, que vira uma árvore.' },
+    { bot:'Não deixa chegar na boca', img:'C22', etapa:'Aproximação da boca · 10 min', nome:'Beijo no alimento',
+      texto:'O lábio é o último degrau antes da boca. Um beijo encosta o alimento sem exigir gosto, mastigação nem engolir, que são os três medos reais.',
+      meta:'Na ficha: a fala certa ("É só um beijo, não é uma mordida") e a que estraga a sessão.' },
+    { bot:'Recusa frutas', img:'C21', etapa:'Som, corte e transformação · 20 min', nome:'Mágica da gelatina',
+      texto:'A fruta fica presa na gelatina e precisa ser resgatada. A criança toca no alimento com um objetivo que não é comer.',
+      meta:'Em casa, a mãe repete com a fruta que a criança resgatou hoje.' },
     { bot:'Só aceita uma marca', img:'C50', etapa:'Casos difíceis · 20 min', nome:'A marca de sempre',
       texto:'A criança que só aceita uma marca costuma estar presa à embalagem, não ao sabor. O teste cego mostra isso para a família em uma rodada.',
       meta:'Na ficha: as três rodadas do teste e como registrar.' },
   ];
+
   const bots = document.getElementById('dific-botoes');
   const card = document.getElementById('dific-card');
   const mostra = (i) => {
