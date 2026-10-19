@@ -14,7 +14,7 @@ const { redis, redisPipeline } = require('./_kv');
 // funnel-data.js cacheia o payload por 60s (funnel-cache:<range>). Sem limpar
 // aqui, quem apaga um visitante e recarrega a lista na hora ainda vê a versão
 // em cache, com o registro "de volta" — parece que o botão não funcionou.
-const CACHE_RANGES = ['today', '7d', '30d', 'all'];
+const CACHE_RANGES = ['today', 'ontem', '7d', '14d', '30d', 'all'];
 
 const MAX_POR_VEZ = 200; // trava de segurança contra um payload absurdo
 
@@ -60,7 +60,11 @@ module.exports = async (req, res) => {
       cmds.push(['ZREM', 'individuals', id]);
     }
     await redisPipeline(cmds);
-    await Promise.all(CACHE_RANGES.map((r) => redis('DEL', `funnel-cache:${r}`))).catch((err) => {
+    // 20/10: o cache passou a ter o produto no nome (funnel-cache:<range>:<scope>)
+    // desde o seletor Mães/Profissional. Limpar só o nome antigo deixava a
+    // visita apagada voltando do cache, e o botão parecia não funcionar.
+    const chaves = CACHE_RANGES.flatMap((r) => ['all', 'maes', 'pro'].map((s) => `funnel-cache:${r}:${s}`).concat(`funnel-cache:${r}`));
+    await redis('DEL', ...chaves).catch((err) => {
       console.error('delete-visitors: cache invalidation error', err);
     });
 
