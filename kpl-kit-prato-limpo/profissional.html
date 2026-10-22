@@ -669,17 +669,12 @@
     <h1 class="hero__h1">189 atividades prontas <span class="hl">para trabalhar a alimentação infantil de forma lúdica</span></h1>
     <p class="hero__sub">Você abre a ficha, põe o alimento na mesa e já sabe o que fazer. Sem montar atividade do zero pra cada paciente.</p>
 
-    <!-- PRÉVIA 1: o mesmo POV do anúncio, tocando sem som. Quem chega do anúncio
-         vê a continuação do que fez clicar. -->
-    <div class="hero-video" id="hero-video">
-      <!-- Sem som e uma vez só. O corte termina antes do "Toque em ver detalhes",
-           que é a chamada do anúncio e não faz sentido aqui. -->
-      <video src="assets/preview/hero-pov.mp4" poster="assets/preview/hero-pov-poster.webp" autoplay muted playsinline
-             aria-label="Mãos folheando as fichas impressas do kit e o aplicativo aberto no celular"></video>
-      <button type="button" class="hero-video__som" id="hero-de-novo" hidden>
-        <b>↻ Assistir novamente</b>
-      </button>
-    </div>
+    <!-- 22/10: mockup volta pro topo no lugar do vídeo (pedido do Thyago). O vídeo segue em assets/preview/hero-pov.mp4. -->
+    <picture>
+      <source srcset="assets/mockup-pro-v4.webp" type="image/webp" />
+      <img class="hero__mockup" src="assets/mockup-pro-v4.jpg" width="1536" height="1024" fetchpriority="high"
+           alt="Três fichas do Kit Prato Limpo Profissional à frente de outras e o aplicativo aberto em um tablet" />
+    </picture>
 
     <div class="hero__promise">
       <span class="ic">🍽️</span>
