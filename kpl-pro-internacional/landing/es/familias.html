@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mesa a Mesa · Comidas sin peleas</title>
+<!-- Página para familias. Estructura nueva (22/10/2026) copiada de una página de referencia
+     que convierte: barra, héroe, fichas en movimiento, qué contiene, para quién, qué recibes,
+     4 bonus, planes, garantía y dudas. La versión anterior está en landing/index-madres-v1-21out.html.
+     La edición para profesionales sigue en /profesional.
+     /familias (29/10/2026): la misma página para México y Colombia, en dólares y con vocabulario
+     latino (celular, refri, escuela). Las fichas son las mismas de España. -->
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#E53935">
+<meta name="description" content="87 fichas para imprimir para que tu hijo conozca alimentos nuevos jugando, sin obligar y sin peleas en la mesa. Para niños de 2 a 8 años.">
+<meta property="og:title" content="Mesa a Mesa · Comidas sin peleas">
+<meta property="og:description" content="87 fichas para que tu hijo pruebe alimentos nuevos jugando.">
+<link rel="preload" as="image" href="img/madres/hero-familias.webp" fetchpriority="high">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rojo:#E53935; --verde:#2E9E5B; --verde-osc:#23824A; --verde-claro:#E8F6EE; --azul:#2F7FD8;
+  --pizarra:#3F4A54; --tinta:#14191F; --texto:#2B323A; --suave:#6B7480; --linea:#E6E9EE;
+  --fondo-suave:#F4F7FB; --amarillo:#F7C531;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:#fff;color:var(--texto);font:400 16px/1.55 'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+img{max-width:100%;height:auto;display:block}
+a{color:inherit}
+.c{width:100%;max-width:560px;margin:0 auto;padding:0 18px}
+h1,h2,h3,.p{font-family:'Poppins',system-ui,sans-serif;color:var(--tinta);letter-spacing:-.01em}
+h1{font-size:clamp(25px,6.6vw,34px);line-height:1.22;font-weight:800;text-align:center}
+h2{font-size:clamp(23px,6vw,30px);line-height:1.2;font-weight:800;text-align:center}
+h3{font-size:19px;line-height:1.25;font-weight:700}
+section{padding:46px 0}
+.centro{text-align:center}
+/* barra */
+.barra{background:var(--rojo);color:#fff;text-align:center;font:700 15px/1.2 'Poppins';letter-spacing:.06em;padding:13px 12px;text-transform:uppercase}
+.pastilla{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:9px 18px;font:700 13px/1.2 'Inter';letter-spacing:.02em;text-transform:uppercase}
+.pastilla.negra{background:var(--tinta);color:#fff}
+.pastilla.verde{background:var(--verde);color:#fff}
+.pastilla.azul{background:var(--azul);color:#fff}
+.pastilla.clara{background:var(--verde-claro);color:var(--verde-osc)}
+.pastilla.bloque{display:flex;width:max-content;max-width:100%;margin-left:auto;margin-right:auto;text-align:center;justify-content:center}
+/* héroe */
+.hero{padding:30px 0 40px}
+.hero .pastilla{margin-bottom:18px}
+.hero-img{margin:22px -6px 18px}
+.hero p.lead{text-align:center;font-size:17px}
+.checks{list-style:none;display:grid;gap:10px;margin:20px 0 4px}
+.checks li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-weight:600;color:var(--tinta)}
+.checks li:before{content:"✓";color:var(--verde);font-weight:800}
+.btn{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;min-height:58px;padding:16px 22px;border-radius:10px;background:var(--verde);color:#fff;text-decoration:none;font:700 16px/1.25 'Poppins';text-transform:uppercase;letter-spacing:.02em;box-shadow:0 6px 18px -8px rgba(46,158,91,.8);transition:transform .12s}
+.btn:active{transform:scale(.98)}
+.btn:focus-visible{outline:3px solid var(--amarillo);outline-offset:3px}
+.nota{font-size:13px;color:var(--suave);text-align:center;margin-top:10px}
+/* fichas en movimiento */
+.oscura{background:var(--pizarra);color:#fff}
+.oscura h2{color:#fff}
+.oscura .sub{color:#D7DDE3;text-align:center;margin-top:10px}
+.cinta{overflow:hidden;margin-top:22px;-webkit-mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.pista{display:flex;gap:12px;width:max-content;min-height:225px;animation:desliza 46s linear infinite}
+.cinta.inv .pista{animation-direction:reverse}
+.pista img{width:150px;height:auto;border-radius:10px;background:#fff;box-shadow:0 10px 20px -12px rgba(0,0,0,.6)}
+@keyframes desliza{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.pista{animation:none}}
+/* contiene */
+.lista-ico{display:grid;gap:10px;margin-top:22px}
+.ico-card{display:grid;grid-template-columns:44px 1fr;gap:12px;align-items:center;border:1px solid var(--linea);border-radius:14px;padding:14px 16px;font-weight:600;color:var(--tinta)}
+.ico-card span{font-size:26px;text-align:center}
+/* ideal */
+.ideal{display:grid;gap:12px;margin-top:22px}
+.ideal div{background:var(--verde-claro);border-radius:14px;padding:16px 18px}
+.ideal b{display:block;font:700 14px/1.3 'Poppins';text-transform:uppercase;color:var(--tinta);padding-left:24px;position:relative}
+.ideal b:before{content:"✓";position:absolute;left:0;color:var(--verde)}
+.ideal p{font-size:15px;margin-top:6px}
+/* recibirás */
+.tarjeta{background:#fff;color:var(--texto);border-radius:22px;padding:22px 20px;margin-top:22px;box-shadow:0 18px 40px -24px rgba(0,0,0,.5)}
+.tarjeta .pastilla{margin-bottom:16px}
+.tarjeta .checks li{font-weight:500}
+.tarjeta .checks li b{font-weight:700}
+/* bonus */
+.bonus-g{display:grid;gap:18px;margin-top:24px}
+.bonus{background:var(--fondo-suave);border-radius:20px;padding:14px;position:relative}
+.bonus img{border-radius:14px;background:#fff;width:100%}
+.bonus .tag{position:absolute;top:22px;right:22px;background:var(--amarillo);color:var(--tinta);font:800 12px 'Poppins';padding:6px 12px;border-radius:99px}
+.bonus h3{margin:14px 4px 6px}
+.bonus p{font-size:15px;margin:0 4px}
+.valor{display:flex;justify-content:center;gap:8px;align-items:center;background:#2A1F1A;color:#fff;border-radius:99px;padding:10px 14px;margin-top:14px;font:700 13px 'Inter';text-transform:uppercase}
+.valor s{opacity:.7}
+/* planes */
+.raya{width:70px;height:4px;background:var(--tinta);border-radius:4px;margin:14px auto 0}
+.plan{background:#fff;border-radius:22px;padding:20px 18px 22px;margin-top:22px;box-shadow:0 0 0 1px var(--linea),0 18px 40px -26px rgba(0,0,0,.5)}
+.plan.top{box-shadow:0 0 0 3px var(--verde),0 18px 40px -22px rgba(0,0,0,.5)}
+.plan .pastilla{margin-bottom:10px}
+.plan h3.p{text-align:center;font-size:26px;font-weight:800;text-transform:uppercase;margin:6px 0 12px}
+.plan .checks li{font-weight:500}
+.precio{text-align:center;margin-top:18px}
+.precio .antes{font-size:15px;color:var(--suave)}
+.precio .v{font:800 52px/1 'Poppins';color:var(--verde)}
+.precio .ahorro{font-weight:700;color:var(--tinta);margin-top:6px}
+.plan .btn{margin-top:16px}
+.plan.esencial .v{font-size:40px;color:var(--tinta)}
+.plan.esencial .btn{background:#fff;color:var(--tinta);box-shadow:0 0 0 2px var(--tinta) inset}
+.checks li.no{color:var(--suave)}
+.checks li.no:before{content:"–";color:var(--suave)}
+/* garantía */
+.sello{width:150px;height:150px;margin:0 auto 18px}
+.gar h2{text-align:left}
+.gar p{margin-top:12px}
+/* faq */
+.faq{display:grid;gap:10px;margin-top:22px}
+.faq details{background:var(--fondo-suave);border-radius:14px;padding:16px 18px}
+.faq summary{cursor:pointer;font-weight:700;color:var(--tinta);list-style:none;display:flex;justify-content:space-between;gap:12px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary:after{content:"+";font:800 20px/1 'Poppins';color:var(--verde)}
+.faq details[open] summary:after{content:"–"}
+.faq p{margin-top:10px;font-size:15px}
+footer{padding:30px 0 40px;font-size:13px;color:var(--suave);text-align:center;background:var(--fondo-suave)}
+footer p+p{margin-top:8px}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+
+<!-- Meta Pixel: Mesa a Mesa - Madres ES (propio desde 21/10/2026; la página profesional usa otro) -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1845583283279133');
+// mesmo ID no pixel e no envio pelo servidor (/api/f -> API de Conversoes): o Meta junta os dois e conta 1
+window.MAM_PV='pv_'+Date.now().toString(36)+Math.random().toString(36).slice(2,10);
+fbq('track','PageView',{},{eventID:window.MAM_PV});
+</script>
+</head>
+<body>
+
+<div class="barra">⚡ Oferta de lanzamiento · solo hoy</div>
+
+<!-- HÉROE -->
+<header class="hero">
+  <div class="c">
+    <span class="pastilla negra bloque">🔒 Compra 100% segura y protegida</span>
+    <h1>87 fichas para que tu hijo pruebe alimentos nuevos jugando, reunidas en un solo kit.</h1>
+    <img class="hero-img" src="img/madres/hero-familias.webp" width="1200" height="900" alt="Fichas de juego para el niño impresas, en la tablet y en el celular" fetchpriority="high">
+    <p class="lead">Elige la ficha, ponle el alimento en la mesa y deja que juegue. Primero lo mira, luego lo toca, y probarlo llega solo. Sin obligarlo y sin peleas, desde el celular o en papel.</p>
+    <ul class="checks">
+      <li>87 fichas listas para usar en 5 minutos</li>
+      <li>Hojas que el niño completa solo y fichas con alimentos de verdad</li>
+      <li>La frase que ayuda y la que lo frena, en cada ficha</li>
+      <li>Para imprimir o abrir en el celular</li>
+    </ul>
+    <p class="nota">📲 Recibes todo al momento en tu correo.</p>
+  </div>
+</header>
+
+<!-- FICHAS EN MOVIMIENTO -->
+<section class="oscura" id="dentro">
+  <div class="c">
+    <h2>Mira algunas de las fichas que encontrarás dentro</h2>
+    <p class="sub">Fichas para la semana, con alimentos de verdad, y hojas que el niño completa solo con lápiz.</p>
+  </div>
+  <div class="cinta"><div class="pista" id="pista-casa"></div></div>
+  <div class="cinta inv"><div class="pista" id="pista-nino"></div></div>
+</section>
+
+<!-- CONTIENE -->
+<section>
+  <div class="c">
+    <h2>Cada ficha para la semana contiene</h2>
+    <div class="lista-ico">
+      <div class="ico-card"><span>🍽️</span>Qué hacer esta semana, en 3 pasos</div>
+      <div class="ico-card"><span>💬</span>La frase que ayuda y la que lo frena</div>
+      <div class="ico-card"><span>📶</span>La escalera de 6 peldaños para ver el avance</div>
+      <div class="ico-card"><span>🥕</span>Alimentos de verdad, sin preparar nada</div>
+    </div>
+  </div>
+</section>
+
+<!-- IDEAL -->
+<section style="padding-top:8px">
+  <div class="c">
+    <h2>Este material es ideal para ti si quieres:</h2>
+    <div class="ideal">
+      <div><b>Que la cena deje de ser una pelea</b><p>Una forma de presentar la comida sin negociar cada bocado, sin gritos y sin «un bocadito y ya».</p></div>
+      <div><b>Saber qué hacer, sin buscar en mil lugares</b><p>Nada de vídeos, foros y consejos que se contradicen. Abres la ficha del día y ya sabes qué hacer.</p></div>
+      <div><b>Que conozca alimentos nuevos sin miedo</b><p>Primero los mira, luego los toca y los huele. Probar llega cuando ya no le dan miedo.</p></div>
+      <div><b>Ver el avance aunque todavía no coma</b><p>Con la escalera de 6 peldaños ves cada paso: mirarlo, tocarlo, lamerlo. Cada peldaño cuenta.</p></div>
+      <div><b>Hacerlo en 5 minutos al día</b><p>Con lo que ya tienes en el refri. Sin recetas especiales y sin preparar nada antes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- RECIBIRÁS -->
+<section class="oscura" id="recibes">
+  <div class="c">
+    <h2>Todo lo que recibirás</h2>
+    <div class="tarjeta">
+      <span class="pastilla verde bloque">⚡ Acceso inmediato</span>
+      <img src="img/madres/hero-familias.webp" width="1200" height="900" alt="Fichas de juego para el niño impresas, en la tablet y en el celular" loading="lazy">
+      <ul class="checks">
+        <li><b>Mesa a Mesa: 87 fichas para comidas sin peleas</b></li>
+        <li>43 hojas que el niño completa solo;</li>
+        <li>Laberintos, sopas de letras, parejas, contar y colorear;</li>
+        <li>44 fichas para la semana con alimentos de verdad;</li>
+        <li>La frase que ayuda y la que lo frena en cada ficha;</li>
+        <li>La escalera de 6 peldaños para ver el avance;</li>
+        <li>Guía «Cómo usar las fichas»;</li>
+        <li>Para imprimir o usar en el celular;</li>
+        <li><b>Y además:</b></li>
+      </ul>
+      <div style="margin-top:14px;text-align:center"><span class="pastilla azul">🎁 4 bonus exclusivos</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- BONUS -->
+<section id="bonus">
+  <div class="c">
+    <h2>🎁 4 BONUS EXCLUSIVOS</h2>
+    <p class="centro" style="margin-top:8px;font-style:italic;font-weight:600">Junto con las fichas, en el plan completo recibes también:</p>
+    <div class="bonus-g">
+      <div class="bonus"><img src="img/madres/bonus-1.webp" width="800" height="800" alt="Bonus 1: Frases para la mesa" loading="lazy"><span class="tag">BONUS #1</span>
+        <h3>Frases para la mesa</h3><p>74 frases ordenadas por momento de la comida: la que le da confianza para acercarse y la que, sin querer, le hace dar un paso atrás. Para pegar en el refri.</p>
+        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+      <div class="bonus"><img src="img/madres/bonus-2-latam.webp" width="800" height="800" alt="Bonus 2: Situaciones difíciles" loading="lazy"><span class="tag">BONUS #2</span>
+        <h3>Situaciones difíciles</h3><p>Cumpleaños, la lonchera de la escuela, casa de los abuelos, restaurante, viajes y el día que todo sale mal. Qué hacer antes, durante y después.</p>
+        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+      <div class="bonus"><img src="img/madres/bonus-3.webp" width="800" height="800" alt="Bonus 3: Puentes de alimentos" loading="lazy"><span class="tag">BONUS #3</span>
+        <h3>Puentes de alimentos</h3><p>Una lógica práctica: lo que ya come → algo muy parecido → algo un poco más distinto. 10 familias y más de 100 alimentos, cambiando una sola cosa en cada paso.</p>
+        <div class="valor">Valor: <s>US$ 7.90</s> Incluido gratis</div></div>
+      <div class="bonus"><img src="img/madres/bonus-4.webp" width="800" height="800" alt="Bonus 4: Calendario de 30 días" loading="lazy"><span class="tag">BONUS #4</span>
+        <h3>Calendario de 30 días</h3><p>Una actividad para cada día, ya elegida. Solo tienes que mirar el día, imprimir la hoja y empezar. Sin pensar qué toca.</p>
+        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PLANES -->
+<section style="background:var(--fondo-suave)" id="planes">
+  <div class="c">
+    <span class="pastilla azul bloque">🔥 Última ocasión · la oferta termina hoy</span>
+    <h2 style="margin-top:18px">Elige la opción más adecuada para ti</h2>
+    <div class="raya"></div>
+
+    <div class="plan top">
+      <span class="pastilla verde bloque">⚡ La solución más completa</span>
+      <span class="pastilla azul bloque">🔥 Última ocasión · termina hoy</span>
+      <h3 class="p">Plan completo</h3>
+      <img src="img/madres/app.webp" width="1200" height="868" alt="Las fichas en la app del celular" loading="lazy">
+      <div style="text-align:center;margin-top:12px"><span class="pastilla clara">⚡ 2x más contenido</span></div>
+      <ul class="checks">
+        <li>87 fichas: 43 hojas + 44 fichas para la semana;</li>
+        <li>La app en el celular: fichas, escalera y 20 amigos para coleccionar;</li>
+        <li>🎁 Bonus #1: Frases para la mesa;</li>
+        <li>🎁 Bonus #2: Situaciones difíciles;</li>
+        <li>🎁 Bonus #3: Puentes de alimentos;</li>
+        <li>🎁 Bonus #4: Calendario de 30 días;</li>
+      </ul>
+      <div class="precio"><div class="antes">Antes <s>US$ 29.90</s></div><div class="v">US$ 9.90</div><div class="ahorro">Ahorras US$ 57.60</div></div>
+      <a class="btn js-checkout" data-plan="completo" href="#planes">Quiero el plan completo</a>
+    </div>
+
+    <div class="plan esencial">
+      <h3 class="p" style="font-size:22px">Plan esencial</h3>
+      <ul class="checks">
+        <li>87 fichas: 43 hojas + 44 fichas para la semana;</li>
+        <li>Guía «Cómo usar las fichas»;</li>
+        <li class="no">Sin la app;</li>
+        <li class="no">Sin los 4 bonus;</li>
+      </ul>
+      <div class="precio"><div class="v">US$ 7.90</div></div>
+      <a class="btn js-checkout" data-plan="esencial" href="#planes">Quiero el plan esencial</a>
+    </div>
+    <p class="nota" style="margin-top:16px">Pago único · Acceso inmediato por correo</p>
+  </div>
+</section>
+
+<!-- GARANTÍA -->
+<section class="gar">
+  <div class="c">
+    <svg class="sello" viewBox="0 0 200 200" role="img" aria-label="Garantía de 15 días">
+      <defs><linearGradient id="oro" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F6D365"/><stop offset="1" stop-color="#C9962B"/></linearGradient></defs>
+      <path d="M40 150 L25 195 L55 180 L70 200 L80 160Z M160 150 L175 195 L145 180 L130 200 L120 160Z" fill="#1F2A36"/>
+      <circle cx="100" cy="95" r="80" fill="url(#oro)"/><circle cx="100" cy="95" r="62" fill="#1F2A36"/>
+      <text x="100" y="98" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="800" font-size="50" fill="#F6D365">15</text>
+      <text x="100" y="124" text-anchor="middle" font-family="Poppins,sans-serif" font-weight="700" font-size="17" fill="#F6D365" letter-spacing="2">DÍAS</text>
+    </svg>
+    <h2>Garantía de 15 días<br>Pruébalo sin riesgo</h2>
+    <p>Después de la compra tienes 15 días para descargar las fichas, usarlas con tu hijo y ver si son para ustedes.</p>
+    <p>Si por cualquier motivo crees que no es para ti, pides el reembolso desde Hotmart dentro de ese plazo y te devuelven el 100 %.</p>
+    <p><b>Sin complicaciones. Sin riesgos.</b></p>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section style="padding-top:8px">
+  <div class="c">
+    <h2>Preguntas frecuentes</h2>
+    <div class="faq">
+      <details><summary>¿Para qué edad es?</summary><p>Para niños de 2 a 8 años que comen muy pocos alimentos. Los laberintos y hojas de colorear van bien desde los 2 o 3; las sopas de letras y las sumas, a partir de los 5 o 6.</p></details>
+      <details><summary>¿Lo puedo ver en el celular?</summary><p>Sí. El PDF se abre en cualquier celular, y en el plan completo tienes además la app, con las fichas a pantalla completa y la escalera para marcar cada día.</p></details>
+      <details><summary>¿Puedo imprimirlo?</summary><p>Sí, todas las hojas están en tamaño A4 y se imprimen bien también en tamaño carta. Puedes imprimirlas en casa o en cualquier papelería.</p></details>
+      <details><summary>¿Sirve si mi hijo tiene autismo?</summary><p>Las fichas trabajan el acercamiento poco a poco y sin presión, que es como se suele trabajar la selectividad en niños autistas. Si tu hijo tiene un terapeuta, enséñale el material.</p></details>
+      <details><summary>¿Cómo lo recibo?</summary><p>Al confirmarse el pago, Hotmart te envía un correo con el acceso. Es inmediato.</p></details>
+      <details><summary>¿Es una suscripción?</summary><p>No. Pagas una vez y el material es tuyo.</p></details>
+      <details><summary>¿Sustituye al pediatra?</summary><p>No. Es material educativo para el día a día en casa. Si tu hijo pierde peso, se atraganta a menudo o acepta muy pocos alimentos en total, consulta con su pediatra.</p></details>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="c">
+    <p><b>Mesa a Mesa</b> · Material educativo para familias. No sustituye la valoración de un pediatra ni de otro profesional sanitario, ni promete resultados.</p>
+    <p>Pago procesado por Hotmart. Este sitio no forma parte de Meta ni está respaldado por Meta.</p>
+  </div>
+</footer>
+
+<script>
+// ===== CONFIGURACIÓN =====
+// Dos productos propios en Hotmart, en dólares (29/10/2026): Esencial US$ 7.90 (ID 8840274)
+// y Completo US$ 9.90 (ID 8840288). Solo pagos inmediatos: sin OXXO, Efecty ni SPEI/PSE.
+const HOTMART_CHECKOUT_ESENCIAL = 'https://pay.hotmart.com/N108256551E';
+const HOTMART_CHECKOUT_COMPLETO = 'https://pay.hotmart.com/X108256574Q';
+
+// Fichas en movimiento (img/madres/t, generadas por scripts/build-landing-madres-img.js).
+// Cada fila va duplicada para que la animación no tenga corte. Sin loading="lazy": dentro de
+// una fila animada el navegador no las carga nunca (quedaban tarjetas en blanco).
+const FILA_CASA = ['C03', 'C61', 'C08', 'C09', 'C10-latam', 'C62', 'C13', 'C66', 'C24', 'C29', 'C63', 'C39'];
+const FILA_NINO = ['J01', 'J02', 'J03', 'J05', 'J07', 'J09', 'J12', 'J14', 'J18', 'J20', 'J30', 'P04'];
+// As 48 miniaturas só entram depois que a página (e a imagem do topo) terminou de carregar:
+// antes elas baixavam junto e atrasavam o topo em ~3,5 s no 4G (22/10/2026).
+const fila = (ids) => [...ids, ...ids].map((f) => `<img src="img/madres/t/${f}.webp" width="360" height="540" alt="" decoding="async">`).join('');
+const montaFilas = () => {
+  document.getElementById('pista-casa').innerHTML = fila(FILA_CASA);
+  document.getElementById('pista-nino').innerHTML = fila(FILA_NINO);
+};
+if (document.readyState === 'complete') montaFilas(); else window.addEventListener('load', montaFilas, { once: true });
+
+// ===== FUNIL (painel em /api/painel, aba "Mães LatAm") =====
+// l: 'familias' separa as visitas no painel. Etapas 1..9 = as seções desta página na ordem
+// (topo + cada <section>); 16 = clicou no checkout; 17 = comprou.
+const FUNIL = (() => {
+  const Q = new URLSearchParams(location.search);
+  const hoje = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Madrid' }).split('/').reverse().join('');
+  let ses = null;
+  try { const x = JSON.parse(localStorage.getItem('mam_ses_f') || 'null'); if (x && x.d === hoje && x.t0) ses = x; } catch (e) {}
+  const nova = !ses;
+  if (!ses) ses = { s: Math.random().toString(36).slice(2, 12) + Date.now().toString(36).slice(-4), d: hoje, p: 0, t0: Date.now() };
+  const guarda = () => { try { localStorage.setItem('mam_ses_f', JSON.stringify(ses)); } catch (e) {} };
+  let origem = Q.get('utm_source') || '';
+  if (!origem && document.referrer) { try { origem = new URL(document.referrer).hostname.replace(/^www\./, ''); } catch (e) {} }
+  const dados = { l: 'familias', o: origem, a: Q.get('utm_content') || '', cp: Q.get('utm_campaign') || '', cj: Q.get('utm_medium') || Q.get('utm_term') || '' };
+  let atual = 1; let plano = ses.pl || ''; let primeira = nova; let pvPendente = !!window.MAM_PV;
+  const bate = () => {
+    const corpo = JSON.stringify({ s: ses.s, d: ses.d, p: ses.p, c: atual, pl: plano, t0: ses.t0, n: primeira ? 1 : 0, ...dados,
+      ...(pvPendente ? { pv: window.MAM_PV, u: location.href } : {}) });
+    primeira = false; pvPendente = false;
+    try { if (!navigator.sendBeacon('/api/f', corpo)) throw 0; } catch (e) { fetch('/api/f', { method: 'POST', body: corpo, keepalive: true }).catch(() => {}); }
+  };
+  const sobe = (p, pl) => { if (pl && pl !== plano) { plano = pl; ses.pl = pl; guarda(); if (p <= ses.p) bate(); } if (p > ses.p) { ses.p = p; guarda(); bate(); } };
+  const partes = [...document.querySelectorAll('header.hero, body > section')];
+  const io = new IntersectionObserver((es) => es.forEach((e) => {
+    if (!e.isIntersecting) return;
+    const i = partes.indexOf(e.target) + 1; atual = i; sobe(i);
+  }), { threshold: 0.3 });
+  partes.forEach((el) => io.observe(el));
+  ses.p = Math.max(ses.p, 0); sobe(1); if (ses.p >= 1 && !nova) bate();
+  const ini = Date.now();
+  const pulso = setInterval(() => {
+    if (Date.now() - ini > 10 * 60e3) return clearInterval(pulso);
+    if (document.visibilityState === 'visible') bate();
+  }, 15000);
+  return { sobe, sck: 'mam_' + ses.d + '_' + ses.s };
+})();
+
+document.querySelectorAll('.js-checkout').forEach(a => {
+  const plan = a.dataset.plan;
+  const url = plan === 'completo' ? HOTMART_CHECKOUT_COMPLETO : HOTMART_CHECKOUT_ESENCIAL;
+  if (url) {
+    // repassa utm/fbclid do anuncio + sck da sessao para a Hotmart atribuir a venda
+    const q = new URLSearchParams(location.search); q.set('sck', FUNIL.sck);
+    a.href = url + (url.includes('?') ? '&' : '?') + q.toString();
+  }
+  a.addEventListener('click', () => FUNIL.sobe(16, plan));
+  // InitiateCheckout fica com o pixel da Hotmart (visita ao checkout); disparar aqui contaria em dobro
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "redirects": [
+    { "source": "/", "destination": "/familias", "permanent": false },
+    { "source": "/index", "destination": "/familias", "permanent": false },
+    { "source": "/profesional", "destination": "/familias", "permanent": false },
+    { "source": "/latam", "destination": "/familias", "permanent": false },
+    { "source": "/latam/", "destination": "/familias", "permanent": false },
+    { "source": "/latam/:path*", "destination": "/familias", "permanent": false }
+  ]
+}
