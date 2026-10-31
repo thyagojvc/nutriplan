@@ -17,6 +17,14 @@ const ETAPAS_MADRES = [
   null, null, null, 'Clicou no checkout', 'Comprou',
 ];
 const PLANOS_MADRES = 7; // estrutura nova da página (22/10)
+// /familias desde 31/10/2026: entrou "A dor" depois do topo e "Como se usa" depois das fichas.
+// Visitas anteriores a isso ficam com a etapa deslocada (poucas, primeiro dia de anúncio).
+const ETAPAS_FAMILIAS = [
+  'Topo', 'A dor', 'Viu as fichas rolando', 'Como se usa (3 passos)', 'O que cada ficha contém', 'Para quem é',
+  'O que recebe', 'Os 4 bônus', 'Os planos', 'A garantia', 'Perguntas frequentes', null,
+  null, null, null, 'Clicou no checkout', 'Comprou',
+];
+const PLANOS_FAMILIAS = 9;
 const CHECKOUT = 16; const COMPRA = 17; const PLANOS = 13;
 
 async function pipeline(cmds) {
@@ -64,8 +72,8 @@ module.exports = async (req, res) => {
   const pg = PAGINAS[q.pg] ? q.pg : 'todas';
   // /familias (29/10) é a mesma página das mães, então usa o mesmo funil
   const maes = pg === 'madres' || pg === 'familias';
-  const ET = maes ? ETAPAS_MADRES : ETAPAS;
-  const VIU_PLANOS = maes ? PLANOS_MADRES : PLANOS;
+  const ET = pg === 'familias' ? ETAPAS_FAMILIAS : maes ? ETAPAS_MADRES : ETAPAS;
+  const VIU_PLANOS = pg === 'familias' ? PLANOS_FAMILIAS : maes ? PLANOS_MADRES : PLANOS;
   TZ = FUSOS[tz][0];
   // Excluir visita (teste, visita propria): apaga a(s) sessao(oes) do hash do dia e do "ao vivo".
   // A venda, se houver, continua em Vendas (aparece como "sem visita na pagina").
