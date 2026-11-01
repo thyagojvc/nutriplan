@@ -119,6 +119,21 @@ section{padding:46px 0}
 .plan.esencial .btn{background:#fff;color:var(--tinta);box-shadow:0 0 0 2px var(--tinta) inset}
 .checks li.no{color:var(--suave)}
 .checks li.no:before{content:"–";color:var(--suave)}
+/* depoimentos */
+.depo-sub{color:var(--suave);text-align:center;margin-top:10px}
+.depo-lista{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-inline:18px;padding:12px 18px 24px;margin:18px -18px 0;scrollbar-width:thin}
+.depo-card{flex:0 0 min(80vw,340px);scroll-snap-align:start;min-width:0;background:#fff;border:1px solid var(--linea);border-radius:18px;overflow:hidden;box-shadow:0 14px 32px -28px rgba(0,0,0,.5)}
+.depo-card blockquote{color:var(--tinta);font-weight:600;font-size:15px;line-height:1.5;padding:18px 18px 8px}
+.depo-card figcaption{color:var(--suave);font-size:13px;padding:0 18px 16px}
+.depo-card button{display:block;width:100%;padding:10px;border:0;background:var(--fondo-suave);color:var(--verde-osc);font:700 14px/1.4 'Inter',system-ui,sans-serif;text-align:left;cursor:pointer}
+.depo-card button:focus-visible,.depo-fechar:focus-visible{outline:3px solid var(--azul);outline-offset:-3px}
+.depo-card img{width:100%;height:220px;object-fit:cover;object-position:top;border-radius:10px}
+.depo-card button span{display:block;padding:9px 4px 2px}
+.depo-ajuda{color:var(--suave);font-size:13px;text-align:center;margin-top:4px}
+.depo-visor{width:min(94vw,720px);max-height:94dvh;margin:auto;padding:12px;border:0;border-radius:14px;background:#fff;overflow:auto}
+.depo-visor::backdrop{background:rgba(10,20,17,.88)}
+.depo-fechar{display:block;margin:0 0 10px auto;border:0;border-radius:8px;padding:9px 14px;background:var(--tinta);color:#fff;font:700 14px 'Inter',system-ui,sans-serif;cursor:pointer}
+.depo-visor img{display:block;width:min(100%,540px);max-width:100%;height:auto;margin:0 auto;border-radius:8px}
 /* garantía */
 .sello{width:150px;height:150px;margin:0 auto 18px}
 .gar h2{text-align:left}
@@ -274,6 +289,26 @@ fbq('track','PageView',{},{eventID:window.MAM_PV});
   </div>
 </section>
 
+<!-- DEPOIMENTOS DAS FAMÍLIAS LATAM -->
+<section id="depoimentos" aria-labelledby="depo-titulo">
+  <div class="c">
+    <h2 id="depo-titulo">Lo que cuentan otras familias</h2>
+    <p class="depo-sub">Experiencias compartidas por quienes ya usan Mesa a Mesa en casa.</p>
+    <div class="depo-lista">
+      <figure class="depo-card"><blockquote>“La verdad, nos ha ayudado mucho.”</blockquote><figcaption>Valentina Rojas</figcaption><button class="js-depo" type="button" aria-label="Ampliar el testimonio de Valentina Rojas"><img src="img/madres/depo-valentina.webp" width="941" height="1672" alt="Conversación con Valentina Rojas sobre Mesa a Mesa" loading="lazy"><span>Ver conversación completa</span></button></figure>
+      <figure class="depo-card"><blockquote>“Ha sido un cambio muy grande para nosotros aquí en casa.”</blockquote><figcaption>Mariana Torres</figcaption><button class="js-depo" type="button" aria-label="Ampliar el testimonio de Mariana Torres"><img src="img/madres/depo-mariana.webp" width="941" height="1672" alt="Conversación con Mariana Torres sobre Mesa a Mesa" loading="lazy"><span>Ver conversación completa</span></button></figure>
+      <figure class="depo-card"><blockquote>“Por primera vez, que haya un alimento nuevo en el plato no termina en pelea.”</blockquote><figcaption>Daniela Fuentes</figcaption><button class="js-depo" type="button" aria-label="Ampliar el testimonio de Daniela Fuentes"><img src="img/madres/depo-daniela.webp" width="941" height="1672" alt="Conversación con Daniela Fuentes sobre Mesa a Mesa" loading="lazy"><span>Ver conversación completa</span></button></figure>
+      <figure class="depo-card"><blockquote>“Con Mesa a Mesa logré presentar los alimentos de una forma más tranquila, sin tanta presión.”</blockquote><figcaption>Carolina Paredes</figcaption><button class="js-depo" type="button" aria-label="Ampliar el testimonio de Carolina Paredes"><img src="img/madres/depo-carolina.webp" width="941" height="1672" alt="Conversación con Carolina Paredes sobre Mesa a Mesa" loading="lazy"><span>Ver conversación completa</span></button></figure>
+    </div>
+    <p class="depo-ajuda">Desliza para ver más · Toca una captura para ampliarla</p>
+  </div>
+</section>
+
+<dialog class="depo-visor" id="depo-visor" aria-label="Testimonio ampliado">
+  <button class="depo-fechar" type="button">Cerrar ×</button>
+  <img width="941" height="1672" alt="">
+</dialog>
+
 <!-- PLANES -->
 <section style="background:var(--fondo-suave)" id="planes">
   <div class="c">
@@ -375,9 +410,24 @@ const montaFilas = () => {
 };
 if (document.readyState === 'complete') montaFilas(); else window.addEventListener('load', montaFilas, { once: true });
 
+const depoVisor = document.getElementById('depo-visor');
+const depoImagen = depoVisor.querySelector('img');
+document.querySelectorAll('.js-depo').forEach(boton => {
+  boton.addEventListener('click', () => {
+    const miniatura = boton.querySelector('img');
+    depoImagen.src = miniatura.src;
+    depoImagen.alt = miniatura.alt;
+    depoVisor.showModal();
+  });
+});
+depoVisor.querySelector('.depo-fechar').addEventListener('click', () => depoVisor.close());
+depoVisor.addEventListener('click', evento => {
+  if (evento.target === depoVisor) depoVisor.close();
+});
+
 // ===== FUNIL (painel em /api/painel, aba "Mães LatAm") =====
-// l: 'familias' separa as visitas no painel. Etapas 1..11 = as seções desta página na ordem (31/10: + dor e 3 passos)
-// (topo + cada <section>); 16 = clicou no checkout; 17 = comprou.
+// l: 'familias' separa as visitas no painel. Etapas 1..11 seguem as seções originais;
+// depoimentos não altera a numeração histórica. 16 = clicou no checkout; 17 = comprou.
 const FUNIL = (() => {
   const Q = new URLSearchParams(location.search);
   const hoje = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric', timeZone: 'Europe/Madrid' }).split('/').reverse().join('');
@@ -397,7 +447,7 @@ const FUNIL = (() => {
     try { if (!navigator.sendBeacon('/api/f', corpo)) throw 0; } catch (e) { fetch('/api/f', { method: 'POST', body: corpo, keepalive: true }).catch(() => {}); }
   };
   const sobe = (p, pl) => { if (pl && pl !== plano) { plano = pl; ses.pl = pl; guarda(); if (p <= ses.p) bate(); } if (p > ses.p) { ses.p = p; guarda(); bate(); } };
-  const partes = [...document.querySelectorAll('header.hero, body > section')];
+  const partes = [...document.querySelectorAll('header.hero, body > section:not(#depoimentos)')];
   const io = new IntersectionObserver((es) => es.forEach((e) => {
     if (!e.isIntersecting) return;
     const i = partes.indexOf(e.target) + 1; atual = i; sobe(i);
@@ -409,6 +459,9 @@ const FUNIL = (() => {
     if (Date.now() - ini > 10 * 60e3) return clearInterval(pulso);
     if (document.visibilityState === 'visible') bate();
   }, 15000);
+  // sem isso o "tempo" do painel so andava de 15 em 15 s: quem saia aos 12 s aparecia com 0 s
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') bate(); });
+  addEventListener('pagehide', bate);
   return { sobe, sck: 'mam_' + ses.d + '_' + ses.s };
 })();
 
