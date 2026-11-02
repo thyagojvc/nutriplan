@@ -117,6 +117,9 @@ section{padding:46px 0}
 .precio{text-align:center;margin-top:18px}
 .precio .antes{font-size:15px;color:var(--suave)}
 .precio .v{font:800 52px/1 'Poppins';color:var(--verde)}
+.precio .v small{font-size:.42em;margin-left:4px}
+.precio .usd{font-size:13px;color:var(--suave);margin-top:6px}
+.precio .usd:empty{display:none}
 .precio .ahorro{font-weight:700;color:var(--tinta);margin-top:6px}
 .plan .btn{margin-top:16px}
 .plan.esencial .v{font-size:40px;color:var(--tinta)}
@@ -278,16 +281,16 @@ try { document.getElementById('hoy').textContent = ' · ' + new Date().toLocaleD
     <div class="bonus-g">
       <div class="bonus"><img src="img/madres/bonus-1.webp" width="800" height="800" alt="Bonus 1: Frases para la mesa" loading="lazy"><span class="tag">BONUS #1</span>
         <h3>Frases para la mesa</h3><p>74 frases ordenadas por momento de la comida: la que le da confianza para acercarse y la que, sin querer, le hace dar un paso atrás. Para pegar en el refri.</p>
-        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+        <div class="valor">Valor: <s data-usd="9.90">US$ 9.90</s> Incluido gratis</div></div>
       <div class="bonus"><img src="img/madres/bonus-2-latam.webp" width="800" height="800" alt="Bonus 2: Situaciones difíciles" loading="lazy"><span class="tag">BONUS #2</span>
         <h3>Situaciones difíciles</h3><p>Cumpleaños, la lonchera de la escuela, casa de los abuelos, restaurante, viajes y el día que todo sale mal. Qué hacer antes, durante y después.</p>
-        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+        <div class="valor">Valor: <s data-usd="9.90">US$ 9.90</s> Incluido gratis</div></div>
       <div class="bonus"><img src="img/madres/bonus-3.webp" width="800" height="800" alt="Bonus 3: Puentes de alimentos" loading="lazy"><span class="tag">BONUS #3</span>
         <h3>Puentes de alimentos</h3><p>Una lógica práctica: lo que ya come → algo muy parecido → algo un poco más distinto. 10 familias y más de 100 alimentos, cambiando una sola cosa en cada paso.</p>
-        <div class="valor">Valor: <s>US$ 7.90</s> Incluido gratis</div></div>
+        <div class="valor">Valor: <s data-usd="7.90">US$ 7.90</s> Incluido gratis</div></div>
       <div class="bonus"><img src="img/madres/bonus-4.webp" width="800" height="800" alt="Bonus 4: Calendario de 30 días" loading="lazy"><span class="tag">BONUS #4</span>
         <h3>Calendario de 30 días</h3><p>Una actividad para cada día, ya elegida. Solo tienes que mirar el día, imprimir la hoja y empezar. Sin pensar qué toca.</p>
-        <div class="valor">Valor: <s>US$ 9.90</s> Incluido gratis</div></div>
+        <div class="valor">Valor: <s data-usd="9.90">US$ 9.90</s> Incluido gratis</div></div>
     </div>
   </div>
 </section>
@@ -333,7 +336,7 @@ try { document.getElementById('hoy').textContent = ' · ' + new Date().toLocaleD
         <li>🎁 Bonus #3: Puentes de alimentos;</li>
         <li>🎁 Bonus #4: Calendario de 30 días;</li>
       </ul>
-      <div class="precio"><div class="antes">Antes <s>US$ 29.90</s></div><div class="v">US$ 9.90</div><div class="ahorro">Ahorras US$ 57.60</div></div>
+      <div class="precio"><div class="antes">Antes <s data-usd="29.90">US$ 29.90</s></div><div class="v" data-usd="9.90">US$ 9.90</div><div class="usd"></div><div class="ahorro">Ahorras <span data-usd="57.60" data-soma="29.90 9.90 9.90 7.90 9.90 -9.90">US$ 57.60</span></div></div>
       <a class="btn js-checkout" data-plan="completo" href="#planes">Quiero el plan completo</a>
     </div>
 
@@ -345,7 +348,7 @@ try { document.getElementById('hoy').textContent = ' · ' + new Date().toLocaleD
         <li class="no">Sin la app;</li>
         <li class="no">Sin los 4 bonus;</li>
       </ul>
-      <div class="precio"><div class="v">US$ 7.90</div></div>
+      <div class="precio"><div class="v" data-usd="7.90">US$ 7.90</div><div class="usd"></div></div>
       <a class="btn js-checkout" data-plan="esencial" href="#planes">Quiero el plan esencial</a>
     </div>
     <p class="nota" style="margin-top:16px">Pago único · Acceso inmediato por correo</p>
@@ -427,6 +430,23 @@ depoVisor.querySelector('.depo-fechar').addEventListener('click', () => depoViso
 depoVisor.addEventListener('click', evento => {
   if (evento.target === depoVisor) depoVisor.close();
 });
+
+// ===== PRECO NA MOEDA DELA (api/preco.js: pais pelo IP + fator medido no checkout da Hotmart) =====
+// Arredonda sempre pra cima: no checkout ela ve igual ou menos. Sem resposta, fica tudo em US$.
+fetch('/api/preco' + (new URLSearchParams(location.search).get('pais') ? '?pais=' + new URLSearchParams(location.search).get('pais') : ''))
+  .then((r) => r.json()).then((m) => {
+    if (!m || !m.fator || m.moeda === 'USD') return;
+    const local = (usd) => Math.ceil(usd * m.fator / m.passo) * m.passo;
+    const fmt = (v) => m.simbolo + v.toLocaleString(m.loc, { maximumFractionDigits: 0 });
+    document.querySelectorAll('[data-usd]').forEach((el) => {
+      // "Ahorras" = soma das partes ja convertidas, senao a conta da pagina nao fecha por causa do arredondamento
+      const usd = Number(el.dataset.usd); const v = fmt(el.dataset.soma ? el.dataset.soma.split(' ').reduce((s, x) => s + Math.sign(x) * local(Math.abs(x)), 0) : local(usd));
+      if (el.classList.contains('v')) {
+        el.innerHTML = v + '<small>' + m.moeda + '</small>';
+        el.nextElementSibling.textContent = 'Precio en tu moneda · US$ ' + usd.toFixed(2);
+      } else el.textContent = v + ' ' + m.moeda;
+    });
+  }).catch(() => {});
 
 // ===== FUNIL (painel em /api/painel, aba "Mães LatAm") =====
 // l: 'familias' separa as visitas no painel. Etapas 1..11 seguem as seções originais;
