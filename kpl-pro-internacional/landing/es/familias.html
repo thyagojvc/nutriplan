@@ -41,6 +41,7 @@ section{padding:46px 0}
 .centro{text-align:center}
 /* barra */
 .barra{background:var(--rojo);color:#fff;text-align:center;font:700 15px/1.2 'Poppins';letter-spacing:.06em;padding:13px 12px;text-transform:uppercase}
+@media(max-width:420px){.barra{font-size:12.5px;letter-spacing:.03em;padding:12px 8px}}
 .pastilla{display:inline-flex;align-items:center;gap:6px;border-radius:99px;padding:9px 18px;font:700 13px/1.2 'Inter';letter-spacing:.02em;text-transform:uppercase}
 .pastilla.negra{background:var(--tinta);color:#fff}
 .pastilla.verde{background:var(--verde);color:#fff}
@@ -52,6 +53,9 @@ section{padding:46px 0}
 .hero .pastilla{margin-bottom:18px}
 .hero-img{margin:22px -6px 18px}
 .hero p.lead{text-align:center;font-size:17px}
+.hero .quien{text-align:center;font:700 13px/1.3 'Inter';letter-spacing:.04em;text-transform:uppercase;color:var(--verde-osc);margin-bottom:10px}
+.hero h1 .marca{color:#E2462F}
+.hero h1+.lead{margin-top:12px}
 .checks{list-style:none;display:grid;gap:10px;margin:20px 0 4px}
 .checks li{display:grid;grid-template-columns:22px 1fr;gap:8px;font-weight:600;color:var(--tinta)}
 .checks li:before{content:"✓";color:var(--verde);font-weight:800}
@@ -162,21 +166,20 @@ fbq('track','PageView',{},{eventID:window.MAM_PV});
 </head>
 <body>
 
-<div class="barra">⚡ Oferta de lanzamiento · solo hoy</div>
+<div class="barra">⚡ Oferta de lanzamiento<span id="hoy"></span></div>
+<script>
+// data de hoje no fuso do aparelho da pessoa (cada pais ve o proprio dia); sem JS fica so "Oferta de lanzamiento"
+try { document.getElementById('hoy').textContent = ' · ' + new Date().toLocaleDateString('es', { day: 'numeric', month: 'long' }); } catch (e) {}
+</script>
 
 <!-- HÉROE -->
 <header class="hero">
   <div class="c">
-    <span class="pastilla negra bloque">🔒 Compra 100% segura y protegida</span>
-    <h1>87 fichas para que tu hijo pruebe alimentos nuevos jugando, reunidas en un solo kit.</h1>
+    <p class="quien">Para mamás de niños de 2 a 8 años que comen siempre lo mismo</p>
+    <h1>Si tu hijo come solo 5 cosas, <span class="marca">no es capricho.</span> Es miedo a lo nuevo.</h1>
+    <p class="lead">Y el miedo no se quita insistiendo. Se quita jugando: primero lo mira, luego lo toca, y probarlo llega solo.</p>
     <img class="hero-img" src="img/madres/hero-familias.webp" width="1200" height="900" alt="Fichas de juego para el niño impresas, en la tablet y en el celular" fetchpriority="high">
-    <p class="lead">Elige la ficha, ponle el alimento en la mesa y deja que juegue. Primero lo mira, luego lo toca, y probarlo llega solo. Sin obligarlo y sin peleas, desde el celular o en papel.</p>
-    <ul class="checks">
-      <li>87 fichas listas para usar en 5 minutos</li>
-      <li>Hojas que el niño completa solo y fichas con alimentos de verdad</li>
-      <li>La frase que ayuda y la que lo frena, en cada ficha</li>
-      <li>Para imprimir o abrir en el celular</li>
-    </ul>
+    <p class="lead"><b>87 fichas de juego</b> para hacerlo en casa, sin obligarlo y sin peleas. Listas en 5 minutos, en papel o en el celular.</p>
     <p class="nota">📲 Recibes todo al momento en tu correo.</p>
   </div>
 </header>
@@ -191,7 +194,7 @@ fbq('track','PageView',{},{eventID:window.MAM_PV});
       <div><span>🔁</span>Terminas cocinando lo mismo de siempre, solo para que coma algo.</div>
       <div><span>😩</span>Insistes, negocias «un bocadito más»… y la cena termina en llanto y culpa.</div>
     </div>
-    <div class="giro"><b>No es capricho, y no es tu culpa.</b>Para muchos niños, lo nuevo da miedo. Y cuanto más se insiste, más se cierra. Lo que ayuda es quitar la presión y dejar que se acerque a la comida jugando, a su ritmo.</div>
+    <div class="giro"><b>Y no es tu culpa.</b>Para muchos niños, lo nuevo da miedo. Y cuanto más se insiste, más se cierra. Lo que ayuda es quitar la presión y dejar que se acerque a la comida jugando, a su ritmo.</div>
   </div>
 </section>
 
